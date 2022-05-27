@@ -35,9 +35,10 @@ setup(
     },
     packages=packages,
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: EUPL-1.2 License",
-        "Operating System :: OS Independent",
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: European Union Public Licence 1.2 '
+        '(EUPL 1.2)',
+        'Operating System :: OS Independent',
     ],
     python_requires=">=3.7",
     package_data={f'{module_name}': data},
