@@ -25,7 +25,7 @@ setup(
     name=module_name,
     version="0.0.1",
     author="KIOS CoE developers",
-    author_email="kios@ucy.ac.cy",
+    author_email="kiriakou.marios@ucy.ac.cy",
     description=f"The {module_name} is inspired by the EPANET-Matlab Toolkit.",
     long_description=long_description,
     long_description_content_type="text/markdown",
