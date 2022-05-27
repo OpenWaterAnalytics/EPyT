@@ -23,7 +23,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="0.0.1",
+    version="0.0.2",
     author="KIOS CoE developers",
     author_email="kiriakou.marios@ucy.ac.cy",
     description=f"The {module_name} is inspired by the EPANET-Matlab Toolkit.",
