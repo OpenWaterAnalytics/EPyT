@@ -49,7 +49,7 @@ DOI={10.5281/zenodo.831493}}
 ## How to install
 
 * PyPI: <b>pip install epyt</b>
-* Anaconda: <b>conda install -c conda-forge epyt</b>
+* Anaconda: <b>conda install -c conda-forge epyt</b> / Not yet implemented.
 
 &uparrow; [Back to top](#table-of-contents)
 
