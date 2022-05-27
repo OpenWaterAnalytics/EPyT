@@ -1,0 +1,14 @@
+include README.md
+include LICENSE.md
+include epyt/examples/*
+include epyt/libraries/*
+include epyt/libraries/glnx/*
+include epyt/libraries/mac/*
+include epyt/libraries/win/*
+include epyt/libraries/win/epanet2_2/*
+include epyt/libraries/win/epanet2_2/32bit/*
+include epyt/libraries/win/epanet2_2/64bit/*
+include epyt/networks/*
+include epyt/networks/asce-tf-wdst/*
+include epyt/networks/exeter-benchmarks/*
+include epyt/tests/*
