@@ -1,0 +1,4 @@
+sphinx-copybutton
+numpy
+matplotlib
+pandas

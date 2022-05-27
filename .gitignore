@@ -1,0 +1,5 @@
+*.pyc
+*_temp.inp
+*_temp.bin
+*_temp.txt
+*.png
