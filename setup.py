@@ -23,15 +23,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="0.0.1.0",
+    version="0.0.1.5",
     author="KIOS CoE developers",
     author_email="kiriakou.marios@ucy.ac.cy",
-    description=f"The {module_name} is inspired by the EPANET-Matlab Toolkit.",
+    description='A Python module for EPANET water distribution simulation libraries. The EPyT is inspired by the '
+                'EPANET-Matlab Toolkit.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url=f"https://github.com/KIOS-Research/{module_name}",
+    url='https://github.com/KIOS-Research/EPYT',
     project_urls={
-        "Bug Tracker": f"https://github.com/KIOS-Research/{module_name}\isuues",
+        "Bug Tracker": 'https://github.com/KIOS-Research/EPYT/issues',
     },
     packages=packages,
     classifiers=[
