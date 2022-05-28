@@ -48,6 +48,8 @@ DOI={10.5281/zenodo.831493}}
 
 ## How to install
 
+**Environments -> base (root) -> open terminal -> pip install epyt**
+
 * PyPI: <b>pip install epyt</b>
 * Anaconda: <b>conda install -c conda-forge epyt</b> / Not yet implemented.
 
@@ -55,13 +57,19 @@ DOI={10.5281/zenodo.831493}}
 
 ## How to use the Toolkit
 
-Minimum Example:
+**Minimum Example:**
+
+from epyt import epanet
 
 d = epanet('Net1.inp')
 
 d.getNodeCount()
 
 d.getNodeElevations()
+
+**More examples:** 
+
+https://github.com/KIOS-Research/EPYT/tree/main/epyt/examples
 
 &uparrow; [Back to top](#table-of-contents)
 
