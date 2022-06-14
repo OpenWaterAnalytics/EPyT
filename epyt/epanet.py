@@ -8151,6 +8151,7 @@ class epanet:
             if i not in self.getNodeTankIndex():
                 tankIndices = self.getNodeTankIndex()
                 index_.append(tankIndices[i - 1])
+        if len(index_) != 0: index = index_ 
         if not isList(elev):
             elev = [elev]
         if not isList(intlvl):
@@ -8165,8 +8166,8 @@ class epanet:
             minvol = [minvol]
         if not isList(volcurve):
             volcurve = [volcurve]
-        for i in range(len(index_)):
-            self.api.ENsettankdata(index_[i], elev[i], intlvl[i], minlvl[i], maxlvl[i], diam[i], minvol[i], volcurve[i])
+        for i in range(len(index)):
+            self.api.ENsettankdata(index[i], elev[i], intlvl[i], minlvl[i], maxlvl[i], diam[i], minvol[i], volcurve[i])
 
     def setNodeTankDiameter(self, value, *argv):
         """ Sets the diameter value for tanks.
