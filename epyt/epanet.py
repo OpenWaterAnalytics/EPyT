@@ -8127,7 +8127,7 @@ class epanet:
         >>> minvol = 50000
         >>> volcurve = ''    # For no curve
         >>> d.setNodeTankData(tankIndex, elev, intlvl, minlvl, maxlvl, diam, minvol, volcurve)
-        >>> d.getNodeTankData()
+        >>> d.getNodeTankData().disp()
 
         Example 2: (Sets to the 1st and 2nd tank the following properties).
 
@@ -8140,7 +8140,7 @@ class epanet:
         >>> minvol = [50000, 60000]
         >>> volcurve = ['', '']    # For no curves
         >>> d.setNodeTankData(tankIndex, elev, intlvl, minlvl, maxlvl, diam, minvol, volcurve)
-        >>> d.getNodeTankData()
+        >>> d.getNodeTankData().disp()
 
         See also getNodeTankData, setNodeTankInitialLevel, setNodeTankMinimumWaterLevel, setNodeTankDiameter.
         """
