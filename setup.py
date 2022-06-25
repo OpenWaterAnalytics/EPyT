@@ -2,6 +2,9 @@ from setuptools import setup
 import os
 
 # python setup.py bdist_wheel
+# python setup.py sdist
+# twine upload dist/*
+
 
 module_name = 'epyt'
 data = list()
@@ -23,7 +26,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="0.0.1.5",
+    version="0.0.2",
     author="KIOS CoE developers",
     author_email="kiriakou.marios@ucy.ac.cy",
     description='A Python module for EPANET water distribution simulation libraries. The EPyT is inspired by the '
