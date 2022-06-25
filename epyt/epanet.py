@@ -444,7 +444,7 @@ class epanet:
 
 
         # Initial attributes
-        self.classversion = '0.0.1'
+        self.classversion = '0.0.2.0'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} loaded (EPyT version {self.classversion}).')
         self.ToolkitConstants = ToolkitConstants()
