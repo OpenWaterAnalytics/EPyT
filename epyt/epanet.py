@@ -10223,7 +10223,7 @@ class epanet:
             controlTypeIndex = 0  # LOWLEVEL
             if splitControl[6] == 'ABOVE':
                 controlTypeIndex = 1  # HIGHLEVEL
-            controlLevel = int(float(splitControl[7]))
+            controlLevel = float(splitControl[7])
         if splitControl[3] == 'AT':
             if splitControl[4] == 'CLOCKTIME':
                 # LINK linkID status AT CLOCKTIME clocktime AM/PM
