@@ -2,6 +2,9 @@ from setuptools import setup
 import os
 
 # python setup.py bdist_wheel
+# python setup.py sdist
+# twine upload dist/*
+
 
 module_name = 'epyt'
 data = list()
