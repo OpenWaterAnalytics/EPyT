@@ -444,7 +444,7 @@ class epanet:
 
 
         # Initial attributes
-        self.classversion = '0.0.1'
+        self.classversion = '0.0.2.0'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} loaded (EPyT version {self.classversion}).')
         self.ToolkitConstants = ToolkitConstants()
@@ -1887,13 +1887,30 @@ class epanet:
         >>> d.deletePattern(index)           # Deletes the 1st pattern given it's index
         >>> d.getPatternNameID()
 
-        See also addPattern, setPattern, setPatternNameID, setPatternValue, setPatternComment.
+        See also deletePatternsAll, addPattern, setPattern, setPatternNameID, 
+        setPatternValue, setPatternComment.
         """
         if type(idPat) is str:
             indexPat = self.getPatternIndex(idPat)
         else:
             indexPat = idPat
         self.api.ENdeletepattern(indexPat)
+
+    def deletePatternsAll(self):
+        """ Deletes all time patterns from a project.
+
+        Example 1:
+
+        >>> d.getPatternNameID()        # Retrieves the IDs of all the patterns
+        >>> d.deletePatternsAll()       # Deletes all the patterns
+        >>> d.getPatternNameID()
+
+        See also deletePattern, addPattern, setPattern, setPatternNameID, 
+        setPatternValue, setPadtternComment.
+        """
+        idPat = self.getPatternIndex()
+        for i in range(len(idPat),0,-1):
+            self.api.ENdeletepattern(i)
 
     def deleteProject(self):
         """ Deletes the epanet project
