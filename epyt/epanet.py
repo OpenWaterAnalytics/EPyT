@@ -69,6 +69,7 @@ import random
 import string
 import struct
 import ctypes
+import math
 import json
 import sys
 import os
@@ -3301,8 +3302,7 @@ class epanet:
         See also getLinkPumpCount, getLinkCount.
         """
         linkTypes = self.getLinkTypeIndex()
-        pipepump = linkTypes.count(self.ToolkitConstants.EN_CVPIPE) + linkTypes.count(
-            self.ToolkitConstants.EN_PIPE) + linkTypes.count(self.ToolkitConstants.EN_PUMP)
+        pipepump = linkTypes.count(self.ToolkitConstants.EN_PIPE) + linkTypes.count(self.ToolkitConstants.EN_PUMP)
         value = self.getLinkCount() - pipepump
         return value
 
@@ -3713,7 +3713,7 @@ class epanet:
         tmpLinkTypes = self.getLinkType()
         value = []
         for i in range(len(tmpLinkTypes)):
-            if tmpLinkTypes[i].endswith('V'):
+            if tmpLinkTypes[i].endswith('V') or tmpLinkTypes[i].startswith('CV'):
                 value.append(i + 1)
         return np.array(value)
 
@@ -9780,7 +9780,7 @@ class epanet:
                 y[0] = nodecoords['y'][fromNode]
                 x[1] = nodecoords['x'][toNode]
                 y[1] = nodecoords['y'][toNode]
-                if not nodecoords['x_vert'][i]:
+                if not nodecoords['x_vert'][i]: # Check if not vertices
                     if fix_colorbar and flow is not None:
                         plt.plot(x, y, '-', linewidth=0.7, zorder=0, color=colors[i - 1])
                     else:
@@ -9810,13 +9810,13 @@ class epanet:
                         if fix_colorbar and flow is not None:
                             plt.plot([xV_old, xV], [yV_old, yV], '-', linewidth=1, zorder=0, color=colors[i])
                         else:
-                            plt.plot([xV_old, xV], [yV_old, yV], 'k-', linewidth=0.5, zorder=0)
+                            plt.plot([xV_old, xV], [yV_old, yV], color='steelblue', linewidth=0.2, zorder=0)
                         xV_old = xV
                         yV_old = yV
                     if fix_colorbar and flow is not None:
                         plt.plot([xV, x[1]], [yV, y[1]], '-', linewidth=1, zorder=0, color=colors[i])
                     else:
-                        plt.plot([xV, x[1]], [yV, y[1]], 'k-', linewidth=0.5, zorder=0)
+                        plt.plot([xV, x[1]], [yV, y[1]], color='steelblue', linewidth=0.2, zorder=0)
                     if text_links_ID or (text_links_ID_spec and links_ID[i - 1] in links_to_show_ID):
                         plt.text(
                             nodecoords['x_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
@@ -9836,8 +9836,8 @@ class epanet:
                             "{:.2f}".format(flow[i - 1]), {'fontsize': fontsize}
                         )
 
-            # Plot Pumps
             if not line:
+                # Plot Pumps
                 x, y = [0, 0], [0, 0]
                 for i in pumpindex:
                     fromNode = nodeconlinkIndex[i - 1][0]
@@ -9849,31 +9849,38 @@ class epanet:
                     xx = (x[0] + x[1]) / 2
                     yy = (y[0] + y[1]) / 2
                     if i != pumpindex[-1]:
-                        plt.plot(xx, yy, color='fuchsia', marker='v', linestyle='None', markersize=1)
+                        plt.plot(xx, yy, color='fuchsia', marker='v', linestyle='None', markersize=0.8)
                     else:
-                        plt.plot(xx, yy, color='fuchsia', marker='v', linestyle='None', markersize=1, label='Pumps')
+                        plt.plot(xx, yy, color='fuchsia', marker='v', linestyle='None', markersize=0.8, label='Pumps')
 
                 # Plot Valves
-                for i in valveindex:
-                    fromNode = nodeconlinkIndex[i - 1][0]
-                    toNode = nodeconlinkIndex[i - 1][1]
-                    x[0] = nodecoords['x'][fromNode]
-                    y[0] = nodecoords['y'][fromNode]
-                    x[1] = nodecoords['x'][toNode]
-                    y[1] = nodecoords['y'][toNode]
-                    xx = (x[0] + x[1]) / 2
-                    yy = (y[0] + y[1]) / 2
-                    if i != valveindex[-1]:
-                        plt.plot(xx, yy, 'k*', markersize=2)
+                for i in valveindex: 
+                    if not nodecoords['x_vert'][i]: # Check if not vertices
+                        fromNode = nodeconlinkIndex[i - 1][0]
+                        toNode = nodeconlinkIndex[i - 1][1]
+                        x[0] = nodecoords['x'][fromNode]
+                        y[0] = nodecoords['y'][fromNode]
+                        x[1] = nodecoords['x'][toNode]
+                        y[1] = nodecoords['y'][toNode]
+                        xx = (x[0] + x[1]) / 2
+                        yy = (y[0] + y[1]) / 2
                     else:
-                        plt.plot(xx, yy, 'k*', markersize=2, label='Valves')
+                        xVert = nodecoords['x_vert'][i]
+                        yVert = nodecoords['y_vert'][i] 
+                        xx = xVert[math.floor(xVert.index(xVert[-1])/2)]
+                        yy = yVert[math.floor(yVert.index(yVert[-1])/2)]
+                    if i != valveindex[-1]:
+                        plt.plot(xx, yy, 'k*', markersize=1.5)
+                    else:
+                        plt.plot(xx, yy, 'k*', markersize=1.5, label='Valves')
                     if text_nodes_ID or (text_nodes_ID_spec and valves_ID[valveindex.index(i)] in nodes_to_show_ID):
                         plt.text(xx, yy, valves_ID[valveindex.index(i)], {'fontsize': fontsize})
                     elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
-                        plt.text((x[0] + x[1]) / 2, (y[0] + y[1]) / 2, i, {'fontsize': fontsize})
+                        plt.text(xx, yy, i, {'fontsize': fontsize})
                     if pressure_text:
-                        plt.text((x[0] + x[1]) / 2, (y[0] + y[1]) / 2, "{:.2f}".format(pressure[i - 1]),
-                                 {'fontsize': fontsize})
+                        plt.text(xx, yy, "{:.2f}".format(pressure[i - 1]),
+                                {'fontsize': fontsize})
+
 
         if highlightlink is not None:
             if type(highlightlink) == str:
@@ -9908,9 +9915,9 @@ class epanet:
                 x = nodecoords['x'][i]
                 y = nodecoords['y'][i]
                 if i != tankindex[-1]:
-                    plt.plot(x, y, color='cyan', marker='*', linestyle='None', markersize=5, zorder=0)
+                    plt.plot(x, y, color='cyan', marker='*', linestyle='None', markersize=3.5, zorder=0)
                 else:
-                    plt.plot(x, y, color='cyan', marker='*', linestyle='None', markersize=5, label='Tanks', zorder=0)
+                    plt.plot(x, y, color='cyan', marker='*', linestyle='None', markersize=3.5, label='Tanks', zorder=0)
                 if text_nodes_ID or (text_nodes_ID_spec and tank_ID[tankindex.index(i)] in nodes_to_show_ID):
                     plt.text(x, y, tank_ID[tankindex.index(i)], {'fontsize': fontsize})
                 elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
@@ -9923,9 +9930,9 @@ class epanet:
                 x = nodecoords['x'][i]
                 y = nodecoords['y'][i]
                 if i != resindex[-1]:
-                    plt.plot(x, y, color='lime', marker='s', linestyle='None', markersize=2, zorder=0)
+                    plt.plot(x, y, color='lime', marker='s', linestyle='None', markersize=1.5, zorder=0)
                 else:
-                    plt.plot(x, y, color='lime', marker='s', linestyle='None', markersize=2, label='Reservoirs',
+                    plt.plot(x, y, color='lime', marker='s', linestyle='None', markersize=1.5, label='Reservoirs',
                              zorder=0)
                 if text_nodes_ID or (text_nodes_ID_spec and res_ID[resindex.index(i)] in nodes_to_show_ID):
                     plt.text(x, y, res_ID[resindex.index(i)], {'fontsize': fontsize})
@@ -9939,9 +9946,9 @@ class epanet:
                 x = nodecoords['x'][i]
                 y = nodecoords['y'][i]
                 if i != juncind[-1]:
-                    plt.plot(x, y, 'bo', markersize=1, zorder=0)
+                    plt.plot(x, y, 'bo', markersize=0.7, zorder=0)
                 else:
-                    plt.plot(x, y, 'bo', markersize=1, label='Junctions', zorder=0)
+                    plt.plot(x, y, 'bo', markersize=0.7, label='Junctions', zorder=0)
                 if text_nodes_ID or (text_nodes_ID_spec and junc_ID[juncind.index(i)] in nodes_to_show_ID):
                     plt.text(x, y, junc_ID[juncind.index(i)], {'fontsize': fontsize})
                 elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
