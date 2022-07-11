@@ -3302,7 +3302,8 @@ class epanet:
         See also getLinkPumpCount, getLinkCount.
         """
         linkTypes = self.getLinkTypeIndex()
-        pipepump = linkTypes.count(self.ToolkitConstants.EN_PIPE) + linkTypes.count(self.ToolkitConstants.EN_PUMP)
+        pipepump = linkTypes.count(self.ToolkitConstants.EN_CVPIPE) + linkTypes.count(
+            self.ToolkitConstants.EN_PIPE) + linkTypes.count(self.ToolkitConstants.EN_PUMP)
         value = self.getLinkCount() - pipepump
         return value
 
@@ -3611,7 +3612,7 @@ class epanet:
         tmpLinkTypes = self.getLinkType()
         value = []
         for i in range(len(tmpLinkTypes)):
-            if tmpLinkTypes[i] == 'PIPE':
+            if tmpLinkTypes[i] == 'PIPE' or tmpLinkTypes[i] == 'CVPIPE':
                 value.append(i + 1)
         return value
 
@@ -3713,7 +3714,7 @@ class epanet:
         tmpLinkTypes = self.getLinkType()
         value = []
         for i in range(len(tmpLinkTypes)):
-            if tmpLinkTypes[i].endswith('V') or tmpLinkTypes[i].startswith('CV'):
+            if tmpLinkTypes[i].endswith('V'):
                 value.append(i + 1)
         return np.array(value)
 
