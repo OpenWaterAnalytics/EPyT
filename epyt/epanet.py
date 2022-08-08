@@ -859,7 +859,7 @@ class epanet:
                 0.01 (Chezy-Manning formula)
             * minor Loss Coefficient = 0
 
-        The examples are based on d = epanet('NET1.inp')
+        The examples are based on d = epanet("Net1.inp")
 
         Example 1: Adds a new pipe given no properties.
 
@@ -904,13 +904,13 @@ class epanet:
         See also plot, setLinkNodesIndex, addLinkPipeCV, addNodeJunction, deleteLink, setLinkDiameter.
         """
         index = self.api.ENaddlink(pipeID, self.ToolkitConstants.EN_PIPE, fromNode, toNode)
-        if len(argv) == 1:
+        if len(argv) > 0:
             self.setLinkLength(index, argv[0])
-        if len(argv) == 2:
+        if len(argv) > 1:
             self.setLinkDiameter(index, argv[1])
-        if len(argv) == 3:
+        if len(argv) > 2:
             self.setLinkRoughnessCoeff(index, argv[2])
-        if len(argv) == 4:
+        if len(argv) > 3:
             self.setLinkMinorLossCoeff(index, argv[3])
         return index
 
@@ -932,7 +932,7 @@ class epanet:
                 0.01 (Chezy-Manning formula)
             * minor Loss Coefficient = 0
 
-        The examples are based on d = epanet('NET1.inp')
+        The examples are based on d = epanet('Net1.inp')
 
         Example 1: Adds a new control valve pipe given no properties.
 
@@ -977,13 +977,13 @@ class epanet:
         See also plot, setLinkNodesIndex, addLinkPipe, addNodeJunction, deleteLink, setLinkDiameter.
         """
         index = self.api.ENaddlink(cvpipeID, self.ToolkitConstants.EN_CVPIPE, fromNode, toNode)
-        if len(argv) == 1:
+        if len(argv) > 0:
             self.setLinkLength(index, argv[0])
-        if len(argv) == 2:
+        if len(argv) > 1:
             self.setLinkDiameter(index, argv[1])
-        if len(argv) == 3:
+        if len(argv) > 2:
             self.setLinkRoughnessCoeff(index, argv[2])
-        if len(argv) == 4:
+        if len(argv) > 3:
             self.setLinkMinorLossCoeff(index, argv[3])
         return index
 
@@ -1204,7 +1204,7 @@ class epanet:
         >>> junctionID = 'newJunction_2'
         >>> junctionCoords = [20, 10]
         >>> junctionIndex = d.addNodeJunction(junctionID, junctionCoords)
-        >>> d.plot()
+        >>> d.plot(highlightnode=junctionIndex)
 
         Example 3: Adds a new junction with coordinates [X, Y] = [20, 20] and elevation = 500.
 
@@ -1235,7 +1235,7 @@ class epanet:
         >>> demand = 50
         >>> demandPatternID = d.getPatternNameID(1)
         >>> junctionIndex = d.addNodeJunction(junctionID, junctionCoords, junctionElevation, demand, demandPatternID)
-        >>> d.getNodeDemandPatternNameID()[1][junctionIndex]
+        >>> d.getNodeDemandPatternNameID()[1][junctionIndex-1]
         >>> d.plot()
 
         See also plot, setLinkNodesIndex, addNodeReservoir, setNodeComment, deleteNode, setNodeBaseDemands.
@@ -11605,7 +11605,10 @@ class epanetapi:
         iCode = ctypes.c_int()
         self.errcode = self._lib.EN_getlinktype(self._ph, iIndex, ctypes.byref(iCode))
         self.ENgeterror()
-        return iCode.value
+        if iCode.value != -1:
+            return iCode.value
+        else:
+            return sys.maxsize
 
     def ENgetlinkvalue(self, index, paramcode):
         """ Retrieves a property value for a link.
