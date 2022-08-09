@@ -1292,7 +1292,7 @@ class epanet:
 
         >>> d.addNodeJunctionDemand([1, 2], [100, 110], ['1', '2'], ['new demand1', 'new demand2'])
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
-        >>> d.getNodeJunctionDemandName()[2]       # Retrieves the demand category names of the 2nd demand index for all nodes.
+        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
 
         See also deleteNodeJunctionDemand, getNodeJunctionDemandIndex, getNodeJunctionDemandName,
                  setNodeJunctionDemandName, getNodeBaseDemands.
@@ -4258,7 +4258,11 @@ class epanet:
             indices = [indices]
         value = []
         for i in indices:
-            value.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCEMASS))
+            temp_val = self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCEMASS)
+            if temp_val!=240:
+                value.append(temp_val)
+            else:
+                value.append(None)
         return np.array(value)
 
     def getNodePatternIndex(self, *argv):
