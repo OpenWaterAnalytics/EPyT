@@ -10907,7 +10907,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_adddemand(self._ph, nodeIndex, baseDemand, demandPattern.encode("utf-8"),
+        self.errcode = self._lib.EN_adddemand(self._ph, nodeIndex, ctypes.c_double(baseDemand), demandPattern.encode("utf-8"),
                                               demandName.encode("utf-8"))
         self.ENgeterror()
         return
