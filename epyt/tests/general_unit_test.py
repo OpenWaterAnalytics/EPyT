@@ -1,4 +1,5 @@
 from ftplib import error_perm
+from math import isclose
 from tkinter import E
 from epyt import epanet
 import numpy as np
@@ -163,8 +164,46 @@ class GeneralTest(unittest.TestCase):
         np.testing.assert_array_almost_equal_nulp(self.epanetClass.getNodeBaseDemands(junctionIndex)[1], demand)
         assert self.epanetClass.getNodeDemandPatternNameID()[1][junctionIndex-1] == demandPatternID, err_msg
 
-    
+    def testaddNodeJunctionDemand(self):
+        self.epanetClass = epanet('ky10.inp')
+        self.epanetClass.addNodeJunctionDemand([1, 2], [100, 110], ['1', '2'], ['new demand1', 'new demand2'])
+        assert self.epanetClass.getNodeJunctionDemandName()[2][0:2]  == ['new demand1', 'new demand2'], 'Wrong node junction demand output'
+        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getNodeBaseDemands()[2][0:2], [100, 110])
 
+    def testaddNodeReservoir(self):
+        reservoirID = 'newReservoir_1'
+        reservoirCoords = [20, 30]
+        reservoirIndex = self.epanetClass.addNodeReservoir(reservoirID, reservoirCoords)
+        assert self.epanetClass.getNodeCount() == 12, 'The Reservoir has not been added'
+        x = self.epanetClass.getNodeCoordinates('x')[reservoirIndex]
+        y = self.epanetClass.getNodeCoordinates('y')[reservoirIndex]
+        assert [x,y] == reservoirCoords, 'Wrong Reservoir coordinates'
+
+    def testaddNodeTank(self):
+        tankID = 'newTank_1'
+        tankCoords = [20, 30]
+        elevation = 100
+        initialLevel = 130
+        minimumWaterLevel = 110
+        maximumWaterLevel = 160
+        diameter = 60
+        minimumWaterVolume = 200000
+        volumeCurveID = ''   # Empty for no curve
+        tankIndex = self.epanetClass.addNodeTank(tankID, tankCoords, elevation, initialLevel, minimumWaterLevel,
+                                                maximumWaterLevel, diameter, minimumWaterVolume, volumeCurveID)
+        tank_data = self.epanetClass.getNodeTankData(tankIndex)
+        x = self.epanetClass.getNodeCoordinates('x')[tankIndex]
+        y = self.epanetClass.getNodeCoordinates('y')[tankIndex]
+        assert [x,y] == tankCoords, 'Wrong Tank coordinates'
+        assert isclose(tank_data.Elevation, elevation), 'Wrong Elevation output'
+        assert isclose(tank_data.Initial_Level, initialLevel), 'Wrong Initial Level output'
+        assert isclose(tank_data.Minimum_Water_Level, minimumWaterLevel), 'Wrong Minimum Water Level output'
+        assert isclose(tank_data.Diameter, diameter), 'Wrong Diameter output'
+        assert isclose(tank_data.Minimum_Water_Volume, minimumWaterVolume), 'Wrong Minimum Water Volume output'
+        assert tank_data.Volume_Curve_Index is None, 'Wrong Volume Curve Index output'
+
+
+    
 
 if __name__ == "__main__":
     unittest.main()  # run all tests
