@@ -445,7 +445,7 @@ class epanet:
 
 
         # Initial attributes
-        self.classversion = '0.0.2.0'
+        self.classversion = '0.0.3'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} loaded (EPyT version {self.classversion}).')
         self.ToolkitConstants = ToolkitConstants()
@@ -839,7 +839,7 @@ class epanet:
                 self.setCurve(valueIndex, argv[1])
         else:
             raise Exception('No curve ID or curve values exist.')
-        return valueIndex    
+        return valueIndex
 
     def addLinkPipe(self, pipeID, fromNode, toNode, *argv):
         """ Adds a new pipe.
@@ -2508,7 +2508,7 @@ class epanet:
                     value.append(self.api.ENgetcurveid(i))
             elif isList(argv[0]):
                 for i in argv[0]:
-                    value.append(self.api.ENgetcurveid(i))  
+                    value.append(self.api.ENgetcurveid(i))
             else:
                 value = self.api.ENgetcurveid(argv[0])
         return value
@@ -3142,10 +3142,7 @@ class epanet:
             patindices = [patindices]
         value = []
         for i in patindices:
-            if i == 0:
-                value.append('')
-            else:
-                value.append(self.getPatternNameID(i))
+            value.append(self.getPatternNameID(i))
         return value
 
     def getLinkPumpPower(self, *argv):
@@ -7444,7 +7441,7 @@ class epanet:
         Note:
             * condition = 0 | if is EN_UNCONDITIONAL: Delete all controls that contain object
             * condition = 1 | if is EN_CONDITIONAL: Cancel object type change if contained in controls
-            
+
         Default condition is 0.
 
         Example 1:
@@ -8173,7 +8170,7 @@ class epanet:
             if i not in self.getNodeTankIndex():
                 tankIndices = self.getNodeTankIndex()
                 index_.append(tankIndices[i - 1])
-        if len(index_) != 0: index = index_ 
+        if len(index_) != 0: index = index_
         if not isList(elev):
             elev = [elev]
         if not isList(intlvl):
@@ -11428,7 +11425,7 @@ class epanetapi:
         pmin  Pressure below which there is no demand.
         preq  Pressure required to deliver full demand.
         pexp  Pressure exponent in demand function.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
         Type = ctypes.c_int()
@@ -11452,7 +11449,7 @@ class epanetapi:
 
         Returns:
         demand_name  The name of the selected category.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
         demand_name = ctypes.create_string_buffer(100)
@@ -11471,7 +11468,7 @@ class epanetapi:
 
         Returns:
         value  the index of the category's time pattern.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
         patIndex = ctypes.c_int()
@@ -11553,7 +11550,7 @@ class epanetapi:
 
         Returns:
         id   The link's ID name.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
         nameID = ctypes.create_string_buffer(self.EN_MAXID)
@@ -11625,7 +11622,7 @@ class epanetapi:
 
         Returns:
         value   the current value of the property.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
         fValue = ctypes.c_double()
@@ -11693,7 +11690,7 @@ class epanetapi:
 
         Returns:
         value the current value of the property.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
         fValue = ctypes.c_double()
@@ -11747,11 +11744,11 @@ class epanetapi:
 
         Returns:
         id   the time pattern's ID name.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
         """
         nameID = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getpatternid(self._ph, index, ctypes.byref(nameID))
+        self.errcode = self._lib.EN_getpatternid(self._ph, int(index), ctypes.byref(nameID))
         self.ENgeterror()
         return nameID.value.decode()
 
@@ -11942,7 +11939,7 @@ class epanetapi:
 
         Returns:
         id  the rule's ID name.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
         """
         nameID = ctypes.create_string_buffer(self.EN_MAXID)
@@ -11961,7 +11958,7 @@ class epanetapi:
 
         Returns:
         value the value of the statistic.
-        
+
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
         """
         value = ctypes.c_double()
@@ -12128,7 +12125,7 @@ class epanetapi:
 
         Returns:
         tstep the time (in seconds) until the next hydraulic event or 0 if at the end of the full simulation duration.
-        
+
         See also  ENrunH
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
@@ -12144,7 +12141,7 @@ class epanetapi:
 
         Returns:
         tstep time (in seconds) until the next hydraulic event or 0 if at the end of the full simulation duration.
-        
+
         See also  ENstepQ, ENrunQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
         """
@@ -12243,7 +12240,7 @@ class epanetapi:
 
         Returns:
         t  the current simulation time in seconds.
-        
+
         See also  ENinitH, ENrunH, ENnextH, ENcloseH
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
@@ -12938,7 +12935,7 @@ class epanetapi:
 
         Returns:
         tleft  time left (in seconds) to the overall simulation duration.
-        
+
         See also ENrunQ, ENnextQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
