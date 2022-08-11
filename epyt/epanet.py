@@ -2282,7 +2282,7 @@ class epanet:
     def getControls(self, *argv):
         """ Retrieves the parameters of all control statements.
 
-        The example is based on d=epanet('NET1.inp')
+        The example is based on d=epanet('Net1.inp')
 
         Example :
 
@@ -2464,7 +2464,7 @@ class epanet:
         >>> d.getCurveLengths()         # Retrieves the number of points in all the curves
         >>> d.getCurveLengths(1)        # Retrieves the number of points in the 1st curve
         >>> d.getCurveLengths([1,2])    # Retrieves the number of points in the first 2 curves
-        >>> d.getCurveLengths('1')      # Retrieves the number of points for curve with id = '1'
+        >>> d.getCurveLengths('1006')   # Retrieves the number of points for curve with id = '1'
 
         See also getCurvesInfo, setCurve.
         """
@@ -2600,6 +2600,7 @@ class epanet:
             index = self.getCurveIndex()
         if not isList(index):
             index = [index]
+        val = {}
         for i in index:
             value = []
             try:
@@ -2612,7 +2613,8 @@ class epanet:
                 self.errcode = 206
                 errmssg = self.getError(self.errcode)
                 raise Exception(errmssg)
-        return value
+            val[i] = value
+        return val
 
     def getDemandModel(self):
         """ Retrieves the type of demand model in use and its parameters.
@@ -10284,6 +10286,13 @@ class epanet:
         else:
             indices = argv[0]
         return indices
+
+    def __getCurveIndices(self, *argv):
+        if len(argv) == 0:
+            numCurves = self.getCurveCount()
+            return list(range(1, numCurves + 1))
+        else:
+            return argv[0]
 
     def __getInitParams(self):
         # Retrieve all initial parameters from the inp file
