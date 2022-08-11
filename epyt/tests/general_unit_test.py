@@ -714,7 +714,86 @@ class GetTest(unittest.TestCase):
                          err_msg)
         self.assertEqual(self.epanetClass.getLinkNameID([1,2,3]), ['10', '11', '12'], err_msg)
         
-    def testgetLinkPumpEfficiency()
+    def testgetLinkPumpData(self):
         
+        ''' ---getLinkPumpEfficiency---    '''
+        err_msg = 'Wrong Pump Efficiency'
+        # Test 1
+        self.epanetClass.getComputedQualityTimeSeries()
+        self.assertEqual(self.epanetClass.getLinkPumpEfficiency(), np.array([0.75]), err_msg)
+        # Test 2
+        self.assertEqual(self.epanetClass.getLinkPumpEfficiency(1), 0.75, err_msg)  
+        
+        ''' ---getLinkPumpECost---    '''
+        err_msg = 'Wrong Pump ECost'
+        # Test 3
+        d = epanet('Richmond_standard.inp')
+        self.assertEqual(list(d.getLinkPumpECost()), [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], err_msg)
+        
+        ''' ---getLinkPumpECurve---    '''
+        err_msg = 'Wrong Pump ECurve'
+        # Test 4
+        self.assertEqual(list(d.getLinkPumpECurve()), [14, 13, 18, 16, 12, 15, 17], err_msg)
+        
+        ''' ---getLinkPumpEPat---    '''
+        err_msg = 'Wrong Pump EPat'
+        # Test 5
+        self.assertEqual(list(d.getLinkPumpEPat()), [14, 14, 19, 17, 15, 16, 18], err_msg)
+        
+        ''' ---getLinkPumpHCurve---    '''
+        err_msg = 'Wrong Pump HCurve'
+        # Test 6
+        self.assertEqual(list(d.getLinkPumpHCurve()), [10, 11,  1,  6,  8,  2,  7], err_msg)
+        
+        ''' ---getLinkPumpHeadCurveIndex---    '''
+        err_msg = 'Wrong Pump Head Curve Index'
+        # Test 7
+        [curveIndex, pumpIndex] = d.getLinkPumpHeadCurveIndex()
+        self.assertEqual(list(curveIndex), [10, 11, 1, 6, 8, 2, 7], err_msg)
+        self.assertEqual(list(pumpIndex), [950, 951, 952, 953, 954, 955, 956], err_msg)
+        
+        ''' ---getLinkPumpPatternIndex---    '''
+        pumpID = 'newPump_1'
+        fromNode = '11'
+        toNode = '22'
+        initialStatus = 1  
+        initialSetting = 1.2
+        power = 10
+        patternIndex = 1
+        pumpIndex = self.epanetClass.addLinkPump(pumpID, fromNode, toNode, initialStatus, initialSetting, power, patternIndex) 
+        err_msg = 'Wrong Pump Pattern Index'
+        # Test 8
+        self.assertEqual(list(self.epanetClass.getLinkPumpPatternIndex()), [0, 1],  err_msg)       
+        
+        ''' ---getLinkPumpPatternNameID---    '''
+        err_msg = 'Wrong Pump Pattern IDs'
+        # Test 9
+        self.assertEqual(list(self.epanetClass.getLinkPumpPatternNameID()), ['', '1'],  err_msg)    
+        
+        ''' ---getLinkPumpPower---    '''
+        err_msg = 'Wrong Pump Power'
+        # Test 10
+        self.assertEqual(self.epanetClass.getLinkPumpPower(pumpIndex),  10, err_msg)    
+        
+        ''' ---getLinkPumpSwitches---    '''
+        err_msg = 'Wrong Pump Switches'
+        # Test 11
+        d.unload()
+        d = epanet('Richmond_standard.inp')
+        self.assertEqual(d.getLinkPumpSwitches(),  [3, 2, 3, 6, 6, 4, 2], err_msg)    
+        
+        ''' ---getLinkPumpType---    '''
+        err_msg = 'Wrong Pump Type'
+        # Test 12
+        self.assertEqual(d.getLinkPumpType(),  ['CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM'], err_msg)    
+        
+        ''' ---getLinkPumpTypeCode---    '''
+        err_msg = 'Wrong Pump Type Code'
+        # Test 13
+        self.assertEqual(d.getLinkPumpTypeCode(),  [2, 2, 2, 2, 2, 2, 2], err_msg) 
+        self.epanetClass.unload()
+        self.epanetClass = epanet('Net1.inp')   
+        self.assertEqual(self.epanetClass.getLinkPumpTypeCode(),  [1], err_msg)    
+
 if __name__ == "__main__":
     unittest.main()  # run all tests
