@@ -5,7 +5,7 @@ from epyt import epanet
 import numpy as np
 import unittest
 
-class GeneralTest(unittest.TestCase):
+class AddTest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
@@ -202,8 +202,391 @@ class GeneralTest(unittest.TestCase):
         assert isclose(tank_data.Minimum_Water_Volume, minimumWaterVolume), 'Wrong Minimum Water Volume output'
         assert tank_data.Volume_Curve_Index is None, 'Wrong Volume Curve Index output'
 
-
+    def testaddPattern(self):
+        # Test 1
+        patternID = 'new_pattern_1'
+        patternIndex = self.epanetClass.addPattern(patternID)                 # Adds a new time pattern given it's ID
+        assert self.epanetClass.getPatternNameID(patternIndex) == patternID, 'Wrong pattern Name ID' 
+        # Test 2
+        patternID = 'new_pattern_2'
+        patternMult = [1.56, 1.36, 1.17, 1.13, 1.08,
+        1.04, 1.2, 0.64, 1.08, 0.53, 0.29, 0.9, 1.11,
+        1.06, 1.00, 1.65, 0.55, 0.74, 0.64, 0.46,
+        0.58, 0.64, 0.71, 0.66]
+        patternIndex = self.epanetClass.addPattern(patternID, patternMult)    # Adds a new time pattern given it's ID and the multiplier
+        assert self.epanetClass.getPatternNameID(patternIndex) == patternID, 'Wrong pattern Name ID' 
+        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getPattern()[2], patternMult)
     
+    def testaddRules(self):
+        self.epanetClass.addRules('RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PUMP 9 STATUS IS CLOSED \n PRIORITY 1')
+        assert self.epanetClass.getRuleCount() == 1, 'Wrong Rule Count Number' 
+        rule = self.epanetClass.getRules()[1]
+        assert rule['Rule_ID'] == 'RULE-1', 'Wrong rule ID'
+        self.assertEqual(rule['Premises'][0], 'IF NODE 2 LEVEL >= 140.0',  'Wrong Premises')
+        self.assertEqual(rule['Then_Actions'][0], 'THEN PUMP 9 STATUS IS CLOSED','Wrong Then Actions') 
+
+class DeleteTest(unittest.TestCase):   
+
+    def setUp(self):
+        """Call before every test case."""
+        # Create EPANET object using the INP file
+        inpname = 'Net1.inp'
+        self.epanetClass = epanet(inpname)
+
+    def tearDown(self):
+        """Call after every test case."""
+        self.epanetClass.unload()
+        
+    def testdeleteControls(self):
+        # Test 1                                               
+        self.epanetClass.deleteControls()                                             
+        assert self.epanetClass.getControls() == {}, 'The Controls have not been deleted'
+    
+    def testdeleteCurve(self):
+        # Test 1
+        d = epanet('BWSN_Network_1.inp')
+        idCurve = d.getCurveNameID(1)    # Retrieves the ID of the 1st curve
+        d.deleteCurve(idCurve)           #  Deletes a curve given it's ID
+        self.assertEqual(d.getCurveNameID(), ['CURVE-1', 'CURVE-2'], 'Curve not deleted')
+        # Test 2
+        index = 1
+        d.deleteCurve(index)             # Deletes a curve given it's index
+        self.assertEqual(d.getCurveNameID(), ['CURVE-2'], 'Curve not deleted')
+        
+    def testdeleteLink(self):
+        err_msg = 'Link not deleted'
+        # Test 1
+        idLink = self.epanetClass.getLinkNameID(1)          # Retrieves the ID label of the 1st link
+        self.epanetClass.deleteLink(idLink)                 # Deletes the 1st link given it's ID
+        self.assertNotEqual(self.epanetClass.getLinkNameID(1), idLink, err_msg)  
+        # Test 2
+        indexLink = 1
+        link_count = self.epanetClass.getLinkCount()
+        self.epanetClass.deleteLink(indexLink)                             # Deletes the 1st link given it's index
+        self.assertNotEqual(self.epanetClass.getLinkCount(), link_count, err_msg)  
+        
+    def testdeleteNode(self):
+        err_msg = 'Node not deleted'
+        # Test 1  
+        idNode = self.epanetClass.getNodeNameID(1)        # Retrieves the ID label of the 1st node
+        self.epanetClass.deleteNode(idNode)               # Deletes the 1st node given it's ID
+        self.assertNotEqual(self.epanetClass.getNodeNameID(1), idNode, err_msg) 
+        # Test 2
+        node_count = self.epanetClass.getNodeCount()   
+        index = 1
+        self.epanetClass.deleteNode(index)                # Deletes the 1st node given it's index
+        self.epanetClass.getNodeNameID()
+        self.assertNotEqual(self.epanetClass.getNodeCount(), node_count, err_msg) 
+        # Test 3
+        idNodes = self.epanetClass.getNodeNameID([1,2])
+        self.epanetClass.deleteNode(idNodes)              # Deletes 2 nodes given their IDs
+        self.assertNotEqual(self.epanetClass.getNodeNameID([1,2]), idNodes, err_msg) 
+
+    def testdeleteNodeJUnctionDemand(self):
+        err_msg = 'Demand not deleted'
+        # Test 1
+        nodeIndex = 1
+        baseDemand = 100
+        patternId = '1'
+        categoryIndex = 1                                
+        categoryIndex = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand')    # Adds a new demand to the 1st node and returns the new demand index
+        self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)                                                    # Retrieves the indices of all demands for the 1st node
+        self.epanetClass.deleteNodeJunctionDemand(1, 2)                                                           # Deletes the 2nd demand of the 1st node
+        self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), [1, 2], err_msg)
+        # Test 2
+        categoryIndex_2 = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_2')   # Adds a new demand to the first node and returns the new demand index
+        categoryIndex_3 = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_3')   # Adds a new demand to the first node and returns the new demand index
+        self.epanetClass.deleteNodeJunctionDemand(1)                                                                 # Deletes all the demands of the 1st node
+        self.assertNotEqual(self.epanetClass.getNodeJunctionDemandName(1), {1: [''], 2: ['new demand_2'], 3: ['new demand_3']}, err_msg)
+        # Test 3
+        nodeIndex = [1, 2, 3]
+        baseDemand = [100, 110, 150]
+        patternId = ['1', '1', '']
+        categoryIndex = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, ['new demand_1', 'new demand_2', 'new demand_3'])     # Adds 3 new demands to the first 3 nodes
+        demand_index_old = self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)
+        self.epanetClass.deleteNodeJunctionDemand([1,2,3])                                     # Deletes all the demands of the first 3 nodes
+        self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), demand_index_old, err_msg)
+        
+    def testsdeletePattern(self):
+        err_msg = 'Pattern not deleted'
+        # Test 1
+        idPat = self.epanetClass.getPatternNameID(1)    # Retrieves the ID of the 1st pattern
+        self.epanetClass.deletePattern(idPat)           # Deletes the 1st pattern given it's ID
+        self.assertEqual(self.epanetClass.getPatternNameID(), [], err_msg)
+        # Test 2
+        self.epanetClass = epanet('Net1.inp')
+        index = 1
+        self.epanetClass.deletePattern(index)           # Deletes the 1st pattern given it's index
+        self.assertEqual(self.epanetClass.getPatternNameID(), [], err_msg)
+
+    def testdeletePatternsAll(self):
+        err_msg = 'All Patterns not deleted'
+        d = epanet('BWSN_Network_1.inp')
+        d.deletePatternsAll()       # Deletes all the patterns
+        self.assertEqual(d.getPatternNameID(), [], err_msg)
+
+    def testdeleteRules(self):
+        err_msg = 'Rule not deleted'
+        # Test 1
+        d = epanet('BWSN_Network_1.inp')
+        rule_count = d.getRuleCount()        # Retrieves the number of rules
+        d.deleteRules()                      # Deletes all the rule-based control
+        self.assertEqual(d.getRuleCount(), 0, err_msg)
+        # Test 2
+        d = epanet('BWSN_Network_1.inp')
+        rule_id_1 = d.getRuleID(1) 
+        d.deleteRules(1)        # Deletes the 1st rule-based control
+        self.assertNotEqual(d.getRuleID(1), rule_id_1, err_msg)
+        # Test 3
+        d = epanet('BWSN_Network_1.inp')
+        d.deleteRules([1,2,3])  # Deletes the 1st to 3rd rule-based control
+        self.assertEqual(d.getRuleCount(), 1, err_msg)
+        
+class GetTest(unittest.TestCase):   
+
+    def setUp(self):
+        """Call before every test case."""
+        # Create EPANET object using the INP file
+        inpname = 'Net1.inp'
+        self.epanetClass = epanet(inpname)
+
+    def tearDown(self):
+        """Call after every test case."""
+        self.epanetClass.unload()
+    
+    def testgetComputedHydraulicTimeSeries(self):
+        data = self.epanetClass.getComputedHydraulicTimeSeries(['Time','Pressure', 'Velocity'])
+        self.assertEqual(
+            data.Time.all(), 
+            np.array([    0,  3600,  7200, 10800, 14400, 18000, 21600, 25200, 28800,
+                                32400, 36000, 39600, 43200, 45154, 46800, 50400, 54000, 57600,
+                                61200, 64800, 68400, 72000, 75600, 79200, 81690, 82800, 86400]).all(),
+            'Wrong Time output')
+        self.assertEqual(
+            data.Pressure.all(),
+            np.matrix([[127.54072491, 119.25732074, 117.02125399, 118.66902368,
+                        117.66115716, 118.75815405, 120.73696519, 115.86077993,
+                        110.79018511,   0.        ,  51.996     ],
+                        [128.58963612, 120.45028753, 118.34940585, 119.99139321,
+                        118.94074548, 120.07340709, 122.05444889, 117.14855347,
+                        112.0894993 ,   0.        ,  53.32542596],
+                        [129.24743752, 121.19853401, 119.633948  , 120.91182173,
+                        119.34717535, 120.82394882, 122.78398354, 117.00731724,
+                        111.88895591,   0.        ,  54.6243226 ],
+                        [129.95740184, 122.00620684, 120.53119195, 121.80401471,
+                        120.21268816, 121.70906898, 123.67069653, 117.87722459,
+                        112.76452393,   0.        ,  55.52219246],
+                        [130.2807869 , 122.37412937, 121.39879063, 122.22626599,
+                        120.12852018, 121.88262608, 123.82066328, 117.12817501,
+                        111.89206413,   0.        ,  56.39910545],
+                        [130.66581304, 122.81220852, 121.88417723, 122.70842025,
+                        120.59761555, 122.35995953, 124.29888252, 117.59909621,
+                        112.36522402,   0.        ,  56.88469473],
+                        [130.67296063, 122.82034125, 122.35404163, 122.65949442,
+                        120.05043713, 121.99713313, 123.90925151, 116.27646055,
+                        110.86955714,   0.        ,  57.3588257 ],
+                        [130.74630016, 122.90378911, 122.44621817, 122.75097749,
+                        120.13971557, 122.0875427 , 123.99983233, 116.36598084,
+                        110.95932278,   0.        ,  57.45101172],
+                        [131.18618207, 123.40432512, 122.54022505, 123.36008274,
+                        121.23167202, 123.00507407, 124.94519528, 118.23560812,
+                        113.00477303,   0.        ,  57.54101105],
+                        [131.54976976, 123.818075  , 122.99861945, 123.81539416,
+                        121.67471938, 123.45577412, 125.39673394, 118.68034567,
+                        113.4515494 ,   0.        ,  57.99958929],
+                        [132.26981375, 124.63753647, 123.45427607, 124.71035299,
+                        123.03261446, 124.59180141, 126.55864067, 120.71122109,
+                        115.61661061,   0.        ,  58.44725465],
+                        [132.9081991 , 125.36415115, 124.26141912, 125.51278568,
+                        123.81133141, 125.3875497 , 127.35583525, 121.49373493,
+                        116.40390485,   0.        ,  59.2549267 ],
+                        [133.88680955, 126.47817303, 125.06096964, 126.67233084,
+                        125.40691528, 126.71568902, 128.70816244, 123.65496369,
+                        118.65176767,   0.        ,  60.04320918],
+                        [120.59982887, 120.59982887, 125.59789324, 126.72157821,
+                        123.67823733, 126.01248102, 128.12522042, 122.15478432,
+                        117.43828897,   0.        ,  60.66200396],
+                        [119.72714682, 119.72714682, 124.72521117, 125.84889613,
+                        122.80555524, 125.13979893, 127.25253834, 121.28210222,
+                        116.56560675,   0.        ,  59.78932188],
+                        [118.06362697, 118.06362697, 122.83656011, 124.31324935,
+                        121.56672857, 123.84418926, 125.97512722, 120.55898111,
+                        115.97230307,   0.        ,  57.88066121],
+                        [116.53669821, 116.53669821, 121.30963132, 122.78632057,
+                        120.0397998 , 122.31726048, 124.44819844, 119.03205233,
+                        114.4453743 ,   0.        ,  56.35373242],
+                        [115.20762616, 115.20762616, 119.7988526 , 121.56045663,
+                        119.05350362, 121.28513391, 123.43076018, 118.46198943,
+                        113.98008889,   0.        ,  54.82680366],
+                        [114.06242929, 114.06242929, 118.65365571, 120.41525973,
+                        117.90830673, 120.13993702, 122.28556329, 117.31679255,
+                        112.834892  ,   0.        ,  53.68160676],
+                        [113.06571302, 113.06571302, 117.52057855, 119.49599534,
+                        117.16882471, 119.36606181, 121.52271085, 116.88967053,
+                        112.48639969,   0.        ,  52.53640989],
+                        [112.30224802, 112.30224802, 116.75711353, 118.73253032,
+                        116.4053597 , 118.6025968 , 120.75924583, 116.12620552,
+                        111.72293467,   0.        ,  51.77294487],
+                        [111.39030245, 111.39030245, 115.98152881, 117.74313285,
+                        115.23617987, 117.46781014, 119.61343642, 114.64466568,
+                        110.16276513,   0.        ,  51.00947987],
+                        [110.24510565, 110.24510565, 114.83633199, 116.59793602,
+                        114.09098305, 116.32261333, 118.4682396 , 113.49946886,
+                        109.01756832,   0.        ,  49.86428304],
+                        [108.90205223, 108.90205223, 113.67498514, 115.15167441,
+                        112.40515372, 114.68261436, 116.81355232, 111.39740624,
+                        106.81072819,   0.        ,  48.71908624],
+                        [124.48318538, 115.78099067, 112.71091153, 114.63566434,
+                        114.22834319, 114.80094526, 116.79751399, 112.82805364,
+                        107.68452094,   0.        ,  47.66296061],
+                        [124.92020828, 116.27777211, 113.2647933 , 115.18812071,
+                        114.76197096, 115.35222877, 117.34954606, 113.36596566,
+                        108.22952342,   0.        ,  48.2175138 ],
+                        [125.96844576, 117.46948079, 115.03090241, 116.68717363,
+                        115.74356881, 116.7866562 , 118.76214431, 113.93079598,
+                        108.84261138,   0.        ,  50.00371454]]).all(),
+            'Wrong Pressure output') 
+         
+        self.assertEqual(       
+            data.Velocity.all(), 
+            np.matrix([[2.35286666e+00, 2.57230086e+00, 5.28331232e-01, 7.80876836e-01,
+                        3.42300951e-01, 4.63083582e-01, 9.65991272e-01, 1.96883153e+00,
+                        5.35291644e-01, 1.87239674e-01, 8.98762391e-01, 6.71632643e-01,
+                        0.00000000e+00],
+                        [2.33068336e+00, 2.54358132e+00, 5.31503118e-01, 7.66706780e-01,
+                        3.40098253e-01, 4.59157105e-01, 9.43807974e-01, 1.95324794e+00,
+                        5.43910881e-01, 1.92195745e-01, 8.96553748e-01, 6.75559120e-01,
+                        0.00000000e+00],
+                        [2.31666322e+00, 2.42681077e+00, 7.06538850e-01, 6.16194761e-01,
+                        3.60385189e-01, 4.79042564e-01, 6.52412757e-01, 2.01414361e+00,
+                        8.33956122e-01, 3.38033502e-01, 1.03539489e+00, 8.82616905e-01,
+                        0.00000000e+00],
+                        [2.30143547e+00, 2.40683910e+00, 7.08704481e-01, 6.06673617e-01,
+                        3.58881279e-01, 4.77175094e-01, 6.37185006e-01, 2.00395017e+00,
+                        8.39530985e-01, 3.41417300e-01, 1.03434444e+00, 8.84484375e-01,
+                        0.00000000e+00],
+                        [2.29446581e+00, 2.29272219e+00, 8.81628950e-01, 4.66778486e-01,
+                        3.80634370e-01, 5.16575880e-01, 3.52840266e-01, 2.08248825e+00,
+                        1.11879071e+00, 4.83956208e-01, 1.18416296e+00, 1.07202683e+00,
+                        0.00000000e+00],
+                        [2.28613994e+00, 2.28166679e+00, 8.82777453e-01, 4.61720309e-01,
+                        3.79836799e-01, 5.15884056e-01, 3.44514395e-01, 2.07718101e+00,
+                        1.12167872e+00, 4.85750744e-01, 1.18377381e+00, 1.07271866e+00,
+                        0.00000000e+00],
+                        [2.28598509e+00, 2.17126060e+00, 1.05313231e+00, 3.32329449e-01,
+                        4.03374341e-01, 5.67236868e-01, 6.69844709e-02, 2.17052609e+00,
+                        1.39244025e+00, 6.24274636e-01, 1.34031534e+00, 1.24830909e+00,
+                        0.00000000e+00],
+                        [2.28439619e+00, 2.16912714e+00, 1.05334394e+00, 3.31394073e-01,
+                        4.03227377e-01, 5.67150521e-01, 6.53955686e-02, 2.16955962e+00,
+                        1.39296444e+00, 6.24605306e-01, 1.34026677e+00, 1.24839544e+00,
+                        0.00000000e+00],
+                        [2.27483897e+00, 2.26665454e+00, 8.84333876e-01, 4.54863175e-01,
+                        3.78755949e-01, 5.14956307e-01, 3.33213425e-01, 2.06998989e+00,
+                        1.12559170e+00, 4.88182655e-01, 1.18325195e+00, 1.07364641e+00,
+                        0.00000000e+00],
+                        [2.26690942e+00, 2.25611915e+00, 8.85426211e-01, 4.50052565e-01,
+                        3.77997383e-01, 5.14312510e-01, 3.25283877e-01, 2.06494751e+00,
+                        1.12833479e+00, 4.89889428e-01, 1.18288981e+00, 1.07429020e+00,
+                        0.00000000e+00],
+                        [2.25112342e+00, 2.34078445e+00, 7.15844666e-01, 5.75283611e-01,
+                        3.53922817e-01, 4.71191987e-01, 5.86872961e-01, 1.97040625e+00,
+                        8.57866915e-01, 3.52573840e-01, 1.03097894e+00, 8.90467483e-01,
+                        0.00000000e+00],
+                        [2.23703453e+00, 2.32226979e+00, 7.17841800e-01, 5.66509789e-01,
+                        3.52535919e-01, 4.69565723e-01, 5.72784064e-01, 1.96104697e+00,
+                        8.62979515e-01, 3.55694360e-01, 1.03006417e+00, 8.92093747e-01,
+                        0.00000000e+00],
+                        [2.21526305e+00, 2.39387356e+00, 5.48041427e-01, 6.93165074e-01,
+                        3.28613316e-01, 4.39732471e-01, 8.28387669e-01, 1.87271337e+00,
+                        5.88352732e-01, 2.18036853e-01, 8.85627391e-01, 6.94983754e-01,
+                        0.00000000e+00],
+                        [1.06626930e-06, 7.46894277e-01, 7.70294218e-01, 2.87189089e-01,
+                        1.74271100e-01, 3.25297366e-01, 1.38687645e+00, 8.51162565e-01,
+                        1.14342079e+00, 5.65306840e-01, 8.21257645e-01, 8.09418859e-01,
+                        0.00000000e+00],
+                        [1.05667364e-06, 7.46894264e-01, 7.70294219e-01, 2.87189086e-01,
+                        1.74271099e-01, 3.25297361e-01, 1.38687644e+00, 8.51162566e-01,
+                        1.14342079e+00, 5.65306841e-01, 8.21257642e-01, 8.09418864e-01,
+                        0.00000000e+00],
+                        [1.03714862e-06, 5.97515677e-01, 6.16235394e-01, 2.29751348e-01,
+                        1.39416867e-01, 2.60237879e-01, 1.10950134e+00, 6.80929970e-01,
+                        9.14736679e-01, 4.52245502e-01, 6.57006108e-01, 6.47535101e-01,
+                        0.00000000e+00],
+                        [1.01552852e-06, 5.97515652e-01, 6.16235392e-01, 2.29751341e-01,
+                        1.39416868e-01, 2.60237880e-01, 1.10950132e+00, 6.80929978e-01,
+                        9.14736675e-01, 4.52245499e-01, 6.57006109e-01, 6.47535100e-01,
+                        0.00000000e+00],
+                        [9.97188290e-07, 4.48137076e-01, 4.62176568e-01, 1.72313606e-01,
+                        1.04562635e-01, 1.95178398e-01, 8.32126229e-01, 5.10697378e-01,
+                        6.86052563e-01, 3.39184161e-01, 4.92754575e-01, 4.85651337e-01,
+                        0.00000000e+00],
+                        [9.82963944e-07, 4.48137050e-01, 4.62176566e-01, 1.72313598e-01,
+                        1.04562636e-01, 1.95178399e-01, 8.32126211e-01, 5.10697387e-01,
+                        6.86052558e-01, 3.39184158e-01, 4.92754575e-01, 4.85651336e-01,
+                        0.00000000e+00],
+                        [9.70469226e-07, 2.98758484e-01, 3.08117742e-01, 1.14875867e-01,
+                        6.97084020e-02, 1.30118916e-01, 5.54751123e-01, 3.40464784e-01,
+                        4.57368448e-01, 2.26122821e-01, 3.28503041e-01, 3.23767574e-01,
+                        0.00000000e+00],
+                        [9.55911660e-07, 2.98758469e-01, 3.08117741e-01, 1.14875862e-01,
+                        6.97084027e-02, 1.30118917e-01, 5.54751113e-01, 3.40464789e-01,
+                        4.57368445e-01, 2.26122820e-01, 3.28503041e-01, 3.23767573e-01,
+                        0.00000000e+00],
+                        [9.45234760e-07, 4.48137001e-01, 4.62176562e-01, 1.72313584e-01,
+                        1.04562638e-01, 1.95178400e-01, 8.32126177e-01, 5.10697402e-01,
+                        6.86052550e-01, 3.39184153e-01, 4.92754576e-01, 4.85651334e-01,
+                        0.00000000e+00],
+                        [9.28221894e-07, 4.48136976e-01, 4.62176561e-01, 1.72313576e-01,
+                        1.04562639e-01, 1.95178401e-01, 8.32126160e-01, 5.10697409e-01,
+                        6.86052546e-01, 3.39184150e-01, 4.92754577e-01, 4.85651334e-01,
+                        0.00000000e+00],
+                        [9.08472163e-07, 5.97515505e-01, 6.16235382e-01, 2.29751297e-01,
+                        1.39416875e-01, 2.60237885e-01, 1.10950122e+00, 6.80930023e-01,
+                        9.14736650e-01, 4.52245483e-01, 6.57006112e-01, 6.47535094e-01,
+                        0.00000000e+00],
+                        [2.41636847e+00, 2.74378595e+00, 3.49838258e-01, 9.68602133e-01,
+                        3.24414877e-01, 4.87272679e-01, 1.30686816e+00, 1.96101598e+00,
+                        2.10786072e-01, 3.59999778e-02, 7.84713183e-01, 4.20500301e-01,
+                        0.00000000e+00],
+                        [2.40739457e+00, 2.73233851e+00, 3.50950539e-01, 9.62793939e-01,
+                        3.23642460e-01, 4.84966403e-01, 1.29789426e+00, 1.95437753e+00,
+                        2.14623692e-01, 3.77379168e-02, 7.83415903e-01, 4.22806577e-01,
+                        0.00000000e+00],
+                        [2.38573232e+00, 2.61481977e+00, 5.23638045e-01, 8.01889505e-01,
+                        3.45560109e-01, 4.69014194e-01, 9.98856937e-01, 1.99197922e+00,
+                        5.22476018e-01, 1.79906568e-01, 9.02098360e-01, 6.65702031e-01,
+                        0.00000000e+00]]).all(),
+            'Wrong velocity output')  
+
+    def testgetComputedQualityTimeSeries(self):
+        self.assertEqual(
+            self.epanetClass.getComputedQualityTimeSeries().NodeQuality[10].all(),   
+            np.matrix([[1., 0.45269294, 0.44701226, 0.43946804, 0.42596667,
+                0.4392986 , 0.45068901, 0.41946084, 0.4033391 , 1.,
+                0.97200717]]).all(),
+            'Wrong NodeQuality output')
+        self.assertEqual(self.epanetClass.getComputedQualityTimeSeries().LinkQuality.all(),
+            np.matrix([[0.79051035, 0.44701226, 0.43946804, 0.43188486, 0.45136891,
+                0.40885247, 0.4475449 , 0.440129  , 0.44680907, 0.44516552,
+                0.41946084, 0.40761727, 1.]]).all(),
+            'Wrong Link Quality output')
+      
+    def testgetConnectivityMatrix(self):
+        self.assertEqual(self.epanetClass.getConnectivityMatrix().all(),
+                         np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+                                [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+                                [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+                                [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+                                [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0],
+                                [0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0],
+                                [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+                                [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+                                [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
+                                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]]).all(),
+                         'Wrong connectivity matrix output' 
+                         )     
 
 if __name__ == "__main__":
     unittest.main()  # run all tests
