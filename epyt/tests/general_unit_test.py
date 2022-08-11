@@ -587,6 +587,134 @@ class GetTest(unittest.TestCase):
                                 [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]]).all(),
                          'Wrong connectivity matrix output' 
                          )     
+        
+    def testgetControls(self):
+        self.assertDictEqual(self.epanetClass.getControls(1).to_dict(),
+                                {'Type': 'LOWLEVEL', 'LinkID': '9', 'Setting': 'OPEN', 
+                                'NodeID': '2', 'Value': 110.0, 
+                                'Control': 'LINK 9 OPEN IF NODE 2 BELOW 110.0'})
+    
+    def testgetCurveComment(self):
+        d = epanet('Net3.inp')
+        self.assertEqual(d.getCurveComment([1,2]),
+                         ['PUMP: Pump Curve for Pump 10 (Lake Source)', 
+                          'PUMP: Pump Curve for Pump 335 (River Source)'],
+                         'Wrong curve comment output')
+        
+    def testgetCounts(self):
+        self.maxDiff = None
+        self.assertDictEqual(self.epanetClass.getCounts().to_dict(),
+                            {'Nodes': 11, 'Links': 13, 'Junctions': 9, 'Reservoirs': 1, 'Tanks': 1,
+                             'Pipes': 12, 'Pumps': 1, 'Valves': 0, 'Curves': 1, 'SimpleControls': 2,
+                             'RuleBasedControls': 0, 'Patterns': 1},
+                            'Wrong counts output')  
+        
+    def testgetCurvesData(self):   
+        
+        ''' ---getCurvesindex---    '''
+        d = epanet('Net3.inp')
+        err_msg = 'Wrong curve index'
+        # Test 1
+        curveID = d.getCurveNameID(1)
+        self.assertEqual(d.getCurveIndex(curveID), 1, err_msg)
+        # Test2
+        curveID = d.getCurveNameID([1,2])
+        self.assertEqual(d.getCurveIndex(curveID), [1,2], err_msg)
+        
+        ''' ---getCurveLengths---    '''
+        d = epanet('Richmond_standard.inp')
+        err_msg = 'Wrong curve lengths'
+        # Test 3
+        self.assertEqual(d.getCurveLengths(list(range(1,10))), [8, 6, 10, 9, 10, 10, 7, 9, 6], err_msg)
+        # Test 4
+        self.assertEqual(d.getCurveLengths('1006'), 8, err_msg)
+        
+        ''' ---getCurveNameID---    '''
+        err_msg = 'Wrong curve IDs'
+        # Test 5
+        self.assertEqual(d.getCurveNameID(10), '2007', err_msg)
+        # Test 6
+        self.assertEqual(d.getCurveNameID([1,2]), ['1006', '1123'], err_msg)
+        
+        ''' ---getCurveNameID---    '''
+        err_msg = 'Wrong curve info'
+        curves_info = d.getCurvesInfo()
+        # Test 7
+        self.assertEqual(curves_info.CurveNvalue[0], 8, err_msg)
+        # Test 8
+        self.assertEqual(curves_info.CurveXvalue[1], [0.0, 2.78, 5.56, 8.53, 11.11, 13.89], err_msg)
+        # Test 9
+        self.assertEqual(curves_info.CurveYvalue[1], [88.0, 87.0, 84.0, 76.0, 63.0, 47.0], err_msg)
+        
+        ''' ---getCurveType---    '''
+        err_msg = 'Wrong curve type'
+        # Test 10
+        self.assertEqual(d.getCurveType(10), 'PUMP', err_msg)
+        # Test 11
+        self.assertEqual(d.getCurveType([2,3]), ['PUMP', 'GENERAL'], err_msg)
+        
+        ''' ---getCurveType---    '''
+        err_msg = 'Wrong curve type index'
+        # Test 11
+        self.assertEqual(d.getCurveTypeIndex(10), 1, err_msg)
+        # Test 12
+        self.assertEqual(d.getCurveTypeIndex([2,3]), [1, 4], err_msg)
+        
+        ''' ---getCurveValue---    '''
+        err_msg = 'Wrong curve value'
+        # Test 13
+        self.assertEqual(d.getCurveValue()[2][0], [0.0, 88.0], err_msg)
+        # Test 14
+        curveIndex = 1
+        pointIndex = 1
+        self.assertEqual(d.getCurveValue(curveIndex, pointIndex).all() , np.array([ 0., 38.]).all(), err_msg)
+        
+    def testgetDemandModel(self):
+        self.assertDictEqual(self.epanetClass.getDemandModel().to_dict(),
+                             {'DemandModelCode': 0, 'DemandModelPmin': 0.0, 'DemandModelPreq': 0.1,
+                              'DemandModelPexp': 0.5, 'DemandModelType': 'DDA'},
+                             'Wrong demand model data')
 
+    def testgetError(self):
+        self.assertEqual(self.epanetClass.getError(250), 'Error 250: function call contains invalid format', 'Wrong error output')   
+        
+    def testgetLinkQuality(self):
+        err_msg = 'Wrong Quality output'
+        self.assertEqual(self.epanetClass.getLinkQuality().all(), 
+                         np.array([100.0, 100.0, 100.0, 100.0, 100.0,
+                                   100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]).all(), 
+                         err_msg)
+
+    def testgetLinkType(self):
+        
+        ''' ---getLinkType---    '''
+        err_msg = 'Wrong Link Type output'
+        # Test 1
+        self.assertEqual(self.epanetClass.getLinkType(),
+                         ['PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 
+                          'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PUMP'],
+                         err_msg)
+        # Test 2
+        self.assertEqual(self.epanetClass.getLinkType(1), 'PIPE', err_msg)
+        
+        ''' ---getLinkTypeIndex---    '''
+        err_msg = 'Wrong Link Type index output'
+        # Test 3
+        self.assertEqual(self.epanetClass.getLinkTypeIndex(),
+                         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+                         err_msg)
+        # Test 4
+        self.assertEqual(self.epanetClass.getLinkTypeIndex([2,3]), [1, 1], err_msg)
+        
+    def testgetLinkNameID(self):
+        err_msg = 'Wrong Link IDs'
+        self.assertEqual(self.epanetClass.getLinkNameID(), 
+                         ['10', '11', '12', '21', '22', '31', '110', 
+                          '111', '112', '113', '121', '122', '9'],
+                         err_msg)
+        self.assertEqual(self.epanetClass.getLinkNameID([1,2,3]), ['10', '11', '12'], err_msg)
+        
+    def testgetLinkPumpEfficiency()
+        
 if __name__ == "__main__":
     unittest.main()  # run all tests
