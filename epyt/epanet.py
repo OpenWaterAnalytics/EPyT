@@ -1396,7 +1396,7 @@ class epanet:
         >>> volumeCurveID = ''   # Empty for no curve
         >>> tankIndex = d.addNodeTank(tankID, tankCoords, elevation, initialLevel, minimumWaterLevel,
         >>> maximumWaterLevel, diameter, minimumWaterVolume, volumeCurveID)
-        >>> d.getNodeTankData(tankIndex)
+        >>> t_data = d.getNodeTankData(tankIndex)
         >>> d.plot()
 
         See also plot, setLinkNodesIndex, addNodeJunction, addLinkPipe, deleteNode, setNodeBaseDemands.
@@ -1473,7 +1473,7 @@ class epanet:
 
         See more: 'https://nepis.epa.gov/Adobe/PDF/P1007WWU.pdf' (Page 164)
 
-        # The example is based on d=epanet('NET1.inp')
+        The example is based on d=epanet('Net1.inp')
 
         Example:
         >>> d.getRuleCount()
@@ -1777,7 +1777,7 @@ class epanet:
 
         Example 1:
 
-        >>> d.getNodeCount()                   # Retrieves the ID label of all nodes
+        >>> d.getNodeCount()                   # Retrieves the total number of all nodes
         >>> idNode = d.getNodeNameID(1)        # Retrieves the ID label of the 1st node
         >>> d.deleteNode(idNode)               # Deletes the 1st node given it's ID
         >>> d.getNodeCount()
@@ -1948,8 +1948,8 @@ class epanet:
             index = argv[0]
         else:
             index = [argv[0]]
-        for i in index:
-            self.api.ENdeleterule(i)
+        for i in range(len(index), 0, -1):
+            self.api.ENdeleterule(index[i-1])
 
     def getENfunctionsImpemented(self):
         """ Retrieves the epanet functions that have been developed.
@@ -3142,7 +3142,10 @@ class epanet:
             patindices = [patindices]
         value = []
         for i in patindices:
-            value.append(self.getPatternNameID(i))
+            if i == 0:
+                value.append('')
+            else:
+                value.append(self.getPatternNameID(i))
         return value
 
     def getLinkPumpPower(self, *argv):
@@ -4179,6 +4182,8 @@ class epanet:
         indices = self.__getNodeJunctionIndices(*argv)
         numdemands = self.getNodeDemandCategoriesNumber(indices)
         value = {}
+        if not isList(indices): indices = [indices]
+        if not isList(numdemands) : numdemands = [numdemands]
         val = [['' for i in range(len(indices))] for j in range(max(numdemands))]
         for i in indices:
             for u in range(numdemands[indices.index(i)]):
@@ -5672,7 +5677,7 @@ class epanet:
             index = list(range(1, self.getRuleCount()))
         elif len(argv) == 1:
             index = argv[0]
-        if isList(argv[0]):
+        if isList(index):
             value = []
             for i in index:
                 value.append(self.api.ENgetruleID(i))
