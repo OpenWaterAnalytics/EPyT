@@ -3242,7 +3242,7 @@ class epanet:
 
         Example:
 
-        >>> d.getLinkPumpTypeCode()        #  Retrieves the all the  pumps type code
+        >>> d.getLinkPumpTypeCode()         #  Retrieves the all the  pumps type code
         >>> d.getLinkPumpTypeCode()[0]      #  Retrieves the first pump type code
 
         See also getLinkPumpType, getLinkPumpPower.
@@ -3261,7 +3261,7 @@ class epanet:
 
         Example:
 
-        >>> linkInfo =  d.getLinksInfo().todict()         # get links info as a dict
+        >>> linkInfo =  d.getLinksInfo().to_dict()        # get links info as a dict
         >>> linkInf  =  d.getLinksInfo()                  # get links info as object
         >>> linDiam  =  d.getLinksInfo().LinkDiameter     # get link diameters
 
