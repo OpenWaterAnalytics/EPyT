@@ -33,7 +33,7 @@ class AddTest(unittest.TestCase):
         contorl_dict = {'Type': 'LOWLEVEL', 'LinkID': '9', 'Setting': 'CLOSED', 'NodeID': '2',
                         'Value': 100.0, 'Control': 'LINK 9 CLOSED IF NODE 2 BELOW 100.0'}
         self.assertDictEqual(self.epanetClass.getControls(index).to_dict(), contorl_dict, err_msg)
-        
+
     def testaddCurve(self):
         err_msg = "Wrong add Curve output"
         # Test 1
@@ -41,10 +41,10 @@ class AddTest(unittest.TestCase):
         x_y_1 = [0, 730]
         x_y_2 = [1000, 500]
         x_y_3 = [1350, 260]
-        values = [x_y_1, x_y_2, x_y_3] 
+        values = [x_y_1, x_y_2, x_y_3]
         curve_index = self.epanetClass.addCurve(new_curve_ID, values)
         curve_info = self.epanetClass.getCurvesInfo()
-        np.testing.assert_equal(curve_info.CurveNameID, ['1', 'NewCurve'], err_msg=err_msg) 
+        np.testing.assert_equal(curve_info.CurveNameID, ['1', 'NewCurve'], err_msg=err_msg)
         np.testing.assert_equal(curve_info.CurveNvalue, [1, 3], err_msg=err_msg)
         x_vals_desired = [[1500.0], [0.0, 1000.0, 1350.0]]
         x_vals_actual = curve_info.CurveXvalue
@@ -84,7 +84,7 @@ class AddTest(unittest.TestCase):
         np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkDiameter(pipeIndex), diameter)
         np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkRoughnessCoeff(pipeIndex), roughness)
         np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkMinorLossCoeff(pipeIndex), minorLossCoeff)
-       
+
     def testaddLinkPipeCV(self):
         err_msg = "Wrong add Link PipeCV output"
         # Test 1
@@ -118,7 +118,7 @@ class AddTest(unittest.TestCase):
         np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkPumpPower(pumpIndex), power)
         np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkPumpPatternIndex(pumpIndex), patternIndex)
         return
-        
+
     def testLinkValves(self):
         # FCV
         valveID = 'newValveFCV'
@@ -146,7 +146,7 @@ class AddTest(unittest.TestCase):
         valveID = 'newValveTCV'
         valveIndex = self.epanetClass.addLinkValveTCV(valveID, fromNode, toNode)
         assert self.epanetClass.getLinkType(valveIndex) == 'TCV', 'error in TCV Valve'
-        
+
     def testaddNodeJunction(self):
         err_msg = "Wrong add Node Junction output"
         junctionID = 'newJunction_5'
@@ -206,7 +206,7 @@ class AddTest(unittest.TestCase):
         # Test 1
         patternID = 'new_pattern_1'
         patternIndex = self.epanetClass.addPattern(patternID)                 # Adds a new time pattern given it's ID
-        assert self.epanetClass.getPatternNameID(patternIndex) == patternID, 'Wrong pattern Name ID' 
+        assert self.epanetClass.getPatternNameID(patternIndex) == patternID, 'Wrong pattern Name ID'
         # Test 2
         patternID = 'new_pattern_2'
         patternMult = [1.56, 1.36, 1.17, 1.13, 1.08,
@@ -214,18 +214,18 @@ class AddTest(unittest.TestCase):
         1.06, 1.00, 1.65, 0.55, 0.74, 0.64, 0.46,
         0.58, 0.64, 0.71, 0.66]
         patternIndex = self.epanetClass.addPattern(patternID, patternMult)    # Adds a new time pattern given it's ID and the multiplier
-        assert self.epanetClass.getPatternNameID(patternIndex) == patternID, 'Wrong pattern Name ID' 
+        assert self.epanetClass.getPatternNameID(patternIndex) == patternID, 'Wrong pattern Name ID'
         np.testing.assert_array_almost_equal_nulp(self.epanetClass.getPattern()[2], patternMult)
-    
+
     def testaddRules(self):
         self.epanetClass.addRules('RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PUMP 9 STATUS IS CLOSED \n PRIORITY 1')
-        assert self.epanetClass.getRuleCount() == 1, 'Wrong Rule Count Number' 
+        assert self.epanetClass.getRuleCount() == 1, 'Wrong Rule Count Number'
         rule = self.epanetClass.getRules()[1]
         assert rule['Rule_ID'] == 'RULE-1', 'Wrong rule ID'
         self.assertEqual(rule['Premises'][0], 'IF NODE 2 LEVEL >= 140.0',  'Wrong Premises')
-        self.assertEqual(rule['Then_Actions'][0], 'THEN PUMP 9 STATUS IS CLOSED','Wrong Then Actions') 
+        self.assertEqual(rule['Then_Actions'][0], 'THEN PUMP 9 STATUS IS CLOSED','Wrong Then Actions')
 
-class DeleteTest(unittest.TestCase):   
+class DeleteTest(unittest.TestCase):
 
     def setUp(self):
         """Call before every test case."""
@@ -236,12 +236,12 @@ class DeleteTest(unittest.TestCase):
     def tearDown(self):
         """Call after every test case."""
         self.epanetClass.unload()
-        
+
     def testdeleteControls(self):
-        # Test 1                                               
-        self.epanetClass.deleteControls()                                             
+        # Test 1
+        self.epanetClass.deleteControls()
         assert self.epanetClass.getControls() == {}, 'The Controls have not been deleted'
-    
+
     def testdeleteCurve(self):
         # Test 1
         d = epanet('BWSN_Network_1.inp')
@@ -252,35 +252,35 @@ class DeleteTest(unittest.TestCase):
         index = 1
         d.deleteCurve(index)             # Deletes a curve given it's index
         self.assertEqual(d.getCurveNameID(), ['CURVE-2'], 'Curve not deleted')
-        
+
     def testdeleteLink(self):
         err_msg = 'Link not deleted'
         # Test 1
         idLink = self.epanetClass.getLinkNameID(1)          # Retrieves the ID label of the 1st link
         self.epanetClass.deleteLink(idLink)                 # Deletes the 1st link given it's ID
-        self.assertNotEqual(self.epanetClass.getLinkNameID(1), idLink, err_msg)  
+        self.assertNotEqual(self.epanetClass.getLinkNameID(1), idLink, err_msg)
         # Test 2
         indexLink = 1
         link_count = self.epanetClass.getLinkCount()
         self.epanetClass.deleteLink(indexLink)                             # Deletes the 1st link given it's index
-        self.assertNotEqual(self.epanetClass.getLinkCount(), link_count, err_msg)  
-        
+        self.assertNotEqual(self.epanetClass.getLinkCount(), link_count, err_msg)
+
     def testdeleteNode(self):
         err_msg = 'Node not deleted'
-        # Test 1  
+        # Test 1
         idNode = self.epanetClass.getNodeNameID(1)        # Retrieves the ID label of the 1st node
         self.epanetClass.deleteNode(idNode)               # Deletes the 1st node given it's ID
-        self.assertNotEqual(self.epanetClass.getNodeNameID(1), idNode, err_msg) 
+        self.assertNotEqual(self.epanetClass.getNodeNameID(1), idNode, err_msg)
         # Test 2
-        node_count = self.epanetClass.getNodeCount()   
+        node_count = self.epanetClass.getNodeCount()
         index = 1
         self.epanetClass.deleteNode(index)                # Deletes the 1st node given it's index
         self.epanetClass.getNodeNameID()
-        self.assertNotEqual(self.epanetClass.getNodeCount(), node_count, err_msg) 
+        self.assertNotEqual(self.epanetClass.getNodeCount(), node_count, err_msg)
         # Test 3
         idNodes = self.epanetClass.getNodeNameID([1,2])
         self.epanetClass.deleteNode(idNodes)              # Deletes 2 nodes given their IDs
-        self.assertNotEqual(self.epanetClass.getNodeNameID([1,2]), idNodes, err_msg) 
+        self.assertNotEqual(self.epanetClass.getNodeNameID([1,2]), idNodes, err_msg)
 
     def testdeleteNodeJUnctionDemand(self):
         err_msg = 'Demand not deleted'
@@ -288,7 +288,7 @@ class DeleteTest(unittest.TestCase):
         nodeIndex = 1
         baseDemand = 100
         patternId = '1'
-        categoryIndex = 1                                
+        categoryIndex = 1
         categoryIndex = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand')    # Adds a new demand to the 1st node and returns the new demand index
         self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)                                                    # Retrieves the indices of all demands for the 1st node
         self.epanetClass.deleteNodeJunctionDemand(1, 2)                                                           # Deletes the 2nd demand of the 1st node
@@ -306,7 +306,7 @@ class DeleteTest(unittest.TestCase):
         demand_index_old = self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)
         self.epanetClass.deleteNodeJunctionDemand([1,2,3])                                     # Deletes all the demands of the first 3 nodes
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), demand_index_old, err_msg)
-        
+
     def testsdeletePattern(self):
         err_msg = 'Pattern not deleted'
         # Test 1
@@ -334,15 +334,15 @@ class DeleteTest(unittest.TestCase):
         self.assertEqual(d.getRuleCount(), 0, err_msg)
         # Test 2
         d = epanet('BWSN_Network_1.inp')
-        rule_id_1 = d.getRuleID(1) 
+        rule_id_1 = d.getRuleID(1)
         d.deleteRules(1)        # Deletes the 1st rule-based control
         self.assertNotEqual(d.getRuleID(1), rule_id_1, err_msg)
         # Test 3
         d = epanet('BWSN_Network_1.inp')
         d.deleteRules([1,2,3])  # Deletes the 1st to 3rd rule-based control
         self.assertEqual(d.getRuleCount(), 1, err_msg)
-        
-class GetTest(unittest.TestCase):   
+
+class GetTest(unittest.TestCase):
 
     def setUp(self):
         """Call before every test case."""
@@ -353,11 +353,11 @@ class GetTest(unittest.TestCase):
     def tearDown(self):
         """Call after every test case."""
         self.epanetClass.unload()
-    
+
     def testgetComputedHydraulicTimeSeries(self):
         data = self.epanetClass.getComputedHydraulicTimeSeries(['Time','Pressure', 'Velocity'])
         self.assertEqual(
-            data.Time.all(), 
+            data.Time.all(),
             np.array([    0,  3600,  7200, 10800, 14400, 18000, 21600, 25200, 28800,
                                 32400, 36000, 39600, 43200, 45154, 46800, 50400, 54000, 57600,
                                 61200, 64800, 68400, 72000, 75600, 79200, 81690, 82800, 86400]).all(),
@@ -445,10 +445,10 @@ class GetTest(unittest.TestCase):
                         [125.96844576, 117.46948079, 115.03090241, 116.68717363,
                         115.74356881, 116.7866562 , 118.76214431, 113.93079598,
                         108.84261138,   0.        ,  50.00371454]]).all(),
-            'Wrong Pressure output') 
-         
-        self.assertEqual(       
-            data.Velocity.all(), 
+            'Wrong Pressure output')
+
+        self.assertEqual(
+            data.Velocity.all(),
             np.matrix([[2.35286666e+00, 2.57230086e+00, 5.28331232e-01, 7.80876836e-01,
                         3.42300951e-01, 4.63083582e-01, 9.65991272e-01, 1.96883153e+00,
                         5.35291644e-01, 1.87239674e-01, 8.98762391e-01, 6.71632643e-01,
@@ -557,11 +557,11 @@ class GetTest(unittest.TestCase):
                         3.45560109e-01, 4.69014194e-01, 9.98856937e-01, 1.99197922e+00,
                         5.22476018e-01, 1.79906568e-01, 9.02098360e-01, 6.65702031e-01,
                         0.00000000e+00]]).all(),
-            'Wrong velocity output')  
+            'Wrong velocity output')
 
     def testgetComputedQualityTimeSeries(self):
         self.assertEqual(
-            self.epanetClass.getComputedQualityTimeSeries().NodeQuality[10].all(),   
+            self.epanetClass.getComputedQualityTimeSeries().NodeQuality[10].all(),
             np.matrix([[1., 0.45269294, 0.44701226, 0.43946804, 0.42596667,
                 0.4392986 , 0.45068901, 0.41946084, 0.4033391 , 1.,
                 0.97200717]]).all(),
@@ -571,7 +571,7 @@ class GetTest(unittest.TestCase):
                 0.40885247, 0.4475449 , 0.440129  , 0.44680907, 0.44516552,
                 0.41946084, 0.40761727, 1.]]).all(),
             'Wrong Link Quality output')
-      
+
     def testgetConnectivityMatrix(self):
         self.assertEqual(self.epanetClass.getConnectivityMatrix().all(),
                          np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
@@ -585,32 +585,32 @@ class GetTest(unittest.TestCase):
                                 [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
                                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                 [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]]).all(),
-                         'Wrong connectivity matrix output' 
-                         )     
-        
+                         'Wrong connectivity matrix output'
+                         )
+
     def testgetControls(self):
         self.assertDictEqual(self.epanetClass.getControls(1).to_dict(),
-                                {'Type': 'LOWLEVEL', 'LinkID': '9', 'Setting': 'OPEN', 
-                                'NodeID': '2', 'Value': 110.0, 
+                                {'Type': 'LOWLEVEL', 'LinkID': '9', 'Setting': 'OPEN',
+                                'NodeID': '2', 'Value': 110.0,
                                 'Control': 'LINK 9 OPEN IF NODE 2 BELOW 110.0'})
-    
+
     def testgetCurveComment(self):
         d = epanet('Net3.inp')
         self.assertEqual(d.getCurveComment([1,2]),
-                         ['PUMP: Pump Curve for Pump 10 (Lake Source)', 
+                         ['PUMP: Pump Curve for Pump 10 (Lake Source)',
                           'PUMP: Pump Curve for Pump 335 (River Source)'],
                          'Wrong curve comment output')
-        
+
     def testgetCounts(self):
         self.maxDiff = None
         self.assertDictEqual(self.epanetClass.getCounts().to_dict(),
                             {'Nodes': 11, 'Links': 13, 'Junctions': 9, 'Reservoirs': 1, 'Tanks': 1,
                              'Pipes': 12, 'Pumps': 1, 'Valves': 0, 'Curves': 1, 'SimpleControls': 2,
                              'RuleBasedControls': 0, 'Patterns': 1},
-                            'Wrong counts output')  
-        
-    def testgetCurvesData(self):   
-        
+                            'Wrong counts output')
+
+    def testgetCurvesData(self):
+
         ''' ---getCurvesindex---    '''
         d = epanet('Net3.inp')
         err_msg = 'Wrong curve index'
@@ -620,7 +620,7 @@ class GetTest(unittest.TestCase):
         # Test2
         curveID = d.getCurveNameID([1,2])
         self.assertEqual(d.getCurveIndex(curveID), [1,2], err_msg)
-        
+
         ''' ---getCurveLengths---    '''
         d = epanet('Richmond_standard.inp')
         err_msg = 'Wrong curve lengths'
@@ -628,14 +628,14 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getCurveLengths(list(range(1,10))), [8, 6, 10, 9, 10, 10, 7, 9, 6], err_msg)
         # Test 4
         self.assertEqual(d.getCurveLengths('1006'), 8, err_msg)
-        
+
         ''' ---getCurveNameID---    '''
         err_msg = 'Wrong curve IDs'
         # Test 5
         self.assertEqual(d.getCurveNameID(10), '2007', err_msg)
         # Test 6
         self.assertEqual(d.getCurveNameID([1,2]), ['1006', '1123'], err_msg)
-        
+
         ''' ---getCurveNameID---    '''
         err_msg = 'Wrong curve info'
         curves_info = d.getCurvesInfo()
@@ -645,21 +645,21 @@ class GetTest(unittest.TestCase):
         self.assertEqual(curves_info.CurveXvalue[1], [0.0, 2.78, 5.56, 8.53, 11.11, 13.89], err_msg)
         # Test 9
         self.assertEqual(curves_info.CurveYvalue[1], [88.0, 87.0, 84.0, 76.0, 63.0, 47.0], err_msg)
-        
+
         ''' ---getCurveType---    '''
         err_msg = 'Wrong curve type'
         # Test 10
         self.assertEqual(d.getCurveType(10), 'PUMP', err_msg)
         # Test 11
         self.assertEqual(d.getCurveType([2,3]), ['PUMP', 'GENERAL'], err_msg)
-        
+
         ''' ---getCurveType---    '''
         err_msg = 'Wrong curve type index'
         # Test 11
         self.assertEqual(d.getCurveTypeIndex(10), 1, err_msg)
         # Test 12
         self.assertEqual(d.getCurveTypeIndex([2,3]), [1, 4], err_msg)
-        
+
         ''' ---getCurveValue---    '''
         err_msg = 'Wrong curve value'
         # Test 13
@@ -668,7 +668,7 @@ class GetTest(unittest.TestCase):
         curveIndex = 1
         pointIndex = 1
         self.assertEqual(d.getCurveValue(curveIndex, pointIndex).all() , np.array([ 0., 38.]).all(), err_msg)
-        
+
     def testgetDemandModel(self):
         self.assertDictEqual(self.epanetClass.getDemandModel().to_dict(),
                              {'DemandModelCode': 0, 'DemandModelPmin': 0.0, 'DemandModelPreq': 0.1,
@@ -676,27 +676,27 @@ class GetTest(unittest.TestCase):
                              'Wrong demand model data')
 
     def testgetError(self):
-        self.assertEqual(self.epanetClass.getError(250), 'Error 250: function call contains invalid format', 'Wrong error output')   
-        
+        self.assertEqual(self.epanetClass.getError(250), 'Error 250: function call contains invalid format', 'Wrong error output')
+
     def testgetLinkQuality(self):
         err_msg = 'Wrong Quality output'
-        self.assertEqual(self.epanetClass.getLinkQuality().all(), 
+        self.assertEqual(self.epanetClass.getLinkQuality().all(),
                          np.array([100.0, 100.0, 100.0, 100.0, 100.0,
-                                   100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]).all(), 
+                                   100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]).all(),
                          err_msg)
 
     def testgetLinkType(self):
-        
+
         ''' ---getLinkType---    '''
         err_msg = 'Wrong Link Type output'
         # Test 1
         self.assertEqual(self.epanetClass.getLinkType(),
-                         ['PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 
+                         ['PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE',
                           'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PIPE', 'PUMP'],
                          err_msg)
         # Test 2
         self.assertEqual(self.epanetClass.getLinkType(1), 'PIPE', err_msg)
-        
+
         ''' ---getLinkTypeIndex---    '''
         err_msg = 'Wrong Link Type index output'
         # Test 3
@@ -705,95 +705,223 @@ class GetTest(unittest.TestCase):
                          err_msg)
         # Test 4
         self.assertEqual(self.epanetClass.getLinkTypeIndex([2,3]), [1, 1], err_msg)
-        
+
     def testgetLinkNameID(self):
         err_msg = 'Wrong Link IDs'
-        self.assertEqual(self.epanetClass.getLinkNameID(), 
-                         ['10', '11', '12', '21', '22', '31', '110', 
+        self.assertEqual(self.epanetClass.getLinkNameID(),
+                         ['10', '11', '12', '21', '22', '31', '110',
                           '111', '112', '113', '121', '122', '9'],
                          err_msg)
         self.assertEqual(self.epanetClass.getLinkNameID([1,2,3]), ['10', '11', '12'], err_msg)
-        
+
     def testgetLinkPumpData(self):
-        
+
         ''' ---getLinkPumpEfficiency---    '''
         err_msg = 'Wrong Pump Efficiency'
         # Test 1
         self.epanetClass.getComputedQualityTimeSeries()
         self.assertEqual(self.epanetClass.getLinkPumpEfficiency(), np.array([0.75]), err_msg)
         # Test 2
-        self.assertEqual(self.epanetClass.getLinkPumpEfficiency(1), 0.75, err_msg)  
-        
+        self.assertEqual(self.epanetClass.getLinkPumpEfficiency(1), 0.75, err_msg)
+
         ''' ---getLinkPumpECost---    '''
         err_msg = 'Wrong Pump ECost'
         # Test 3
         d = epanet('Richmond_standard.inp')
         self.assertEqual(list(d.getLinkPumpECost()), [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], err_msg)
-        
+
         ''' ---getLinkPumpECurve---    '''
         err_msg = 'Wrong Pump ECurve'
         # Test 4
         self.assertEqual(list(d.getLinkPumpECurve()), [14, 13, 18, 16, 12, 15, 17], err_msg)
-        
+
         ''' ---getLinkPumpEPat---    '''
         err_msg = 'Wrong Pump EPat'
         # Test 5
         self.assertEqual(list(d.getLinkPumpEPat()), [14, 14, 19, 17, 15, 16, 18], err_msg)
-        
+
         ''' ---getLinkPumpHCurve---    '''
         err_msg = 'Wrong Pump HCurve'
         # Test 6
         self.assertEqual(list(d.getLinkPumpHCurve()), [10, 11,  1,  6,  8,  2,  7], err_msg)
-        
+
         ''' ---getLinkPumpHeadCurveIndex---    '''
         err_msg = 'Wrong Pump Head Curve Index'
         # Test 7
         [curveIndex, pumpIndex] = d.getLinkPumpHeadCurveIndex()
         self.assertEqual(list(curveIndex), [10, 11, 1, 6, 8, 2, 7], err_msg)
         self.assertEqual(list(pumpIndex), [950, 951, 952, 953, 954, 955, 956], err_msg)
-        
+
         ''' ---getLinkPumpPatternIndex---    '''
         pumpID = 'newPump_1'
         fromNode = '11'
         toNode = '22'
-        initialStatus = 1  
+        initialStatus = 1
         initialSetting = 1.2
         power = 10
         patternIndex = 1
-        pumpIndex = self.epanetClass.addLinkPump(pumpID, fromNode, toNode, initialStatus, initialSetting, power, patternIndex) 
+        pumpIndex = self.epanetClass.addLinkPump(pumpID, fromNode, toNode, initialStatus, initialSetting, power, patternIndex)
         err_msg = 'Wrong Pump Pattern Index'
         # Test 8
-        self.assertEqual(list(self.epanetClass.getLinkPumpPatternIndex()), [0, 1],  err_msg)       
-        
+        self.assertEqual(list(self.epanetClass.getLinkPumpPatternIndex()), [0, 1],  err_msg)
+
         ''' ---getLinkPumpPatternNameID---    '''
         err_msg = 'Wrong Pump Pattern IDs'
         # Test 9
-        self.assertEqual(list(self.epanetClass.getLinkPumpPatternNameID()), ['', '1'],  err_msg)    
-        
+        self.assertEqual(list(self.epanetClass.getLinkPumpPatternNameID()), ['', '1'],  err_msg)
+
         ''' ---getLinkPumpPower---    '''
         err_msg = 'Wrong Pump Power'
         # Test 10
-        self.assertEqual(self.epanetClass.getLinkPumpPower(pumpIndex),  10, err_msg)    
-        
+        self.assertEqual(self.epanetClass.getLinkPumpPower(pumpIndex),  10, err_msg)
+
         ''' ---getLinkPumpSwitches---    '''
         err_msg = 'Wrong Pump Switches'
         # Test 11
         d.unload()
         d = epanet('Richmond_standard.inp')
-        self.assertEqual(d.getLinkPumpSwitches(),  [3, 2, 3, 6, 6, 4, 2], err_msg)    
-        
+        self.assertEqual(d.getLinkPumpSwitches(),  [3, 2, 3, 6, 6, 4, 2], err_msg)
+
         ''' ---getLinkPumpType---    '''
         err_msg = 'Wrong Pump Type'
         # Test 12
-        self.assertEqual(d.getLinkPumpType(),  ['CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM'], err_msg)    
-        
+        self.assertEqual(d.getLinkPumpType(),  ['CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM'], err_msg)
+
         ''' ---getLinkPumpTypeCode---    '''
         err_msg = 'Wrong Pump Type Code'
         # Test 13
-        self.assertEqual(d.getLinkPumpTypeCode(),  [2, 2, 2, 2, 2, 2, 2], err_msg) 
+        self.assertEqual(d.getLinkPumpTypeCode(),  [2, 2, 2, 2, 2, 2, 2], err_msg)
         self.epanetClass.unload()
-        self.epanetClass = epanet('Net1.inp')   
-        self.assertEqual(self.epanetClass.getLinkPumpTypeCode(),  [1], err_msg)    
+        self.epanetClass = epanet('Net1.inp')
+        self.assertEqual(self.epanetClass.getLinkPumpTypeCode(),  [1], err_msg)
+
+    def testgetLinksInfo(self):
+        # Desired data
+        LinkBulkReactionCoeff = [-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.0]
+        LinkDiameter = [18.0, 14.0, 10.0, 10.0, 12.0, 6.0, 18.0, 10.0, 12.0, 8.0, 8.0, 6.0, 0.0]
+        LinkInitialSetting = [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0]
+        LinkInitialStatus = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        LinkLength = [10530.0, 5280.0, 5280.0, 5280.0, 5280.0, 5280.0, 200.0, 5280.0, 5280.0, 5280.0, 5280.0, 5280.0, 0.0]
+        LinkMinorLossCoeff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        LinkRoughnessCoeff = [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]
+        LinkTypeIndex = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2]
+        LinkWallReactionCoeff = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.0]
+        NodesConnectingLinksIndex = [[1, 2], [2, 3], [3, 4], [5, 6], [6, 7], [8, 9], [11, 3], [2, 5], [3, 6], [4, 7], [5, 8], [6, 9], [10, 1]]
+        # Actual data
+        l_info = self.epanetClass.getLinksInfo()
+        # Test 1
+        self.assertEqual(l_info.LinkBulkReactionCoeff,  LinkBulkReactionCoeff, 'Wrong LinkBulkReactionCoeff output')
+        # Test 2
+        self.assertEqual(l_info.LinkDiameter,  LinkDiameter, 'Wrong LinkDiameter output')
+        # Test 3
+        self.assertEqual(l_info.LinkInitialSetting,  LinkInitialSetting, 'Wrong LinkInitialSetting output')
+        # Test 4
+        self.assertEqual(l_info.LinkInitialStatus,  LinkInitialStatus, 'Wrong LinkInitialStatus output')
+        # Test 5
+        self.assertEqual(l_info.LinkLength,  LinkLength, 'Wrong LinkLength output')
+        # Test 6
+        self.assertEqual(l_info.LinkMinorLossCoeff,  LinkMinorLossCoeff, 'Wrong LinkMinorLossCoeff output')
+        # Test 7
+        self.assertEqual(l_info.LinkRoughnessCoeff,  LinkRoughnessCoeff, 'Wrong LinkRoughnessCoeff output')
+        # Test 8
+        self.assertEqual(l_info.LinkTypeIndex,  LinkTypeIndex, 'Wrong LinkTypeIndex output')
+        # Test 9
+        self.assertEqual(l_info.LinkWallReactionCoeff,  LinkWallReactionCoeff, 'Wrong LinkWallReactionCoeff output')
+        # Test 10
+        self.assertEqual(l_info.NodesConnectingLinksIndex,  NodesConnectingLinksIndex, 'Wrong NodesConnectingLinksIndex output')
+
+    def testgetLinkVertices(self):
+        d = epanet('ky10.inp')
+        l_vertices = d.getLinkVertices()
+        vert_link_2 = [5774062.57, 5774072.58, 5774084.86, 5774143.46, 5774181.97, 5774256.77, 5774331.86, 5774408.93, 5774481.77, 5774548.49, 5774714.61, 5774660.84, 5774565.26]
+        self.assertEqual(l_vertices['x'][2], vert_link_2, 'Wrong vertices value')
+        self.assertEqual(len(l_vertices['x']), d.getLinkCount(), 'Wrong vertices list length ')
+        self.assertEqual(len(d.getLinkVerticesCount()), d.getLinkCount(), 'Wrong vertices count')
+        self.assertEqual(d.getLinkVerticesCount([1,2,3]), [5, 13, 28], 'Wrong vertices for the first 3 links')
+
+    def testgetLinkIndex_LinkNodesIndex(self):
+        indices = self.epanetClass.getLinkIndex()
+        self.assertEqual(indices, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 'Wrong link indices')
+        l_n_indices = self.epanetClass.getLinkNodesIndex([1,2,3])
+        self.assertEqual(l_n_indices, [[1, 2], [2, 3], [3, 4]], 'Wrong link nodes indices')
+
+    def testgetLinkPipe_Pump_Valve(self):
+        d = epanet('Net3.inp')
+        # Pipe
+        pipe_indices = d.getLinkPipeIndex()
+        self.assertEqual(pipe_indices, list(range(1,118)), 'Wrong pipe indices')
+        pipe_IDs = d.getLinkPipeNameID([1,2,3])
+        self.assertEqual(pipe_IDs, ['20', '40', '50'], 'Wrong pipe IDs')
+        # Pump
+        pump_indices = list(d.getLinkPumpIndex())
+        self.assertEqual(pump_indices, [118, 119], 'Wrong pump indices')
+        pump_IDs = d.getLinkPumpNameID([1,2])
+        self.assertEqual(pump_IDs, ['10', '335'], 'Wrong pump IDs')
+        # Valve
+        d = epanet('ky10.inp')
+        valve_indices = list(d.getLinkValveIndex())
+        self.assertEqual(valve_indices, [1057, 1058, 1059, 1060, 1061], 'Wrong valve indices')
+        valve_IDs = d.getLinkValveNameID([1,2,3])
+        self.assertEqual(valve_IDs, ['~@RV-1', '~@RV-2', '~@RV-3'], 'Wrong valve IDs')
+
+    def testgetNodeInfo(self):
+        n_info = self.epanetClass.getNodesInfo()
+        self.assertEqual(list(n_info.NodeElevations), [710.0, 710.0, 700.0, 695.0, 700.0, 695.0, 690.0, 700.0, 710.0, 800.0, 850.0], 'Wrong Node Elevation output')
+        self.assertEqual(list(n_info.NodeEmitterCoeff), [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 'Wrong Node Emitter Coeff output')
+        self.assertEqual(list(n_info.NodeInitialQuality), [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0], 'Wrong Node Initial Quality output')
+        self.assertEqual(list(n_info.NodePatternIndex), [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0], 'Wrong Node Pattern Index output')
+        self.assertEqual(list(n_info.NodeSourcePatternIndex), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'Wrong Node Source Pattern Index output')
+        self.assertEqual(list(n_info.NodeSourceQuality), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'Wrong Node Source Quality output')
+        self.assertEqual(list(n_info.NodeSourceTypeIndex), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'Wrong Node Source Type Index output')
+        self.assertEqual(list(n_info.NodeTypeIndex), [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2], 'Wrong Node Type Index output')
+
+    def testgetNodeBaseDemands(self):
+        b_dems = list(self.epanetClass.getNodeBaseDemands()[1])
+        self.assertEqual(b_dems, [0.0, 150.0, 150.0, 100.0, 150.0, 200.0, 150.0, 100.0, 100.0, 0.0, 0.0], 'Wrong Node Base Demand output')
+
+    def testgetNodeCoordinates(self):
+        # Actual Values
+        coords = self.epanetClass.getNodeCoordinates()
+        # Desired Values
+        x_desired = {1: 20.0, 2: 30.0, 3: 50.0, 4: 70.0, 5: 30.0, 6: 50.0, 7: 70.0, 8: 30.0, 9: 50.0, 10: 10.0, 11: 50.0}
+        y_desired = {1: 70.0, 2: 70.0, 3: 70.0, 4: 70.0, 5: 40.0, 6: 40.0, 7: 40.0, 8: 10.0, 9: 10.0, 10: 70.0, 11: 90.0}
+        x_vert_desired = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: []}
+        y_vert_desired = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: []}
+        # Test
+        self.assertDictEqual(coords['x'], x_desired, 'Wrong x coordinate values')
+        self.assertDictEqual(coords['y'], y_desired, 'Wrong y coordinate values')
+        self.assertDictEqual(coords['x_vert'], x_vert_desired, 'Wrong x vertices coordinate values')
+        self.assertDictEqual(coords['y_vert'], y_vert_desired, 'Wrong y vertices coordinate values')
+
+    def testDemandsInfo(self):
+        ''' ---getNodeDemandCategoriesNumber---    '''
+        err_msg = 'Wrong Demand Categories Number Output'
+        self.assertEqual(self.epanetClass.getNodeDemandCategoriesNumber(), [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], err_msg)
+        self.assertEqual(self.epanetClass.getNodeDemandCategoriesNumber(1), 1, err_msg)
+        self.assertEqual(self.epanetClass.getNodeDemandCategoriesNumber([1,4,10]), [1, 1, 0], err_msg)
+
+        ''' ---getNodeDemandDeficit---    ''' ###### Check again for inconsistent output, dynamic might be the case,  
+                                                ###### getComputedHydraulicTimeSeries.DemandDeficit works fine ### 
+        self.epanetClass.setDemandModel('PDA', 0, 0.1, 0.5) 
+        actual_def = self.epanetClass.getComputedHydraulicTimeSeries().DemandDeficit[0].tolist()[0]
+        desired_dem_def  = [0.0, -0.0012342832044413999, -0.0012111212332749546, -0.0012281893931302976, -0.0012177492556971789, 
+                    -0.0012291126064630734, -0.0012496099800993576, -0.0011990998540248189, -0.0011465764024330798, 0.0, 0.0]
+        self.assertEqual(actual_def, desired_dem_def, 'Wrong Demand Deficit Output')
+
+        ''' ---getNodeDemandPatternIndex---    '''
+        d = epanet('BWSN_Network_1.inp')
+        self.assertEqual(len(d.getNodeDemandPatternIndex()), 2, 'Wrong Node Demand Pattern Dict length')
+        self.assertEqual(d.getNodeDemandPatternIndex()[2][120:122],[2, 2], 'Wrong Node Demand Pattern Index Output')
+                                                 
+        ''' ---getNodeDemandPatternNameID---    '''
+        self.assertEqual(len(d.getNodeDemandPatternNameID()), 2, 'Wrong Node Demand Pattern Dict length')
+        self.assertEqual(d.getNodeDemandPatternNameID()[2][120:122], ['PATTERN-1', 'PATTERN-1'], 'Wrong Node Demand Pattern ID Output')
+            
+    def testgetNodeInitialQuality(self):
+        desired_init_qual = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
+        self.assertEqual(list(self.epanetClass.getNodeInitialQuality()), desired_init_qual, 'Wrong Initial quality value')
+            
+            
 
 if __name__ == "__main__":
     unittest.main()  # run all tests
