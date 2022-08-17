@@ -1078,7 +1078,7 @@ class epanet:
         """ Adds a new FCV valve.
         Returns the index of the new FCV valve.
 
-         The example is based on d=epanet('NET1.inp')
+         The example is based on d=epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValveFCV'
@@ -1096,7 +1096,7 @@ class epanet:
         """ Adds a new GPV valve.
         Returns the index of the new GPV valve.
 
-         The example is based on d=epanet('NET1.inp')
+         The example is based on d=epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValveGPV'
@@ -1114,7 +1114,7 @@ class epanet:
         """ Adds a new PBV valve.
         Returns the index of the new PBV valve.
 
-         The example is based on d=epanet('NET1.inp')
+         The example is based on d=epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValvePBV'
@@ -1132,7 +1132,7 @@ class epanet:
         """ Adds a new PRV valve.
         Returns the index of the new PRV valve.
 
-        # The example is based on d=epanet('NET1.inp')
+        # The example is based on d=epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValvePRV'
@@ -1150,7 +1150,7 @@ class epanet:
         """Adds a new PSV valve.
         Returns the index of the new PSV valve.
 
-         The example is based on d=epanet('NET1.inp')
+         The example is based on d=epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValvePSV'
@@ -1168,7 +1168,7 @@ class epanet:
         """ Adds a new TCV valve.
         Returns the index of the new TCV valve.
 
-         The example is based on d=epanet('NET1.inp')
+         The example is based on d=epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValveTCV'
@@ -3401,7 +3401,7 @@ class epanet:
         >>> d.getLinkVertices(1)
         >>> d.getLinkVertices(d.getLinkIndex('112'))
 
-        See also getLinkVertices, getLinkVerticesCount.
+        See also setLinkVertices, getLinkVerticesCount.
         """
         if len(argv) > 0:
             if type(argv[0]) == str:
@@ -3440,15 +3440,16 @@ class epanet:
 
         Example 2:
 
-        >>> link_id = '2'
-        >>> d.getLinkVerticesCount(link_id)   # Retrieves the vertices of link '2'
+        >>> d = epanet('ky10.inp')
+        >>> link_id = 'P-10'
+        >>> d.getLinkVerticesCount(link_id)   # Retrieves the vertices of link 'P-10'
 
         Example 3:
 
         >>> link_index = 31
         >>> d.getLinkVerticesCount(link_index)    # Retrieves the vertices of link 31
 
-        See also getLinkVertices, setLinkVertice.
+        See also getLinkVertices, setLinkVertices.
         """
         if len(argv) > 0:
             if type(argv[0]) == str:
@@ -3834,36 +3835,6 @@ class epanet:
             value[i + 1] = np.array(val[i])
         return value
 
-    def getNodeTankCanOverFlow(self, *argv):
-        """ Retrieves the tank can overflow (= 1) or not (= 0). (EPANET Version 2.2)
-
-        Example 1:
-
-        >>> d.getNodeTankCanOverFlow()             # Retrieves the can overflow of all tanks
-
-        Example 2:
-
-        >>> d.getNodeTankCanOverFlow(1)            # Retrieves the can overflow of the 1st tank
-
-        Example 3:
-
-        >>> d = epanet('BWSN_Network_1.inp')
-        >>> d.getNodeTankCanOverFlow([1,2])        # Retrieves the can overflow of the first 2 tanks
-
-        Example 4:
-
-        >>> d = epanet('BWSN_Network_1.inp')
-        >>> tankIndex = d.getNodeTankIndex()
-        >>> d.getNodeTankCanOverFlow(tankIndex)    # Retrieves the can overflow of the tanks given their indices
-
-        See also setNodeTankCanOverFlow, getNodeTankData.
-        """
-        if len(argv) == 1:
-            indices = argv[0] if argv[0] == self.getNodeTankIndex() else self.getNodeTankIndex(*argv)
-        else:
-            indices = self.getNodeTankIndex()
-        return self.__getNodeInfo(self.ToolkitConstants.EN_CANOVERFLOW, indices)
-
     def getNodeComment(self, *argv):
         """ Retrieves the comment string assigned to the node object.
 
@@ -3946,7 +3917,7 @@ class epanet:
     def getNodeDemandDeficit(self, *argv):
         """  Retrieves the amount that full demand is reduced under PDA. (EPANET Version 2.2)
 
-        The example is based on d=epanet('NET1.inp')
+        The example is based on d=epanet('Net1.inp')
 
         Example:
 
@@ -4434,17 +4405,16 @@ class epanet:
         getNodeInitialQuality, NodeTypeIndex.
         """
         value = val()
-        value.NodeElevations, value.NodePatternIndex, value.NodeEmitterCoeff, value.NodeInitialQuality, value.NodeSourceQuality, \
-        value.NodeSourcePatternIndex, value.NodeSourceTypeIndex, value.NodeTypeIndex = [], [], [], [], [], [], [], []
-        for i in range(1, self.getNodeCount() + 1):
-            value.NodeElevations.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_ELEVATION))
-            value.NodePatternIndex.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_PATTERN))
-            value.NodeEmitterCoeff.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_EMITTER))
-            value.NodeInitialQuality.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_INITQUAL))
-            value.NodeSourceQuality.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCEQUAL))
-            value.NodeSourcePatternIndex.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCEPAT))
-            value.NodeSourceTypeIndex.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCETYPE))
-            value.NodeTypeIndex.append(self.api.ENgetnodetype(i))
+        # value.NodeElevations, value.NodePatternIndex, value.NodeEmitterCoeff, value.NodeInitialQuality, value.NodeSourceQuality, \
+        # value.NodeSourcePatternIndex, value.NodeSourceTypeIndex, value.NodeTypeIndex = [], [], [], [], [], [], [], []
+        value.NodeElevations = self.getNodeElevations()
+        value.NodePatternIndex = self.getNodePatternIndex()
+        value.NodeEmitterCoeff = self.getNodeEmitterCoeff()
+        value.NodeInitialQuality = self.getNodeInitialQuality()
+        value.NodeSourceQuality = self.getNodeSourceQuality()
+        value.NodeSourcePatternIndex = self.getNodeSourcePatternIndex()
+        value.NodeSourceTypeIndex = self.getNodeSourceTypeIndex()
+        value.NodeTypeIndex = self.getNodeTypeIndex()
         return value
 
     def getNodeNameID(self, *argv):
@@ -4524,7 +4494,7 @@ class epanet:
                 value.append(0)
         if len(argv) > 0 and not isList(argv[0]):
             return value[0]
-        return value
+        return self.to_array(value)
 
     def getNodeSourceQuality(self, *argv):
         """ Retrieves the value of all node source quality.
@@ -4632,6 +4602,36 @@ class epanet:
         See also setNodeTankBulkReactionCoeff, getNodeTankData.
         """
         return self.__getTankNodeInfo(self.ToolkitConstants.EN_TANK_KBULK, *argv)
+    
+    def getNodeTankCanOverFlow(self, *argv):
+        """ Retrieves the tank can overflow (= 1) or not (= 0). (EPANET Version 2.2)
+
+        Example 1:
+
+        >>> d.getNodeTankCanOverFlow()             # Retrieves the can overflow of all tanks
+
+        Example 2:
+
+        >>> d.getNodeTankCanOverFlow(1)            # Retrieves the can overflow of the 1st tank
+
+        Example 3:
+
+        >>> d = epanet('BWSN_Network_1.inp')
+        >>> d.getNodeTankCanOverFlow([1,2])        # Retrieves the can overflow of the first 2 tanks
+
+        Example 4:
+
+        >>> d = epanet('BWSN_Network_1.inp')
+        >>> tankIndex = d.getNodeTankIndex()
+        >>> d.getNodeTankCanOverFlow(tankIndex)    # Retrieves the can overflow of the tanks given their indices
+
+        See also setNodeTankCanOverFlow, getNodeTankData.
+        """
+        if len(argv) == 1:
+            indices = argv[0] if argv[0] == self.getNodeTankIndex() else self.getNodeTankIndex(*argv)
+        else:
+            indices = self.getNodeTankIndex()
+        return self.__getNodeInfo(self.ToolkitConstants.EN_CANOVERFLOW, indices)
 
     def getNodeTankCount(self):
         """ Retrieves the number of Tanks.
@@ -9079,7 +9079,7 @@ class epanet:
     def setRules(self, ruleIndex, rule):
         """ Sets a rule - based control. (EPANET Version 2.2)
 
-        The example is based on d=epanet('NET1.inp')
+        The example is based on d=epanet('Net1.inp')
 
         Example:
 
@@ -9171,7 +9171,7 @@ class epanet:
 
         See more: 'https://nepis.epa.gov/Adobe/PDF/P1007WWU.pdf' (Page 164)
 
-        The example is based on d=epanet('NET1.inp')
+        The example is based on d=epanet('Net1.inp')
 
         Example:
 
@@ -9198,7 +9198,7 @@ class epanet:
     def setRulePremiseStatus(self, ruleIndex, premiseIndex, status):
         """ Sets the status being compared to in a premise of a rule-based control. (EPANET Version 2.2)
 
-        The example is based on d=epanet('NET1.inp')
+        The example is based on d=epanet('Net1.inp')
 
         Example:
 
@@ -9248,7 +9248,7 @@ class epanet:
 
         See more: 'https://nepis.epa.gov/Adobe/PDF/P1007WWU.pdf' (Page 164)
 
-        The example is based on d=epanet('NET1.inp')
+        The example is based on d=epanet('Net1.inp')
 
         Example:
 
