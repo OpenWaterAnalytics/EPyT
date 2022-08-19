@@ -4255,8 +4255,7 @@ class epanet:
         getNodeDemandPatternIndex, getNodeDemandPatternNameID.
         """
         value = self.__getNodeInfo(self.ToolkitConstants.EN_PATTERN, *argv)
-        value = self.__returnValue(value)
-        return value
+        return self.__returnValue(value)
 
     def getNodePressure(self, *argv):
         """ Retrieves the computed values of all node pressures.
@@ -4405,8 +4404,6 @@ class epanet:
         getNodeInitialQuality, NodeTypeIndex.
         """
         value = val()
-        # value.NodeElevations, value.NodePatternIndex, value.NodeEmitterCoeff, value.NodeInitialQuality, value.NodeSourceQuality, \
-        # value.NodeSourcePatternIndex, value.NodeSourceTypeIndex, value.NodeTypeIndex = [], [], [], [], [], [], [], []
         value.NodeElevations = self.getNodeElevations()
         value.NodePatternIndex = self.getNodePatternIndex()
         value.NodeEmitterCoeff = self.getNodeEmitterCoeff()
