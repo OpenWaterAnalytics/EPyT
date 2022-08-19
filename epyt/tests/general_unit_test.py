@@ -920,8 +920,51 @@ class GetTest(unittest.TestCase):
     def testgetNodeInitialQuality(self):
         desired_init_qual = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
         self.assertEqual(list(self.epanetClass.getNodeInitialQuality()), desired_init_qual, 'Wrong Initial quality value')
-            
-            
+      
+    def testgetNodeJunctionData(self):
+        ''' ---getNodeJunctionDemandIndex---    ''' 
+        d = epanet('BWSN_Network_1.inp')
+        err_msg = 'Wrong Junction Demand Index output'
+        self.assertEqual(d.getNodeJunctionDemandIndex(1,''), 1, err_msg)
+        self.assertEqual(d.getNodeJunctionDemandIndex([1,2,3]), [[0, 0, 0], [1, 1, 1]], err_msg)
+        d.unload()
+        
+        ''' ---getNodeJunctionDemandName---    '''
+        err_msg = 'Wrong Junction Demand Name ID output'
+        self.assertDictEqual(self.epanetClass.getNodeJunctionDemandName(), {1: ['', '', '', '', '', '', '', '', '']}, err_msg)
+        
+        ''' ---getNodeJunctionIndex---    '''
+        err_msg = 'Wrong Junction Index output'
+        self.assertEqual(self.epanetClass.getNodeJunctionIndex(), [1, 2, 3, 4, 5, 6, 7, 8, 9], err_msg)
+        
+        ''' ---getNodeJunctionNameID---    '''
+        err_msg = 'Wrong Junction Name ID output'
+        self.assertEqual(self.epanetClass.getNodeJunctionNameID(), ['10', '11', '12', '13', '21', '22', '23', '31', '32'], err_msg)
+        
+    def testgetNodeReservoirIndex_ID(self):
+        
+        ''' ---getNodeReservoirIndex---    '''
+        d = epanet('ky9.inp')
+        self.assertEqual(d.getNodeReservoirIndex(),  [1243, 1244, 1245, 1246], 'Wrong Node Reservoir Index Output')        
+        self.assertEqual(d.getNodeReservoirIndex([1,2,3]),  [1243, 1244, 1245], 'Wrong Node Reservoir Index Output')        
+        
+        ''' ---getNodeReservoirNameID---    '''
+        self.assertEqual(d.getNodeReservoirNameID(),  ['R-1', 'R-2', 'R-3', 'R-4'], 'Wrong Node Reservoir ID Output')        
+        self.assertEqual(d.getNodeReservoirNameID([1,2,3]),  ['R-1', 'R-2', 'R-3'], 'Wrong Node Reservoir ID Output')        
+        d.unload()
+          
+    def testGetNodeConnectingLinksIndex_ID(self):
+          
+        ''' ---getNodesConnectingLinksID---    '''
+        desired_n_conn_l_ID = [['10', '11'], ['11', '12'], ['12', '13'], ['21', '22'], ['22', '23'], ['31', '32'], ['2', '12'], ['11', '21'], 
+                               ['12', '22'], ['13', '23'], ['21', '31'], ['22', '32'], ['9', '10']]
+        self.assertEqual(self.epanetClass.getNodesConnectingLinksID(),  desired_n_conn_l_ID, 'Wrong Nodes Connecting Links ID Output')        
+        self.assertEqual(self.epanetClass.getNodesConnectingLinksID([1,2,3]), [['10', '11'], ['11', '12'], ['12', '13']], 'Wrong Nodes Connecting Links ID Output')    
+        
+        ''' ---getNodesConnectingLinksIndex---    '''
+        desired_n_conn_l_ind = [[1, 2], [2, 3], [3, 4], [5, 6], [6, 7], [8, 9], [11, 3], [2, 5], [3, 6], [4, 7], [5, 8], [6, 9], [10, 1]]
+        self.assertEqual(self.epanetClass.getNodesConnectingLinksIndex(),  desired_n_conn_l_ind, 'Wrong Nodes Connecting Links index Output')        
+        
 
 if __name__ == "__main__":
     unittest.main()  # run all tests
