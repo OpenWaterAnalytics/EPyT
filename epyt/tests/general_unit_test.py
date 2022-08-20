@@ -1064,5 +1064,173 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodeTypeIndex(), desired_node_type_index, 'Wrong Node Type Index Output')
         self.assertEqual(self.epanetClass.getNodeTypeIndex([10,11]), [1, 2], 'Wrong Node Type Index Output')
 
+    def testgetOptions(self):
+        err_msg = 'Wrong options Output'
+        d = epanet('BWSN_Network_1.inp')
+        self.assertEqual(d.getOptionsAccuracyValue(), 0.005, 'Wrong Options Accuracy Value Output')
+        self.assertEqual(d.getOptionsCheckFrequency(), 2.0, 'Wrong Options Check Frequency Output'), 
+        self.assertEqual(d.getOptionsDampLimit(), 0.0, 'Wrong Options Damping Limit Output')
+        self.assertEqual(d.getOptionsDemandCharge(), 0.0, 'Wrong Options Demand Charge Output')
+        self.assertEqual(d.getOptionsEmitterExponent(), 0.5, 'Wrong Options Emitter Exponent Output')
+        self.assertEqual(d.getOptionsExtraTrials(), -1.0, 'Wrong Options Extra Trials Output')
+        self.assertEqual(d.getOptionsFlowChange(), 0.0, 'Wrong Options Flow Change Output')
+        self.assertEqual(d.getOptionsGlobalEffic(), 75.0, 'Wrong Options Global Effic Output')
+        self.assertEqual(d.getOptionsGlobalPrice(), 0.0, 'Wrong Options Global Price Output')
+        self.assertEqual(d.getOptionsGlobalPattern(), 0.0, 'Wrong Options Global Pattern Output')
+        self.assertEqual(d.getOptionsHeadError(), 0.0, 'Wrong Options Head Error Output')
+        self.assertEqual(d.getOptionsHeadLossFormula(), 'HW', 'Wrong Options Head Loss Formula Output')
+        self.assertEqual(d.getOptionsLimitingConcentration(), 0.0, 'Wrong Options Limiting Concentration Output')
+        self.assertEqual(d.getOptionsMaximumCheck(), 10, 'Wrong Options Maximum CheckOutput')
+        self.assertEqual(d.getOptionsMaxTrials(), 40, 'Wrong Options Max Trials Output')
+        self.assertEqual(d.getOptionsPatternDemandMultiplier(), 1.0, 'Wrong Options Pattern Demand Multiplier Output')
+        self.assertEqual(d.getOptionsPipeBulkReactionOrder(), 1, 'Wrong Options Pipe Bulk Reaction Order Output')
+        self.assertEqual(d.getOptionsPipeWallReactionOrder(), 1, 'Wrong Options Pipe Wall Reaction Order Output')
+        self.assertEqual(d.getOptionsQualityTolerance(), 0.01, 'Wrong Options Quality Tolerance Output')
+        self.assertEqual(d.getOptionsSpecificDiffusivity(), 100.0, 'Wrong Options Specific Diffusivity Output')
+        self.assertEqual(d.getOptionsSpecificGravity(), 1.0, 'Wrong Options Specific Gravity Output')
+        self.assertEqual(d.getOptionsSpecificViscosity(), 1.0, 'Wrong Options Specific Viscosity Output')
+        self.assertEqual(d.getOptionsTankBulkReactionOrder(), 1, 'Wrong Options Tank Bulk Reaction Order Output')
+
+    def testgetPattern(self):
+        d = epanet('BWSN_Network_1.inp')
+
+        ''' ---getPattern---    '''
+        desired_pattern = np.array([[1.560e+00, 1.360e+00, 1.170e+00, 1.130e+00, 1.080e+00, 1.040e+00,
+                                    1.200e+00, 6.400e-01, 1.080e+00, 5.300e-01, 2.900e-01, 9.000e-01,
+                                    1.110e+00, 1.060e+00, 1.000e+00, 1.650e+00, 5.500e-01, 7.400e-01,
+                                    6.400e-01, 4.600e-01, 5.800e-01, 6.400e-01, 7.100e-01, 6.600e-01,
+                                    6.800e-01, 4.300e-01, 3.700e-01, 3.300e-01, 2.300e-01, 2.100e-01,
+                                    6.000e-02, 1.000e-01, 1.000e-01, 1.400e-01, 9.000e-02, 1.000e-01,
+                                    9.000e-02, 9.000e-02, 3.000e-02, 2.300e-01, 2.700e-01, 7.200e-01,
+                                    9.300e-01, 1.130e+00, 1.390e+00, 1.940e+00, 1.900e+00, 1.830e+00,
+                                    2.730e+00, 1.740e+00, 1.290e+00, 1.410e+00, 1.390e+00, 1.350e+00,
+                                    1.190e+00, 1.340e+00, 9.500e-01, 1.270e+00, 1.280e+00, 1.090e+00,
+                                    1.010e+00, 1.130e+00, 1.000e+00, 7.700e-01, 6.700e-01, 7.600e-01,
+                                    7.600e-01, 7.100e-01, 5.800e-01, 8.600e-01, 9.600e-01, 9.700e-01,
+                                    8.200e-01, 7.100e-01, 6.500e-01, 6.200e-01, 4.400e-01, 4.800e-01,
+                                    5.500e-01, 5.600e-01, 6.100e-01, 6.000e-01, 4.400e-01, 4.600e-01,
+                                    4.400e-01, 4.000e-01, 4.400e-01, 6.900e-01, 7.600e-01, 1.190e+00,
+                                    1.330e+00, 1.730e+00, 1.970e+00, 2.370e+00, 2.280e+00, 2.100e+00],
+                                [8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01,
+                                    8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01,
+                                    8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 8.000e+01, 8.000e+01,
+                                    8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01,
+                                    8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01,
+                                    8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 8.000e+01, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
+                                    0.000e+00, 0.000e+00, 0.000e+00, 8.000e+01, 8.000e+01, 8.000e+01],
+                                [8.000e-01, 8.400e-01, 8.800e-01, 9.700e-01, 1.070e+00, 1.010e+00,
+                                    9.600e-01, 9.700e-01, 9.900e-01, 1.080e+00, 1.180e+00, 1.190e+00,
+                                    1.190e+00, 1.220e+00, 1.250e+00, 1.250e+00, 1.260e+00, 1.220e+00,
+                                    1.190e+00, 1.160e+00, 1.140e+00, 1.120e+00, 1.110e+00, 1.100e+00,
+                                    1.100e+00, 1.060e+00, 1.020e+00, 1.010e+00, 1.010e+00, 1.000e+00,
+                                    1.000e+00, 8.500e-01, 7.100e-01, 7.000e-01, 6.900e-01, 7.400e-01,
+                                    7.900e-01, 8.000e-01, 8.000e-01, 8.000e-01, 8.100e-01, 7.700e-01,
+                                    7.400e-01, 7.400e-01, 7.500e-01, 7.800e-01, 8.100e-01, 8.000e-01,
+                                    0.000e+00, 8.000e-01, 8.400e-01, 8.800e-01, 9.700e-01, 1.070e+00,
+                                    1.010e+00, 9.600e-01, 9.700e-01, 9.900e-01, 1.080e+00, 1.180e+00,
+                                    1.190e+00, 1.190e+00, 1.220e+00, 1.250e+00, 1.250e+00, 1.260e+00,
+                                    1.220e+00, 1.190e+00, 1.160e+00, 1.140e+00, 1.120e+00, 1.110e+00,
+                                    1.100e+00, 1.100e+00, 1.060e+00, 1.020e+00, 1.010e+00, 1.010e+00,
+                                    1.000e+00, 1.000e+00, 8.500e-01, 7.100e-01, 7.000e-01, 6.900e-01,
+                                    7.400e-01, 7.900e-01, 8.000e-01, 8.000e-01, 8.000e-01, 8.100e-01,
+                                    7.700e-01, 7.400e-01, 7.400e-01, 7.500e-01, 7.800e-01, 8.100e-01],
+                                [4.233e+02, 2.250e+02, 2.670e+01, 2.670e+01, 2.670e+01, 2.670e+01,
+                                    2.670e+01, 2.670e+01, 2.670e+01, 2.021e+02, 3.775e+02, 2.021e+02,
+                                    2.580e+01, 2.590e+01, 2.590e+01, 2.600e+01, 2.600e+01, 2.610e+01,
+                                    2.610e+01, 2.610e+01, 2.620e+01, 2.630e+01, 2.630e+01, 2.630e+01,
+                                    2.630e+01, 2.630e+01, 2.640e+01, 2.399e+02, 4.535e+02, 2.405e+02,
+                                    2.740e+01, 2.678e+02, 5.081e+02, 4.621e+02, 4.160e+02, 3.275e+02,
+                                    2.389e+02, 1.330e+02, 2.710e+01, 2.710e+01, 2.710e+01, 2.710e+01,
+                                    2.710e+01, 2.480e+02, 4.689e+02, 3.607e+02, 2.524e+02, 4.495e+02,
+                                    6.465e+02, 3.366e+02, 2.680e+01, 1.989e+02, 3.711e+02, 1.984e+02,
+                                    2.580e+01, 2.580e+01, 2.580e+01, 2.580e+01, 2.580e+01, 2.590e+01,
+                                    2.600e+01, 2.600e+01, 2.600e+01, 2.610e+01, 2.620e+01, 2.620e+01,
+                                    2.620e+01, 2.620e+01, 2.630e+01, 2.630e+01, 2.630e+01, 2.630e+01,
+                                    2.630e+01, 2.283e+02, 4.302e+02, 6.572e+02, 8.842e+02, 8.842e+02,
+                                    8.843e+02, 8.844e+02, 8.845e+02, 8.845e+02, 8.845e+02, 6.633e+02,
+                                    4.421e+02, 2.342e+02, 2.630e+01, 4.720e+01, 6.800e+01, 3.522e+02,
+                                    6.364e+02, 3.312e+02, 2.600e+01, 2.610e+01, 2.610e+01, 2.247e+02]])
+        actual_pattern = d.getPattern()
+        self.assertEqual(actual_pattern.all(), desired_pattern.all(), 'Wrong Patterns Output')
+
+        ''' ---getPatternAverageValue---    '''
+        desired_pat_avg_val = [0.8856250000000001, 33.333333333333336, 0.967291666666667, 209.6072916666666]
+        actual_pat_avg_val = d.getPatternAverageValue()
+        self.assertEqual(desired_pat_avg_val, actual_pat_avg_val, 'Wrong Patterns Average Value Output') 
+
+        ''' ---getPatternComment---    '''
+        desired_comment = ['', '', '', '']
+        actual_comment = d.getPatternComment()
+        self.assertEqual(actual_comment, desired_comment, 'Wrong Pattern Comment Output')
+        
+        ''' ---getPatternIndex---    '''
+        self.assertEqual(d.getPatternIndex(), [1, 2, 3, 4], 'Wrong Pattern Index Output')
+
+        ''' ---getPatternLengths---    '''
+        self.assertEqual(d.getPatternLengths() , [96, 96, 48, 96], 'Wrong Patterns Output')
+
+        ''' ---getPatternNameID---    '''
+        desired_pat_ID = ['PATTERN-0', 'PATTERN-1', 'PATTERN-2', 'PATTERN-3']
+        actual_pat_ID = d.getPatternNameID() 
+        self.assertEqual(actual_pat_ID, desired_pat_ID, 'Wrong Pattern ID Output')
+
+        ''' ---getPatternValue---    '''
+        self.assertEqual(d.getPatternValue(1, 5), 1.08, 'Wrong Pattern Value Output')
+
+    def testgetQualityInfo(self):
+        desired_qual_info_dict = {'QualityCode': 1, 'QualityChemName': 'Chlorine', 
+                                'QualityChemUnits': 'mg/L', 'TraceNode': 0, 'QualityType': 'CHEM'}
+        actual_qual_info_dict = self.epanetClass.getQualityInfo().to_dict()
+        self.assertDictEqual(actual_qual_info_dict, desired_qual_info_dict, 'Wrong Quality Info Output')
+
+    def testgetRuleInfo(self):
+        d = epanet('BWSN_Network_1.inp')
+        
+        ''' ---getRuleID---    '''
+        self.assertEqual(d.getRuleID() , ['RULE-0', 'RULE-1', 'RULE-3'], 'Wrong Rule ID Output')
+        
+        ''' ---getRuleInfo---    '''
+        desired_rule_info = {'Index': [1, 2, 3, 4], 'Premises': [1, 1, 1, 1], 'ThenActions': [1, 1, 1, 1],
+                             'ElseActions': [0, 0, 0, 0], 'Priority': [1.0, 1.0, 1.0, 1.0]}
+        actual_rule_info = d.getRuleInfo().to_dict()
+        self.assertDictEqual(actual_rule_info, desired_rule_info, 'Wrong Rule Info Output')
+
+        ''' ---getRules---    '''
+        desired_rule = {'Rule_ID': 'RULE-0', 
+                        'Premises': ['IF NODE TANK-130 LEVEL >= 16.0'], 
+                        'Then_Actions': ['THEN PUMP PUMP-172 STATUS IS CLOSED'], 
+                        'Else_Actions': [], 
+                        'Rule': ['RULE RULE-0', ['IF NODE TANK-130 LEVEL >= 16.0'], 
+                        ['THEN PUMP PUMP-172 STATUS IS CLOSED'], [], 'PRIORITY 1.0']}
+        actual_rule = d.getRules()[1]
+        self.assertDictEqual(actual_rule, desired_rule, 'Wrong Rule Output')
+
+    def testGetTime(self):
+        self.assertEqual(self.epanetClass.getTimeSimulationDuration(), 86400, 'Wrong Simulation Duration Output')
+        self.assertEqual(self.epanetClass.getTimeHydraulicStep(), 3600, 'Wrong Hydraulic StepOutput')
+        self.assertEqual(self.epanetClass.getTimeQualityStep(), 300, 'Wrong Quality Step Output')
+        self.assertEqual(self.epanetClass.getTimePatternStep(), 7200, 'Wrong Pattern Step Output')
+        self.assertEqual(self.epanetClass.getTimePatternStart(), 0, 'Wrong Pattern Start Output')
+        self.assertEqual(self.epanetClass.getTimeReportingStep(), 3600, 'Wrong Time Reporting Step Output')
+        self.assertEqual(self.epanetClass.getTimeReportingStart(), 0, 'Wrong Time  Output')
+        self.assertEqual(self.epanetClass.getTimeRuleControlStep(), 360, 'Wrong Time Reporting Start Output')
+        self.assertEqual(self.epanetClass.getTimeStatisticsType(), 'NONE', 'Wrong Time Statistics Type Output')
+        self.assertEqual(self.epanetClass.getTimeReportingPeriods(), 0, 'Wrong Time  Output')
+        self.assertEqual(self.epanetClass.getTimeStartTime(), 0, 'Wrong Reporting Periods  Output')
+        self.assertEqual(self.epanetClass.getTimeHTime(), 0, 'Wrong hydraulic solution Time Output')
+        self.assertEqual(self.epanetClass.getTimeQTime(), 0, 'Wrong quality solution Time Output')
+        self.assertEqual(self.epanetClass.getTimeHaltFlag(), 0, 'Wrong Halt Flag Time Output')
+        self.assertEqual(self.epanetClass.getTimeNextEvent(), 3600, 'Wrong Time Next Event Output')
+        self.assertEqual(self.epanetClass.getTimeNextEventTank(), 0, 'Wrong Time Next Event Tank Output')
+
 if __name__ == "__main__":
     unittest.main()  # run all tests
