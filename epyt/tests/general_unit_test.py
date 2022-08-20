@@ -200,7 +200,7 @@ class AddTest(unittest.TestCase):
         assert isclose(tank_data.Minimum_Water_Level, minimumWaterLevel), 'Wrong Minimum Water Level output'
         assert isclose(tank_data.Diameter, diameter), 'Wrong Diameter output'
         assert isclose(tank_data.Minimum_Water_Volume, minimumWaterVolume), 'Wrong Minimum Water Volume output'
-        assert tank_data.Volume_Curve_Index is None, 'Wrong Volume Curve Index output'
+        assert tank_data.Volume_Curve_Index == [0], 'Wrong Volume Curve Index output'
 
     def testaddPattern(self):
         # Test 1
@@ -706,13 +706,24 @@ class GetTest(unittest.TestCase):
         # Test 4
         self.assertEqual(self.epanetClass.getLinkTypeIndex([2,3]), [1, 1], err_msg)
 
-    def testgetLinkNameID(self):
+    def testgetLink_Node_NameID(self):
+
+        ''' ---getLinkNameID---    '''
         err_msg = 'Wrong Link IDs'
         self.assertEqual(self.epanetClass.getLinkNameID(),
                          ['10', '11', '12', '21', '22', '31', '110',
                           '111', '112', '113', '121', '122', '9'],
                          err_msg)
         self.assertEqual(self.epanetClass.getLinkNameID([1,2,3]), ['10', '11', '12'], err_msg)
+
+        ''' ---getNodeNameID---    '''
+        err_msg = 'Wrong Node IDs'
+        self.assertEqual(self.epanetClass.getNodeNameID(),
+                        ['10', '11', '12', '13', '21', '22', '23', '31', '32', '9', '2'],
+                        err_msg)
+        self.assertEqual(self.epanetClass.getNodeNameID([1,5,10]), ['10', '21', '9'], err_msg)
+
+
 
     def testgetLinkPumpData(self):
 
@@ -965,6 +976,93 @@ class GetTest(unittest.TestCase):
         desired_n_conn_l_ind = [[1, 2], [2, 3], [3, 4], [5, 6], [6, 7], [8, 9], [11, 3], [2, 5], [3, 6], [4, 7], [5, 8], [6, 9], [10, 1]]
         self.assertEqual(self.epanetClass.getNodesConnectingLinksIndex(),  desired_n_conn_l_ind, 'Wrong Nodes Connecting Links index Output')        
         
+    def testgetNodeTankData(self):
+        # Net1
+        tData = self.epanetClass.getNodeTankData().to_dict()
+        desired_tData = {'Index': [11], 'Elevation': np.array([850.]), 'Initial_Level': np.array([120.]),
+                        'Minimum_Water_Level': np.array([100.]), 'Maximum_Water_Level': np.array([150.]),
+                        'Diameter': np.array([50.5]), 'Minimum_Water_Volume': np.array([200296.1666]), 
+                        'Maximum_Water_Volume': np.array([50.5]),'Volume_Curve_Index': np.array([0])}  
+        self.assertEqual(tData['Index'], desired_tData['Index'])
+        np.testing.assert_array_almost_equal_nulp(tData['Elevation'], desired_tData['Elevation'])
+        np.testing.assert_array_almost_equal_nulp(tData['Initial_Level'], desired_tData['Initial_Level'])
+        np.testing.assert_array_almost_equal_nulp(tData['Minimum_Water_Level'], desired_tData['Minimum_Water_Level'])
+        np.testing.assert_array_almost_equal_nulp(tData['Maximum_Water_Level'], desired_tData['Maximum_Water_Level'])
+        np.testing.assert_array_almost_equal_nulp(tData['Diameter'], desired_tData['Diameter'])
+        np.testing.assert_array_almost_equal_nulp(tData['Minimum_Water_Volume'], desired_tData['Minimum_Water_Volume'])
+        np.testing.assert_array_almost_equal_nulp(tData['Volume_Curve_Index'], desired_tData['Volume_Curve_Index'])
+
+        # ky10
+        d = epanet('ky10.inp')
+        tData = d.getNodeTankData().to_dict()
+        desired_tData = {'Index': [923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935],
+                         'Elevation': np.array([839.2236, 865.8419, 923.39  , 951.6379, 959.5179, 717.3331,
+                                      942.2059, 975.39  , 735.6371, 742.2835, 757.7068, 823.2291,811.4059]), 
+                         'Initial_Level': np.array([140.7764, 179.1581, 101.61, 158.3621,  70.4821,  82.6669,
+                                        67.7941,  84.6101, 134.3629, 102.7165, 142.2932, 121.7709,148.5941]),
+                         'Minimum_Water_Level': np.array([125.77639999999997, 159.1581, 81.61009999999999, 148.36210000000005, 
+                                                    65.48209999999995, 72.66690000000006, 61.79409999999996, 74.61009999999999, 
+                                                    124.36289999999997, 97.7165, 117.29319999999996, 106.77089999999998, 133.59410000000003]), 
+                         'Maximum_Water_Level': np.array([145.7764, 181.6581, 106.61  , 173.3621,  95.4821,  97.6669,
+                                                87.7941,  89.6101, 139.3629, 132.7165, 147.2932, 141.7709, 153.5941]),
+                         'Diameter': np.array([30., 36., 26., 26., 25., 40., 20., 30., 58., 50., 52., 52., 40.]), 
+                         'Minimum_Water_Volume': np.array([ 88906.0982, 162003.2134,  43329.1552,  78769.7649,  32143.4605,
+                                                91315.882 ,  19413.1796,  52738.7366, 328576.659 , 191865.8795,
+                                                249097.5199, 226751.1364, 167879.2973]), 
+                         'Maximum_Water_Volume': np.array([103043.265143, 184905.42384766001, 56602.33107023415, 92042.99386315, 
+                                                46869.676065625, 122731.80854, 27581.320500399997, 63341.611807249996, 368207.85033021, 
+                                                260588.21880625002, 312809.01892312005, 301081.21859364, 193012.038532]), 
+                         'Volume_Curve_Index': np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])}  
+
+        self.assertEqual(tData['Index'], desired_tData['Index'])
+        self.assertEqual(d.getNodeTankNameID(), ['T-1', 'T-10', 'T-11', 'T-12', 'T-13', 'T-2', 'T-3', 'T-4', 'T-5', 'T-6', 'T-7', 'T-8', 'T-9'])
+        np.testing.assert_array_almost_equal_nulp(tData['Elevation'], desired_tData['Elevation'])
+        np.testing.assert_array_almost_equal_nulp(tData['Initial_Level'], desired_tData['Initial_Level'], nulp=5)
+        np.testing.assert_array_almost_equal_nulp(tData['Minimum_Water_Level'], desired_tData['Minimum_Water_Level'])
+        np.testing.assert_array_almost_equal_nulp(tData['Maximum_Water_Level'], desired_tData['Maximum_Water_Level'],nulp=5)
+        np.testing.assert_array_almost_equal_nulp(tData['Diameter'], desired_tData['Diameter'], nulp=5)
+        np.testing.assert_array_almost_equal_nulp(tData['Minimum_Water_Volume'], desired_tData['Minimum_Water_Volume'], nulp=5)
+        np.testing.assert_array_almost_equal_nulp(tData['Volume_Curve_Index'], desired_tData['Volume_Curve_Index'], nulp=5)
+
+
+    def testgetnodeTankMix(self):
+        d = epanet('ky10.inp')
+
+        ''' ---getNodeTankMixingFraction---    '''
+        actual = list(d.getNodeTankMixingFraction())
+        desired = [1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]
+        self.assertEqual(actual, desired, 'Wrong Node Tank Mixing Fraction Output')
+
+        ''' ---getNodeTankMixingModelCode---    '''
+        actual = list(d.getNodeTankMixingModelCode())
+        desired = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
+        self.assertEqual(actual, desired, 'Wrong Node Tank Mixing Model Code Output')
+
+        ''' ---getNodeTankMixingModelType---    '''
+        actual = list(d.getNodeTankMixingModelType())
+        desired = ['MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1', 'MIX1']
+        self.assertEqual(actual, desired, 'Wrong Node Tank Mixing Model Type Output')
+
+        ''' ---getNodeTankMixZoneVolume---    '''
+        actual = d.getNodeTankMixZoneVolume()
+        desired = np.array([103043.265143  , 184905.42384766,  56602.33107023,  92042.99386315,
+                    46869.67606562, 122731.80854   ,  27581.3205004 ,  63341.61180725,
+                    368207.85033021, 260588.21880625, 312809.01892312, 301081.21859364,
+                    193012.038532  ])
+        self.assertEqual(actual.all(), desired.all(), 'Wrong Node Tank Mix Zone Volume Output')
+
+    def testgetNodeType(self):
+
+        ''' ---getNodeType---    '''
+        desired_node_type = ['JUNCTION', 'JUNCTION', 'JUNCTION', 'JUNCTION', 'JUNCTION', 
+                            'JUNCTION', 'JUNCTION', 'JUNCTION', 'JUNCTION', 'RESERVOIR', 'TANK']
+        self.assertEqual(self.epanetClass.getNodeType(), desired_node_type, 'Wrong Node Type Output')
+        self.assertEqual(self.epanetClass.getNodeType([10,11]), ['RESERVOIR', 'TANK'], 'Wrong Node Type Output')
+        
+        ''' ---getNodeTypeIndex---    '''
+        desired_node_type_index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2]
+        self.assertEqual(self.epanetClass.getNodeTypeIndex(), desired_node_type_index, 'Wrong Node Type Index Output')
+        self.assertEqual(self.epanetClass.getNodeTypeIndex([10,11]), [1, 2], 'Wrong Node Type Index Output')
 
 if __name__ == "__main__":
     unittest.main()  # run all tests
