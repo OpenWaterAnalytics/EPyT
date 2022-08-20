@@ -441,7 +441,7 @@ def isList(var):
 class epanet:
     """ EPyt main functions class """
 
-    def __init__(self, *argv, version=2.2):
+    def __init__(self, *argv, version=2.2, loadfile=False):
 
 
         # Initial attributes
@@ -479,7 +479,7 @@ class epanet:
                 self.BinTempfile = binfile
                 self.api.ENopen(self.TempInpFile, rptfile, binfile)
                 # Parameters
-                self.__getInitParams()
+                if not loadfile: self.__getInitParams()
 
             elif (len(argv) == 2) and (argv[1].upper() == 'CREATE'):
                 self.InputFile = argv[0]
