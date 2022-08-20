@@ -5262,11 +5262,11 @@ class epanet:
 
         Example:
 
-        d.getOptionsMaximumCheck()
+        >>> d.getOptionsMaximumCheck()
 
         See also setOptionsMaximumCheck, getOptionsMaxTrials, getOptionsCheckFrequency.
         """
-        return self.api.ENgetoption(self.ToolkitConstants.EN_MAXCHECK)
+        return int(self.api.ENgetoption(self.ToolkitConstants.EN_MAXCHECK))
 
     def getOptionsMaxTrials(self):
         """ Retrieves the maximum hydraulic trials allowed for hydraulic convergence.
@@ -5277,11 +5277,10 @@ class epanet:
 
         See also setOptionsMaxTrials, getOptionsExtraTrials, getOptionsAccuracyValue.
         """
-        return self.api.ENgetoption(self.ToolkitConstants.EN_TRIALS)
+        return int(self.api.ENgetoption(self.ToolkitConstants.EN_TRIALS))
 
     def getOptionsPatternDemandMultiplier(self):
-        """
-        Retrieves the global pattern demand multiplier.
+        """ Retrieves the global pattern demand multiplier.
 
         Example:
 
@@ -5300,7 +5299,7 @@ class epanet:
 
         See also setOptionsPipeBulkReactionOrder, getOptionsPipeWallReactionOrder, getOptionsTankBulkReactionOrder.
         """
-        return self.api.ENgetoption(self.ToolkitConstants.EN_BULKORDER)
+        return int(self.api.ENgetoption(self.ToolkitConstants.EN_BULKORDER))
 
     def getOptionsPipeWallReactionOrder(self):
         """ Retrieves the wall reaction order for pipes (either 0 or 1). (EPANET Version 2.2)
@@ -5311,7 +5310,7 @@ class epanet:
 
         See also setOptionsPipeWallReactionOrder, getOptionsPipeBulkReactionOrder, getOptionsTankBulkReactionOrder.
         """
-        return self.api.ENgetoption(self.ToolkitConstants.EN_WALLORDER)
+        return int(self.api.ENgetoption(self.ToolkitConstants.EN_WALLORDER))
 
     def getOptionsQualityTolerance(self):
         """ Retrieves the water quality analysis tolerance.
@@ -5366,7 +5365,7 @@ class epanet:
 
         See also setOptionsTankBulkReactionOrder, getOptionsPipeBulkReactionOrder, getOptionsPipeWallReactionOrder.
         """
-        return self.api.ENgetoption(self.ToolkitConstants.EN_TANKORDER)
+        return int(self.api.ENgetoption(self.ToolkitConstants.EN_TANKORDER))
 
     def getPattern(self):
         """
@@ -5566,10 +5565,10 @@ class epanet:
 
         >>> d.getQualityCode()
 
-        See also getQualityInfo(), getQualityType.
+        See also getQualityInfo, getQualityType.
         """
         [value, self.QualityTraceNodeIndex] = self.api.ENgetqualtype()
-        return [value, self.QualityTraceNodeIndex]
+        return value 
 
     def getQualityInfo(self):
         """ Retrieves quality analysis information (type, chemical name, units, trace node ID).
@@ -5614,10 +5613,10 @@ class epanet:
 
         >>> d.getQualityTraceNodeIndex()
 
-        See also getQualityInfo(), getQualityType.
+        See also getQualityInfo, getQualityType.
         """
         [self.QualityCode, value] = self.api.ENgetqualtype()
-        return [self.QualityCode, value]
+        return value
 
     def getQualityType(self, *argv):
         """ Retrieves the type of water quality analysis type.
@@ -5628,7 +5627,7 @@ class epanet:
 
         See also getQualityInfo, getQualityCode.
         """
-        return self.api.ENgetqualinfo()[0]
+        return self.TYPEQUALITY[self.api.ENgetqualinfo()[0]]
 
     def getLinkResultIndex(self, link_index):
         """ Retrieves the order in which a link's results
