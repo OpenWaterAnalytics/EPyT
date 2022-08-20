@@ -3002,8 +3002,7 @@ class epanet:
         getLinkPumpEPat, getLinkPumpPatternIndex, getLinkPumpPatternNameID.
         """
         value = self.__getPumpLinkInfo(self.ToolkitConstants.EN_PUMP_ECURVE, *argv)
-        value = self.__returnValue(value)
-        return value
+        return self.__returnValue(value)
 
     def getLinkPumpEPat(self, *argv):
         """ Retrieves the pump energy price time pattern index. (EPANET Version 2.2)
@@ -3031,8 +3030,7 @@ class epanet:
         getLinkPumpECost, getLinkPumpPatternIndex, getLinkPumpPatternNameID.
         """
         value = self.__getPumpLinkInfo(self.ToolkitConstants.EN_PUMP_EPAT, *argv)
-        value = self.__returnValue(value)
-        return value
+        return self.__returnValue(value)
 
     def getLinkPumpHCurve(self, *argv):
         """ Retrieves the pump head v. flow curve index. (EPANET Version 2.2)
@@ -3060,8 +3058,7 @@ class epanet:
         getLinkPumpEPat, getLinkPumpPatternIndex, getLinkPumpPatternNameID.
         """
         value = self.__getPumpLinkInfo(self.ToolkitConstants.EN_PUMP_HCURVE, *argv)
-        value = self.__returnValue(value)
-        return value
+        return self.__returnValue(value)
 
     def getLinkPumpHeadCurveIndex(self):
         """ Retrieves the index of a head curve for all pumps. (EPANET Version 2.1)
@@ -3107,8 +3104,7 @@ class epanet:
         getLinkPumpECost, getLinkPumpEPat,  getLinkPumpPatternNameID.
         """
         value = self.__getPumpLinkInfo(self.ToolkitConstants.EN_LINKPATTERN, *argv)
-        value = self.__returnValue(value)
-        return value
+        return self.__returnValue(value)
 
     def getLinkPumpPatternNameID(self, *argv):
         """ Retrieves pump pattern name ID. (EPANET Version 2.1)
@@ -3191,8 +3187,7 @@ class epanet:
         getLinkSettings, getLinkEnergy, getLinkPumpEfficiency.
         """
         value = self.__getPumpLinkInfo(self.ToolkitConstants.EN_PUMP_STATE, *argv)
-        value = self.__returnValue(value)
-        return value
+        return self.__returnValue(value)
 
     def getLinkPumpSwitches(self):
         """ Retrieves the number of pump switches.
@@ -3499,8 +3494,7 @@ class epanet:
         getLinkPumpState, getLinkSettings.
         """
         value = self.__getLinkInfo(self.ToolkitConstants.EN_STATUS, *argv)
-        value = self.__returnValue(value)
-        return value
+        return self.__returnValue(value)
 
     def getLinkSettings(self, *argv):
         """ Retrieves the current computed value of all link roughness for pipes
@@ -4683,6 +4677,7 @@ class epanet:
         tankData.Maximum_Water_Level = self.getNodeTankMaximumWaterLevel(tankIndices)
         tankData.Diameter = self.getNodeTankDiameter(tankIndices)
         tankData.Minimum_Water_Volume = self.getNodeTankMinimumWaterVolume(tankIndices)
+        tankData.Maximum_Water_Volume = self.getNodeTankMaximumWaterVolume(tankIndices)
         tankData.Volume_Curve_Index = self.getNodeTankVolumeCurveIndex(tankIndices)
         return tankData
 
@@ -5005,7 +5000,7 @@ class epanet:
                 return self.getNodeNameID(indices)
 
     def getNodeTankReservoirCount(self):
-        """ Retrieves the number of tanks.
+        """ Retrieves the number of tanks/reservoirs.
 
         Example:
 
@@ -5063,7 +5058,7 @@ class epanet:
         getNodeTankInitialWaterVolume, getNodeTankMixZoneVolume.
         """
         value = self.__getTankNodeInfo(self.ToolkitConstants.EN_VOLCURVE, *argv)
-        value = self.__returnValue(value)
+        return self.__returnValue(value)
 
     def getNodeType(self, *argv):
         """ Retrieves the node-type code for all nodes.
