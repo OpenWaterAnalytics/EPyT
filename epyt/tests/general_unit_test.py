@@ -1485,6 +1485,199 @@ class SetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(p_data.LinkRoughnessCoeff[0:2], RoughnessCoeff, err_msg='Error setting link Roughness Coefficient')
         np.testing.assert_array_almost_equal(p_data.LinkMinorLossCoeff[0:2], MinorLossCoeff, err_msg='Error setting link Minor Loss Coefficient')
 
+    def testsetLinkPump(self):
+        d = epanet('Net3_trace.inp')
+        
+        ''' ---setLinkPumpECost---    '''
+        err_msg = 'Error setting pump average energy price (E cost)'
+        # Test 1
+        d.setLinkPumpECost(0.10)                       
+        np.testing.assert_array_almost_equal(d.getLinkPumpECost(), np.array([0.1, 0.1]), err_msg=err_msg)
+
+        # Test 2
+        d.setLinkPumpECost([0.10, 0.12])               
+        np.testing.assert_array_almost_equal(d.getLinkPumpECost(), np.array([0.1 , 0.12]), err_msg=err_msg)
+
+        # Test 3
+        d.setLinkPumpECost(1, 0.15)                    
+        np.testing.assert_array_almost_equal(d.getLinkPumpECost(), np.array([0.15, 0.12]), err_msg=err_msg)
+
+        # Test 4
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpECost(pumpIndex, 0.10)            
+        np.testing.assert_array_almost_equal(d.getLinkPumpECost(), np.array([0.1, 0.1]), err_msg=err_msg)
+
+        # Test 5
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpECost(pumpIndex, [0.10, 0.12])   
+        np.testing.assert_array_almost_equal(d.getLinkPumpECost(), np.array([0.10, 0.12]), err_msg=err_msg)
+
+        ''' ---setLinkPumpECost---    '''
+        err_msg = 'Error setting pump efficiency flow curve index'
+        # Test 1 
+        d.setLinkPumpECurve(1, 2)                
+        np.testing.assert_array_almost_equal(d.getLinkPumpECurve(), np.array([2, 0]), err_msg=err_msg)
+
+        # Test 2
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpECurve(pumpIndex, 1)        
+        np.testing.assert_array_almost_equal(d.getLinkPumpECurve(), np.array([1, 1]), err_msg=err_msg)
+
+        # Test 3
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpECurve(pumpIndex,[1, 2])    
+        np.testing.assert_array_almost_equal(d.getLinkPumpECurve(), np.array([1, 2]), err_msg=err_msg)
+
+        ''' ---getLinkPumpEPat---    '''
+        err_msg = 'Error setting pump energy price time pattern index'
+        # Test 1 
+        d.setLinkPumpEPat(1, 2)               
+        np.testing.assert_array_almost_equal(d.getLinkPumpEPat(), np.array([2, 0]), err_msg=err_msg)
+
+        # Test 2 
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpEPat(pumpIndex, 1)       
+        np.testing.assert_array_almost_equal(d.getLinkPumpEPat(), np.array([1, 1]), err_msg=err_msg)
+
+        # Test 3 
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpEPat(pumpIndex,[1, 2])    
+        np.testing.assert_array_almost_equal(d.getLinkPumpEPat(), np.array([1, 2]), err_msg=err_msg)
+        
+        ''' ---setLinkPumpHeadCurveIndex---    '''
+        err_msg = 'Error setting curves index for pumps index'
+        pumpIndex = d.getLinkPumpIndex(1)  
+        curveIndex = d.getCurveIndex()[1]
+        d.setLinkPumpHeadCurveIndex(pumpIndex, curveIndex)
+        np.testing.assert_array_almost_equal(d.getLinkPumpHeadCurveIndex()[0], np.array([2, 2]), err_msg=err_msg)
+
+        ''' ---setLinkPumpPatternIndex---    '''
+        err_msg = 'Error setting pump pattern index'
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpPatternIndex(pumpIndex, [3, 4])    
+        np.testing.assert_array_almost_equal(d.getLinkPumpPatternIndex(), np.array([3, 4]), err_msg=err_msg)
+        
+        ''' ---setLinkPumpPower---    '''
+        err_msg = 'Error setting pump power'
+        pumpIndex = d.getLinkPumpIndex()
+        d.setLinkPumpPower(pumpIndex, [10, 15])  
+        np.testing.assert_array_almost_equal(d.getLinkPumpPower(), np.array([10., 15.]), err_msg=err_msg)
+
+    def testsetLinkRoughnessCoeff(self):
+        err_msg = 'Error setting Link Roughness Coefficient'
+        # Test 1
+        index_pipe = 1
+        coeff = 105
+        self.epanetClass.setLinkRoughnessCoeff(index_pipe, coeff)        
+        self.assertEqual(self.epanetClass.getLinkRoughnessCoeff(index_pipe), 105, err_msg)
+
+        # Test 2
+        coeffs = self.epanetClass.getLinkRoughnessCoeff()                 
+        coeffs_new = coeffs + 10
+        self.epanetClass.setLinkRoughnessCoeff(coeffs_new)   
+        desired =  np.array([115., 110., 110., 110., 110., 110., 110., 110., 110., 110., 110., 110., 0.])            
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkRoughnessCoeff(), desired, err_msg=err_msg)
+
+    def testsetLink_Settings_Status(self):
+        ''' ---setLinkSettings---    '''
+        err_msg = 'Error setting Link settings'
+        settings = self.epanetClass.getLinkSettings()                
+        settings_new = [i + 40 for i in settings]
+        self.epanetClass.setLinkSettings(settings_new) 
+        desired = np.array([140., 140., 140., 140., 140., 140., 140., 140., 140., 140., 140., 140.,  40.])   
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkSettings(), desired, err_msg=err_msg)         
+        
+        ''' ---setLinkStatus---    '''
+        err_msg = 'Error setting Link status'
+        statuses = self.epanetClass.getLinkStatus()                 
+        statuses_new = [0 for i in statuses]
+        desired = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        self.epanetClass.setLinkStatus(statuses_new)   
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkStatus(), desired, err_msg=err_msg)         
+           
+    def testsetLinkType(self):
+        ''' ---setLinkTypePipe---    ''' 
+        err_msg = 'Error setting Link type to pipe'
+        linkid = self.epanetClass.getLinkPumpNameID(1)
+        index = self.epanetClass.setLinkTypePipe(linkid)            
+        self.assertEqual(self.epanetClass.getLinkType(index), 'PIPE', err_msg)
+        
+        ''' ---setLinkTypePipeCV---    ''' 
+        err_msg = 'Error setting Link type to CV Pipe'                            
+        linkid = self.epanetClass.getLinkPipeNameID(1)               
+        index = self.epanetClass.setLinkTypePipeCV(linkid)     
+        self.assertEqual(self.epanetClass.getLinkType(index), 'CVPIPE', err_msg)
+      
+        ''' ---setLinkTypePump---    ''' 
+        err_msg = 'Error setting Link to Pump'
+        linkid = self.epanetClass.getLinkPipeNameID(1)             
+        index = self.epanetClass.setLinkTypePump(linkid)           
+        self.assertEqual(self.epanetClass.getLinkType(index), 'PUMP', err_msg)
+
+        ''' ---setLinkTypeValveFCV---    ''' 
+        err_msg = 'Error setting Link to FCV valve'
+        linkid = self.epanetClass.getLinkPipeNameID(1)                     
+        index = self.epanetClass.setLinkTypeValveFCV(linkid)               
+        self.assertEqual(self.epanetClass.getLinkType(index), 'FCV', err_msg)
+        
+        ''' ---setLinkTypeValveGPV---    ''' 
+        err_msg = 'Error setting Link GPV valve'
+        linkid = self.epanetClass.getLinkPipeNameID(1)                     
+        index = self.epanetClass.setLinkTypeValveGPV(linkid)               
+        self.assertEqual(self.epanetClass.getLinkType(index), 'GPV', err_msg)
+        
+        ''' ---setLinkTypeValvePBV---    ''' 
+        err_msg = 'Error setting Link to PBV valve'
+        linkid = self.epanetClass.getLinkPipeNameID(1)                     
+        index = self.epanetClass.setLinkTypeValvePBV(linkid)               
+        self.assertEqual(self.epanetClass.getLinkType(index), 'PBV', err_msg)
+        
+        ''' ---setLinkTypeValvePRV---    ''' 
+        err_msg = 'Error setting Link to PRV valve'
+        linkid = self.epanetClass.getLinkPipeNameID(1)                     
+        index = self.epanetClass.setLinkTypeValvePRV(linkid)               
+        self.assertEqual(self.epanetClass.getLinkType(index), 'PRV', err_msg)
+        
+        ''' ---setLinkTypeValvePSV---    ''' 
+        err_msg = 'Error setting Link to PSV valve'
+        linkid = self.epanetClass.getLinkPipeNameID(1)                     
+        index = self.epanetClass.setLinkTypeValvePSV(linkid)               
+        self.assertEqual(self.epanetClass.getLinkType(index), 'PSV', err_msg)
+        
+        ''' ---setLinkTypeValveTCV---    ''' 
+        err_msg = 'Error setting Link to TCV valve'
+        linkid = self.epanetClass.getLinkPipeNameID(1)                     
+        index = self.epanetClass.setLinkTypeValveTCV(linkid)               
+        self.assertEqual(self.epanetClass.getLinkType(index), 'TCV', err_msg)
+        
+    def testsetLinkVertices(self):
+        linkID = '10'
+        x = [22, 24, 28]
+        y = [69, 68, 69]
+        self.epanetClass.setLinkVertices(linkID, x, y)
+        desired_x = [22.0, 24.0, 28.0]
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkVertices(linkID)['x'][1], desired_x, err_msg='Error setting x vertices')
+        desired_y = [69.0, 68.0, 69.0]
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkVertices(linkID)['y'][1], desired_y, err_msg='Error setting y vertices')
+        
+    def testsetLinkWallReactionCoeff(self):
+        err_msg = 'Error setting Link Wall reaction coefficient'
+        coeffs = self.epanetClass.getLinkWallReactionCoeff()                
+        coeffs_new = [0] * len(coeffs)
+        self.epanetClass.setLinkWallReactionCoeff(coeffs_new) 
+        desired_coeff = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])             
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkWallReactionCoeff(), desired_coeff, err_msg=err_msg)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 if __name__ == "__main__":
     unittest.main()  # run all tests

@@ -3073,6 +3073,7 @@ class epanet:
         curveIndex = []
         for i in pumpIndex:
             curveIndex.append(self.api.ENgetheadcurveindex(i))
+        curveIndex = np.array(curveIndex)
         if len(curveIndex) > 1:
             return [curveIndex, pumpIndex]
         elif len(curveIndex) > 0:
@@ -7125,10 +7126,11 @@ class epanet:
     def setLinkPumpHeadCurveIndex(self, value, *argv):
         """ Sets the curves index for pumps index
 
-        Example: To remove curve index from the pumps you can use input 0
-
-        >>> pumpIndex = d.getLinkPumpIndex(1)
-        >>> d.setLinkPumpHeadCurveIndex(pumpIndex, 0)
+        >>> d.getLinkPumpHeadCurveIndex()  
+        >>> pumpIndex = d.getLinkPumpIndex(1)  
+        >>> curveIndex = d.getLinkCurveIndex(2)
+        >>> d.setLinkPumpHeadCurveIndex(pumpIndex, curveIndex)
+        >>> d.getLinkPumpHeadCurveIndex()
 
         See also setLinkPumpPatternIndex, getLinkPumpPower, setLinkPumpHCurve,
         setLinkPumpECurve, setLinkPumpECost.
