@@ -6366,7 +6366,7 @@ class epanet:
     def setControls(self, index, control=None, *argv):
         """ Sets the parameters of a simple control statement.
 
-        The examples are based on d=epanet('Net1.inp')
+        The examples are based on d = epanet('Net1.inp')
 
         Example 1:
 
@@ -6438,7 +6438,7 @@ class epanet:
     def setCurve(self, index, curveVector):
         """ Sets x, y values for a specific curve. (EPANET Version 2.1)
 
-        The example is based on d=epanet('BWSN_Network_1.inp')
+        The example is based on d = epanet('BWSN_Network_1.inp')
 
         Example:
 
@@ -6684,112 +6684,6 @@ class epanet:
         See also setFlowUnitsLPM, setFlowUnitsCMH.
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_MLD, *argv)  # million liters per day
-
-    def setNodeComment(self, value, *argv):
-        """ Sets the comment string assigned to the node object.
-
-        Example 1:
-
-        >>> d.setNodeComment(1, 'This is a node')                     # Sets a comment to the 1st node
-        >>> d.getNodeComment(1)
-
-        Example 2:
-
-        >>> d.setNodeComment([1,2], ['This is a node', 'Test comm'])  # Sets a comment to the 1st and 2nd node
-        >>> d.getNodeComment([1,2])
-
-        See also getNodeComment, getNodesInfo, setNodeNameID, setNodeCoordinates.
-        """
-        self.__addComment(self.ToolkitConstants.EN_NODE, value, *argv)
-
-    def setNodeCoordinates(self, value, *argv):
-        """ Sets node coordinates.
-
-        Example 1:
-
-        >>> nodeIndex = 1
-        >>> d.getNodeCoordinates(nodeIndex)              # Retrieves the X and Y coordinates of the 1st node
-        >>> coords = [0,0]
-        >>> d.setNodeCoordinates(nodeIndex, coords)      # Sets the coordinates of the 1st node
-        >>> d.getNodeCoordinates(nodeIndex)
-
-
-        Example 2:
-
-        >>> x_values = d.getNodeCoordinates('x')
-        >>> y_values = d.getNodeCoordinates('y')
-        >>> x_new = [x_values[i]+10 for i in x_values]
-        >>> y_new = [y_values[i]+10 for i in y_values]
-        >>> new_coords = [x_new, y_new]                     # Creates a cell array with the new coordinates
-        >>> d.setNodeCoordinates(new_coords)                # Sets the coordinates of all nodes
-        >>> x_values_new = d.getNodeCoordinates('x')
-        >>> y_values_new = d.getNodeCoordinates('y')
-
-        See also getNodeCoordinates, setNodeElevations, plot, addNodeJunction, addNodeTank, deleteNode.
-        """
-        if len(argv) == 1:
-            indices = value
-            value = argv[0]
-        else:
-            indices = self.__getNodeIndices(*argv)
-        if not isList(indices):
-            indices = [indices]
-        if len(argv) == 0:
-            for i in indices:
-                self.api.ENsetcoord(i, value[0][indices.index(i)], value[1][indices.index(i)])
-        else:
-            value = [value]
-            for i in range(len(value)):
-                x = value[i][0]
-                y = value[i][1]
-                self.api.ENsetcoord(indices[i], x, y)
-
-    def setNodeJunctionData(self, index, elev, dmnd, dmndpat):
-        """ Sets a group of properties for a junction node. (EPANET Version 2.2)
-
-        :param index: a junction node's index (starting from 1).
-        :type index: int
-        :param elev: the value of the junction's elevation.
-        :type elev: float
-        :param dmnd: the value of the junction's primary base demand.
-        :type dmnd: float
-        :param dmndpat: the ID name of the demand's time pattern ("" for no pattern)
-        :type dmndpat: str
-        :return: None
-
-        Example:
-
-        >>> junctionIndex = 1
-        >>> elev = 35
-        >>> dmnd = 100
-        >>> dmndpat = 'NEW_PATTERN'
-        >>> d.addPattern(dmndpat)                                         # Adds a new pattern
-        >>> d.setNodeJunctionData(junctionIndex, elev, dmnd, dmndpat)     # Sets the elevation, primary base demand and time pattern of the 1st junction
-        >>> d.getNodeElevations(junctionIndex)                            # Retrieves the elevation of the 1st junction
-        >>> d.getNodeBaseDemands(junctionIndex)                           # Retrieves the primary base demand of the 1st junction
-        >>> d.getNodeDemandPatternNameID()[junctionIndex]                 # Retrieves the demand pattern ID (primary base demand is the first category)
-
-        See also setNodeTankData, getNodeElevations, getNodeBaseDemands,
-        getNodeDemandPatternNameID, addPattern, setNodeJunctionDemandName.
-        """
-        self.api.ENsetjuncdata(index, elev, dmnd, dmndpat)
-
-    def setNodeJunctionDemandName(self, nodeIndex, demandIndex, demandName):
-        """ Assigns a name to a node's demand category. (EPANET Version 2.2)
-
-        Example:
-
-        >>> nodeIndex = 1
-        >>> demandIndex = 1
-        >>> d.getNodeJunctionDemandName()[demandIndex][nodeIndex-1]              # Retrieves the name of the 1st node, 1st demand category
-        >>> demandName = 'NEW NAME'
-        >>> d.setNodeJunctionDemandName(nodeIndex, demandIndex, demandName)      # Sets a new name of the 1st node, 1st demand category
-        >>> d.getNodeJunctionDemandName()[demandIndex][nodeIndex-1]
-
-        See also getNodeJunctionDemandName, setNodeBaseDemands, setDemandModel,
-        addNodeJunctionDemand, deleteNodeJunctionDemand.
-        """
-        self.api.ENsetdemandname(nodeIndex, demandIndex, demandName)
 
     def setLinkBulkReactionCoeff(self, value, *argv):
         """ Sets the value of bulk chemical reaction coefficient.
@@ -7779,6 +7673,65 @@ class epanet:
         """
         self.__setNodeDemandPattern('ENsetbasedemand', self.ToolkitConstants.EN_BASEDEMAND, value, *argv)
 
+    def setNodeComment(self, value, *argv):
+        """ Sets the comment string assigned to the node object.
+
+        Example 1:
+
+        >>> d.setNodeComment(1, 'This is a node')                     # Sets a comment to the 1st node
+        >>> d.getNodeComment(1)
+
+        Example 2:
+
+        >>> d.setNodeComment([1,2], ['This is a node', 'Test comm'])  # Sets a comment to the 1st and 2nd node
+        >>> d.getNodeComment([1,2])
+
+        See also getNodeComment, getNodesInfo, setNodeNameID, setNodeCoordinates.
+        """
+        self.__addComment(self.ToolkitConstants.EN_NODE, value, *argv)
+
+    def setNodeCoordinates(self, value, *argv):
+        """ Sets node coordinates.
+
+        Example 1:
+
+        >>> nodeIndex = 1
+        >>> d.getNodeCoordinates(nodeIndex)              # Retrieves the X and Y coordinates of the 1st node
+        >>> coords = [0,0]
+        >>> d.setNodeCoordinates(nodeIndex, coords)      # Sets the coordinates of the 1st node
+        >>> d.getNodeCoordinates(nodeIndex)
+
+
+        Example 2:
+
+        >>> x_values = d.getNodeCoordinates('x')
+        >>> y_values = d.getNodeCoordinates('y')
+        >>> x_new = [x_values[i]+10 for i in x_values]
+        >>> y_new = [y_values[i]+10 for i in y_values]
+        >>> new_coords = [x_new, y_new]                     # Creates a cell array with the new coordinates
+        >>> d.setNodeCoordinates(new_coords)                # Sets the coordinates of all nodes
+        >>> x_values_new = d.getNodeCoordinates('x')
+        >>> y_values_new = d.getNodeCoordinates('y')
+
+        See also getNodeCoordinates, setNodeElevations, plot, addNodeJunction, addNodeTank, deleteNode.
+        """
+        if len(argv) == 1:
+            indices = value
+            value = argv[0]
+        else:
+            indices = self.__getNodeIndices(*argv)
+        if not isList(indices):
+            indices = [indices]
+        if len(argv) == 0:
+            for i in indices:
+                self.api.ENsetcoord(i, value[0][indices.index(i)], value[1][indices.index(i)])
+        else:
+            value = [value]
+            for i in range(len(value)):
+                x = value[i][0]
+                y = value[i][1]
+                self.api.ENsetcoord(indices[i], x, y)
+
     def setNodeDemandPatternIndex(self, value, *argv):
         """ Sets the values of demand time pattern indices.
 
@@ -7901,6 +7854,53 @@ class epanet:
         See also getNodeInitialQuality, getNodeActualQuality, setNodeJunctionData.
         """
         self.__setEval('ENsetnodevalue', 'INITQUAL', 'NODE', value, *argv)
+
+    def setNodeJunctionData(self, index, elev, dmnd, dmndpat):
+        """ Sets a group of properties for a junction node. (EPANET Version 2.2)
+
+        :param index: a junction node's index (starting from 1).
+        :type index: int
+        :param elev: the value of the junction's elevation.
+        :type elev: float
+        :param dmnd: the value of the junction's primary base demand.
+        :type dmnd: float
+        :param dmndpat: the ID name of the demand's time pattern ("" for no pattern)
+        :type dmndpat: str
+        :return: None
+
+        Example:
+
+        >>> junctionIndex = 1
+        >>> elev = 35
+        >>> dmnd = 100
+        >>> dmndpat = 'NEW_PATTERN'
+        >>> d.addPattern(dmndpat)                                         # Adds a new pattern
+        >>> d.setNodeJunctionData(junctionIndex, elev, dmnd, dmndpat)     # Sets the elevation, primary base demand and time pattern of the 1st junction
+        >>> d.getNodeElevations(junctionIndex)                            # Retrieves the elevation of the 1st junction
+        >>> d.getNodeBaseDemands(junctionIndex)                           # Retrieves the primary base demand of the 1st junction
+        >>> d.getNodeDemandPatternNameID()[junctionIndex]                 # Retrieves the demand pattern ID (primary base demand is the first category)
+
+        See also setNodeTankData, getNodeElevations, getNodeBaseDemands,
+        getNodeDemandPatternNameID, addPattern, setNodeJunctionDemandName.
+        """
+        self.api.ENsetjuncdata(index, elev, dmnd, dmndpat)
+
+    def setNodeJunctionDemandName(self, nodeIndex, demandIndex, demandName):
+        """ Assigns a name to a node's demand category. (EPANET Version 2.2)
+
+        Example:
+
+        >>> nodeIndex = 1
+        >>> demandIndex = 1
+        >>> d.getNodeJunctionDemandName()[demandIndex][nodeIndex-1]              # Retrieves the name of the 1st node, 1st demand category
+        >>> demandName = 'NEW NAME'
+        >>> d.setNodeJunctionDemandName(nodeIndex, demandIndex, demandName)      # Sets a new name of the 1st node, 1st demand category
+        >>> d.getNodeJunctionDemandName()[demandIndex][nodeIndex-1]
+
+        See also getNodeJunctionDemandName, setNodeBaseDemands, setDemandModel,
+        addNodeJunctionDemand, deleteNodeJunctionDemand.
+        """
+        self.api.ENsetdemandname(nodeIndex, demandIndex, demandName)
 
     def setNodeNameID(self, value, *argv):
         """ Sets the ID name for nodes.
