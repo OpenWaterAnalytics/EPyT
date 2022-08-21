@@ -1232,5 +1232,259 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getTimeNextEvent(), 3600, 'Wrong Time Next Event Output')
         self.assertEqual(self.epanetClass.getTimeNextEventTank(), 0, 'Wrong Time Next Event Tank Output')
 
+class SetTest(unittest.TestCase):
+
+    def setUp(self):
+        """Call before every test case."""
+        # Create EPANET object using the INP file
+        inpname = 'Net1.inp'
+        self.epanetClass = epanet(inpname)
+
+    def tearDown(self):
+        """Call after every test case."""
+        self.epanetClass.unload()
+
+    def testsetControls(self):
+        # Test 1
+        controlIndex = 1
+        control = 'LINK 9 CLOSED IF NODE 2 ABOVE 180'
+        self.epanetClass.setControls(controlIndex, control)     
+        control_data = self.epanetClass.getControls(controlIndex)
+        self.assertEqual(control_data.Control, 'LINK 9 CLOSED IF NODE 2 ABOVE 180.0', 'Wrong Control Output')
+        self.assertEqual(control_data.LinkID, '9', 'Wrong Control LinkID Output')
+        self.assertEqual(control_data.NodeID, '2', 'Wrong Control NodeID Output')
+        self.assertEqual(control_data.Setting, 'CLOSED', 'Wrong Control Setting Output')
+        self.assertEqual(control_data.Type, 'HIGHLEVEL', 'Wrong Control Type Output')
+
+        # Test 2
+        control_1 = 'LINK 9 OPEN IF NODE 2 BELOW 110.0'
+        control_2 = 'LINK 9 CLOSED IF NODE 2 ABOVE 200.0'
+        controls = [control_1, control_2]
+        self.epanetClass.setControls(controls)              
+        self.assertEqual(self.epanetClass.getControls(1).Control, control_1, 'Wrong Control Output')
+        self.assertEqual(self.epanetClass.getControls(2).Control, control_2, 'Wrong Control Output')
+
+    def testsetCurve(self):
+        
+        ''' ---setCurve---    '''
+        d = epanet('BWSN_Network_1.inp')
+        curveIndex = 1
+        d.getCurvesInfo().CurveXvalue[curveIndex-1]
+        d.getCurvesInfo().CurveYvalue[curveIndex-1]
+        x_y_1 = [0, 730]
+        x_y_2 = [1000, 500]
+        x_y_3 = [1350, 260]
+        values = [x_y_1, x_y_2, x_y_3]
+        d.setCurve(curveIndex, values)
+        actual_x = d.getCurvesInfo().CurveXvalue[curveIndex-1]
+        self.assertEqual(actual_x, [0.0, 1000.0, 1350.0], 'Wrong Curve X Value Output')
+        actual_y = d.getCurvesInfo().CurveYvalue[curveIndex-1]
+        self.assertEqual(actual_y, [730.0, 500.0, 260.0], 'Wrong Curve Y Value Output')
+        
+        ''' ---setCurveComment---    '''
+        curveIndex = [1,2]
+        comment = ['This is the 1st curve', 'This is the 2nd curve']
+        d.setCurveComment(curveIndex, comment)
+        desired_comment = ['This is the 1st curve', 'This is the 2nd curve']
+        self.assertEqual(d.getCurveComment(curveIndex), desired_comment, 'Wrong Curve Comment Output')
+
+        ''' ---setCurveNameID---    '''       
+        d.setCurveNameID([1, 2], ['Curve1', 'Curve2'])
+        self.assertEqual(d.getCurveNameID(), ['Curve1', 'Curve2', 'CURVE-2'], 'Wrong Curve ID')
+
+        ''' ---setCurveValue---    '''  
+        err_msg = 'Wrong Curve Value Output'     
+        curveIndex = 1          
+        curvePoint = 1                                         
+        x_y_values = [10, 400]                                 
+        d.setCurveValue(curveIndex, curvePoint, x_y_values)
+        self.assertAlmostEqual(d.getCurvesInfo().CurveXvalue[curveIndex-1][0], x_y_values[0], err_msg)
+        self.assertEqual(d.getCurvesInfo().CurveYvalue[curveIndex-1][0], x_y_values[1], err_msg) 
+        
+        d.unload()
+        
+    def testsetDemandModel(self):
+        type = 'PDA'
+        pmin = 0
+        preq = 0.1
+        pexp = 0.5
+        self.epanetClass.setDemandModel(type, pmin, preq, pexp)
+        desired = {'DemandModelCode': 1, 'DemandModelPmin': 0.0, 'DemandModelPreq': 0.1, 
+                   'DemandModelPexp': 0.5, 'DemandModelType': 'PDA'}
+        actual = self.epanetClass.getDemandModel().to_dict()
+        self.assertDictEqual(actual,desired, 'Wrong Set Demand Model Output')
+
+    def testsetFlowunits(self):
+        self.epanetClass.setFlowUnitsAFD()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'AFD', 'Error setting flow units to AFD') 
+        self.epanetClass.setFlowUnitsCFS()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'CFS', 'Error setting flow units to CFS') 
+        self.epanetClass.setFlowUnitsCMD()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'CMD', 'Error setting flow units to CMD') 
+        self.epanetClass.setFlowUnitsCMH()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'CMH', 'Error setting flow units to CMH') 
+        self.epanetClass.setFlowUnitsGPM()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'GPM', 'Error setting flow units to GPM') 
+        self.epanetClass.setFlowUnitsIMGD()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'IMGD', 'Error setting flow units to IMGD') 
+        self.epanetClass.setFlowUnitsLPM()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'LPM', 'Error setting flow units to LPM') 
+        self.epanetClass.setFlowUnitsLPS()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'LPS', 'Error setting flow units to LPS') 
+        self.epanetClass.setFlowUnitsMGD()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'MGD', 'Error setting flow units to MGD') 
+        self.epanetClass.setFlowUnitsMLD()
+        self.assertEqual(self.epanetClass.getFlowUnits(), 'MLD', 'Error setting flow units to MLD') 
+        
+    def testsetLinkBulkReactionCoeff(self):
+        err_msg = 'Error setting Link Bulk Reaction Coeff'
+        # Test 1
+        index_pipe = 1
+        coeff = 0
+        self.epanetClass.setLinkBulkReactionCoeff(index_pipe, coeff)
+        self.assertEqual(self.epanetClass.getLinkBulkReactionCoeff(index_pipe), 0, err_msg)
+
+        # Test 2
+        coeffs = self.epanetClass.getLinkBulkReactionCoeff()              
+        coeffs_new = [0 for i in coeffs]
+        self.epanetClass.setLinkBulkReactionCoeff(coeffs_new) 
+        desired_value = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
+        self.assertEqual(list(self.epanetClass.getLinkBulkReactionCoeff()), desired_value, err_msg) 
+
+    def testsetLinkComment(self):
+        err_msg = 'Error setting Link Comment'
+        # Test 1
+        linkIndex = 1
+        comment = 'This is a link'
+        self.epanetClass.setLinkComment(linkIndex, comment)
+        self.assertEqual(self.epanetClass.getLinkComment(linkIndex)[0], comment, err_msg)   
+
+        # Test 2
+        linkIndex = [1, 2]
+        comment = ['This is link 1', 'This is link 2']
+        self.epanetClass.setLinkComment(linkIndex, comment)   
+        self.assertEqual(self.epanetClass.getLinkComment(linkIndex), comment, err_msg)  
+
+    def testsetLinkDiameter(self):
+        err_msg = 'Error setting Link Diameter'
+        # Test 1
+        index_pipe = 1
+        diameter = 20
+        self.epanetClass.setLinkDiameter(index_pipe, diameter)       
+        self.assertEqual(self.epanetClass.getLinkDiameter(index_pipe), 20, err_msg)
+
+        # Test 2
+        index_pipes = [1, 2]
+        diameters = [20, 25]
+        self.epanetClass.setLinkDiameter(index_pipes, diameters)     
+        self.assertEqual(list(self.epanetClass.getLinkDiameter(index_pipes)), [20, 25], err_msg)  
+
+    def testsetLinkInitial_Status_Setting(self):
+
+        ''' ---setLinkInitialSetting---    ''' 
+        err_msg = 'Error setting Link Initial Setting' 
+        # Test 1
+        index_pipe = 1
+        setting = 80
+        self.epanetClass.setLinkInitialSetting(index_pipe, setting) 
+        self.assertEqual(self.epanetClass.getLinkInitialSetting(index_pipe), 80, err_msg)
+
+        # Test 2
+        settings = self.epanetClass.getLinkInitialSetting()                
+        settings_new = settings + 140
+        self.epanetClass.setLinkInitialSetting(settings_new)               
+        self.assertEqual(list(self.epanetClass.getLinkInitialSetting()), list(settings_new), err_msg)
+    
+        ''' ---setLinkInitialStatus---    '''  
+        err_msg = 'Error setting Link Initial Status'
+        # Test 1
+        index_pipe = 1
+        status = 0
+        self.epanetClass.setLinkInitialStatus(index_pipe, status)        
+        self.assertEqual(self.epanetClass.getLinkInitialStatus(index_pipe), 0, err_msg) 
+
+        # Test 2
+        statuses = self.epanetClass.getLinkInitialStatus()                
+        statuses_new = np.zeros(len(statuses))
+        self.epanetClass.setLinkInitialStatus(statuses_new) 
+        desired = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]             
+        self.assertEqual(list(self.epanetClass.getLinkInitialStatus()), desired, err_msg) 
+
+    def testsetLinkLength(self):
+        err_msg = 'Error setting Link Length'
+        d = epanet('BWSN_Network_1.inp')
+        # Test 1
+        index_pipe = 1
+        length_pipe = 100
+        d.setLinkLength(index_pipe, length_pipe)      
+        self.assertEqual(d.getLinkLength(index_pipe), 100, err_msg)
+
+        # Test 2
+        lengths = d.getLinkLength()                   
+        lengths_new = [i * 1.5 for i in lengths]
+        d.setLinkLength(lengths_new)                  
+        self.assertEqual(list(d.getLinkLength()), lengths_new, err_msg)
+
+    def testsetLinkMinorLossCoeff(self):
+        err_msg = 'Error setting Link Minor Loss Coefficient'
+        # Test 1
+        index_pipe = 1
+        coeff = 105
+        self.epanetClass.setLinkMinorLossCoeff(index_pipe, coeff)        
+        self.assertEqual(self.epanetClass.getLinkMinorLossCoeff(index_pipe), 105, err_msg)
+
+        # Test 2
+        coeffs = self.epanetClass.getLinkMinorLossCoeff()                
+        coeffs_new = coeffs + 0.2
+        self.epanetClass.setLinkMinorLossCoeff(coeffs_new)        
+        desired = np.array([105.2,   0.2,   0.2,   0.2,   0.2,   0.2,   0.2,   0.2,   0.2,
+         0.2,   0.2,   0.2,   0. ])      
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(), desired, err_msg=err_msg)
+
+    def testsetLinkNameID(self):
+        err_msg = 'Error setting Link ID'
+        d = epanet('BWSN_Network_1.inp')
+        # Test 1
+        index_pipe = 1
+        linkID = 'New_ID'                   
+        d.setLinkNameID(index_pipe, linkID) 
+        self.assertEqual(d.getLinkNameID(index_pipe), linkID, err_msg)
+
+        # Test 2
+        IDs = ['1', '2', '3', '4']         
+        d.setLinkNameID(IDs)                
+        self.assertEqual(d.getLinkNameID([1,2,3,4]), ['1', '2', '3', '4'], err_msg)
+
+    def testsetLinkNodesIndex(self):
+        err_msg = 'Error setting Link ID'
+        d = epanet('ky10.inp')
+        # Test 1
+        linkIndex = 1
+        startNode = 2
+        endNode   = 3
+        d.setLinkNodesIndex(linkIndex, startNode, endNode)
+        self.assertEqual(d.getLinkNodesIndex()[0], [2, 3], err_msg)
+
+        # Test 2
+        linkIndex = [1, 2]
+        startNode = [2, 4]
+        endNode   = [3, 5]
+        d.setLinkNodesIndex(linkIndex, startNode, endNode)
+        self.assertEqual(d.getLinkNodesIndex()[0:2], [[2, 3], [4, 5]], err_msg)
+
+    def testsetLinkPipeData(self):
+        pipeIndex = [1, 2]
+        length = [1000, 1500]
+        diameter = [20, 23]
+        RoughnessCoeff = [110, 115]
+        MinorLossCoeff = [0.2, 0.3]
+        self.epanetClass.setLinkPipeData(pipeIndex, length, diameter, RoughnessCoeff, MinorLossCoeff)
+        p_data = self.epanetClass.getLinksInfo()
+        np.testing.assert_array_almost_equal(p_data.LinkLength[0:2], length, err_msg='Error setting link length')
+        np.testing.assert_array_almost_equal(p_data.LinkDiameter[0:2], diameter, err_msg='Error setting link diameter')
+        np.testing.assert_array_almost_equal(p_data.LinkRoughnessCoeff[0:2], RoughnessCoeff, err_msg='Error setting link Roughness Coefficient')
+        np.testing.assert_array_almost_equal(p_data.LinkMinorLossCoeff[0:2], MinorLossCoeff, err_msg='Error setting link Minor Loss Coefficient')
+
+
 if __name__ == "__main__":
     unittest.main()  # run all tests

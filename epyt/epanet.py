@@ -6803,9 +6803,9 @@ class epanet:
 
         Example 2:
 
-        >>> statuses = d.getLinkInitialStatus                 # Retrieves the initial status of all links
-        >>> statuses_new = zeros(1, length(statuses))
-        >>> d.setLinkInitialStatus(statuses_new)              # Sets the initial status of all links
+        >>> statuses = d.getLinkInitialStatus()                 # Retrieves the initial status of all links
+        >>> statuses_new = np.zeros(len(statuses))
+        >>> d.setLinkInitialStatus(statuses_new)                # Sets the initial status of all links
         >>> d.getLinkInitialStatus()
 
         See also getLinkInitialStatus, setLinkInitialSetting, setLinkDiameter,
