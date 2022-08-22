@@ -1667,17 +1667,559 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setLinkWallReactionCoeff(coeffs_new) 
         desired_coeff = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])             
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkWallReactionCoeff(), desired_coeff, err_msg=err_msg)
+    
+    def testsetNodeBaseDemands(self):
+        d=epanet('BWSN_Network_1.inp')   
+        err_msg = 'Error setting Node Base Demands'
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        # Test 1
+        index_node = 1
+        demand = 5
+        d.setNodeBaseDemands(index_node, demand)                   
+        self.assertAlmostEqual(d.getNodeBaseDemands()[1][index_node-1], demand, err_msg)
 
+        # Test 2
+        nodeIndex = list(range(1,6))
+        BaseDems = d.getNodeBaseDemands()[1]
+        baseDems = list(np.array(BaseDems)[0:5])                   
+        demands = [10, 5, 15, 20, 5]
+        d.setNodeBaseDemands(nodeIndex, demands) 
+        desired = np.array([10.,  5., 15., 20.,  5.])                  
+        np.testing.assert_array_almost_equal(d.getNodeBaseDemands()[1][0:5], desired, err_msg=err_msg)
+        
+        # Test 3
+        nodeIndex = 121
+        categoryIndex = 2
+        demand = 25
+        d.setNodeBaseDemands(nodeIndex, categoryIndex, demand)       
+        self.assertAlmostEqual(d.getNodeBaseDemands()[categoryIndex][nodeIndex-1], demand, err_msg)
+        
+    def testsetNodeComment(self):
+        self.epanetClass.setNodeComment([1,2], ['This is a node', 'Test comm'])  
+        self.assertEqual(self.epanetClass.getNodeComment([1,2]) , ['This is a node', 'Test comm'], 'Erron setting node comments')
+        
+    def testsetNodeCoordinates(self):
+        err_msg = 'Error setting Node Coordinates'
+        
+        # Test 1    
+        nodeIndex = 1
+        coords = [0,0]
+        self.epanetClass.setNodeCoordinates(nodeIndex, coords)   
+        desired = {'x': {1: 0.0}, 'y': {1: 0.0}}   
+        self.assertDictEqual(self.epanetClass.getNodeCoordinates(nodeIndex), desired, err_msg)
+
+        # Test 2 
+        x_values = self.epanetClass.getNodeCoordinates('x')
+        y_values = self.epanetClass.getNodeCoordinates('y')
+        x_new = [x_values[i]+10 for i in x_values]
+        y_new = [y_values[i]+10 for i in y_values]
+        new_coords = [x_new, y_new]                    
+        self.epanetClass.setNodeCoordinates(new_coords)
+        desired_new_x = {1: 10.0, 2: 40.0, 3: 60.0, 4: 80.0, 5: 40.0, 6: 60.0, 7: 80.0, 8: 40.0, 9: 60.0, 10: 20.0, 11: 60.0}
+        x_values_new = self.epanetClass.getNodeCoordinates('x')
+        self.assertDictEqual(x_values_new, desired_new_x, err_msg)
+        desired_new_y = {1: 10.0, 2: 80.0, 3: 80.0, 4: 80.0, 5: 50.0, 6: 50.0, 7: 50.0, 8: 20.0, 9: 20.0, 10: 80.0, 11: 100.0}
+        y_values_new = self.epanetClass.getNodeCoordinates('y')
+        self.assertDictEqual(y_values_new, desired_new_y, err_msg)
+        
+    def testsetNodeDemandPatternIndex(self):
+        d = epanet('BWSN_Network_1.inp')
+        err_msg = 'Error setting Node Demand Pattern Index'
+        
+        # Test 1
+        nodeIndex = np.array(range(1,6))
+        d.getNodeDemandPatternIndex()[1][0:5]
+        patternIndices = [1, 3, 2, 4, 2]
+        d.setNodeDemandPatternIndex(nodeIndex, patternIndices)                 
+        self.assertEqual(d.getNodeDemandPatternIndex()[1][0:5], patternIndices, err_msg)
+        
+        # Test 2
+        nodeIndex = 121
+        categoryIndex = 2
+        d.getNodeDemandPatternIndex()[categoryIndex][nodeIndex-1]                 
+        patternIndex = 4
+        d.setNodeDemandPatternIndex(nodeIndex, categoryIndex, patternIndex)       
+        self.assertEqual(d.getNodeDemandPatternIndex()[categoryIndex][nodeIndex-1], 4, err_msg)
+        
+        # Test 3
+        nodeIndex = np.array(range(1,6))
+        categoryIndex = 1
+        patDems = d.getNodeDemandPatternIndex()[categoryIndex]
+        patDems = list(np.array(patDems)[0:5])
+        patternIndices = [1, 3, 2, 4, 2]
+        d.setNodeDemandPatternIndex(nodeIndex, categoryIndex, patternIndices)     
+        self.assertEqual(d.getNodeDemandPatternIndex()[categoryIndex][0:5], patternIndices, err_msg)
+    
+    def testsetNodeElevations(self):
+        err_msg = 'Error setting node elevations'
+        elevs = self.epanetClass.getNodeElevations()               
+        elevs_new = elevs + 100
+        self.epanetClass.setNodeElevations(elevs_new)              
+        np.testing.assert_array_almost_equal(self.epanetClass.getNodeElevations(), elevs_new, err_msg=err_msg)
+        
+    def testsetNodeEmitterCoeff(self):
+        err_msg = 'Error setting node emitter coefficient'
+        nodeset = self.epanetClass.getNodeEmitterCoeff()                
+        nodeset[0] = 0.1                                 
+        self.epanetClass.setNodeEmitterCoeff(nodeset) 
+        desired = np.array([0.1, 0. , 0. , 0. , 0. , 0. , 0. , 0. , 0. , 0. , 0. ])                
+        np.testing.assert_array_almost_equal(self.epanetClass.getNodeEmitterCoeff(), desired, err_msg=err_msg)
+        
+    def testsetNodeInitialQuality(self):
+        err_msg = 'Error setting node initial quality'
+        nodeIndex = 1
+        initialQuality = 1
+        self.epanetClass.setNodeInitialQuality(nodeIndex, initialQuality)   
+        self.assertAlmostEqual(self.epanetClass.getNodeInitialQuality(nodeIndex), 1, err_msg)
+        
+    def testsetNodeJunctionData(self):
+        err_msg = 'Error setting node junction data'
+        junctionIndex = 1
+        elev = 35
+        dmnd = 100
+        dmndpat = 'NEW_PATTERN'
+        self.epanetClass.addPattern(dmndpat)                                         
+        self.epanetClass.setNodeJunctionData(junctionIndex, elev, dmnd, dmndpat)     
+        self.assertAlmostEqual(self.epanetClass.getNodeElevations(junctionIndex), elev, 'Error setting node junction data (elevation)')                           
+        self.assertAlmostEqual(self.epanetClass.getNodeBaseDemands(junctionIndex)[1], dmnd, 'Error setting node junction data (demand)')                           
+        self.assertEqual(self.epanetClass.getNodeDemandPatternNameID()[junctionIndex][0], dmndpat, 'Error setting node junction data (demand pattern)') 
+        
+    def testsetNodeNameID(self):
+        err_msg = 'Error setting node ID'
+        
+        # Test 1
+        nodeIndex = 1
+        nameID = 'newID'
+        self.epanetClass.setNodeNameID(nodeIndex, nameID) 
+        self.assertEqual(self.epanetClass.getNodeNameID(nodeIndex), nameID, err_msg)
+
+        # Test 2
+        nameID = self.epanetClass.getNodeNameID()         
+        nameID[0] = 'newID_1'
+        nameID[4] = 'newID_5'
+        self.epanetClass.setNodeNameID(nameID)             
+        actual = [self.epanetClass.getNodeNameID()[0], self.epanetClass.getNodeNameID()[4]]
+        desired =  [nameID[0], nameID[4]]  
+        self.assertEqual(actual, desired, err_msg)
+        
+    def testsetNodesConnectingLinksID(self):
+        err_msg = 'Error setting nodes connecting links IDs'
+        
+        # Test 1
+        self.epanetClass.getNodesConnectingLinksID() 
+        linkIndex = 2
+        startNodeID = '11'
+        endNodeID = '22'
+        self.epanetClass.setNodesConnectingLinksID(linkIndex, startNodeID, endNodeID)
+        self.assertEqual(self.epanetClass.getNodesConnectingLinksID(linkIndex)[0], [startNodeID, endNodeID], err_msg)
+
+        # Test 2
+        linkIndex   = [2, 3]
+        startNodeID = ['12', '13']
+        endNodeID   = ['21', '22']
+        self.epanetClass.setNodesConnectingLinksID(linkIndex, startNodeID, endNodeID)
+        self.assertEqual(self.epanetClass.getNodesConnectingLinksID(2)[0], ['12', '21'], err_msg)  
+        self.assertEqual(self.epanetClass.getNodesConnectingLinksID(3)[0] , ['13', '22'], err_msg)
+        
+    def testsetNodeSourcePatternIndex(self):
+        err_msg = 'Error setting nodes source Pattern Index'
+        nodeIndex = [1,2,3]
+        sourcePatternIndex = [1, 1, 1]
+        self.epanetClass.setNodeSourcePatternIndex(nodeIndex, sourcePatternIndex)    
+        self.assertEqual(list(self.epanetClass.getNodeSourcePatternIndex(nodeIndex)), sourcePatternIndex, err_msg)
+     
+    def testsetNodeSourceQuality(self):
+        err_msg = 'Error setting nodes source Quality'
+        nodeIndex = [1,2,3]
+        sourceStrength = [10, 12, 8]
+        self.epanetClass.setNodeSourceQuality(nodeIndex, sourceStrength)    
+        self.assertEqual(list(self.epanetClass.getNodeSourceQuality(nodeIndex)), sourceStrength, err_msg)
+
+    def testsetNodeSourceType(self):
+        err_msg = 'Error setting nodes source Type'
+        nodeIndex = 1
+        sourceType = 'MASS'
+        self.epanetClass.setNodeSourceType(nodeIndex, sourceType)     
+        self.assertEqual(self.epanetClass.getNodeSourceType(nodeIndex)[0], sourceType, err_msg)
+
+    def testsetNodeTankBulkReactionCoeff(self):
+        err_msg = 'Error setting node Tank Bulk Reaction Coefficient'
+        d = epanet('BWSN_Network_1.inp')
+        
+        # Test 1
+        tankIndex = d.getNodeTankIndex()
+        d.setNodeTankBulkReactionCoeff(tankIndex, 0)              
+        self.assertEqual(d.getNodeTankBulkReactionCoeff(1), 0, err_msg)
+
+        # Test 2
+        tankIndex = d.getNodeTankIndex([1,2])
+        d.setNodeTankBulkReactionCoeff(tankIndex, [-0.5, 0])      
+        self.assertEqual(list(d.getNodeTankBulkReactionCoeff()), [-0.5, 0], err_msg)
+    
+    def testsetNodeTankCanOverFlow(self):
+        err_msg = 'Error setting node Tank Can Overflow'
+        d = epanet('BWSN_Network_1.inp')
+    
+        # Test 1
+        d.setNodeTankCanOverFlow(1)              
+        np.testing.assert_array_almost_equal(d.getNodeTankCanOverFlow(), np.array([1., 1.]), err_msg=err_msg)
+
+        # Test 2
+        d.setNodeTankCanOverFlow([1, 0])         
+        np.testing.assert_array_almost_equal(d.getNodeTankCanOverFlow(), np.array([1., 0.]), err_msg=err_msg)
+
+        # Test 3
+        d.setNodeTankCanOverFlow(1, 0)           
+        np.testing.assert_array_almost_equal(d.getNodeTankCanOverFlow(), np.array([0., 0.]), err_msg=err_msg)
+        
+    def testsetNodeTankData(self):
+        d = epanet('Net3_trace.inp')
+        tankIndex = [1, 2]    
+        elev = [100, 105]
+        intlvl = [13, 13.5]
+        minlvl =  [0.2, 0.25]
+        maxlvl = [30, 35]
+        diam = [80, 85]
+        minvol = [50000, 60000]
+        volcurve = ['', '']   
+        d.setNodeTankData(tankIndex, elev, intlvl, minlvl, maxlvl, diam, minvol, volcurve)
+        t_Data = d.getNodeTankData(tankIndex)
+        np.testing.assert_array_almost_equal(t_Data.Elevation, elev, err_msg='Error Setting Node Tank Elevation')
+        np.testing.assert_array_almost_equal(t_Data.Initial_Level, intlvl, err_msg='Error Setting Node Tank Inititial Level') 
+        np.testing.assert_array_almost_equal(t_Data.Minimum_Water_Level, minlvl, err_msg='Error Setting Node Tank Min Water Lever') 
+        np.testing.assert_array_almost_equal(t_Data.Maximum_Water_Level, maxlvl, err_msg='Error Setting Node Tank Max Water Level') 
+        np.testing.assert_array_almost_equal(t_Data.Diameter, diam, err_msg='Error Setting Node Tank Diameter') 
+        np.testing.assert_array_almost_equal(t_Data.Minimum_Water_Volume, minvol, err_msg='Error Setting Node Tank Min Water Volume') 
+        np.testing.assert_array_almost_equal(t_Data.Elevation, elev, err_msg='Error Setting Node Tank Elevation') 
+        
+    def testsetNodeTankDiameter(self):
+        err_msg = 'Error setting Node Tank Diameter'
+        d=epanet('BWSN_Network_1.inp')
+        
+        # Test 1
+        d.setNodeTankDiameter(120)                      
+        np.testing.assert_array_almost_equal(d.getNodeTankDiameter(), np.array([120., 120.]), err_msg=err_msg)
+
+        # Test 2
+        d.setNodeTankDiameter([110, 130])              
+        self.assertEqual(list(d.getNodeTankDiameter()), [110, 130], err_msg)
+
+        # Test 3
+        d.setNodeTankDiameter(1, 120)                   
+        self.assertEqual(d.getNodeTankDiameter(1), 120, err_msg)
+    
+    def testsetTankInitialLevel(self):
+        err_msg = 'Error setting Node Tank Initial Level'
+        d=epanet('BWSN_Network_1.inp')
+        
+        # Test 1
+        tankIndex = d.getNodeTankIndex()
+        d.setNodeTankInitialLevel(tankIndex, 10)          
+        np.testing.assert_array_almost_equal(d.getNodeTankInitialLevel(), np.array([10., 10.]), err_msg=err_msg)
+
+        # Test 2
+        tankIndex = d.getNodeTankIndex()
+        d.setNodeTankInitialLevel(tankIndex, [10, 15])    
+        np.testing.assert_array_almost_equal(d.getNodeTankInitialLevel(), np.array([10., 15.]), err_msg=err_msg)
+    
+    def testsetNodeTankMaximumWaterLevel(self):
+        err_msg = 'Error setting Node Tank Max Water Level'
+        d=epanet('BWSN_Network_1.inp')
+        tankIndex = d.getNodeTankIndex()
+        d.setNodeTankMaximumWaterLevel(tankIndex, 30)          
+        np.testing.assert_array_almost_equal(d.getNodeTankMaximumWaterLevel(), np.array([30., 30.]), err_msg=err_msg)
+        
+    def testsetNodeTankMinimumWaterLevel(self):
+        err_msg = 'Error setting Node Tank Min Water Level'
+        d=epanet('BWSN_Network_1.inp')
+        tankIndex = d.getNodeTankIndex()
+        d.setNodeTankMinimumWaterLevel(tankIndex, [5, 15])      
+        d.getNodeTankMinimumWaterLevel(), 
+        np.testing.assert_array_almost_equal(d.getNodeTankMinimumWaterLevel(), np.array([ 5., 15.]), err_msg=err_msg) 
+        
+    def testsetNodeTankMinimumWaterVolume(self):
+        err_msg = 'Error setting Node Tank Min Water Volume'
+        d=epanet('BWSN_Network_1.inp')
+        d.setNodeTankMinimumWaterVolume([1500, 2000])              
+        np.testing.assert_array_almost_equal(d.getNodeTankMinimumWaterVolume(), np.array([ 1500, 2000]), err_msg=err_msg) 
+        
+    def testsetNodeTankMixingFraction(self):
+        err_msg = 'Error setting Node Tank Min Water Volume'
+        d=epanet('BWSN_Network_1.inp')
+        tankIndex = d.getNodeTankIndex()
+        d.setNodeTankMixingFraction(tankIndex, [1, 0])    
+        np.testing.assert_array_almost_equal(d.getNodeTankMixingFraction(), np.array([1, 0]), err_msg=err_msg) 
+        
+    def testgetNodeTankMixingModelType(self):
+        err_msg = 'Error setting Node Tank Mixing Model Type'
+        d=epanet('BWSN_Network_1.inp') 
+        tankIndex = d.getNodeTankIndex()
+        d.setNodeTankMixingModelType(tankIndex, ['MIX2', 'LIFO'])     
+        self.assertEqual(d.getNodeTankMixingModelType(),  ['MIX2', 'LIFO'], err_msg)  
+        
+    def testsetNodeType(self):
+        
+        ''' ---setNodeTypeJunction---    '''
+        index = self.epanetClass.setNodeTypeJunction('2')
+        self.assertEqual(self.epanetClass.getNodeType(index), 'JUNCTION', 'Error setting node type to junction')
+        
+        ''' ---setNodeTypeReservoir---    '''
+        index = self.epanetClass.setNodeTypeReservoir('13')
+        self.assertEqual(self.epanetClass.getNodeType(index), 'RESERVOIR', 'Error setting node type to junction')
+    
+        ''' ---setNodeTypeTank---    '''
+        self.epanetClass.unload()
+        self.epanetClass = epanet('Net1.inp')
+        index = self.epanetClass.setNodeTypeTank('13')
+        self.assertEqual(self.epanetClass.getNodeType(index), 'TANK', 'Error setting node type to junction')
+     
+    def testsetoptions(self):
+        err_msg = 'Error setting Options'
+        self.epanetClass.setOptionsAccuracyValue(0.001)
+        self.assertEqual(self.epanetClass.getOptionsAccuracyValue(), 0.001, err_msg)
+        self.epanetClass.setOptionsCheckFrequency(2)
+        self.assertEqual(self.epanetClass.getOptionsCheckFrequency(), 2, err_msg)
+        self.epanetClass.setOptionsDampLimit(0)
+        self.assertEqual(self.epanetClass.getOptionsDampLimit(), 0, err_msg)
+        self.epanetClass.setOptionsDemandCharge(0)
+        self.assertEqual(self.epanetClass.getOptionsDemandCharge(), 0, err_msg)
+        self.epanetClass.setOptionsEmitterExponent(0.5)
+        self.assertEqual(self.epanetClass.getOptionsEmitterExponent(), 0.5, err_msg)
+        self.epanetClass.setOptionsExtraTrials(10)
+        self.assertEqual(self.epanetClass.getOptionsExtraTrials(), 10, err_msg)
+        self.epanetClass.setOptionsFlowChange(0)
+        self.assertEqual(self.epanetClass.getOptionsFlowChange(), 0, err_msg)
+        self.epanetClass.setOptionsGlobalEffic(75)
+        self.assertEqual(self.epanetClass.getOptionsGlobalEffic(), 75, err_msg)
+        self.epanetClass.setOptionsGlobalPrice(0)
+        self.assertEqual(self.epanetClass.getOptionsGlobalPrice(), 0, err_msg)
+        self.epanetClass.setOptionsGlobalPattern(1)
+        self.assertEqual(self.epanetClass.getOptionsGlobalPattern(), 1, err_msg)
+        self.epanetClass.setOptionsHeadError(0)
+        self.assertEqual(self.epanetClass.getOptionsHeadError(), 0, err_msg)
+        self.epanetClass.setOptionsHeadLossFormula('HW')  
+        self.assertEqual(self.epanetClass.getOptionsHeadLossFormula(), 'HW' , err_msg) 
+        self.epanetClass.setOptionsLimitingConcentration(0)
+        self.assertEqual(self.epanetClass.getOptionsLimitingConcentration(), 0, err_msg)
+        self.epanetClass.setOptionsMaximumCheck(10)
+        self.assertEqual(self.epanetClass.getOptionsMaximumCheck(), 10, err_msg)
+        self.epanetClass.setOptionsMaxTrials(40)
+        self.assertEqual(self.epanetClass.getOptionsMaxTrials(), 40, err_msg)
+        self.epanetClass.setOptionsPatternDemandMultiplier(1)
+        self.assertEqual(self.epanetClass.getOptionsPatternDemandMultiplier(), 1, err_msg)
+        self.epanetClass.setOptionsPipeBulkReactionOrder(1)
+        self.assertEqual(self.epanetClass.getOptionsPipeBulkReactionOrder(), 1, err_msg)
+        self.epanetClass.setOptionsPipeWallReactionOrder(1)
+        self.assertEqual(self.epanetClass.getOptionsPipeWallReactionOrder(), 1, err_msg)
+        self.epanetClass.setOptionsQualityTolerance(0.01)
+        self.assertEqual(self.epanetClass.getOptionsQualityTolerance(), 0.01, err_msg)
+        self.epanetClass.setOptionsSpecificDiffusivity(1)
+        self.assertEqual(self.epanetClass.getOptionsSpecificDiffusivity(), 1, err_msg)
+        self.epanetClass.setOptionsSpecificGravity(1)
+        self.assertEqual(self.epanetClass.getOptionsSpecificGravity(), 1, err_msg)
+        self.epanetClass.setOptionsSpecificViscosity(1)
+        self.assertEqual(self.epanetClass.getOptionsSpecificViscosity(), 1, err_msg)
+        self.epanetClass.setOptionsTankBulkReactionOrder(1)
+        self.assertEqual(self.epanetClass.getOptionsTankBulkReactionOrder(), 1, err_msg)
+        
+    def testsetQualityType(self):
+        err_msg = 'Error setting Quality type'
+        
+        # Test 1
+        self.epanetClass.setQualityType('none')                         
+        self.assertEqual(self.epanetClass.getQualityInfo().QualityType, 'NONE', err_msg)                     
+
+        # Test 2
+        self.epanetClass.setQualityType('age')                         
+        self.assertEqual(self.epanetClass.getQualityInfo().QualityType, 'AGE', err_msg)                     
+
+        # # Test 3
+        self.epanetClass.setQualityType('chem', 'Chlorine')             
+        self.assertEqual(self.epanetClass.getQualityInfo().QualityType, 'CHEM', err_msg)   
+        self.assertEqual(self.epanetClass.getQualityInfo().QualityChemName, 'Chlorine', err_msg)   
+        self.epanetClass.setQualityType('chem', 'Chlorine', 'mg/Kg')    
+        self.assertEqual(self.epanetClass.getQualityInfo().QualityChemUnits, 'mg/Kg', err_msg)   
+
+        # Test 4
+        nodeID = self.epanetClass.getNodeNameID(1)
+        self.epanetClass.setQualityType('trace', nodeID)                
+        self.assertEqual(self.epanetClass.getQualityInfo().TraceNode, 1, err_msg)
+        
+    def testsetPattern(self):
+        
+        ''' ---setPattern---    '''
+        err_msg = 'Error setting new pattern'
+        patternID = 'new_pattern'
+        patternIndex = self.epanetClass.addPattern(patternID)    
+        patternMult = [1.56, 1.36, 1.17, 1.13, 1.08,
+            1.04, 1.2, 0.64, 1.08, 0.53, 0.29, 0.9, 1.11,
+            1.06, 1.00, 1.65, 0.55, 0.74, 0.64, 0.46,
+            0.58, 0.64, 0.71, 0.66]
+        self.epanetClass.setPattern(patternIndex, patternMult)    
+        np.testing.assert_array_almost_equal(self.epanetClass.getPattern()[1], patternMult, err_msg=err_msg)     
+
+        ''' ---setPatternComment---    '''
+        err_msg = 'Error setting pattern comment'
+        d = epanet('BWSN_Network_1.inp')
+        patternComment = ['1st PAT', '2nd PAT', '3rd PAT', "4rth PAT"]
+        d.setPatternComment(patternComment)                                                                         
+        self.assertEqual(d.getPatternComment(), patternComment, err_msg)
+        
+        ''' ---setPatternMatrix---    '''
+        err_msg = 'Error setting pattern Matrix'
+        self.epanetClass.unload()
+        self.epanetClass = epanet('Net1.inp')
+        patternID_1 = 'new_pattern_1'
+        patternIndex_1 = self.epanetClass.addPattern(patternID_1)    
+        patternID_2 = 'new_pattern_2'
+        patternIndex_2 = self.epanetClass.addPattern(patternID_2)    
+        patternMult = self.epanetClass.getPattern()
+        patternMult[patternIndex_1-1, 1] = 5            
+        patternMult[patternIndex_2-1, 2] = 7            
+        self.epanetClass.setPatternMatrix(patternMult)   
+        desired = np.array([[1. , 1.2, 1.4, 1.6, 1.4, 1.2, 1. , 0.8, 0.6, 0.4, 0.6, 0.8],
+                            [1. , 5. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. ],
+                            [1. , 1. , 7. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. ]])            
+        np.testing.assert_array_almost_equal(self.epanetClass.getPattern(), desired, err_msg=err_msg)
+        
+        
+        ''' ---setPatternNameID---    '''
+        err_msg = 'Error setting pattern ID'
+        # Test 1
+        self.epanetClass.setPatternNameID(1, 'Pattern1')                      
+        self.assertEqual(self.epanetClass.getPatternNameID(1), 'Pattern1', err_msg) 
+
+        # Test 2
+        self.epanetClass.setPatternNameID([1, 2], ['Pattern1', 'Pattern2'])   
+        self.assertEqual(self.epanetClass.getPatternNameID([1,2]), ['Pattern1', 'Pattern2'], err_msg)
+        
+        ''' ---setPatternValue---    '''
+        err_msg = 'Error setting pattern Value'
+        self.epanetClass.unload()
+        self.epanetClass = epanet('Net1.inp')
+        patternID = 'new_pattern'
+        patternIndex = self.epanetClass.addPattern(patternID)                          
+        patternTimeStep = 2
+        patternFactor = 5
+        self.epanetClass.setPatternValue(patternIndex, patternTimeStep, patternFactor) 
+        self.assertEqual(self.epanetClass.getPattern()[1][patternTimeStep-1], patternFactor, err_msg)
+        
+    def testsetRule(self):
+        d=epanet('BWSN_Network_1.inp')
+        
+        ''' ---setRulePremise---    '''
+        err_msg = 'Error setting rule premise'
+        # Test 1
+        ruleIndex = 1
+        premiseIndex = 1
+        premise = 'IF SYSTEM CLOCKTIME >= 8 PM'
+        d.setRulePremise(ruleIndex, premiseIndex, premise)   
+        self.assertEqual(d.getRules()[1]['Premises'][0], 'IF SYSTEM CLOCKTIME >= 08:00 PM UTC', err_msg)
+
+        # Test 2
+        ruleIndex = 1
+        premiseIndex = 1
+        premise = 'IF NODE TANK-131 LEVEL > 20'
+        d.setRulePremise(ruleIndex, premiseIndex, premise)                       
+        self.assertEqual(d.getRules()[1]['Premises'][0], 'IF NODE TANK-131 LEVEL > 20.0', err_msg)
+
+        ''' ---setRulePremiseObjectNameID---    '''
+        err_msg = 'Error setting rule premise object ID'
+        ruleIndex = 1
+        premiseIndex = 1
+        objNameID = 'TANK-131'
+        d.setRulePremiseObjectNameID(ruleIndex, premiseIndex, objNameID)
+        self.assertEqual(d.getRules()[1]['Premises'][0], 'IF NODE TANK-131 LEVEL > 20.0', err_msg)
+
+        ''' ---setRulePremiseValue---    '''
+        err_msg = 'Error setting rule premise value'
+        ruleIndex = 1
+        premiseIndex = 1
+        value = 21
+        d.setRulePremiseValue(ruleIndex, premiseIndex, value)
+        self.assertEqual(d.getRules()[1]['Premises'][0], 'IF NODE TANK-131 LEVEL > 21.0', err_msg)
+        
+        ''' ---setRules---    '''
+        err_msg = 'Error setting rules'
+        rule = 'RULE RULE-1 \n IF NODE 2 LEVEL >= 140 \n THEN PIPE 10 STATUS IS CLOSED \n ELSE PIPE 10 STATUS IS OPEN \n PRIORITY 1'
+        self.epanetClass.addRules(rule)              
+        ruleIndex = 1
+        rule_new = 'IF NODE 2 LEVEL > 150 \n THEN PIPE 10 STATUS IS OPEN \n ELSE PIPE 11 STATUS IS OPEN \n PRIORITY 2'
+        self.epanetClass.setRules(ruleIndex, rule_new) 
+        desired_rule =['RULE RULE-1', ['IF NODE 2 LEVEL > 150.0'], ['THEN PIPE 10 STATUS IS OPEN'], ['ELSE PIPE 11 STATUS IS OPEN'], 'PRIORITY 2.0']  
+        self.assertEqual(self.epanetClass.getRules()[1]['Rule'], desired_rule, err_msg)
+        
+        ''' ---setRuleElseAction---    '''
+        err_msg = 'Error setting rule else action'
+        self.epanetClass.addRules("RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PIPE 10 STATUS IS CLOSED \n ELSE PIPE 10 STATUS IS OPEN \n PRIORITY 1")   # Adds a new rule - based control
+        rule = self.epanetClass.getRules(1)   
+        ruleIndex = 1
+        actionIndex = 1
+        else_action = 'ELSE PIPE 11 STATUS IS CLOSED'
+        self.epanetClass.setRuleElseAction(ruleIndex, actionIndex, else_action)   
+        self.assertEqual(self.epanetClass.getRules()[1]['Else_Actions'][0], else_action, err_msg)
+        
+        ''' ---setRulePremiseStatus---    '''
+        err_msg = 'Error setting rule premise status'
+        self.epanetClass.unload()
+        self.epanetClass = epanet('Net1.inp')
+        self.epanetClass.addRules('RULE RULE-1 \n IF LINK 110 STATUS = CLOSED \n THEN PUMP 9 STATUS IS CLOSED \n PRIORITY 1')
+        self.epanetClass.getRules(1)
+        ruleIndex = 1
+        premiseIndex = 1
+        status = 'OPEN'
+        self.epanetClass.setRulePremiseStatus(ruleIndex, premiseIndex, status)   
+        self.assertEqual(self.epanetClass.getRules()[1]['Premises'][0], 'IF LINK 110 STATUS = OPEN', err_msg)
+        
+        ''' ---setRulePriority---    '''
+        self.epanetClass.unload()
+        self.epanetClass = epanet('Net1.inp')
+        err_msg = 'Error setting rule priority'
+        ruleIndex = 1
+        priority = 2
+        d.setRulePriority(ruleIndex, priority)  
+        self.assertEqual(d.getRules()[1]['Rule'][4], 'PRIORITY 2.0', err_msg)
+
+        ''' ---setRuleThenAction---    '''
+        err_msg = 'Error setting rule priority action'
+        self.epanetClass.addRules('RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PIPE 10 STATUS IS CLOSED \n ELSE PIPE 10 STATUS IS OPEN \n PRIORITY 1')   # Adds a new rule - based control
+        rule = self.epanetClass.getRules(1)  
+        ruleIndex = 1
+        actionIndex = 1
+        then_action = 'THEN PIPE 11 STATUS IS OPEN'
+        self.epanetClass.setRuleThenAction(ruleIndex, actionIndex, then_action)
+        self.assertEqual(self.epanetClass.getRules()[1]['Then_Actions'], ['THEN PIPE 11 STATUS IS OPEN'], err_msg)
+
+    def testsetTime(self):
+        err_msg = 'Error setting time'
+        Hstep = 1800
+        self.epanetClass.setTimeHydraulicStep(Hstep)
+        self.assertEqual(self.epanetClass.getTimeHydraulicStep(), Hstep, err_msg) 
+        patternStart = 0
+        self.epanetClass.setTimePatternStart(patternStart)
+        self.assertEqual(self.epanetClass.getTimePatternStart(), patternStart, err_msg)
+        patternStep = 3600
+        self.epanetClass.setTimePatternStep(patternStep)
+        self.assertEqual(self.epanetClass.getTimePatternStep(), patternStep, err_msg)
+        Qstep = 1800
+        self.epanetClass.setTimeQualityStep(Qstep)
+        self.assertEqual(self.epanetClass.getTimeQualityStep(), Qstep, err_msg)
+        reportingStart = 0
+        self.epanetClass.setTimeReportingStart(reportingStart)
+        self.assertEqual(self.epanetClass.getTimeReportingStart(), reportingStart, err_msg)
+        reportingStep = 3600
+        self.epanetClass.setTimeReportingStep(reportingStep)
+        self.assertEqual(self.epanetClass.getTimeReportingStep(), reportingStep, err_msg)
+        ruleControlStep = 360
+        self.epanetClass.setTimeRuleControlStep(ruleControlStep)
+        self.assertEqual(self.epanetClass.getTimeRuleControlStep(), ruleControlStep, err_msg)
+        simulationDuration = 172800    
+        self.epanetClass.setTimeSimulationDuration(simulationDuration)
+        self.assertEqual(self.epanetClass.getTimeSimulationDuration(), simulationDuration, err_msg)
+        statisticsType = 'AVERAGE'
+        self.epanetClass.setTimeStatisticsType(statisticsType)
+        self.assertEqual(self.epanetClass.getTimeStatisticsType(), statisticsType, err_msg)
+        
+        
 if __name__ == "__main__":
     unittest.main()  # run all tests

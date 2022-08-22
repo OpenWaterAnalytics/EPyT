@@ -4667,10 +4667,13 @@ class epanet:
         getNodeTankMinimumWaterLevel, getNodeTankDiameter.
         """
         tankData = val()
-        if len(argv) == 0:
-            tankIndices = self.getNodeTankIndex()
-        elif len(argv) == 1:
-            tankIndices = argv[0]
+        tankIndices = self.getNodeTankIndex()
+        if len(argv) == 1:
+            if argv[0] in tankIndices:
+                tankIndices = argv[0]
+            else: 
+                tankIndices = self.getNodeTankIndex(argv[0])
+                
         tankData.Index = tankIndices
         tankData.Elevation = self.getNodeElevations(tankIndices)
         tankData.Initial_Level = self.getNodeTankInitialLevel(tankIndices)
@@ -7637,8 +7640,8 @@ class epanet:
         >>> baseDems = list(np.array(BaseDems)[0:5])                   # Retrieves the demands of first 5 nodes
         >>> demands = [10, 5, 15, 20, 5]
         >>> d.setNodeBaseDemands(nodeIndex, demands)                   # Sets the demands of first 5 nodes
-        >>> newBaseDems = d.getNodeBaseDemands()[1]
-        >>> newbaseDems = newBaseDems[0:5]
+        >>> newBaseDems = d.getNodeBaseDemands()[1][0:5]
+        >>> newbaseDems = newBaseDems
 
         Example 3:
 
@@ -7737,7 +7740,7 @@ class epanet:
     def setNodeDemandPatternIndex(self, value, *argv):
         """ Sets the values of demand time pattern indices.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -7749,11 +7752,11 @@ class epanet:
 
         Example 2:
 
-        >>> nodeIndex = list(range(1,6))
-        >>> np.array(d.getNodeDemandPatternIndex()[1])[list(range(0,5))]
+        >>> nodeIndex = np.array(range(1,6))
+        >>> d.getNodeDemandPatternIndex()[1][0:5]
         >>> patternIndices = [1, 3, 2, 4, 2]
         >>> d.setNodeDemandPatternIndex(nodeIndex, patternIndices)                   # Sets the demand time pattern index to the first 5 nodes
-        >>> np.array(d.getNodeDemandPatternIndex()[1])[list(range(0,5))]
+        >>> d.getNodeDemandPatternIndex()[1][0:5]
 
         Example 3:
 
@@ -7761,8 +7764,6 @@ class epanet:
         >>> patternIndices_new = [i+1 for i in patternIndices]
         >>> d.setNodeDemandPatternIndex(patternIndices_new)                          # Sets all primary demand time pattern indices
         >>> d.getNodeDemandPatternIndex()[1]
-
-        For the following examples EPANET Version 2.1 or higher is required.
 
         If a category is not given, the default is categoryIndex = 1.
 
@@ -7777,14 +7778,13 @@ class epanet:
 
         Example 5:
 
-        >>> nodeIndex = list(range(1,6))
+        >>> nodeIndex = np.array(range(1,6))
         >>> categoryIndex = 1
         >>> patDems = d.getNodeDemandPatternIndex()[categoryIndex]
         >>> patDems = list(np.array(patDems)[0:5])
         >>> patternIndices = [1, 3, 2, 4, 2]
         >>> d.setNodeDemandPatternIndex(nodeIndex, categoryIndex, patternIndices)     # Sets the demand time pattern index of the 1st category of the first 5 nodes
-        >>> patDems_new = d.getNodeDemandPatternIndex()[categoryIndex]
-        >>> patDems_new = list(np.array(patDems_new)[0:5])
+        >>> patDems_new = d.getNodeDemandPatternIndex()[categoryIndex][0:5]
 
         See also getNodeDemandPatternIndex, getNodeDemandCategoriesNumber, setNodeBaseDemands, addPattern, deletePattern.
         """
@@ -7804,7 +7804,7 @@ class epanet:
         Example 2:
 
         >>> elevs = d.getNodeElevations()               # Retrieves the elevations of all the nodes
-        >>> elevs_new = [i + 100 for i in elevs]
+        >>> elevs_new = elevs + 100 
         >>> d.setNodeElevations(elevs_new)              # Sets the elevations of all nodes
         >>> d.getNodeElevations()
 
@@ -8030,7 +8030,6 @@ class epanet:
         >>> d.setNodeSourceType(nodeIndex, sourceType)     # Sets the quality source type = 'MASS' to the 1st node
         >>> d.getNodeSourceType(nodeIndex)
 
-
         See also getNodeSourceType, setNodeSourceQuality, setNodeSourcePatternIndex.
         """
         value = self.TYPESOURCE.index(value)
@@ -8039,7 +8038,7 @@ class epanet:
     def setNodeTankBulkReactionCoeff(self, value, *argv):
         """ Sets the tank bulk reaction coefficient.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8133,7 +8132,7 @@ class epanet:
         :type volcurve: str
         :return: None
 
-        The examples are based on d=epanet('Net3_trace.inp')
+        The examples are based on d = epanet('Net3_trace.inp')
 
         Example 1: (Sets to the 1st tank the following properties).
 
@@ -8159,7 +8158,7 @@ class epanet:
         >>> minvol = [50000, 60000]
         >>> volcurve = ['', '']    # For no curves
         >>> d.setNodeTankData(tankIndex, elev, intlvl, minlvl, maxlvl, diam, minvol, volcurve)
-        >>> d.getNodeTankData().disp()
+        >>> d.getNodeTankData(tankIndex).disp()
 
         See also getNodeTankData, setNodeTankInitialLevel, setNodeTankMinimumWaterLevel, setNodeTankDiameter.
         """
@@ -8191,7 +8190,7 @@ class epanet:
     def setNodeTankDiameter(self, value, *argv):
         """ Sets the diameter value for tanks.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8229,7 +8228,7 @@ class epanet:
     def setNodeTankInitialLevel(self, value, *argv):
         """ Sets the values of initial level for tanks.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8287,7 +8286,7 @@ class epanet:
 
         Example 4:
 
-        >>> tankIndex = d.getNodeTankIndex
+        >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMaximumWaterLevel(tankIndex, 30)          # Sets the maximum water level = 30 to the tanks with index 128 and 129
         >>> d.getNodeTankMaximumWaterLevel()
 
@@ -8932,7 +8931,7 @@ class epanet:
         """
         nfactors = len(patternMatrix[0])
         for i in range(1, len(patternMatrix) + 1):
-            self.api.ENsetpattern(i, patternMatrix[:, i - 1], nfactors)
+            self.api.ENsetpattern(i, patternMatrix[i - 1, :], nfactors)
 
     def setPatternNameID(self, index, Id):
         """ Sets the name ID of a time pattern given it's index and the new ID. (EPANET Version 2.2)
@@ -8972,6 +8971,50 @@ class epanet:
         """
         self.api.ENsetpatternvalue(index, patternTimeStep, patternFactor)
 
+    def setReport(self, value):
+        """ Issues a report formatting command. Formatting commands are the same as used in the [REPORT] section of the EPANET Input file.
+        More: https://github.com/OpenWaterAnalytics/EPANET/wiki/%5BREPORT%5D
+
+        Example 1:
+
+        >>> d.setReport('FILE TestReport.txt')
+
+        Example 2:
+
+        >>> d.setReport('STATUS YES')
+
+        See also setReportFormatReset, setReport.
+        """
+        self.api.ENsetreport(value)
+
+    def setReportFormatReset(self):
+        """ Resets a project's report options to their default values.
+
+        Example:
+
+        >>> d.setReportFormatReset()
+
+        See also setReport, setReportStatus.
+        """
+        self.api.ENresetreport()
+        
+    def setReportStatus(self, value):
+        """ Sets the level of hydraulic status reporting.
+
+        Possible status that can be set:
+          1) 'yes'
+          2) 'no'
+          3) 'full'
+
+        Example:
+
+        >>> d.setReportStatus('full')
+
+        See also setReport, setReportFormatReset.
+        """
+        statuslevel = self.TYPEREPORT.index(value.upper())
+        self.api.ENsetstatusreport(statuslevel)
+
     def setRulePremise(self, ruleIndex, premiseIndex, premise):
         """ Sets the premise of a rule - based control. (EPANET Version 2.2)
 
@@ -8992,10 +9035,10 @@ class epanet:
         >>> ruleIndex = 1
         >>> premiseIndex = 1
         >>> premise = 'IF NODE TANK-131 LEVEL > 20'
-        >>> d.setRulePremise(1, 1, premise)                       # Sets the 1st premise of the 1st rule - based control
+        >>> d.setRulePremise(ruleIndex, premiseIndex, premise)   # Sets the 1st premise of the 1st rule - based control
         >>> d.getRules()[1]['Premises']
 
-        See also setRulePremiseObejctNameID, setRulePremiseStatus, setRulePremiseValue,
+        See also setRulePremiseObjectNameID, setRulePremiseStatus, setRulePremiseValue,
         setRules, getRules, addRules, deleteRules.
         """
         premise_new = premise.split()
@@ -9026,7 +9069,7 @@ class epanet:
                 value = value * 3600 + 43200
         self.api.ENsetpremise(ruleIndex, premiseIndex, logop, object_, objIndex, variable, relop, status, value)
 
-    def setRulePremiseObejctNameID(self, ruleIndex, premiseIndex, objNameID):
+    def setRulePremiseObjectNameID(self, ruleIndex, premiseIndex, objNameID):
         """ Sets the ID of an object in a premise of a rule-based control. (EPANET Version 2.2)
 
         # The example is based on d=epanet('BWSN_Network_1.inp')
@@ -9037,7 +9080,7 @@ class epanet:
         >>> ruleIndex = 1
         >>> premiseIndex = 1
         >>> objNameID = 'TANK-131'
-        >>> d.setRulePremiseObejctNameID(ruleIndex, premiseIndex, objNameID)
+        >>> d.setRulePremiseObjectNameID(ruleIndex, premiseIndex, objNameID)
         >>> d.getRules()[1]['Premises']
 
         See also setRulePremise, setRulePremiseStatus, setRulePremiseValue,
@@ -9064,7 +9107,7 @@ class epanet:
         >>> d.setRulePremiseValue(ruleIndex, premiseIndex, value)   # Sets the value = 20 to the 1st premise of the 1st rule - based control
         >>> d.getRules()[1]['Premises']
 
-        See also setRulePremise, setRulePremiseObejctNameID, setRulePremiseStatus,
+        See also setRulePremise, setRulePremiseObjectNameID, setRulePremiseStatus,
         setRules, getRules, addRules, deleteRules.
         """
         self.api.ENsetpremisevalue(ruleIndex, premiseIndex, value)
@@ -9107,50 +9150,6 @@ class epanet:
         if self.getRuleInfo().Priority[ruleIndex - 1]:
             self.setRulePriority(ruleIndex, float(rule_new[i][-1]))
 
-    def setReport(self, value):
-        """ Issues a report formatting command. Formatting commands are the same as used in the [REPORT] section of the EPANET Input file.
-        More: https://github.com/OpenWaterAnalytics/EPANET/wiki/%5BREPORT%5D
-
-        Example 1:
-
-        >>> d.setReport('FILE TestReport.txt')
-
-        Example 2:
-
-        >>> d.setReport('STATUS YES')
-
-        See also setReportFormatReset, setReport.
-        """
-        self.api.ENsetreport(value)
-
-    def setReportFormatReset(self):
-        """ Resets a project's report options to their default values.
-
-        Example:
-
-        >>> d.setReportFormatReset()
-
-        See also setReport, setReportStatus.
-        """
-        self.api.ENresetreport()
-
-    def setReportStatus(self, value):
-        """ Sets the level of hydraulic status reporting.
-
-        Possible status that can be set:
-          1) 'yes'
-          2) 'no'
-          3) 'full'
-
-        Example:
-
-        >>> d.setReportStatus('full')
-
-        See also setReport, setReportFormatReset.
-        """
-        statuslevel = self.TYPEREPORT.index(value.upper())
-        self.api.ENsetstatusreport(statuslevel)
-
     def setRuleElseAction(self, ruleIndex, actionIndex, else_action):
         """ Sets rule - based control else actions. (EPANET Version 2.2)
 
@@ -9164,7 +9163,7 @@ class epanet:
 
         See more: 'https://nepis.epa.gov/Adobe/PDF/P1007WWU.pdf' (Page 164)
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
 
@@ -9204,7 +9203,7 @@ class epanet:
         >>> d.setRulePremiseStatus(ruleIndex, premiseIndex, status)   # Sets the status = 'OPEN' to the 1st premise of the 1st rule - based control
         >>> d.getRules()[1]['Premises']
 
-        See also setRulePremise, setRulePremiseObejctNameID, setRulePremiseValue, setRules, getRules, addRules, deleteRules.
+        See also setRulePremise, setRulePremiseObjectNameID, setRulePremiseValue, setRules, getRules, addRules, deleteRules.
         """
         if status == 'OPEN':
             status_code = self.ToolkitConstants.EN_R_IS_OPEN
@@ -9272,7 +9271,7 @@ class epanet:
 
         >>> Hstep = 1800
         >>> d.setTimeHydraulicStep(Hstep)
-        >>> d.getTimeSimulationDuration()
+        >>> d.getTimeHydraulicStep()
 
         See also getTimeSimulationDuration, setTimeQualityStep, setTimePatternStep.
         """
