@@ -753,7 +753,7 @@ class epanet:
         >>> index = d.addControls('LINK 9 1.5 AT TIME 57600') #in seconds
         >>> d.getControls(index).disp()
 
-        : Link 12 is closed at 10 am and opened at 8 pm throughout the simulation.
+        Example 4: Link 12 is closed at 10 am and opened at 8 pm throughout the simulation.
 
         >>> index_3 = d.addControls('LINK 12 CLOSED AT CLOCKTIME 10:00')
         >>> d.getControls(index_3).disp()
@@ -1215,7 +1215,7 @@ class epanet:
         >>> d.getNodeElevations(junctionIndex)
         >>> d.plot()
 
-        : Adds a new junction with coordinates [X, Y] = [10, 40],
+        Example 4: Adds a new junction with coordinates [X, Y] = [10, 40],
         elevation = 500 and demand = 50.
 
         >>> junctionID = 'newJunction_4'
@@ -1281,7 +1281,7 @@ class epanet:
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
         >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
 
-        : New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base demand respectively, using the 1st time pattern.
+        Example 4: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base demand respectively, using the 1st time pattern.
 
         >>> d.addNodeJunctionDemand([1, 2], [100, 110], ['1', '1'], 'new demand')
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
@@ -1382,7 +1382,7 @@ class epanet:
         >>> tankIndex = d.addNodeTank(tankID, tankCoords, elevation)
         >>> d.plot()
 
-        : Adds a new tank with coordinates [X, Y] = [20, 30], elevation = 100, initial level = 130, minimum water level = 110,
+        Example 4: Adds a new tank with coordinates [X, Y] = [20, 30], elevation = 100, initial level = 130, minimum water level = 110,
         maximum water level = 160, diameter = 60, minimum water volume = 200000, volume curve ID = ''.
 
         >>> tankID = 'newTank_4'
@@ -1794,7 +1794,7 @@ class epanet:
         >>> d.deleteNode(index)                # Deletes the 1st node given it's index
         >>> d.getNodeNameID()
 
-        :
+        Example 4:
 
         >>> idNodes = d.getNodeNameID([1,2])
         >>> d.getNodeCount()
@@ -2995,7 +2995,7 @@ class epanet:
 
         >>> d.getLinkPumpECurve([1,2])           # Retrieves the efficiency v. flow curve index of the first 2 pumps
 
-        :
+        Example 4:
 
         >>> d = epanet('Richmond_standard.inp')  # Retrieves the efficiency v. flow curve index of the pumps with lin index 950
         >>> pIndex = 950
@@ -3023,7 +3023,7 @@ class epanet:
 
         >>> d.getLinkPumpEPat([1,2])           # Retrieves the energy price time pattern index of the first 2 pumps
 
-        :
+        Example 4:
 
         >>> d = epanet('Richmond_standard.inp')
         >>> pIndex = 950
@@ -3339,23 +3339,23 @@ class epanet:
 
         Example 4: Hydraulic and Quality analysis step-by-step
 
-       >>> d.openHydraulicAnalysis()
-       >>> d.openQualityAnalysis()
-       >>> d.initializeHydraulicAnalysis(0)
-       >>> d.initializeQualityAnalysis(d.ToolkitConstants.EN_NOSAVE)
-       >>> tstep, T, P, F, QN, QL = 1, [], [], [], [], []
-       >>> while (tstep>0):
-       ...     t  = d.runHydraulicAnalysis()
-       ...     qt = d.runQualityAnalysis()
-       ...     P.append(d.getNodePressure())
-       ...     F.append(d.getLinkFlows())
-       ...     QN.append(d.getNodeActualQuality())
-       ...     QL.append(d.getLinkActualQuality())
-       ...     T.append(t)
-       ...     tstep = d.nextHydraulicAnalysisStep()
-       ...     qtstep = d.nextQualityAnalysisStep()
-       >>> d.closeQualityAnalysis()
-       >>> d.closeHydraulicAnalysis()
+        >>> d.openHydraulicAnalysis()
+        >>> d.openQualityAnalysis()
+        >>> d.initializeHydraulicAnalysis(0)
+        >>> d.initializeQualityAnalysis(d.ToolkitConstants.EN_NOSAVE)
+        >>> tstep, T, P, F, QN, QL = 1, [], [], [], [], []
+        >>> while (tstep>0):
+        ...     t  = d.runHydraulicAnalysis()
+        ...     qt = d.runQualityAnalysis()
+        ...     P.append(d.getNodePressure())
+        ...     F.append(d.getLinkFlows())
+        ...     QN.append(d.getNodeActualQuality())
+        ...     QL.append(d.getLinkActualQuality())
+        ...     T.append(t)
+        ...     tstep = d.nextHydraulicAnalysisStep()
+        ...     qtstep = d.nextQualityAnalysisStep()
+        >>> d.closeQualityAnalysis()
+        >>> d.closeHydraulicAnalysis()
 
         See also getLinkVelocity, getLinkHeadloss, getLinkStatus,
         getLinkPumpState, getLinkSettings, getLinkEnergy,
@@ -4287,7 +4287,7 @@ class epanet:
         ...     tstep=d.nextHydraulicAnalysisStep()
         >>> d.closeHydraulicAnalysis()
 
-        : Hydraulic and Quality analysis step-by-step.
+        Example 4: Hydraulic and Quality analysis step-by-step.
 
         >>> d.openHydraulicAnalysis()
         >>> d.openQualityAnalysis()
@@ -4594,7 +4594,7 @@ class epanet:
 
         >>> d.getNodeTankBulkReactionCoeff([1,2])            # Retrieves the bulk rate coefficient of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankBulkReactionCoeff(tankIndex)        # Retrieves the bulk rate coefficient of the tanks given their indices
@@ -4619,7 +4619,7 @@ class epanet:
         >>> d = epanet('BWSN_Network_1.inp')
         >>> d.getNodeTankCanOverFlow([1,2])        # Retrieves the can overflow of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> d = epanet('BWSN_Network_1.inp')
         >>> tankIndex = d.getNodeTankIndex()
@@ -4708,7 +4708,7 @@ class epanet:
 
         >>> d.getNodeTankDiameter([1,2])           # Retrieves the diameters of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankDiameter(tankIndex)       # Retrieves the diameters of the tanks given their indices
@@ -4774,7 +4774,7 @@ class epanet:
 
         >>> d.getNodeTankInitialWaterVolume([1,2])            #  Retrieves the initial water volume of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankInitialWaterVolume(tankIndex)        # Retrieves the initial water volume of the tanks given their indices
@@ -4799,7 +4799,7 @@ class epanet:
 
         >>> d.getNodeTankMaximumWaterLevel([1,2])           # Retrieves the maximum water level of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMaximumWaterLevel(tankIndex)       # Retrieves the maximum water level of the tanks given their indices
@@ -4824,7 +4824,7 @@ class epanet:
 
         >>> d.getNodeTankMaximumWaterVolume([1,2])         # Retrieves the maximum water volume of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMaximumWaterVolume(tankIndex)     # Retrieves the maximum water volume of the tanks given their indices
@@ -4848,7 +4848,7 @@ class epanet:
 
         >>> d.getNodeTankMinimumWaterLevel([1,2])           # Retrieves the minimum water level of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMinimumWaterLevel(tankIndex)       # Retrieves the minimum water level of the tanks given their indices
@@ -4873,7 +4873,7 @@ class epanet:
 
         >>> d.getNodeTankMinimumWaterVolume([1,2])           # Retrieves the minimum water volume of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMinimumWaterVolume(tankIndex)       # Retrieves the minimum water volume of the tanks given their indices
@@ -4898,7 +4898,7 @@ class epanet:
 
         >>> d.getNodeTankMixingFraction([1,2])            # Retrieves the mixing fraction of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixingFraction(tankIndex)        # Retrieves the mixing fraction of the tanks given their indices
@@ -4928,7 +4928,7 @@ class epanet:
 
         >>> d.getNodeTankMixingModelCode([1,2])           # Retrieves the mixing model code of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixingModelCode(tankIndex)       # Retrieves the mixing model code of the tanks given their indices
@@ -4958,7 +4958,7 @@ class epanet:
 
         >>> d.getNodeTankMixingModelType([1,2])          # Retrieves the mixing model type of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixingModelType(tankIndex)      # Retrieves the mixing model type of the tanks given their indices
@@ -4982,7 +4982,7 @@ class epanet:
 
         >>> d.getNodeTankMixZoneVolume([1,2])           # Retrieves the mixing zone volume of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixZoneVolume(tankIndex)       # Retrieves the mixing zone volume of the tanks given their indices
@@ -5037,7 +5037,7 @@ class epanet:
 
         >>> d.getNodeTankVolume([1,2])             # Retrieves the volume of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankVolume(tankIndex)         # Retrieves the volume of the tanks given their indices
@@ -5061,7 +5061,7 @@ class epanet:
 
         >>> d.getNodeTankVolumeCurveIndex([1,2])           # Retrieves the volume curve index of the first 2 tanks
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankVolumeCurveIndex(tankIndex)       # Retrieves the volume curve index of the tanks given their indices
@@ -6402,7 +6402,7 @@ class epanet:
         >>> d.getControls(1).disp()
         >>> d.getControls(2).disp()
 
-        :
+        Example 4:
               * index:     control statement index
               * control:   control type code
               * lindex:    index of link being controlled
@@ -7006,7 +7006,7 @@ class epanet:
         >>> d.setLinkPumpECost(1, 0.10)                    # Sets the pump average energy price = 0.10 to the 1st pump
         >>> d.getLinkPumpECost()
 
-        :
+        Example 4:
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpECost(pumpIndex, 0.10)            # Sets the pump average energy price = 0.10 to the pumps with index 118 and 119
@@ -7044,7 +7044,7 @@ class epanet:
         >>> d.setLinkPumpECurve(1, 2)                # Sets the pump efficiency v. flow curve index = 2 to the 1st pump
         >>> d.getLinkPumpECurve()
 
-        :
+        Example 4:
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpECurve(pumpIndex, 1)        # Sets the pump efficiency v. flow curve index = 1 to the pumps with index 118 and 119
@@ -7081,7 +7081,7 @@ class epanet:
         >>> d.setLinkPumpEPat(1, 2)                # Sets the pump energy price time pattern index = 2 to the 1st pump
         >>> d.getLinkPumpEPat()
 
-        :
+        Example 4:
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpEPat(pumpIndex, 1)        # Sets the pump energy price time pattern index = 1 to the pumps with index 118 and 119
@@ -7118,7 +7118,7 @@ class epanet:
         >>> d.setLinkPumpHCurve(1, 2)                # Sets the pump head v. flow curve index = 2 to the 1st pump
         >>> d.getLinkPumpHCurve()
 
-        :
+        Example 4:
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpHCurve(pumpIndex, 1)        # Sets the pump head v. flow curve index = 1 to the pumps with index 118 and 119
@@ -7180,7 +7180,7 @@ class epanet:
         >>> d.setLinkPumpPatternIndex(1, 2)                # Sets the pump speed time pattern index = 2 to the 1st pump
         >>> d.getLinkPumpPatternIndex()
 
-        :
+        Example 4:
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpPatternIndex(pumpIndex, 1)        # Sets the pump speed time pattern index = 1 to the pumps with index 118 and 119
@@ -7223,7 +7223,7 @@ class epanet:
         >>> d.setLinkPumpPower(1, 10)                 # Sets the pump power = 10 to the 1st pump
         >>> d.getLinkPumpPower()
 
-        :
+        Example 4:
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpPower(pumpIndex, 10)         # Sets the pump power = 10 to the pumps with index 118 and 119
@@ -7660,7 +7660,7 @@ class epanet:
 
         If a category is not given, the default is categoryIndex = 1.
 
-        :
+        Example 4:
 
         >>> d = epanet('BWSN_Network_1.inp')
         >>> nodeIndex = 121
@@ -7775,7 +7775,7 @@ class epanet:
 
         If a category is not given, the default is categoryIndex = 1.
 
-        :
+        Example 4:
 
         >>> nodeIndex = 121
         >>> categoryIndex = 2
@@ -8064,7 +8064,7 @@ class epanet:
         >>> d.setNodeTankBulkReactionCoeff(1, -0.8)                   # Sets the bulk reaction coefficient = -0.5 to the 1st tank
         >>> d.getNodeTankBulkReactionCoeff()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankBulkReactionCoeff(tankIndex, 0)              # Sets the bulk reaction coefficient = 0 to the tanks with index 128 and 129
@@ -8102,7 +8102,7 @@ class epanet:
         >>> d.setNodeTankCanOverFlow(1, 0)           # Sets the can-overflow = 0 to the 1st tank
         >>> d.getNodeTankCanOverFlow()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankCanOverFlow(tankIndex, 1)   # Sets the can-overflow = 1 to the tanks with index 128 and 129
@@ -8216,7 +8216,7 @@ class epanet:
         >>> d.setNodeTankDiameter(1, 120)                   # Sets the diameter = 120 to the 1st tank
         >>> d.getNodeTankDiameter()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankDiameter(tankIndex, 150)           # Sets the diameter = 150 to the tanks with index 128 and 129
@@ -8254,7 +8254,7 @@ class epanet:
         >>> d.setNodeTankInitialLevel(1, 10)                  # Sets the initial level = 10 to the 1st tank
         >>> d.getNodeTankInitialLevel()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankInitialLevel(tankIndex, 10)          # Sets the initial level = 10 to the tanks with index 128 and 129
@@ -8292,7 +8292,7 @@ class epanet:
         >>> d.setNodeTankMaximumWaterLevel(1, 35)                  # Sets the maximum water level = 35 to the 1st tank
         >>> d.getNodeTankMaximumWaterLevel()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMaximumWaterLevel(tankIndex, 30)          # Sets the maximum water level = 30 to the tanks with index 128 and 129
@@ -8330,7 +8330,7 @@ class epanet:
         >>> d.setNodeTankMinimumWaterLevel(1, 5)                     # Sets the minimum water level = 5 to the 1st tank
         >>> d.getNodeTankMinimumWaterLevel()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMinimumWaterLevel(tankIndex, 10)            # Sets the minimum water level = 10 to the tanks with index 128 and 129
@@ -8368,7 +8368,7 @@ class epanet:
         >>> d.setNodeTankMinimumWaterVolume(1, 1000)                    # Sets the minimum water volume = 1000 to the 1st tank
         >>> d.getNodeTankMinimumWaterVolume()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMinimumWaterVolume(tankIndex, 1500)            # Sets the minimum water volume = 1500 to the tanks with index 128 and 129
@@ -8406,7 +8406,7 @@ class epanet:
         >>> d.setNodeTankMixingFraction(1, 0)                 # Sets the mixing fraction = 0 to the 1st tank
         >>> d.getNodeTankMixingFraction()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMixingFraction(tankIndex, 1)         # Sets the mixing fraction = 1 to the tanks with index 128 and 129
@@ -8444,7 +8444,7 @@ class epanet:
         >>> d.setNodeTankMixingModelType(1, 'FIFO')                        # Sets the  mixing model type = 'FIFO' to the 1st tank
         >>> d.getNodeTankMixingModelType()
 
-        :
+        Example 4:
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMixingModelType(tankIndex, 'MIX1')                # Sets the  mixing model type = 'MIX1' to the tanks with index 128 and 129
@@ -8833,7 +8833,7 @@ class epanet:
         >>> d.setQualityType('chem', 'Chlorine', 'mg/Kg')    # Sets chemical analysis given the name of the chemical being analyzed and units that the chemical is measured in
         >>> qualInfo = d.getQualityInfo()
 
-        :
+        Example 4:
 
         >>> nodeID = d.getNodeNameID(1)
         >>> d.setQualityType('trace', nodeID)                # Sets source tracing analysis given the ID label of node traced in a source tracing analysis
