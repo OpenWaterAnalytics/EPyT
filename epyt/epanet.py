@@ -734,7 +734,7 @@ class epanet:
         :return: Control index
         :rtype: int
 
-        The examples are based on d=epanet('Net1.inp')
+        The examples are based on d = epanet('Net1.inp')
 
         Example 1: Close Link 12 if the level in Tank 2 exceeds 20 ft.
 
@@ -753,7 +753,7 @@ class epanet:
         >>> index = d.addControls('LINK 9 1.5 AT TIME 57600') #in seconds
         >>> d.getControls(index).disp()
 
-        Example 4: Link 12 is closed at 10 am and opened at 8 pm throughout the simulation.
+        : Link 12 is closed at 10 am and opened at 8 pm throughout the simulation.
 
         >>> index_3 = d.addControls('LINK 12 CLOSED AT CLOCKTIME 10:00')
         >>> d.getControls(index_3).disp()
@@ -1019,7 +1019,7 @@ class epanet:
 
         Examples
         --------
-        The examples are based on d=epanet('Net1.inp')
+        The examples are based on d = epanet('Net1.inp')
 
         Example 1: Adds a new pump given no properties.
 
@@ -1078,7 +1078,7 @@ class epanet:
         """ Adds a new FCV valve.
         Returns the index of the new FCV valve.
 
-         The example is based on d=epanet('Net1.inp')
+         The example is based on d = epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValveFCV'
@@ -1096,7 +1096,7 @@ class epanet:
         """ Adds a new GPV valve.
         Returns the index of the new GPV valve.
 
-         The example is based on d=epanet('Net1.inp')
+         The example is based on d = epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValveGPV'
@@ -1114,7 +1114,7 @@ class epanet:
         """ Adds a new PBV valve.
         Returns the index of the new PBV valve.
 
-         The example is based on d=epanet('Net1.inp')
+         The example is based on d = epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValvePBV'
@@ -1132,7 +1132,7 @@ class epanet:
         """ Adds a new PRV valve.
         Returns the index of the new PRV valve.
 
-        # The example is based on d=epanet('Net1.inp')
+        # The example is based on d = epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValvePRV'
@@ -1150,7 +1150,7 @@ class epanet:
         """Adds a new PSV valve.
         Returns the index of the new PSV valve.
 
-         The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValvePSV'
@@ -1168,7 +1168,7 @@ class epanet:
         """ Adds a new TCV valve.
         Returns the index of the new TCV valve.
 
-         The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
         >>> valveID = 'newValveTCV'
@@ -1215,7 +1215,7 @@ class epanet:
         >>> d.getNodeElevations(junctionIndex)
         >>> d.plot()
 
-        Example 4: Adds a new junction with coordinates [X, Y] = [10, 40],
+        : Adds a new junction with coordinates [X, Y] = [10, 40],
         elevation = 500 and demand = 50.
 
         >>> junctionID = 'newJunction_4'
@@ -1281,7 +1281,7 @@ class epanet:
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
         >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
 
-        Example 4: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base demand respectively, using the 1st time pattern.
+        : New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base demand respectively, using the 1st time pattern.
 
         >>> d.addNodeJunctionDemand([1, 2], [100, 110], ['1', '1'], 'new demand')
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
@@ -1382,7 +1382,7 @@ class epanet:
         >>> tankIndex = d.addNodeTank(tankID, tankCoords, elevation)
         >>> d.plot()
 
-        Example 4: Adds a new tank with coordinates [X, Y] = [20, 30], elevation = 100, initial level = 130, minimum water level = 110,
+        : Adds a new tank with coordinates [X, Y] = [20, 30], elevation = 100, initial level = 130, minimum water level = 110,
         maximum water level = 160, diameter = 60, minimum water volume = 200000, volume curve ID = ''.
 
         >>> tankID = 'newTank_4'
@@ -1473,7 +1473,7 @@ class epanet:
 
         See more: 'https://nepis.epa.gov/Adobe/PDF/P1007WWU.pdf' (Page 164)
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
         >>> d.getRuleCount()
@@ -1794,7 +1794,7 @@ class epanet:
         >>> d.deleteNode(index)                # Deletes the 1st node given it's index
         >>> d.getNodeNameID()
 
-        Example 4:
+        :
 
         >>> idNodes = d.getNodeNameID([1,2])
         >>> d.getNodeCount()
@@ -1922,7 +1922,7 @@ class epanet:
         """ Deletes an existing rule-based control given it's index. (EPANET Version 2.2)
         Returns error code.
 
-        # The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -1981,7 +1981,11 @@ class epanet:
         getNodeHydraulicHead, getNodeActualQuality, getNodeMassFlowRate.
         """
         value = []
-        for i in argv:
+        if len(argv) > 0:
+            indices = argv[0]
+        else:
+            indices = self.getNodeIndex()
+        for i in indices:
             value.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_QUALITY))
         return np.array(value)
 
@@ -2282,7 +2286,7 @@ class epanet:
     def getControls(self, *argv):
         """ Retrieves the parameters of all control statements.
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example :
 
@@ -2991,7 +2995,7 @@ class epanet:
 
         >>> d.getLinkPumpECurve([1,2])           # Retrieves the efficiency v. flow curve index of the first 2 pumps
 
-        Example 4:
+        :
 
         >>> d = epanet('Richmond_standard.inp')  # Retrieves the efficiency v. flow curve index of the pumps with lin index 950
         >>> pIndex = 950
@@ -3019,7 +3023,7 @@ class epanet:
 
         >>> d.getLinkPumpEPat([1,2])           # Retrieves the energy price time pattern index of the first 2 pumps
 
-        Example 4:
+        :
 
         >>> d = epanet('Richmond_standard.inp')
         >>> pIndex = 950
@@ -3382,7 +3386,7 @@ class epanet:
     def getLinkVertices(self, *argv):
         """ Retrieves the coordinate's of a vertex point assigned to a link.
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
 
@@ -3758,7 +3762,11 @@ class epanet:
         getNodeActualQuality, getNodeMassFlowRate, getNodeActualQualitySensingNodes.
         """
         value = []
-        for i in argv:
+        if len(argv) > 0:
+            indices = argv[0]
+        else:
+            indices = self.getNodeIndex()
+        for i in indices:
             value.append(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_DEMAND))
         return np.array(value)
 
@@ -3912,7 +3920,7 @@ class epanet:
     def getNodeDemandDeficit(self, *argv):
         """  Retrieves the amount that full demand is reduced under PDA. (EPANET Version 2.2)
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
 
@@ -4279,7 +4287,7 @@ class epanet:
         ...     tstep=d.nextHydraulicAnalysisStep()
         >>> d.closeHydraulicAnalysis()
 
-        Example 4: Hydraulic and Quality analysis step-by-step.
+        : Hydraulic and Quality analysis step-by-step.
 
         >>> d.openHydraulicAnalysis()
         >>> d.openQualityAnalysis()
@@ -4586,7 +4594,7 @@ class epanet:
 
         >>> d.getNodeTankBulkReactionCoeff([1,2])            # Retrieves the bulk rate coefficient of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankBulkReactionCoeff(tankIndex)        # Retrieves the bulk rate coefficient of the tanks given their indices
@@ -4611,7 +4619,7 @@ class epanet:
         >>> d = epanet('BWSN_Network_1.inp')
         >>> d.getNodeTankCanOverFlow([1,2])        # Retrieves the can overflow of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> d = epanet('BWSN_Network_1.inp')
         >>> tankIndex = d.getNodeTankIndex()
@@ -4700,7 +4708,7 @@ class epanet:
 
         >>> d.getNodeTankDiameter([1,2])           # Retrieves the diameters of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankDiameter(tankIndex)       # Retrieves the diameters of the tanks given their indices
@@ -4766,7 +4774,7 @@ class epanet:
 
         >>> d.getNodeTankInitialWaterVolume([1,2])            #  Retrieves the initial water volume of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankInitialWaterVolume(tankIndex)        # Retrieves the initial water volume of the tanks given their indices
@@ -4791,7 +4799,7 @@ class epanet:
 
         >>> d.getNodeTankMaximumWaterLevel([1,2])           # Retrieves the maximum water level of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMaximumWaterLevel(tankIndex)       # Retrieves the maximum water level of the tanks given their indices
@@ -4816,7 +4824,7 @@ class epanet:
 
         >>> d.getNodeTankMaximumWaterVolume([1,2])         # Retrieves the maximum water volume of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMaximumWaterVolume(tankIndex)     # Retrieves the maximum water volume of the tanks given their indices
@@ -4840,7 +4848,7 @@ class epanet:
 
         >>> d.getNodeTankMinimumWaterLevel([1,2])           # Retrieves the minimum water level of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMinimumWaterLevel(tankIndex)       # Retrieves the minimum water level of the tanks given their indices
@@ -4865,7 +4873,7 @@ class epanet:
 
         >>> d.getNodeTankMinimumWaterVolume([1,2])           # Retrieves the minimum water volume of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMinimumWaterVolume(tankIndex)       # Retrieves the minimum water volume of the tanks given their indices
@@ -4890,7 +4898,7 @@ class epanet:
 
         >>> d.getNodeTankMixingFraction([1,2])            # Retrieves the mixing fraction of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixingFraction(tankIndex)        # Retrieves the mixing fraction of the tanks given their indices
@@ -4920,7 +4928,7 @@ class epanet:
 
         >>> d.getNodeTankMixingModelCode([1,2])           # Retrieves the mixing model code of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixingModelCode(tankIndex)       # Retrieves the mixing model code of the tanks given their indices
@@ -4950,7 +4958,7 @@ class epanet:
 
         >>> d.getNodeTankMixingModelType([1,2])          # Retrieves the mixing model type of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixingModelType(tankIndex)      # Retrieves the mixing model type of the tanks given their indices
@@ -4974,7 +4982,7 @@ class epanet:
 
         >>> d.getNodeTankMixZoneVolume([1,2])           # Retrieves the mixing zone volume of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankMixZoneVolume(tankIndex)       # Retrieves the mixing zone volume of the tanks given their indices
@@ -5029,7 +5037,7 @@ class epanet:
 
         >>> d.getNodeTankVolume([1,2])             # Retrieves the volume of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankVolume(tankIndex)         # Retrieves the volume of the tanks given their indices
@@ -5053,7 +5061,7 @@ class epanet:
 
         >>> d.getNodeTankVolumeCurveIndex([1,2])           # Retrieves the volume curve index of the first 2 tanks
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.getNodeTankVolumeCurveIndex(tankIndex)       # Retrieves the volume curve index of the tanks given their indices
@@ -5660,7 +5668,7 @@ class epanet:
     def getRuleID(self, *argv):
         """ Retrieves the ID name of a rule-based control given its index. (EPANET Version 2.2)
 
-        # The examples are based on d=epanet('BWSN_Network_1.inp')
+        # The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example:
 
@@ -5685,7 +5693,7 @@ class epanet:
     def getRuleInfo(self, *argv):
         """ Retrieves summary information about a rule-based control given it's index. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example:
 
@@ -5715,7 +5723,7 @@ class epanet:
     def getRules(self, *argv):
         """ Retrieves the rule - based control statements. (EPANET Version 2.2)
 
-        # The examples are based on d=epanet('BWSN_Network_1.inp')
+        # The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -6394,7 +6402,7 @@ class epanet:
         >>> d.getControls(1).disp()
         >>> d.getControls(2).disp()
 
-        Example 4:
+        :
               * index:     control statement index
               * control:   control type code
               * lindex:    index of link being controlled
@@ -6518,7 +6526,7 @@ class epanet:
     def setCurveValue(self, index, curvePnt, value):
         """ Sets x, y point for a specific point number and curve. (EPANET Version 2.1)
 
-        The example is based on d=epanet('BWSN_Network_1.inp')
+        The example is based on d = epanet('BWSN_Network_1.inp')
 
         Example:
 
@@ -6980,7 +6988,7 @@ class epanet:
     def setLinkPumpECost(self, value, *argv):
         """ Sets the pump average energy price. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('Net3_trace.inp')
+        The examples are based on d = epanet('Net3_trace.inp')
 
         Example 1:
 
@@ -6998,7 +7006,7 @@ class epanet:
         >>> d.setLinkPumpECost(1, 0.10)                    # Sets the pump average energy price = 0.10 to the 1st pump
         >>> d.getLinkPumpECost()
 
-        Example 4:
+        :
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpECost(pumpIndex, 0.10)            # Sets the pump average energy price = 0.10 to the pumps with index 118 and 119
@@ -7018,7 +7026,7 @@ class epanet:
     def setLinkPumpECurve(self, value, *argv):
         """ Sets the pump efficiency v. flow curve index. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('Net3_trace.inp')
+        The examples are based on d = epanet('Net3_trace.inp')
 
         Example 1:
 
@@ -7036,7 +7044,7 @@ class epanet:
         >>> d.setLinkPumpECurve(1, 2)                # Sets the pump efficiency v. flow curve index = 2 to the 1st pump
         >>> d.getLinkPumpECurve()
 
-        Example 4:
+        :
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpECurve(pumpIndex, 1)        # Sets the pump efficiency v. flow curve index = 1 to the pumps with index 118 and 119
@@ -7055,7 +7063,7 @@ class epanet:
     def setLinkPumpEPat(self, value, *argv):
         """ Sets the pump energy price time pattern index. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('Net3_trace.inp')
+        The examples are based on d = epanet('Net3_trace.inp')
 
         Example 1:
 
@@ -7073,7 +7081,7 @@ class epanet:
         >>> d.setLinkPumpEPat(1, 2)                # Sets the pump energy price time pattern index = 2 to the 1st pump
         >>> d.getLinkPumpEPat()
 
-        Example 4:
+        :
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpEPat(pumpIndex, 1)        # Sets the pump energy price time pattern index = 1 to the pumps with index 118 and 119
@@ -7092,7 +7100,7 @@ class epanet:
     def setLinkPumpHCurve(self, value, *argv):
         """ Sets the pump head v. flow curve index. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('Net3_trace.inp')
+        The examples are based on d = epanet('Net3_trace.inp')
 
         Example 1:
 
@@ -7110,7 +7118,7 @@ class epanet:
         >>> d.setLinkPumpHCurve(1, 2)                # Sets the pump head v. flow curve index = 2 to the 1st pump
         >>> d.getLinkPumpHCurve()
 
-        Example 4:
+        :
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpHCurve(pumpIndex, 1)        # Sets the pump head v. flow curve index = 1 to the pumps with index 118 and 119
@@ -7154,7 +7162,7 @@ class epanet:
     def setLinkPumpPatternIndex(self, value, *argv):
         """ Sets the pump speed time pattern index. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('Net3_trace.inp')
+        The examples are based on d = epanet('Net3_trace.inp')
 
         Example 1:
 
@@ -7172,7 +7180,7 @@ class epanet:
         >>> d.setLinkPumpPatternIndex(1, 2)                # Sets the pump speed time pattern index = 2 to the 1st pump
         >>> d.getLinkPumpPatternIndex()
 
-        Example 4:
+        :
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpPatternIndex(pumpIndex, 1)        # Sets the pump speed time pattern index = 1 to the pumps with index 118 and 119
@@ -7197,7 +7205,7 @@ class epanet:
     def setLinkPumpPower(self, value, *argv):
         """ Sets the power for pumps. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('Net3_trace.inp')
+        The examples are based on d = epanet('Net3_trace.inp')
 
         Example 1:
 
@@ -7215,7 +7223,7 @@ class epanet:
         >>> d.setLinkPumpPower(1, 10)                 # Sets the pump power = 10 to the 1st pump
         >>> d.getLinkPumpPower()
 
-        Example 4:
+        :
 
         >>> pumpIndex = d.getLinkPumpIndex()
         >>> d.setLinkPumpPower(pumpIndex, 10)         # Sets the pump power = 10 to the pumps with index 118 and 119
@@ -7584,7 +7592,7 @@ class epanet:
     def setLinkVertices(self, linkID, x, y, *argv):
         """ Assigns a set of internal vertex points to a link.
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
 
@@ -7623,7 +7631,7 @@ class epanet:
 
     def setNodeBaseDemands(self, value, *argv):
         """ Sets the values of demand for nodes.
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -7652,7 +7660,7 @@ class epanet:
 
         If a category is not given, the default is categoryIndex = 1.
 
-        Example 4:
+        :
 
         >>> d = epanet('BWSN_Network_1.inp')
         >>> nodeIndex = 121
@@ -7767,7 +7775,7 @@ class epanet:
 
         If a category is not given, the default is categoryIndex = 1.
 
-        Example 4:
+        :
 
         >>> nodeIndex = 121
         >>> categoryIndex = 2
@@ -8056,7 +8064,7 @@ class epanet:
         >>> d.setNodeTankBulkReactionCoeff(1, -0.8)                   # Sets the bulk reaction coefficient = -0.5 to the 1st tank
         >>> d.getNodeTankBulkReactionCoeff()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankBulkReactionCoeff(tankIndex, 0)              # Sets the bulk reaction coefficient = 0 to the tanks with index 128 and 129
@@ -8076,7 +8084,7 @@ class epanet:
     def setNodeTankCanOverFlow(self, value, *argv):
         """ Sets the tank can-overflow (= 1) or not (= 0). (EPANET Version 2.2)
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8094,7 +8102,7 @@ class epanet:
         >>> d.setNodeTankCanOverFlow(1, 0)           # Sets the can-overflow = 0 to the 1st tank
         >>> d.getNodeTankCanOverFlow()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankCanOverFlow(tankIndex, 1)   # Sets the can-overflow = 1 to the tanks with index 128 and 129
@@ -8208,7 +8216,7 @@ class epanet:
         >>> d.setNodeTankDiameter(1, 120)                   # Sets the diameter = 120 to the 1st tank
         >>> d.getNodeTankDiameter()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankDiameter(tankIndex, 150)           # Sets the diameter = 150 to the tanks with index 128 and 129
@@ -8246,7 +8254,7 @@ class epanet:
         >>> d.setNodeTankInitialLevel(1, 10)                  # Sets the initial level = 10 to the 1st tank
         >>> d.getNodeTankInitialLevel()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankInitialLevel(tankIndex, 10)          # Sets the initial level = 10 to the tanks with index 128 and 129
@@ -8266,7 +8274,7 @@ class epanet:
     def setNodeTankMaximumWaterLevel(self, value, *argv):
         """ Sets the maximum water level value for tanks.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8284,7 +8292,7 @@ class epanet:
         >>> d.setNodeTankMaximumWaterLevel(1, 35)                  # Sets the maximum water level = 35 to the 1st tank
         >>> d.getNodeTankMaximumWaterLevel()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMaximumWaterLevel(tankIndex, 30)          # Sets the maximum water level = 30 to the tanks with index 128 and 129
@@ -8304,7 +8312,7 @@ class epanet:
     def setNodeTankMinimumWaterLevel(self, value, *argv):
         """ Sets the minimum water level value for tanks.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8322,7 +8330,7 @@ class epanet:
         >>> d.setNodeTankMinimumWaterLevel(1, 5)                     # Sets the minimum water level = 5 to the 1st tank
         >>> d.getNodeTankMinimumWaterLevel()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMinimumWaterLevel(tankIndex, 10)            # Sets the minimum water level = 10 to the tanks with index 128 and 129
@@ -8342,7 +8350,7 @@ class epanet:
     def setNodeTankMinimumWaterVolume(self, value, *argv):
         """ Sets the minimum water volume value for tanks.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8360,7 +8368,7 @@ class epanet:
         >>> d.setNodeTankMinimumWaterVolume(1, 1000)                    # Sets the minimum water volume = 1000 to the 1st tank
         >>> d.getNodeTankMinimumWaterVolume()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMinimumWaterVolume(tankIndex, 1500)            # Sets the minimum water volume = 1500 to the tanks with index 128 and 129
@@ -8380,7 +8388,7 @@ class epanet:
     def setNodeTankMixingFraction(self, value, *argv):
         """ Sets the tank mixing fraction of total volume occupied by the inlet/outlet zone in a 2-compartment tank.
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -8398,7 +8406,7 @@ class epanet:
         >>> d.setNodeTankMixingFraction(1, 0)                 # Sets the mixing fraction = 0 to the 1st tank
         >>> d.getNodeTankMixingFraction()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMixingFraction(tankIndex, 1)         # Sets the mixing fraction = 1 to the tanks with index 128 and 129
@@ -8436,7 +8444,7 @@ class epanet:
         >>> d.setNodeTankMixingModelType(1, 'FIFO')                        # Sets the  mixing model type = 'FIFO' to the 1st tank
         >>> d.getNodeTankMixingModelType()
 
-        Example 4:
+        :
 
         >>> tankIndex = d.getNodeTankIndex()
         >>> d.setNodeTankMixingModelType(tankIndex, 'MIX1')                # Sets the  mixing model type = 'MIX1' to the tanks with index 128 and 129
@@ -8825,7 +8833,7 @@ class epanet:
         >>> d.setQualityType('chem', 'Chlorine', 'mg/Kg')    # Sets chemical analysis given the name of the chemical being analyzed and units that the chemical is measured in
         >>> qualInfo = d.getQualityInfo()
 
-        Example 4:
+        :
 
         >>> nodeID = d.getNodeNameID(1)
         >>> d.setQualityType('trace', nodeID)                # Sets source tracing analysis given the ID label of node traced in a source tracing analysis
@@ -9018,7 +9026,7 @@ class epanet:
     def setRulePremise(self, ruleIndex, premiseIndex, premise):
         """ Sets the premise of a rule - based control. (EPANET Version 2.2)
 
-        The examples are based on d=epanet('BWSN_Network_1.inp')
+        The examples are based on d = epanet('BWSN_Network_1.inp')
 
         Example 1:
 
@@ -9072,7 +9080,7 @@ class epanet:
     def setRulePremiseObjectNameID(self, ruleIndex, premiseIndex, objNameID):
         """ Sets the ID of an object in a premise of a rule-based control. (EPANET Version 2.2)
 
-        # The example is based on d=epanet('BWSN_Network_1.inp')
+        # The example is based on d = epanet('BWSN_Network_1.inp')
 
         Example: Sets the node's ID = 'TANK-131' to the 1st premise of the 1st rule - based control.
 
@@ -9096,7 +9104,7 @@ class epanet:
     def setRulePremiseValue(self, ruleIndex, premiseIndex, value):
         """ Sets the value being compared to in a premise of a rule-based control. (EPANET Version 2.2)
 
-        The example is based on d=epanet('BWSN_Network_1.inp')
+        The example is based on d = epanet('BWSN_Network_1.inp')
 
         Example:
 
@@ -9115,7 +9123,7 @@ class epanet:
     def setRules(self, ruleIndex, rule):
         """ Sets a rule - based control. (EPANET Version 2.2)
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
 
@@ -9190,7 +9198,7 @@ class epanet:
     def setRulePremiseStatus(self, ruleIndex, premiseIndex, status):
         """ Sets the status being compared to in a premise of a rule-based control. (EPANET Version 2.2)
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
 
@@ -9216,7 +9224,7 @@ class epanet:
     def setRulePriority(self, ruleIndex, priority):
         """ Sets rule - based control priority. (EPANET Version 2.2)
 
-        The example is based on d=epanet('BWSN_Network_1.inp')
+        The example is based on d = epanet('BWSN_Network_1.inp')
 
         Example:
 
@@ -9240,7 +9248,7 @@ class epanet:
 
         See more: 'https://nepis.epa.gov/Adobe/PDF/P1007WWU.pdf' (Page 164)
 
-        The example is based on d=epanet('Net1.inp')
+        The example is based on d = epanet('Net1.inp')
 
         Example:
 
