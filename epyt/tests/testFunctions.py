@@ -689,7 +689,7 @@ while tleft > 0:
     tleft = d.stepQualityAnalysisTimeLeft()
 d.closeQualityAnalysis()
 
-tstep = d.nextQualityAnalysisStep()  ### CHECK, DOES NOT SEEM TO CHANGE
+tstep = d.nextQualityAnalysisStep()  # 0, if analysis has finished. 
 
 # WITH SETTIMEQUALITYSTEP
 d.unload()
