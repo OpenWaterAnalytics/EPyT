@@ -3643,47 +3643,44 @@ class AddTest(unittest.TestCase):
         actual = comp_vals.Velocity
         self.assertEqual(actual.all(), desired.all(), err_msg) 
 
-    def testgetComputedHydraulicTimeSeries(self):   
-        d = epanet('Net3_trace.inp')
-        d.getComputedQualityTimeSeries()
+    def testgetComputedQualityTimeSeries(self):   
+        d = epanet('Net1.inp')
+        comp_vals = d.getComputedQualityTimeSeries()
         err_msg = 'Error in getComputedQualityTimeSeries output'
         
         # Test LinkQuality 
-        desired = np.matrix([[0.5       , 0.5       , 0.5       , ..., 0.5       , 0.5       ,
-         0.75      ],
-        [0.52890302, 0.4939817 , 0.49347887, ..., 0.49109313, 0.48907843,
-         1.        ],
-        [0.5578484 , 0.48817134, 0.48706123, ..., 0.48241132, 0.47856008,
-         1.        ],
-        ...,
-        [0.92506561, 0.67356982, 0.47429792, ..., 0.31707208, 0.29570816,
-         1.        ],
-        [0.93532389, 0.67693499, 0.47385221, ..., 0.33022373, 0.2911509 ,
-         1.        ],
-        [0.93522518, 0.70322825, 0.47353283, ..., 0.34239974, 0.28645134,
-         1.        ]])
-        actual = comp_vals.Velocity
-        self.assertEqual(actual.all(), desired.all(), err_msg) 
+        desired_0 = [0.5000000000000001, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75]
+        actual_0 = comp_vals.LinkQuality[0].tolist()[0]
+        self.assertEqual(actual_0, desired_0, err_msg) 
+        
+        desired_10 = [0.7905103495922685, 0.447012255612685, 0.43946804267267675, 0.431884859944181, 0.45136890741421926,
+                      0.4088524671378628, 0.447544901915228, 0.4401289976946857, 0.4468090703914463, 0.44516552149692806, 
+                      0.4194608434894798, 0.4076172688259915, 1.0]
+        actual_10 = comp_vals.LinkQuality[10].tolist()[0]
+        self.assertEqual(actual_10, desired_10, err_msg) 
+        
+        desired_25 = [0.9333667984087247, 0.8295918634854789, 0.4082678891873164, 0.36767918327870297, 0.38345550994086436, 
+                      0.30650249668366, 0.7946174028666654, 0.8072304802850477, 0.42333201775777995, 0.3714267801242186, 
+                      0.3639229545688321, 0.3229344218709133, 1.0]
+        actual_25 = comp_vals.LinkQuality[25].tolist()[0]
+        self.assertEqual(actual_25, desired_25, err_msg) 
 
         # Test NodeQuality 
-        desired = np.matrix([[0.5       , 0.5       , 0.5       , ..., 0.5       , 1.        ,
-         1.        ],
-        [1.        , 0.49505491, 0.4939817 , ..., 0.48940706, 1.        ,
-         0.99719309],
-        [1.        , 0.49015874, 0.48817134, ..., 0.47914944, 1.        ,
-         0.99438737],
-        ...,
-        [1.        , 0.69928821, 0.6415393 , ..., 0.15674972, 1.        ,
-         0.58783618],
-        [1.        , 0.71677689, 0.64125651, ..., 0.15423101, 1.        ,
-         0.58697243],
-        [1.        , 0.86630053, 0.64282282, ..., 0.15362926, 1.        ,
-         0.58611316]])
+        desired_0 = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
+        actual_0 = comp_vals.NodeQuality[0].tolist()[0]
+        self.assertEqual(actual_0, desired_0, err_msg) 
+        
+        desired_10 = [1.0000000000000002, 0.4526929432239758, 0.447012255612685, 0.4394680426726767, 0.4259666672523444, 
+                      0.4392986016631863, 0.45068900627310676, 0.4194608434894798, 0.40333910007431323, 1.0, 0.9720071725424413]
+        actual_10 = comp_vals.NodeQuality[10].tolist()[0]
+        self.assertEqual(actual_10, desired_10, err_msg) 
+        
+        desired_25 = [1.0, 0.85732665454064, 0.7949196620043768, 0.36078517810580646, 0.746055505507391, 0.3677236352776429, 
+                      0.3843648409713966, 0.32025873566692853, 0.29049233545152015, 1.0, 0.9329052016714082]
+        actual_25 = comp_vals.NodeQuality[25].tolist()[0]
+        self.assertEqual(actual_25, desired_25, err_msg) 
+        
 
-        
-        
         
 if __name__ == "__main__":
     unittest.main()  # run all tests
-    
-    
