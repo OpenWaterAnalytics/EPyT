@@ -2676,7 +2676,7 @@ class AnalysisTest(unittest.TestCase):
                                             0.763763  , 0.13845722, 0.76376313, 0.94441596, 0.76376264,
                                             0.4377526 , 0.0909339 , 0.14413847, 0.87968838, 0.41099686,
                                             0.76376316])
-        np.testing.assert_array_almost_equal(NActQual[50], desired_act_qual_sens_50, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(NActQual[50]/1000, desired_act_qual_sens_50/1000, err_msg=err_msg)
 
         # Test Node Mass Flow Rate
         err_msg = 'Error in Node Mass Flow Rate'
