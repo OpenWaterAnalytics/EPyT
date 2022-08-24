@@ -1,5 +1,4 @@
 from epyt import epanet
-import numpy as np
 import unittest
 
 
