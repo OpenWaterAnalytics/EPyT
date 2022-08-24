@@ -1,6 +1,4 @@
-from ftplib import error_perm
 from math import isclose
-from tkinter import E
 from epyt import epanet
 import numpy as np
 import unittest
@@ -42,7 +40,7 @@ class AddTest(unittest.TestCase):
         x_y_2 = [1000, 500]
         x_y_3 = [1350, 260]
         values = [x_y_1, x_y_2, x_y_3]
-        curve_index = self.epanetClass.addCurve(new_curve_ID, values)
+        self.epanetClass.addCurve(new_curve_ID, values)
         curve_info = self.epanetClass.getCurvesInfo()
         np.testing.assert_equal(curve_info.CurveNameID, ['1', 'NewCurve'], err_msg=err_msg)
         np.testing.assert_equal(curve_info.CurveNvalue, [1, 3], err_msg=err_msg)
@@ -288,21 +286,20 @@ class DeleteTest(unittest.TestCase):
         nodeIndex = 1
         baseDemand = 100
         patternId = '1'
-        categoryIndex = 1
-        categoryIndex = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand')    # Adds a new demand to the 1st node and returns the new demand index
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand')    # Adds a new demand to the 1st node and returns the new demand index
         self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)                                                    # Retrieves the indices of all demands for the 1st node
         self.epanetClass.deleteNodeJunctionDemand(1, 2)                                                           # Deletes the 2nd demand of the 1st node
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), [1, 2], err_msg)
         # Test 2
-        categoryIndex_2 = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_2')   # Adds a new demand to the first node and returns the new demand index
-        categoryIndex_3 = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_3')   # Adds a new demand to the first node and returns the new demand index
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_2')   # Adds a new demand to the first node and returns the new demand index
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_3')   # Adds a new demand to the first node and returns the new demand index
         self.epanetClass.deleteNodeJunctionDemand(1)                                                                 # Deletes all the demands of the 1st node
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandName(1), {1: [''], 2: ['new demand_2'], 3: ['new demand_3']}, err_msg)
         # Test 3
         nodeIndex = [1, 2, 3]
         baseDemand = [100, 110, 150]
         patternId = ['1', '1', '']
-        categoryIndex = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, ['new demand_1', 'new demand_2', 'new demand_3'])     # Adds 3 new demands to the first 3 nodes
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, ['new demand_1', 'new demand_2', 'new demand_3'])     # Adds 3 new demands to the first 3 nodes
         demand_index_old = self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)
         self.epanetClass.deleteNodeJunctionDemand([1,2,3])                                     # Deletes all the demands of the first 3 nodes
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), demand_index_old, err_msg)
@@ -329,7 +326,6 @@ class DeleteTest(unittest.TestCase):
         err_msg = 'Rule not deleted'
         # Test 1
         d = epanet('BWSN_Network_1.inp')
-        rule_count = d.getRuleCount()        # Retrieves the number of rules
         d.deleteRules()                      # Deletes all the rule-based control
         self.assertEqual(d.getRuleCount(), 0, err_msg)
         # Test 2
@@ -1065,10 +1061,9 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodeTypeIndex([10,11]), [1, 2], 'Wrong Node Type Index Output')
 
     def testgetOptions(self):
-        err_msg = 'Wrong options Output'
         d = epanet('BWSN_Network_1.inp')
         self.assertEqual(d.getOptionsAccuracyValue(), 0.005, 'Wrong Options Accuracy Value Output')
-        self.assertEqual(d.getOptionsCheckFrequency(), 2.0, 'Wrong Options Check Frequency Output'), 
+        self.assertEqual(d.getOptionsCheckFrequency(), 2.0, 'Wrong Options Check Frequency Output') 
         self.assertEqual(d.getOptionsDampLimit(), 0.0, 'Wrong Options Damping Limit Output')
         self.assertEqual(d.getOptionsDemandCharge(), 0.0, 'Wrong Options Demand Charge Output')
         self.assertEqual(d.getOptionsEmitterExponent(), 0.5, 'Wrong Options Emitter Exponent Output')
@@ -1679,9 +1674,7 @@ class SetTest(unittest.TestCase):
         self.assertAlmostEqual(d.getNodeBaseDemands()[1][index_node-1], demand, err_msg)
 
         # Test 2
-        nodeIndex = list(range(1,6))
-        BaseDems = d.getNodeBaseDemands()[1]
-        baseDems = list(np.array(BaseDems)[0:5])                   
+        nodeIndex = list(range(1,6))              
         demands = [10, 5, 15, 20, 5]
         d.setNodeBaseDemands(nodeIndex, demands) 
         desired = np.array([10.,  5., 15., 20.,  5.])                  
@@ -1773,7 +1766,6 @@ class SetTest(unittest.TestCase):
         self.assertAlmostEqual(self.epanetClass.getNodeInitialQuality(nodeIndex), 1, err_msg)
         
     def testsetNodeJunctionData(self):
-        err_msg = 'Error setting node junction data'
         junctionIndex = 1
         elev = 35
         dmnd = 100
@@ -2220,7 +2212,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setTimeStatisticsType(statisticsType)
         self.assertEqual(self.epanetClass.getTimeStatisticsType(), statisticsType, err_msg)
         
-class AddTest(unittest.TestCase):
+class AnalysisTest(unittest.TestCase):
 
     def testStepByStepHydraulic(self):
         d = epanet('Net1.inp')
@@ -2333,7 +2325,7 @@ class AddTest(unittest.TestCase):
         Vel, HLoss, LSett, LEnrg, NDemSensN, MFR_, NActQual = [], [], [], [], [], [], []  
         while (tstep>0):
             t  = d.runHydraulicAnalysis()
-            qt = d.runQualityAnalysis()
+            d.runQualityAnalysis()
             P.append(d.getNodePressure())
             F.append(d.getLinkFlows())
             QN.append(d.getNodeActualQuality())
@@ -2350,9 +2342,10 @@ class AddTest(unittest.TestCase):
             MFR_.append(d.getNodeMassFlowRate())
 
             tstep = d.nextHydraulicAnalysisStep()
-            qtstep = d.nextQualityAnalysisStep()
+            d.nextQualityAnalysisStep()
         d.closeQualityAnalysis()
         d.closeHydraulicAnalysis()
+        d.unload()
 
         # Test Pressure
         err_msg = 'Error in Pressure Output'
@@ -2684,6 +2677,7 @@ class AddTest(unittest.TestCase):
         d = epanet('Net1.inp')
         comp_vals = d.getComputedHydraulicTimeSeries()
         err_msg = 'Error in getComputedHydraulicTimeSeries output'
+        d.unload()
         
         # Test Demand 
         desired = np.matrix([[    0.        ,   150.        ,   150.        ,   100.        ,
@@ -3646,6 +3640,7 @@ class AddTest(unittest.TestCase):
     def testgetComputedQualityTimeSeries(self):   
         d = epanet('Net1.inp')
         comp_vals = d.getComputedQualityTimeSeries()
+        d.unload()
         err_msg = 'Error in getComputedQualityTimeSeries output'
         
         # Test LinkQuality 
@@ -3683,6 +3678,7 @@ class AddTest(unittest.TestCase):
     def testgetComputedTimeSeries(self):
         d = epanet('Net1.inp')
         comp_vals = d.getComputedTimeSeries()
+        d.unload()
         err_msg = 'Error in getComputedTimeSeries output'
 
         # Test LinkQuality 
