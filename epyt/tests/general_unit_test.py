@@ -2633,7 +2633,7 @@ class AnalysisTest(unittest.TestCase):
                                             7.56      ,   10.08      ,    0.        ,    8.82      ,
                                             3.78      ,   21.42      ,   21.42      ,    1.89      ,
                                             1.89      ,    0.        ,    1.26      , -406.70253781])
-        np.testing.assert_array_almost_equal(NDemSensN[20], desired_act_dem_sen_20, err_msg=err_msg) 
+        np.testing.assert_array_almost_equal(NDemSensN[20]/100, desired_act_dem_sen_20/100, err_msg=err_msg) 
         
         desired_act_dem_sen_50 = np.array([-638.848     ,    8.24      ,   14.42      ,    8.24      ,
                                             8.24      ,    5.15      ,    4.12      ,    9.27      ,
