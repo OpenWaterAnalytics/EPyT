@@ -1,6 +1,4 @@
-from ftplib import error_perm
 from math import isclose
-from tkinter import E
 from epyt import epanet
 import numpy as np
 import unittest
@@ -42,7 +40,7 @@ class AddTest(unittest.TestCase):
         x_y_2 = [1000, 500]
         x_y_3 = [1350, 260]
         values = [x_y_1, x_y_2, x_y_3]
-        curve_index = self.epanetClass.addCurve(new_curve_ID, values)
+        self.epanetClass.addCurve(new_curve_ID, values)
         curve_info = self.epanetClass.getCurvesInfo()
         np.testing.assert_equal(curve_info.CurveNameID, ['1', 'NewCurve'], err_msg=err_msg)
         np.testing.assert_equal(curve_info.CurveNvalue, [1, 3], err_msg=err_msg)
@@ -252,6 +250,7 @@ class DeleteTest(unittest.TestCase):
         index = 1
         d.deleteCurve(index)             # Deletes a curve given it's index
         self.assertEqual(d.getCurveNameID(), ['CURVE-2'], 'Curve not deleted')
+        d.unload()
 
     def testdeleteLink(self):
         err_msg = 'Link not deleted'
@@ -282,31 +281,31 @@ class DeleteTest(unittest.TestCase):
         self.epanetClass.deleteNode(idNodes)              # Deletes 2 nodes given their IDs
         self.assertNotEqual(self.epanetClass.getNodeNameID([1,2]), idNodes, err_msg)
 
-    def testdeleteNodeJUnctionDemand(self):
+    def testdeleteNodeJunctionDemand(self):
         err_msg = 'Demand not deleted'
         # Test 1
         nodeIndex = 1
         baseDemand = 100
         patternId = '1'
-        categoryIndex = 1
-        categoryIndex = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand')    # Adds a new demand to the 1st node and returns the new demand index
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand')    # Adds a new demand to the 1st node and returns the new demand index
         self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)                                                    # Retrieves the indices of all demands for the 1st node
-        self.epanetClass.deleteNodeJunctionDemand(1, 2)                                                           # Deletes the 2nd demand of the 1st node
-        self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), [1, 2], err_msg)
+        self.epanetClass.deleteNodeJunctionDemand(1, 2)    
+        self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), [[1, 2]], err_msg)
         # Test 2
-        categoryIndex_2 = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_2')   # Adds a new demand to the first node and returns the new demand index
-        categoryIndex_3 = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_3')   # Adds a new demand to the first node and returns the new demand index
-        self.epanetClass.deleteNodeJunctionDemand(1)                                                                 # Deletes all the demands of the 1st node
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_2')   # Adds a new demand to the first node and returns the new demand index
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, 'new demand_3')   # Adds a new demand to the first node and returns the new demand index
+        self.epanetClass.deleteNodeJunctionDemand(1) 
+        print('UserWarning expected since the Demand is deleted')                                                                # Deletes all the demands of the 1st node
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandName(1), {1: [''], 2: ['new demand_2'], 3: ['new demand_3']}, err_msg)
         # Test 3
         nodeIndex = [1, 2, 3]
         baseDemand = [100, 110, 150]
         patternId = ['1', '1', '']
-        categoryIndex = self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, ['new demand_1', 'new demand_2', 'new demand_3'])     # Adds 3 new demands to the first 3 nodes
+        self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, ['new demand_1', 'new demand_2', 'new demand_3'])     # Adds 3 new demands to the first 3 nodes
         demand_index_old = self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)
-        self.epanetClass.deleteNodeJunctionDemand([1,2,3])                                     # Deletes all the demands of the first 3 nodes
+        self.epanetClass.deleteNodeJunctionDemand([1,2,3])  
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), demand_index_old, err_msg)
-
+        
     def testsdeletePattern(self):
         err_msg = 'Pattern not deleted'
         # Test 1
@@ -324,23 +323,26 @@ class DeleteTest(unittest.TestCase):
         d = epanet('BWSN_Network_1.inp')
         d.deletePatternsAll()       # Deletes all the patterns
         self.assertEqual(d.getPatternNameID(), [], err_msg)
+        d.unload()
 
     def testdeleteRules(self):
         err_msg = 'Rule not deleted'
         # Test 1
         d = epanet('BWSN_Network_1.inp')
-        rule_count = d.getRuleCount()        # Retrieves the number of rules
         d.deleteRules()                      # Deletes all the rule-based control
         self.assertEqual(d.getRuleCount(), 0, err_msg)
+        d.unload()
         # Test 2
         d = epanet('BWSN_Network_1.inp')
         rule_id_1 = d.getRuleID(1)
         d.deleteRules(1)        # Deletes the 1st rule-based control
         self.assertNotEqual(d.getRuleID(1), rule_id_1, err_msg)
+        d.unload()
         # Test 3
         d = epanet('BWSN_Network_1.inp')
         d.deleteRules([1,2,3])  # Deletes the 1st to 3rd rule-based control
         self.assertEqual(d.getRuleCount(), 1, err_msg)
+        d.unload()
 
 class GetTest(unittest.TestCase):
 
@@ -364,7 +366,7 @@ class GetTest(unittest.TestCase):
             'Wrong Time output')
         self.assertEqual(
             data.Pressure.all(),
-            np.matrix([[127.54072491, 119.25732074, 117.02125399, 118.66902368,
+            np.array([[127.54072491, 119.25732074, 117.02125399, 118.66902368,
                         117.66115716, 118.75815405, 120.73696519, 115.86077993,
                         110.79018511,   0.        ,  51.996     ],
                         [128.58963612, 120.45028753, 118.34940585, 119.99139321,
@@ -449,7 +451,7 @@ class GetTest(unittest.TestCase):
 
         self.assertEqual(
             data.Velocity.all(),
-            np.matrix([[2.35286666e+00, 2.57230086e+00, 5.28331232e-01, 7.80876836e-01,
+            np.array([[2.35286666e+00, 2.57230086e+00, 5.28331232e-01, 7.80876836e-01,
                         3.42300951e-01, 4.63083582e-01, 9.65991272e-01, 1.96883153e+00,
                         5.35291644e-01, 1.87239674e-01, 8.98762391e-01, 6.71632643e-01,
                         0.00000000e+00],
@@ -562,12 +564,12 @@ class GetTest(unittest.TestCase):
     def testgetComputedQualityTimeSeries(self):
         self.assertEqual(
             self.epanetClass.getComputedQualityTimeSeries().NodeQuality[10].all(),
-            np.matrix([[1., 0.45269294, 0.44701226, 0.43946804, 0.42596667,
+            np.array([[1., 0.45269294, 0.44701226, 0.43946804, 0.42596667,
                 0.4392986 , 0.45068901, 0.41946084, 0.4033391 , 1.,
                 0.97200717]]).all(),
             'Wrong NodeQuality output')
         self.assertEqual(self.epanetClass.getComputedQualityTimeSeries().LinkQuality.all(),
-            np.matrix([[0.79051035, 0.44701226, 0.43946804, 0.43188486, 0.45136891,
+            np.array([[0.79051035, 0.44701226, 0.43946804, 0.43188486, 0.45136891,
                 0.40885247, 0.4475449 , 0.440129  , 0.44680907, 0.44516552,
                 0.41946084, 0.40761727, 1.]]).all(),
             'Wrong Link Quality output')
@@ -600,6 +602,7 @@ class GetTest(unittest.TestCase):
                          ['PUMP: Pump Curve for Pump 10 (Lake Source)',
                           'PUMP: Pump Curve for Pump 335 (River Source)'],
                          'Wrong curve comment output')
+        d.unload()
 
     def testgetCounts(self):
         self.maxDiff = None
@@ -620,6 +623,7 @@ class GetTest(unittest.TestCase):
         # Test2
         curveID = d.getCurveNameID([1,2])
         self.assertEqual(d.getCurveIndex(curveID), [1,2], err_msg)
+        d.unload()
 
         ''' ---getCurveLengths---    '''
         d = epanet('Richmond_standard.inp')
@@ -668,6 +672,7 @@ class GetTest(unittest.TestCase):
         curveIndex = 1
         pointIndex = 1
         self.assertEqual(d.getCurveValue(curveIndex, pointIndex).all() , np.array([ 0., 38.]).all(), err_msg)
+        d.unload()
 
     def testgetDemandModel(self):
         self.assertDictEqual(self.epanetClass.getDemandModel().to_dict(),
@@ -805,6 +810,7 @@ class GetTest(unittest.TestCase):
         self.epanetClass.unload()
         self.epanetClass = epanet('Net1.inp')
         self.assertEqual(self.epanetClass.getLinkPumpTypeCode(),  [1], err_msg)
+        d.unload()
 
     def testgetLinksInfo(self):
         # Desired data
@@ -849,6 +855,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(len(l_vertices['x']), d.getLinkCount(), 'Wrong vertices list length ')
         self.assertEqual(len(d.getLinkVerticesCount()), d.getLinkCount(), 'Wrong vertices count')
         self.assertEqual(d.getLinkVerticesCount([1,2,3]), [5, 13, 28], 'Wrong vertices for the first 3 links')
+        d.unload()
 
     def testgetLinkIndex_LinkNodesIndex(self):
         indices = self.epanetClass.getLinkIndex()
@@ -868,12 +875,14 @@ class GetTest(unittest.TestCase):
         self.assertEqual(pump_indices, [118, 119], 'Wrong pump indices')
         pump_IDs = d.getLinkPumpNameID([1,2])
         self.assertEqual(pump_IDs, ['10', '335'], 'Wrong pump IDs')
+        d.unload()
         # Valve
         d = epanet('ky10.inp')
         valve_indices = list(d.getLinkValveIndex())
         self.assertEqual(valve_indices, [1057, 1058, 1059, 1060, 1061], 'Wrong valve indices')
         valve_IDs = d.getLinkValveNameID([1,2,3])
         self.assertEqual(valve_IDs, ['~@RV-1', '~@RV-2', '~@RV-3'], 'Wrong valve IDs')
+        d.unload()
 
     def testgetNodeInfo(self):
         n_info = self.epanetClass.getNodesInfo()
@@ -927,7 +936,8 @@ class GetTest(unittest.TestCase):
         ''' ---getNodeDemandPatternNameID---    '''
         self.assertEqual(len(d.getNodeDemandPatternNameID()), 2, 'Wrong Node Demand Pattern Dict length')
         self.assertEqual(d.getNodeDemandPatternNameID()[2][120:122], ['PATTERN-1', 'PATTERN-1'], 'Wrong Node Demand Pattern ID Output')
-            
+        d.unload()
+        
     def testgetNodeInitialQuality(self):
         desired_init_qual = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
         self.assertEqual(list(self.epanetClass.getNodeInitialQuality()), desired_init_qual, 'Wrong Initial quality value')
@@ -1023,7 +1033,7 @@ class GetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal_nulp(tData['Diameter'], desired_tData['Diameter'], nulp=5)
         np.testing.assert_array_almost_equal_nulp(tData['Minimum_Water_Volume'], desired_tData['Minimum_Water_Volume'], nulp=5)
         np.testing.assert_array_almost_equal_nulp(tData['Volume_Curve_Index'], desired_tData['Volume_Curve_Index'], nulp=5)
-
+        d.unload()
 
     def testgetnodeTankMix(self):
         d = epanet('ky10.inp')
@@ -1050,6 +1060,7 @@ class GetTest(unittest.TestCase):
                     368207.85033021, 260588.21880625, 312809.01892312, 301081.21859364,
                     193012.038532  ])
         self.assertEqual(actual.all(), desired.all(), 'Wrong Node Tank Mix Zone Volume Output')
+        d.unload()
 
     def testgetNodeType(self):
 
@@ -1065,10 +1076,9 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodeTypeIndex([10,11]), [1, 2], 'Wrong Node Type Index Output')
 
     def testgetOptions(self):
-        err_msg = 'Wrong options Output'
         d = epanet('BWSN_Network_1.inp')
         self.assertEqual(d.getOptionsAccuracyValue(), 0.005, 'Wrong Options Accuracy Value Output')
-        self.assertEqual(d.getOptionsCheckFrequency(), 2.0, 'Wrong Options Check Frequency Output'), 
+        self.assertEqual(d.getOptionsCheckFrequency(), 2.0, 'Wrong Options Check Frequency Output') 
         self.assertEqual(d.getOptionsDampLimit(), 0.0, 'Wrong Options Damping Limit Output')
         self.assertEqual(d.getOptionsDemandCharge(), 0.0, 'Wrong Options Demand Charge Output')
         self.assertEqual(d.getOptionsEmitterExponent(), 0.5, 'Wrong Options Emitter Exponent Output')
@@ -1090,7 +1100,8 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getOptionsSpecificGravity(), 1.0, 'Wrong Options Specific Gravity Output')
         self.assertEqual(d.getOptionsSpecificViscosity(), 1.0, 'Wrong Options Specific Viscosity Output')
         self.assertEqual(d.getOptionsTankBulkReactionOrder(), 1, 'Wrong Options Tank Bulk Reaction Order Output')
-
+        d.unload()
+    
     def testgetPattern(self):
         d = epanet('BWSN_Network_1.inp')
 
@@ -1185,6 +1196,7 @@ class GetTest(unittest.TestCase):
 
         ''' ---getPatternValue---    '''
         self.assertEqual(d.getPatternValue(1, 5), 1.08, 'Wrong Pattern Value Output')
+        d.unload()
 
     def testgetQualityInfo(self):
         desired_qual_info_dict = {'QualityCode': 1, 'QualityChemName': 'Chlorine', 
@@ -1213,6 +1225,7 @@ class GetTest(unittest.TestCase):
                         ['THEN PUMP PUMP-172 STATUS IS CLOSED'], [], 'PRIORITY 1.0']}
         actual_rule = d.getRules()[1]
         self.assertDictEqual(actual_rule, desired_rule, 'Wrong Rule Output')
+        d.unload()
 
     def testGetTime(self):
         self.assertEqual(self.epanetClass.getTimeSimulationDuration(), 86400, 'Wrong Simulation Duration Output')
@@ -1291,8 +1304,10 @@ class SetTest(unittest.TestCase):
         ''' ---setCurveNameID---    '''       
         d.setCurveNameID([1, 2], ['Curve1', 'Curve2'])
         self.assertEqual(d.getCurveNameID(), ['Curve1', 'Curve2', 'CURVE-2'], 'Wrong Curve ID')
+        d.unload()
 
         ''' ---setCurveValue---    '''  
+        d = epanet('BWSN_Network_1.inp')
         err_msg = 'Wrong Curve Value Output'     
         curveIndex = 1          
         curvePoint = 1                                         
@@ -1300,7 +1315,6 @@ class SetTest(unittest.TestCase):
         d.setCurveValue(curveIndex, curvePoint, x_y_values)
         self.assertAlmostEqual(d.getCurvesInfo().CurveXvalue[curveIndex-1][0], x_y_values[0], err_msg)
         self.assertEqual(d.getCurvesInfo().CurveYvalue[curveIndex-1][0], x_y_values[1], err_msg) 
-        
         d.unload()
         
     def testsetDemandModel(self):
@@ -1424,6 +1438,7 @@ class SetTest(unittest.TestCase):
         lengths_new = [i * 1.5 for i in lengths]
         d.setLinkLength(lengths_new)                  
         self.assertEqual(list(d.getLinkLength()), lengths_new, err_msg)
+        d.unload()
 
     def testsetLinkMinorLossCoeff(self):
         err_msg = 'Error setting Link Minor Loss Coefficient'
@@ -1454,7 +1469,8 @@ class SetTest(unittest.TestCase):
         IDs = ['1', '2', '3', '4']         
         d.setLinkNameID(IDs)                
         self.assertEqual(d.getLinkNameID([1,2,3,4]), ['1', '2', '3', '4'], err_msg)
-
+        d.unload()
+        
     def testsetLinkNodesIndex(self):
         err_msg = 'Error setting Link ID'
         d = epanet('ky10.inp')
@@ -1471,6 +1487,7 @@ class SetTest(unittest.TestCase):
         endNode   = [3, 5]
         d.setLinkNodesIndex(linkIndex, startNode, endNode)
         self.assertEqual(d.getLinkNodesIndex()[0:2], [[2, 3], [4, 5]], err_msg)
+        d.unload()
 
     def testsetLinkPipeData(self):
         pipeIndex = [1, 2]
@@ -1562,6 +1579,7 @@ class SetTest(unittest.TestCase):
         pumpIndex = d.getLinkPumpIndex()
         d.setLinkPumpPower(pumpIndex, [10, 15])  
         np.testing.assert_array_almost_equal(d.getLinkPumpPower(), np.array([10., 15.]), err_msg=err_msg)
+        d.unload()
 
     def testsetLinkRoughnessCoeff(self):
         err_msg = 'Error setting Link Roughness Coefficient'
@@ -1679,9 +1697,7 @@ class SetTest(unittest.TestCase):
         self.assertAlmostEqual(d.getNodeBaseDemands()[1][index_node-1], demand, err_msg)
 
         # Test 2
-        nodeIndex = list(range(1,6))
-        BaseDems = d.getNodeBaseDemands()[1]
-        baseDems = list(np.array(BaseDems)[0:5])                   
+        nodeIndex = list(range(1,6))              
         demands = [10, 5, 15, 20, 5]
         d.setNodeBaseDemands(nodeIndex, demands) 
         desired = np.array([10.,  5., 15., 20.,  5.])                  
@@ -1749,6 +1765,7 @@ class SetTest(unittest.TestCase):
         patternIndices = [1, 3, 2, 4, 2]
         d.setNodeDemandPatternIndex(nodeIndex, categoryIndex, patternIndices)     
         self.assertEqual(d.getNodeDemandPatternIndex()[categoryIndex][0:5], patternIndices, err_msg)
+        d.unload()
     
     def testsetNodeElevations(self):
         err_msg = 'Error setting node elevations'
@@ -1773,7 +1790,6 @@ class SetTest(unittest.TestCase):
         self.assertAlmostEqual(self.epanetClass.getNodeInitialQuality(nodeIndex), 1, err_msg)
         
     def testsetNodeJunctionData(self):
-        err_msg = 'Error setting node junction data'
         junctionIndex = 1
         elev = 35
         dmnd = 100
@@ -1855,7 +1871,8 @@ class SetTest(unittest.TestCase):
         tankIndex = d.getNodeTankIndex([1,2])
         d.setNodeTankBulkReactionCoeff(tankIndex, [-0.5, 0])      
         self.assertEqual(list(d.getNodeTankBulkReactionCoeff()), [-0.5, 0], err_msg)
-    
+        d.unload()
+        
     def testsetNodeTankCanOverFlow(self):
         err_msg = 'Error setting node Tank Can Overflow'
         d = epanet('BWSN_Network_1.inp')
@@ -1871,6 +1888,7 @@ class SetTest(unittest.TestCase):
         # Test 3
         d.setNodeTankCanOverFlow(1, 0)           
         np.testing.assert_array_almost_equal(d.getNodeTankCanOverFlow(), np.array([0., 0.]), err_msg=err_msg)
+        d.unload()
         
     def testsetNodeTankData(self):
         d = epanet('Net3_trace.inp')
@@ -1891,6 +1909,7 @@ class SetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(t_Data.Diameter, diam, err_msg='Error Setting Node Tank Diameter') 
         np.testing.assert_array_almost_equal(t_Data.Minimum_Water_Volume, minvol, err_msg='Error Setting Node Tank Min Water Volume') 
         np.testing.assert_array_almost_equal(t_Data.Elevation, elev, err_msg='Error Setting Node Tank Elevation') 
+        d.unload()
         
     def testsetNodeTankDiameter(self):
         err_msg = 'Error setting Node Tank Diameter'
@@ -2064,6 +2083,7 @@ class SetTest(unittest.TestCase):
         patternComment = ['1st PAT', '2nd PAT', '3rd PAT', "4rth PAT"]
         d.setPatternComment(patternComment)                                                                         
         self.assertEqual(d.getPatternComment(), patternComment, err_msg)
+        d.unload()
         
         ''' ---setPatternMatrix---    '''
         err_msg = 'Error setting pattern Matrix'
@@ -2220,7 +2240,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setTimeStatisticsType(statisticsType)
         self.assertEqual(self.epanetClass.getTimeStatisticsType(), statisticsType, err_msg)
         
-class AddTest(unittest.TestCase):
+class AnalysisTest(unittest.TestCase):
 
     def testStepByStepHydraulic(self):
         d = epanet('Net1.inp')
@@ -2237,6 +2257,7 @@ class AddTest(unittest.TestCase):
              T_H.append(t)
              tstep = d.nextHydraulicAnalysisStep()
         d.closeHydraulicAnalysis()
+        d.unload()
 
         # Test Pressure
         err_msg = 'Error in Pressure Output'
@@ -2333,7 +2354,7 @@ class AddTest(unittest.TestCase):
         Vel, HLoss, LSett, LEnrg, NDemSensN, MFR_, NActQual = [], [], [], [], [], [], []  
         while (tstep>0):
             t  = d.runHydraulicAnalysis()
-            qt = d.runQualityAnalysis()
+            d.runQualityAnalysis()
             P.append(d.getNodePressure())
             F.append(d.getLinkFlows())
             QN.append(d.getNodeActualQuality())
@@ -2350,9 +2371,10 @@ class AddTest(unittest.TestCase):
             MFR_.append(d.getNodeMassFlowRate())
 
             tstep = d.nextHydraulicAnalysisStep()
-            qtstep = d.nextQualityAnalysisStep()
+            d.nextQualityAnalysisStep()
         d.closeQualityAnalysis()
         d.closeHydraulicAnalysis()
+        d.unload()
 
         # Test Pressure
         err_msg = 'Error in Pressure Output'
@@ -2684,9 +2706,10 @@ class AddTest(unittest.TestCase):
         d = epanet('Net1.inp')
         comp_vals = d.getComputedHydraulicTimeSeries()
         err_msg = 'Error in getComputedHydraulicTimeSeries output'
+        d.unload()
         
         # Test Demand 
-        desired = np.matrix([[    0.        ,   150.        ,   150.        ,   100.        ,
+        desired = np.array([[    0.        ,   150.        ,   150.        ,   100.        ,
            150.        ,   200.        ,   150.        ,   100.        ,
            100.        , -1866.17582999,   766.17582999],
         [    0.        ,   150.        ,   150.        ,   100.        ,
@@ -2771,7 +2794,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
     
         # Test Energy
-        desired = np.matrix([[6.72482481e+00, 3.52704749e+00, 2.91862104e-02, 8.89394398e-02,
+        desired = np.array([[6.72482481e+00, 3.52704749e+00, 2.91862104e-02, 8.89394398e-02,
          9.85232843e-03, 1.30951217e-02, 1.00839487e-02, 1.24317362e+00,
          3.52652499e-02, 1.25777125e-03, 1.10285438e-01, 3.78119311e-02,
          9.58448204e+01],
@@ -2883,7 +2906,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
         
         # Test Energy
-        desired = np.matrix([[ 1.86617583e+03,  1.23420718e+03,  1.29335135e+02,
+        desired = np.array([[ 1.86617583e+03,  1.23420718e+03,  1.29335135e+02,
           1.91158131e+02,  1.20664865e+02,  4.08105191e+01,
          -7.66175830e+02,  4.81968650e+02,  1.88696216e+02,
           2.93351346e+01,  1.40810519e+02,  5.91894809e+01,
@@ -3022,7 +3045,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
 
         # Test Pressure
-        desired = np.matrix([[127.54072491, 119.25732074, 117.02125399, 118.66902368,
+        desired = np.array([[127.54072491, 119.25732074, 117.02125399, 118.66902368,
          117.66115716, 118.75815405, 120.73696519, 115.86077993,
          110.79018511,   0.        ,  51.996     ],
         [128.58963612, 120.45028753, 118.34940585, 119.99139321,
@@ -3107,7 +3130,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
 
         # Test Setting 
-        desired = np.matrix([[100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
+        desired = np.array([[100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
          100., 100.,   1.],
         [100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
          100., 100.,   1.],
@@ -3165,7 +3188,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
 
         # Test Head 
-        desired = np.matrix([[1004.34739189,  985.23037329,  970.06982226,  968.87266023,
+        desired = np.array([[1004.34739189,  985.23037329,  970.06982226,  968.87266023,
           971.54663549,  969.07836152,  968.64520007,  967.39159919,
           965.68932635,  800.        ,  970.        ],
         [1006.76814245,  987.98358534,  973.13502388,  971.92451698,
@@ -3250,7 +3273,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
 
         # Test HeadLoss 
-        desired = np.matrix([[ 1.91170186e+01,  1.51605510e+01,  1.19716204e+00,
+        desired = np.array([[ 1.91170186e+01,  1.51605510e+01,  1.19716204e+00,
           2.46827397e+00,  4.33161447e-01,  1.70227284e+00,
           6.98222646e-02,  1.36837378e+01,  9.91460745e-01,
           2.27460153e-01,  4.15503630e+00,  3.38903517e+00,
@@ -3389,7 +3412,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
 
         # Test State 
-        desired = np.matrix([[3],
+        desired = np.array([[3],
         [3],
         [3],
         [3],
@@ -3420,7 +3443,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
         
         # Test Tank Volume 
-        desired = np.matrix([[     0.        ,      0.        ,      0.        ,
+        desired = np.array([[     0.        ,      0.        ,      0.        ,
               0.        ,      0.        ,      0.        ,
               0.        ,      0.        ,      0.        ,
               0.        , 240355.39992932],
@@ -3532,7 +3555,7 @@ class AddTest(unittest.TestCase):
         self.assertEqual(actual.all(), desired.all(), err_msg)
         
         # Test Tank Velocity 
-        desired = np.matrix([[     0.        ,      0.        ,      0.        ,
+        desired = np.array([[     0.        ,      0.        ,      0.        ,
               0.        ,      0.        ,      0.        ,
               0.        ,      0.        ,      0.        ,
               0.        , 240355.39992932],
@@ -3646,6 +3669,7 @@ class AddTest(unittest.TestCase):
     def testgetComputedQualityTimeSeries(self):   
         d = epanet('Net1.inp')
         comp_vals = d.getComputedQualityTimeSeries()
+        d.unload()
         err_msg = 'Error in getComputedQualityTimeSeries output'
         
         # Test LinkQuality 
@@ -3683,6 +3707,7 @@ class AddTest(unittest.TestCase):
     def testgetComputedTimeSeries(self):
         d = epanet('Net1.inp')
         comp_vals = d.getComputedTimeSeries()
+        d.unload()
         err_msg = 'Error in getComputedTimeSeries output'
 
         # Test LinkQuality 
@@ -3725,6 +3750,7 @@ class AddTest(unittest.TestCase):
         d = epanet('Net1.inp')
         comp_vals = d.getComputedTimeSeries_ENepanet()
         err_msg = 'Error in getComputedTimeSeries_ENepanet output'
+        d.unload()
 
         # Test LinkQuality 
         desired_0 = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75]
