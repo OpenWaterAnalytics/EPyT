@@ -42,6 +42,8 @@ The EPANET-Python Toolkit (EPyT) is an open-source software, originally develope
 
 `EPyT` was designed to be used by EMT users[@eliades2016epanet].
 
+An example of a plotted network \autoref{fig:Net2}.
+
 # Mathematics
 
 Single dollars ($) are required for inline mathematics e.g. $f(x) = e^{\pi/x}$
@@ -75,12 +77,9 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
+Example of a network plot:
+![Net2 plot showing Pipes,Tanks and Junctions{fig:Net2}](Net2.png)
+\autoref{fig:Net2}
 
 # Acknowledgements
 
