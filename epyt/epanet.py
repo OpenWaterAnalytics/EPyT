@@ -4142,7 +4142,8 @@ class epanet:
                     demandNameIn = demandName[i + 1][j]
                     value[i][j] = self.api.ENgetdemandindex(j + 1, demandNameIn)
         else:
-            self.api.ENgeterror_(250)
+            self.api.errcode = 250
+            self.api.ENgeterror()
         return value
 
     def getNodeJunctionDemandName(self, *argv):
