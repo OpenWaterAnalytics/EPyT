@@ -19,18 +19,14 @@ PyPI:
 
    $ pip install epyt
    
-Anaconda:
-
-.. code-block:: console
-
-   $ conda install -c conda-forge epyt
 
 How to use the Toolkit
 ----------------------
 Minimum Example:
 
 .. code-block:: console
-
+   
+   >>> from epyt import epanet
    >>> d = epanet('Net1.inp')
    >>> d.getNodeCount()
    >>> d.getNodeElevations()
