@@ -40,7 +40,11 @@ setup(
     packages=packages,
     keywords='epanet, water, networks, hydraulics, quality, simulations, emt, epanet matlab toolkit',
     classifiers=[
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python',
         'License :: OSI Approved :: European Union Public Licence 1.2 '
         '(EUPL 1.2)',
         'Operating System :: OS Independent',
