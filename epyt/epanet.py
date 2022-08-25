@@ -8938,9 +8938,13 @@ class epanet:
 
         See also getPattern, setPattern, setPatternValue, setPatternNameID, addPattern, deletePattern.
         """
-        nfactors = len(patternMatrix[0])
-        for i in range(1, len(patternMatrix) + 1):
-            self.api.ENsetpattern(i, patternMatrix[i - 1, :], nfactors)
+        try:
+            nfactors = len(patternMatrix[0])
+            for i in range(1, len(patternMatrix) + 1):
+                self.api.ENsetpattern(i, patternMatrix[i - 1, :], nfactors)
+        except:
+            # For a single pattern
+            self.api.ENsetpattern(1, patternMatrix, len(patternMatrix)) 
 
     def setPatternNameID(self, index, Id):
         """ Sets the name ID of a time pattern given it's index and the new ID. (EPANET Version 2.2)
@@ -10874,13 +10878,13 @@ class epanetapi:
         self.errcode = self._lib.ENepanet(self.inpfile, self.rptfile, self.binfile, ctypes.c_void_p())
         self.ENgeterror()
 
-    def ENaddcontrol(self, ctype, lindex, setting, nindex, level):
+    def ENaddcontrol(self, conttype, lindex, setting, nindex, level):
         """ Adds a new simple control to a project.
 
         ENaddcontrol(ctype, lindex, setting, nindex, level)
 
         Parameters:
-        ctype       the type of control to add (see ControlTypes).
+        conttype    the type of control to add (see ControlTypes).
         lindex      the index of a link to control (starting from 1).
         setting     control setting applied to the link.
         nindex      index of the node used to control the link (0 for EN_TIMER and EN_TIMEOFDAY controls).
@@ -10890,7 +10894,7 @@ class epanetapi:
         cindex 	index of the new control.
         """
         index = ctypes.c_int()
-        self.errcode = self._lib.EN_addcontrol(self._ph, ctype, lindex, ctypes.c_double(setting), nindex,
+        self.errcode = self._lib.EN_addcontrol(self._ph, conttype, int(lindex), ctypes.c_double(setting), nindex,
                                                ctypes.c_double(level), ctypes.byref(index))
         self.ENgeterror()
         return index.value
@@ -10923,7 +10927,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_adddemand(self._ph, nodeIndex, ctypes.c_double(baseDemand), demandPattern.encode("utf-8"),
+        self.errcode = self._lib.EN_adddemand(self._ph, int(nodeIndex), ctypes.c_double(baseDemand), demandPattern.encode("utf-8"),
                                               demandName.encode("utf-8"))
         self.ENgeterror()
         return
@@ -11077,7 +11081,7 @@ class epanetapi:
         index       the index of the control to delete (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deletecontrol(self._ph, index)
+        self.errcode = self._lib.EN_deletecontrol(self._ph, int(index))
         self.ENgeterror()
 
     def ENdeletecurve(self, indexCurve):
@@ -11090,7 +11094,7 @@ class epanetapi:
         indexCurve  The ID name of the curve to be added.
 
         """
-        self.errcode = self._lib.EN_deletecurve(self._ph, indexCurve)
+        self.errcode = self._lib.EN_deletecurve(self._ph, int(indexCurve))
         self.ENgeterror()
 
     def ENdeletedemand(self, nodeIndex, demandIndex):
@@ -11103,7 +11107,7 @@ class epanetapi:
         demandIndex      the position of the demand in the node's demands list (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deletedemand(self._ph, nodeIndex, demandIndex)
+        self.errcode = self._lib.EN_deletedemand(self._ph, int(nodeIndex), demandIndex)
         self.ENgeterror()
 
     def ENdeletelink(self, indexLink, condition):
@@ -11117,7 +11121,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        self.errcode = self._lib.EN_deletelink(self._ph, indexLink, condition)
+        self.errcode = self._lib.EN_deletelink(self._ph, int(indexLink), condition)
         self.ENgeterror()
 
     def ENdeletenode(self, indexNode, condition):
@@ -11132,7 +11136,7 @@ class epanetapi:
         See also EN_NodeProperty, NodeType
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_deletenode(self._ph, indexNode, condition)
+        self.errcode = self._lib.EN_deletenode(self._ph, int(indexNode), condition)
         self.ENgeterror()
 
     def ENdeletepattern(self, indexPat):
@@ -11145,7 +11149,7 @@ class epanetapi:
         indexPat   the time pattern's index (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deletepattern(self._ph, indexPat)
+        self.errcode = self._lib.EN_deletepattern(self._ph, int(indexPat))
         self.ENgeterror()
 
     def ENdeleteproject(self):
@@ -11171,7 +11175,7 @@ class epanetapi:
         index       the index of the rule to be deleted (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deleterule(self._ph, index)
+        self.errcode = self._lib.EN_deleterule(self._ph, int(index))
         self.ENgeterror()
 
     def ENgetaveragepatternvalue(self, index):
@@ -11187,7 +11191,7 @@ class epanetapi:
         value The average of all of the time pattern's factors.
         """
         value = ctypes.c_double()
-        self.errcode = self._lib.EN_getaveragepatternvalue(self._ph, index, ctypes.byref(value))
+        self.errcode = self._lib.EN_getaveragepatternvalue(self._ph, int(index), ctypes.byref(value))
         self.ENgeterror()
         return value.value
 
@@ -11205,7 +11209,7 @@ class epanetapi:
         value  the category's base demand.
         """
         bDem = ctypes.c_double()
-        self.errcode = self._lib.EN_getbasedemand(self._ph, index, numdemands, ctypes.byref(bDem))
+        self.errcode = self._lib.EN_getbasedemand(self._ph, int(index), numdemands, ctypes.byref(bDem))
         self.ENgeterror()
         return bDem.value
 
@@ -11224,7 +11228,7 @@ class epanetapi:
         out_comment  the comment string assigned to the object.
         """
         out_comment = ctypes.create_string_buffer(80)
-        self.errcode = self._lib.EN_getcomment(self._ph, object_, index, ctypes.byref(out_comment))
+        self.errcode = self._lib.EN_getcomment(self._ph, object_, int(index), ctypes.byref(out_comment))
         self.ENgeterror()
         return out_comment.value.decode()
 
@@ -11248,7 +11252,7 @@ class epanetapi:
         setting = ctypes.c_double()
         nindex = ctypes.c_int()
         level = ctypes.c_double()
-        self.errcode = self._lib.EN_getcontrol(self._ph, cindex, ctypes.byref(ctype), ctypes.byref(lindex),
+        self.errcode = self._lib.EN_getcontrol(self._ph, int(cindex), ctypes.byref(ctype), ctypes.byref(lindex),
                                                ctypes.byref(setting), ctypes.byref(nindex), ctypes.byref(level))
         self.ENgeterror()
         return [ctype.value, lindex.value, setting.value, nindex.value, level.value]
@@ -11268,7 +11272,7 @@ class epanetapi:
         """
         x = ctypes.c_double()
         y = ctypes.c_double()
-        self.errcode = self._lib.EN_getcoord(self._ph, index, ctypes.byref(x), ctypes.byref(y))
+        self.errcode = self._lib.EN_getcoord(self._ph, int(index), ctypes.byref(x), ctypes.byref(y))
         self.ENgeterror()
         return [x.value, y.value]
 
@@ -11335,7 +11339,7 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
         """
         Id = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getcurveid(self._ph, index, ctypes.byref(Id))
+        self.errcode = self._lib.EN_getcurveid(self._ph, int(index), ctypes.byref(Id))
         self.ENgeterror()
         return Id.value.decode()
 
@@ -11369,7 +11373,7 @@ class epanetapi:
         len  The number of data points assigned to the curve.
         """
         length = ctypes.c_int()
-        self.errcode = self._lib.EN_getcurvelen(self._ph, index, ctypes.byref(length))
+        self.errcode = self._lib.EN_getcurvelen(self._ph, int(index), ctypes.byref(length))
         self.ENgeterror()
         return length.value
 
@@ -11386,7 +11390,7 @@ class epanetapi:
         type_  The curve's type (see EN_CurveType).
         """
         type_ = ctypes.c_int()
-        self.errcode = self._lib.EN_getcurvetype(self._ph, index, ctypes.byref(type_))
+        self.errcode = self._lib.EN_getcurvetype(self._ph, int(index), ctypes.byref(type_))
         self.ENgeterror()
         return type_.value
 
@@ -11406,7 +11410,7 @@ class epanetapi:
         """
         x = ctypes.c_double()
         y = ctypes.c_double()
-        self.errcode = self._lib.EN_getcurvevalue(self._ph, index, period, ctypes.byref(x), ctypes.byref(y))
+        self.errcode = self._lib.EN_getcurvevalue(self._ph, int(index), period, ctypes.byref(x), ctypes.byref(y))
         self.ENgeterror()
         return [x.value, y.value]
 
@@ -11424,7 +11428,7 @@ class epanetapi:
         demandIndex  the index of the demand being sought.
         """
         demandIndex = ctypes.c_int()
-        self.errcode = self._lib.EN_getdemandindex(self._ph, nodeindex, demandName.encode('utf-8'),
+        self.errcode = self._lib.EN_getdemandindex(self._ph, int(nodeindex), demandName.encode('utf-8'),
                                                    ctypes.byref(demandIndex))
         self.ENgeterror()
         return demandIndex.value
@@ -11468,7 +11472,7 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
         demand_name = ctypes.create_string_buffer(100)
-        self.errcode = self._lib.EN_getdemandname(self._ph, node_index, demand_index, ctypes.byref(demand_name))
+        self.errcode = self._lib.EN_getdemandname(self._ph, int(node_index), int(demand_index), ctypes.byref(demand_name))
         self.ENgeterror()
         return demand_name.value.decode()
 
@@ -11487,7 +11491,7 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
         patIndex = ctypes.c_int()
-        self.errcode = self._lib.EN_getdemandpattern(self._ph, index, numdemands, ctypes.byref(patIndex))
+        self.errcode = self._lib.EN_getdemandpattern(self._ph, int(index), numdemands, ctypes.byref(patIndex))
         self.ENgeterror()
         return patIndex.value
 
@@ -11509,7 +11513,7 @@ class epanetapi:
         linkIndex = ctypes.c_int()
         status = ctypes.c_int()
         setting = ctypes.c_double()
-        self.errcode = self._lib.EN_getelseaction(self._ph, ruleIndex, actionIndex, ctypes.byref(linkIndex),
+        self.errcode = self._lib.EN_getelseaction(self._ph, int(ruleIndex), int(actionIndex), ctypes.byref(linkIndex),
                                                   ctypes.byref(status), ctypes.byref(setting))
         self.ENgeterror()
         return [linkIndex.value, status.value, setting.value]
@@ -11603,7 +11607,7 @@ class epanetapi:
         """
         fromNode = ctypes.c_int()
         toNode = ctypes.c_int()
-        self.errcode = self._lib.EN_getlinknodes(self._ph, index, ctypes.byref(fromNode), ctypes.byref(toNode))
+        self.errcode = self._lib.EN_getlinknodes(self._ph, int(index), ctypes.byref(fromNode), ctypes.byref(toNode))
         self.ENgeterror()
         return [fromNode.value, toNode.value]
 
@@ -11619,7 +11623,7 @@ class epanetapi:
         typecode   the link's type (see LinkType).
         """
         iCode = ctypes.c_int()
-        self.errcode = self._lib.EN_getlinktype(self._ph, iIndex, ctypes.byref(iCode))
+        self.errcode = self._lib.EN_getlinktype(self._ph, int(iIndex), ctypes.byref(iCode))
         self.ENgeterror()
         if iCode.value != -1:
             return iCode.value
@@ -11657,7 +11661,7 @@ class epanetapi:
         nameID nodes id
         """
         nameID = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getnodeid(self._ph, index, ctypes.byref(nameID))
+        self.errcode = self._lib.EN_getnodeid(self._ph, int(index), ctypes.byref(nameID))
         self.ENgeterror()
         return nameID.value.decode()
 
@@ -11690,7 +11694,7 @@ class epanetapi:
         type the node's type (see NodeType).
         """
         iCode = ctypes.c_int()
-        self.errcode = self._lib.EN_getnodetype(self._ph, iIndex, ctypes.byref(iCode))
+        self.errcode = self._lib.EN_getnodetype(self._ph, int(iIndex), ctypes.byref(iCode))
         self.ENgeterror()
         return iCode.value
 
@@ -11729,7 +11733,7 @@ class epanetapi:
         value  the number of demand categories assigned to the node.
         """
         numDemands = ctypes.c_int()
-        self.errcode = self._lib.EN_getnumdemands(self._ph, index, ctypes.byref(numDemands))
+        self.errcode = self._lib.EN_getnumdemands(self._ph, int(index), ctypes.byref(numDemands))
         self.ENgeterror()
         return numDemands.value
 
@@ -11795,7 +11799,7 @@ class epanetapi:
         leng   the number of time periods in the pattern.
         """
         leng = ctypes.c_int()
-        self.errcode = self._lib.EN_getpatternlen(self._ph, index, ctypes.byref(leng))
+        self.errcode = self._lib.EN_getpatternlen(self._ph, int(index), ctypes.byref(leng))
         self.ENgeterror()
         return leng.value
 
@@ -11812,7 +11816,7 @@ class epanetapi:
         value   the pattern factor for the given time period.
         """
         value = ctypes.c_double()
-        self.errcode = self._lib.EN_getpatternvalue(self._ph, index, period, ctypes.byref(value))
+        self.errcode = self._lib.EN_getpatternvalue(self._ph, int(index), period, ctypes.byref(value))
         self.ENgeterror()
         return value.value
 
@@ -11842,7 +11846,7 @@ class epanetapi:
         relop = ctypes.c_int()
         status = ctypes.c_int()
         value = ctypes.c_double()
-        self.errcode = self._lib.EN_getpremise(self._ph, ruleIndex, premiseIndex, ctypes.byref(logop),
+        self.errcode = self._lib.EN_getpremise(self._ph, int(ruleIndex), int(premiseIndex), ctypes.byref(logop),
                                                ctypes.byref(object_), ctypes.byref(objIndex),
                                                ctypes.byref(variable), ctypes.byref(relop), ctypes.byref(status),
                                                ctypes.byref(value))
@@ -11915,7 +11919,7 @@ class epanetapi:
         value the order in which the element's results were written to file.
         """
         value = ctypes.c_int()
-        self.errcode = self._lib.EN_getresultindex(self._ph, objecttype, iIndex, ctypes.byref(value))
+        self.errcode = self._lib.EN_getresultindex(self._ph, objecttype, int(iIndex), ctypes.byref(value))
         self.ENgeterror()
         return value.value
 
@@ -11938,7 +11942,7 @@ class epanetapi:
         nThenActions = ctypes.c_int()
         nElseActions = ctypes.c_int()
         priority = ctypes.c_double()
-        self.errcode = self._lib.EN_getrule(self._ph, index, ctypes.byref(nPremises), ctypes.byref(nThenActions),
+        self.errcode = self._lib.EN_getrule(self._ph, int(index), ctypes.byref(nPremises), ctypes.byref(nThenActions),
                                             ctypes.byref(nElseActions), ctypes.byref(priority))
         self.ENgeterror()
         return [nPremises.value, nThenActions.value, nElseActions.value, priority.value]
@@ -11958,7 +11962,7 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
         """
         nameID = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getruleID(self._ph, index, ctypes.byref(nameID))
+        self.errcode = self._lib.EN_getruleID(self._ph, int(index), ctypes.byref(nameID))
         self.ENgeterror()
         return nameID.value.decode()
 
@@ -11977,7 +11981,7 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
         """
         value = ctypes.c_double()
-        self.errcode = self._lib.EN_getstatistic(self._ph, code, ctypes.byref(value))
+        self.errcode = self._lib.EN_getstatistic(self._ph, int(code), ctypes.byref(value))
         self.ENgeterror()
         return value.value
 
@@ -11999,7 +12003,7 @@ class epanetapi:
         linkIndex = ctypes.c_int()
         status = ctypes.c_int()
         setting = ctypes.c_double()
-        self.errcode = self._lib.EN_getthenaction(self._ph, ruleIndex, actionIndex, ctypes.byref(linkIndex),
+        self.errcode = self._lib.EN_getthenaction(self._ph, int(ruleIndex), int(actionIndex), ctypes.byref(linkIndex),
                                                   ctypes.byref(status), ctypes.byref(setting))
         self.ENgeterror()
         return [linkIndex.value, status.value, setting.value]
@@ -12068,7 +12072,7 @@ class epanetapi:
         """
         x = ctypes.c_double()
         y = ctypes.c_double()
-        self.errcode = self._lib.EN_getvertex(self._ph, index, vertex, ctypes.byref(x), ctypes.byref(y))
+        self.errcode = self._lib.EN_getvertex(self._ph, int(index), vertex, ctypes.byref(x), ctypes.byref(y))
         self.ENgeterror()
         return [x.value, y.value]
 
@@ -12084,7 +12088,7 @@ class epanetapi:
         count  the number of vertex points that describe the link's shape.
         """
         count = ctypes.c_int()
-        self.errcode = self._lib.EN_getvertexcount(self._ph, index, ctypes.byref(count))
+        self.errcode = self._lib.EN_getvertexcount(self._ph, int(index), ctypes.byref(count))
         self.ENgeterror()
         return count.value
 
@@ -12322,7 +12326,7 @@ class epanetapi:
         value    	  the new base demand for the category.
 
         """
-        self.errcode = self._lib.EN_setbasedemand(self._ph, index, demandIdx, ctypes.c_double(value))
+        self.errcode = self._lib.EN_setbasedemand(self._ph, int(index), demandIdx, ctypes.c_double(value))
         self.ENgeterror()
 
     def ENsetcomment(self, object_, index, comment):
@@ -12355,7 +12359,7 @@ class epanetapi:
         level   the action level (tank level, junction pressure, or time in seconds) that triggers the control.
 
         """
-        self.errcode = self._lib.EN_setcontrol(self._ph, cindex, ctype, lindex, ctypes.c_double(setting), nindex,
+        self.errcode = self._lib.EN_setcontrol(self._ph, int(cindex), ctype, lindex, ctypes.c_double(setting), nindex,
                                                ctypes.c_double(level))
         self.ENgeterror()
 
@@ -12371,7 +12375,7 @@ class epanetapi:
         y          the node's Y-coordinate value.
 
         """
-        self.errcode = self._lib.EN_setcoord(self._ph, index, ctypes.c_double(x), ctypes.c_double(y))
+        self.errcode = self._lib.EN_setcoord(self._ph, int(index), ctypes.c_double(x), ctypes.c_double(y))
         self.ENgeterror()
 
     def ENsetcurve(self, index, x, y, nfactors):
@@ -12390,10 +12394,10 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
         """
         if nfactors == 1:
-            self.errcode = self._lib.EN_setcurve(self._ph, index, (ctypes.c_double * 1)(x),
+            self.errcode = self._lib.EN_setcurve(self._ph, int(index), (ctypes.c_double * 1)(x),
                                                  (ctypes.c_double * 1)(y), nfactors)
         else:
-            self.errcode = self._lib.EN_setcurve(self._ph, index, (ctypes.c_double * nfactors)(*x),
+            self.errcode = self._lib.EN_setcurve(self._ph, int(index), (ctypes.c_double * nfactors)(*x),
                                                  (ctypes.c_double * nfactors)(*y), nfactors)
         self.ENgeterror()
 
@@ -12409,7 +12413,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
         """
-        self.errcode = self._lib.EN_setcurveid(self._ph, index, Id.encode('utf-8'))
+        self.errcode = self._lib.EN_setcurveid(self._ph, int(index), Id.encode('utf-8'))
         self.ENgeterror()
 
     def ENsetcurvevalue(self, index, pnt, x, y):
@@ -12425,7 +12429,7 @@ class epanetapi:
         y        	  the point's new y-value.
 
         """
-        self.errcode = self._lib.EN_setcurvevalue(self._ph, index, pnt,
+        self.errcode = self._lib.EN_setcurvevalue(self._ph, int(index), pnt,
                                                   ctypes.c_double(x), ctypes.c_double(y))
         self.ENgeterror()
 
@@ -12459,7 +12463,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_setdemandname(self._ph, node_index, demand_index, demand_name.encode("utf-8"))
+        self.errcode = self._lib.EN_setdemandname(self._ph, int(node_index), int(demand_index), demand_name.encode("utf-8"))
         self.ENgeterror()
         return
 
@@ -12475,7 +12479,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_setdemandpattern(self._ph, index, demandIdx, int(patInd))
+        self.errcode = self._lib.EN_setdemandpattern(self._ph, int(index), int(demandIdx), int(patInd))
 
     def ENsetelseaction(self, ruleIndex, actionIndex, linkIndex, status, setting):
         """ Sets the properties of an ELSE action in a rule-based control.
@@ -12491,7 +12495,7 @@ class epanetapi:
         setting       the new value assigned to the link's setting.
 
         """
-        self.errcode = self._lib.EN_setelseaction(self._ph, ruleIndex, actionIndex, linkIndex, status,
+        self.errcode = self._lib.EN_setelseaction(self._ph, int(ruleIndex), int(actionIndex), int(linkIndex), status,
                                                   ctypes.c_double(setting))
         self.ENgeterror()
 
@@ -12517,7 +12521,7 @@ class epanetapi:
         curveindex    the index of a curve to be assigned as the pump's head curve.
 
         """
-        self.errcode = self._lib.EN_setheadcurveindex(self._ph, int(pumpindex), curveindex)
+        self.errcode = self._lib.EN_setheadcurveindex(self._ph, int(pumpindex), int(curveindex))
         self.ENgeterror()
 
     def ENsetjuncdata(self, index, elev, dmnd, dmndpat):
@@ -12534,7 +12538,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_setjuncdata(self._ph, index, ctypes.c_double(elev), ctypes.c_double(dmnd),
+        self.errcode = self._lib.EN_setjuncdata(self._ph, int(index), ctypes.c_double(elev), ctypes.c_double(dmnd),
                                                 dmndpat.encode("utf-8"))
         self.ENgeterror()
 
@@ -12550,7 +12554,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        self.errcode = self._lib.EN_setlinkid(self._ph, index, newid.encode("utf-8"))
+        self.errcode = self._lib.EN_setlinkid(self._ph, int(index), newid.encode("utf-8"))
         self.ENgeterror()
 
     def ENsetlinknodes(self, index, startnode, endnode):
@@ -12564,7 +12568,7 @@ class epanetapi:
         startnode     The index of the link's start node (starting from 1).
         endnode       The index of the link's end node (starting from 1).
         """
-        self.errcode = self._lib.EN_setlinknodes(self._ph, index, startnode, endnode)
+        self.errcode = self._lib.EN_setlinknodes(self._ph, int(index), startnode, endnode)
         self.ENgeterror()
 
     def ENsetlinktype(self, indexLink, paramcode, actionCode):
@@ -12614,7 +12618,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_setnodeid(self._ph, index, newid.encode('utf-8'))
+        self.errcode = self._lib.EN_setnodeid(self._ph, int(index), newid.encode('utf-8'))
         self.ENgeterror()
 
     def ENsetnodevalue(self, index, paramcode, value):
@@ -12659,7 +12663,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
         """
-        self.errcode = self._lib.EN_setpattern(self._ph, index, (ctypes.c_double * nfactors)(*factors), nfactors)
+        self.errcode = self._lib.EN_setpattern(self._ph, int(index), (ctypes.c_double * nfactors)(*factors), nfactors)
         self.ENgeterror()
 
     def ENsetpatternid(self, index, Id):
@@ -12674,7 +12678,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
         """
-        self.errcode = self._lib.EN_setpatternid(self._ph, index, Id.encode('utf-8'))
+        self.errcode = self._lib.EN_setpatternid(self._ph, int(index), Id.encode('utf-8'))
         self.ENgeterror()
 
     def ENsetpatternvalue(self, index, period, value):
@@ -12687,7 +12691,7 @@ class epanetapi:
         period     a time period in the pattern (starting from 1).
         value      the new value of the pattern factor for the given time period.
         """
-        self.errcode = self._lib.EN_setpatternvalue(self._ph, index, period, ctypes.c_double(value))
+        self.errcode = self._lib.EN_setpatternvalue(self._ph, int(index), period, ctypes.c_double(value))
         self.ENgeterror()
 
     def ENsetpipedata(self, index, length, diam, rough, mloss):
@@ -12705,7 +12709,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        self.errcode = self._lib.EN_setpipedata(self._ph, index, ctypes.c_double(length),
+        self.errcode = self._lib.EN_setpipedata(self._ph, int(index), ctypes.c_double(length),
                                                 ctypes.c_double(diam), ctypes.c_double(rough),
                                                 ctypes.c_double(mloss))
         self.ENgeterror()
@@ -12729,7 +12733,7 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
         """
-        self.errcode = self._lib.EN_setpremise(self._ph, ruleIndex, premiseIndex, logop, object_,
+        self.errcode = self._lib.EN_setpremise(self._ph, int(ruleIndex), int(premiseIndex), logop, object_,
                                                objIndex, variable, relop, status, ctypes.c_double(value))
         self.ENgeterror()
 
@@ -12744,7 +12748,7 @@ class epanetapi:
         premiseIndex  the premise's index (starting from 1).
         objIndex      the index of the object (e.g. the index of a tank).
         """
-        self.errcode = self._lib.EN_setpremiseindex(self._ph, ruleIndex, premiseIndex, objIndex)
+        self.errcode = self._lib.EN_setpremiseindex(self._ph, int(ruleIndex), int(premiseIndex), objIndex)
         self.ENgeterror()
 
     def ENsetpremisestatus(self, ruleIndex, premiseIndex, status):
@@ -12758,7 +12762,7 @@ class epanetapi:
         premiseIndex  the premise's index (starting from 1).
         status        the status that the premise's object status is compared to (see RULESTATUS).
         """
-        self.errcode = self._lib.EN_setpremisestatus(self._ph, ruleIndex, premiseIndex, status)
+        self.errcode = self._lib.EN_setpremisestatus(self._ph, int(ruleIndex), int(premiseIndex), status)
         self.ENgeterror()
 
     def ENsetpremisevalue(self, ruleIndex, premiseIndex, value):
@@ -12772,7 +12776,7 @@ class epanetapi:
         premiseIndex  the premise's index (starting from 1).
         value         The value that the premise's variable is compared to.
         """
-        self.errcode = self._lib.EN_setpremisevalue(self._ph, ruleIndex, premiseIndex, ctypes.c_double(value))
+        self.errcode = self._lib.EN_setpremisevalue(self._ph, int(ruleIndex), premiseIndex, ctypes.c_double(value))
         self.ENgeterror()
 
     def ENsetqualtype(self, qualcode, chemname, chemunits, tracenode):
@@ -12816,7 +12820,7 @@ class epanetapi:
         ruleIndex     the rule's index (starting from 1).
         priority      the priority value assigned to the rule.
         """
-        self.errcode = self._lib.EN_setrulepriority(self._ph, ruleIndex, ctypes.c_double(priority))
+        self.errcode = self._lib.EN_setrulepriority(self._ph, int(ruleIndex), ctypes.c_double(priority))
         self.ENgeterror()
 
     def ENsetstatusreport(self, statuslevel):
@@ -12863,14 +12867,14 @@ class epanetapi:
         ENsetthenaction(ruleIndex, actionIndex, linkIndex, status, setting)
 
         Parameters:
-        ruleIndex   	the rule's index (starting from 1).
+        ruleIndex     the rule's index (starting from 1).
         actionIndex   the index of the THEN action to retrieve (starting from 1).
-        linkIndex   	the index of the link in the action.
+        linkIndex     the index of the link in the action.
         status        the new status assigned to the link (see EN_RuleStatus)..
         setting       the new value assigned to the link's setting.
 
         """
-        self.errcode = self._lib.EN_setthenaction(self._ph, ruleIndex, actionIndex, linkIndex, status,
+        self.errcode = self._lib.EN_setthenaction(self._ph, int(ruleIndex), int(actionIndex), int(linkIndex), status,
                                                   ctypes.c_double(setting))
         self.ENgeterror()
 
@@ -12914,7 +12918,7 @@ class epanetapi:
         y          an array of Y-coordinates for the vertex points.
         vertex     the number of vertex points being assigned.
         """
-        self.errcode = self._lib.EN_setvertices(self._ph, index, (ctypes.c_double * vertex)(*x),
+        self.errcode = self._lib.EN_setvertices(self._ph, int(index), (ctypes.c_double * vertex)(*x),
                                                 (ctypes.c_double * vertex)(*y), vertex)
         self.ENgeterror()
 
