@@ -1,0 +1,28 @@
+# import epyt.examples.EX1_Plot_network_topology
+import epyt.examples.EX2_Hydraulic_analysis
+import epyt.examples.EX3_Quality_analysis
+import epyt.examples.EX4_Plot_time_series
+import epyt.examples.EX5_Plot_values_parameters
+import epyt.examples.EX6_load_two_inp_files
+import epyt.examples.EX7_Set_Pump_Curves
+import epyt.examples.EX9_compare_simulations
+import epyt.examples.EX10_close_pipes_during_sim
+import epyt.examples.EX11_assing_new_curve_pump
+import epyt.examples.EX13c_add_cvpipe
+import epyt.examples.EX14_hydraulic_and_quality_analysis
+import epyt.examples.EX16_create_multiple_scenarios
+import epyt.examples.EX17b_add_multiple_controls_pipestatus 
+import epyt.examples.EX18_change_status_pipes
+import epyt.examples.EX20a_external_controls
+import epyt.examples.EX20b_external_controls
+import epyt.examples.EX21_Pressure_driven_analysis_option
+import epyt.examples.EX22_Overflow_option_for_tanks
+import epyt.examples.EX23_Change_connection_links
+import epyt.examples.EX24_delete_all_patterns
+import epyt.examples.EX25_set_node_name_ids
+import epyt.examples.EX_to_excel_json 
+import epyt.examples.Toolkit_EX2_Hydrant_rating_curve
+import epyt.examples.Toolkit_EX3_Minimum_chlorine_residual
+import epyt.examples.Toolkit_EX4_Network_Building
+import epyt.examples.Toolkit_api_EX1_using_EN_functions
+
