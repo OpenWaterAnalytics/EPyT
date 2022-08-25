@@ -8938,11 +8938,11 @@ class epanet:
 
         See also getPattern, setPattern, setPatternValue, setPatternNameID, addPattern, deletePattern.
         """
-        try:
+        if isList(patternMatrix[0]):
             nfactors = len(patternMatrix[0])
             for i in range(1, len(patternMatrix) + 1):
                 self.api.ENsetpattern(i, patternMatrix[i - 1, :], nfactors)
-        except:
+        else:
             # For a single pattern
             self.api.ENsetpattern(1, patternMatrix, len(patternMatrix)) 
 
