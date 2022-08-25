@@ -33,9 +33,9 @@ setup(
                 'EPANET-Matlab Toolkit.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/KIOS-Research/EPYT',
+    url='https://github.com/KIOS-Research/EPyT',
     project_urls={
-        "Bug Tracker": 'https://github.com/KIOS-Research/EPYT/issues',
+        "Bug Tracker": 'https://github.com/KIOS-Research/EPyT/issues',
     },
     packages=packages,
     classifiers=[
