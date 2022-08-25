@@ -1,17 +1,13 @@
 """ This example illustrates how the Toolkit could be used to determine the lowest dose of 
- chlorine applied at the entrance to a distribution system needed to ensure that a minimum 
- residual is met throughout the system. We assume that the EPANET input file contains the proper 
- set of kinetic coefficients that describe the rate at which chlorine will decay in the system being 
- studied. In the example code, the ID label of the source node is contained in SourceID, the minimum 
- residual target is given by Ctarget, and the target is only checked after a start-up duration of 5 
- days (432,000 seconds). To keep the code more readable, no error checking is made on the results 
- returned from the Toolkit function calls.
+chlorine applied at the entrance to a distribution system needed to ensure that a minimum 
+residual is met throughout the system. We assume that the EPANET input file contains the proper 
+set of kinetic coefficients that describe the rate at which chlorine will decay in the system being 
+studied. In the example code, the ID label of the source node is contained in SourceID, the minimum 
+residual target is given by Ctarget, and the target is only checked after a start-up duration of 5 
+days (432,000 seconds). To keep the code more readable, no error checking is made on the results 
+returned from the Toolkit function calls.
 
- Toolkit_EX3_Minimum_chlorine_residual.m 
- https://github.com/MariosDem/EPANET-Matlab-Toolkit/blob/master/examples/Toolkit_EX3_Minimum_chlorine_residual.m 
- 
- https://github.com/OpenWaterAnalytics/EPANET/wiki/Example-3
- 
+https://github.com/OpenWaterAnalytics/EPANET/wiki/Example-3
 """
 from epyt import epanet
 

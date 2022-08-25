@@ -3,12 +3,13 @@
  This creates opportunities to use other sources of network data in one's code,
  such as relational database files or GIS/CAD files.
  
- Based on Toolkit_EX4_Network_Building.m
- https://github.com/MariosDem/EPANET-Matlab-Toolkit/blob/marios_dem/examples/Toolkit_EX4_Network_Building.m
- 
- Below is a schematic of the network to be built.
- http://wateranalytics.org/EPANET/_example2.html
- 
+Eliminate the need to always use an EPANET formatted input file. 
+This creates opportunities to use other sources of network data in one's code,
+such as relational database files or GIS/CAD files.
+
+Below is a schematic of the network to be built.
+
+http://wateranalytics.org/EPANET/_example2.html
 """
 from epyt import epanet
 
