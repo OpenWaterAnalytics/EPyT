@@ -1,5 +1,7 @@
 ﻿<a href="http://www.kios.ucy.ac.cy"><img src="https://www.kios.ucy.ac.cy/wp-content/uploads/2021/07/Logotype-KIOS.svg" width="200" height="100"/><a>
 
+[![license](https://img.shields.io/pypi/l/epyt.svg)](https://github.com/KIOS-Research/EPyT/blob/main/LICENSE.md)
+
 # EPANET Python Toolkit (EPyT)
 
 The `EPANET-Python Toolkit` is an open-source software, originally developed by the [KIOS Research and Innovation Center of Excellence, University of Cyprus](http://www.kios.ucy.ac.cy/) which operates within the Python environment, for providing a programming interface for the latest version of [EPANET](https://github.com/OpenWaterAnalytics/epanet), a hydraulic and quality modeling software created by the US EPA, with Python, a  high-level technical computing software. The goal of the EPANET Python Toolkit is to serve as a common programming framework for research and development in the growing field of smart water networks.
