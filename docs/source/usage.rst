@@ -19,11 +19,6 @@ PyPI:
 
    $ pip install epyt
    
-Anaconda:
-
-.. code-block:: console
-
-   $ conda install -c conda-forge epyt
 
 How to use the Toolkit
 ----------------------
