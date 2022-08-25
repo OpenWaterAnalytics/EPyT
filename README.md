@@ -1,6 +1,9 @@
 ﻿<a href="http://www.kios.ucy.ac.cy"><img src="https://www.kios.ucy.ac.cy/wp-content/uploads/2021/07/Logotype-KIOS.svg" width="200" height="100"/><a>
 
 [![license](https://img.shields.io/pypi/l/epyt.svg)](https://github.com/KIOS-Research/EPyT/blob/main/LICENSE.md)
+[![pypi](https://img.shields.io/pypi/v/epyt.svg)](https://pypi.org/project/epyt/)
+[![Downloads](https://pepy.tech/badge/epyt)](https://pepy.tech/project/epyt)
+[![Downloads](https://pepy.tech/badge/epyt/month)](https://pepy.tech/project/epyt)
 
 # EPANET Python Toolkit (EPyT)
 
