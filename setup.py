@@ -38,6 +38,7 @@ setup(
         "Bug Tracker": 'https://github.com/KIOS-Research/EPyT/issues',
     },
     packages=packages,
+    keywords='epanet, water, networks, hydraulics, quality, simulations, emt, epanet matlab toolkit',
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: European Union Public Licence 1.2 '
