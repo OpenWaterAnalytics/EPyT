@@ -63,6 +63,7 @@ DOI={10.5281/zenodo.831493}}
 
 **Minimum Example:**
 
+```python
 from epyt import epanet
 
 d = epanet('Net1.inp')
@@ -70,6 +71,7 @@ d = epanet('Net1.inp')
 d.getNodeCount()
 
 d.getNodeElevations()
+``` 
 
 **More examples:** 
 
