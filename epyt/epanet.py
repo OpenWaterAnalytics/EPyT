@@ -1519,14 +1519,14 @@ class epanet:
         # Create a matrix which will be used later in calculations.
         # center = repmat([x_center  y_center], 1, length(xCoord))
         # Define the rotation matrix.
-        R = np.mat([[np.cos(theta * 2 * np.pi / 360), -np.sin(theta * 2 * np.pi / 360)],
+        R = np.array([[np.cos(theta * 2 * np.pi / 360), -np.sin(theta * 2 * np.pi / 360)],
                     [np.sin(theta * 2 * np.pi / 360), np.cos(theta * 2 * np.pi / 360)]], dtype=float)
         # Do the rotation:
         xCoord_new = [xCoord[i] - x_center for i in xCoord]
         yCoord_new = [yCoord[i] - y_center for i in yCoord]
         # v = [xCoord, yCoord]
         # s = v - center   # Shift points in the plane so that the center of rotation is at the origin.
-        s = np.mat([xCoord_new, yCoord_new], dtype=float)
+        s = np.array([xCoord_new, yCoord_new], dtype=float)
         so = R * s  # Apply the rotation about the origin.
         newxCoord = so[0, :] + x_center  # Shift again so the origin goes back to the desired center of rotation.
         newyCoord = so[1, :] + y_center
@@ -1544,7 +1544,7 @@ class epanet:
                     vertX_temp = [j - x_center for j in vertX_temp]
                     vertY_temp = [j - y_center for j in vertY_temp]
                     # Apply the rotation about the origin.
-                    s = np.mat([vertX_temp, vertY_temp], dtype=float)
+                    s = np.array([vertX_temp, vertY_temp], dtype=float)
                     so = R * s
                     # Shift again so the origin goes back to the desired center of rotation.
                     newxVertCoord = so[0,
@@ -1675,7 +1675,7 @@ class epanet:
     def deleteControls(self, *argv):
         """ Deletes an existing simple control. (EPANET Version 2.2)
 
-        Example 1:
+        Example 1: 
 
         >>> d.getControls()                                                # Retrieves the parameters of all control statements
         >>> d.deleteControls()                                             # Deletes the existing simple controls
@@ -2121,7 +2121,7 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
-                exec(f"value_final.{i} = np.mat(list(val_dict[i].values()))")
+                exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
         return value_final
@@ -2211,7 +2211,7 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
-                exec(f"value_final.{i} = np.mat(list(val_dict[i].values()))")
+                exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
         return value_final
@@ -2239,7 +2239,7 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
-                exec(f"value_final.{i} = np.mat(list(val_dict[i].values()))")
+                exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
         value_final.Status = value_final.Status.astype(int)
@@ -2267,7 +2267,7 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
-                exec(f"value_final.{i} = np.mat(list(val_dict[i].values()))")
+                exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
         value_final.Status = value_final.Status.astype(int)
@@ -8938,11 +8938,11 @@ class epanet:
 
         See also getPattern, setPattern, setPatternValue, setPatternNameID, addPattern, deletePattern.
         """
-        try:
+        if isList(patternMatrix[0]):
             nfactors = len(patternMatrix[0])
             for i in range(1, len(patternMatrix) + 1):
                 self.api.ENsetpattern(i, patternMatrix[i - 1, :], nfactors)
-        except:
+        else:
             # For a single pattern
             self.api.ENsetpattern(1, patternMatrix, len(patternMatrix)) 
 

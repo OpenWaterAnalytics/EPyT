@@ -25,7 +25,7 @@ d.plot(elevation=True, colorbar='Oranges')
 
 # Plot Pressure at hour 10
 res = d.getComputedTimeSeries()
-d.plot(pressure=list(res.Pressure[10, :]), title='Pressure at hour 10')
+d.plot(pressure=res.Pressure[10, :], title='Pressure at hour 10')
 
 # Plot Flow at hour 10
 d.plot(flow=res.Flow[10, :])
