@@ -17,13 +17,13 @@ For support, please use the OWA community forum : http://community.wateranalytic
 
 - [How to cite](#how-to-cite)
 - [Requirements](#requirements)
-- [How to install necessary compilers](#How-to-install)
-- [How to use the Toolkit](#How-to-use-the-Toolkit)
-- [How to fix/report bugs](#How-to-fixreport-bugs)
-- [Licenses](#Licenses)
-- [Contributors](#Contributors)
-- [List of Python Class Functions](#List-of-Python-Class-Functions)
-- [List of EPANET 2.2 Functions](#List-of-EPANET-2.2-Functions)
+- [How to install necessary compilers](#how-to-install)
+- [How to use the Toolkit](#how-to-use-the-toolkit)
+- [How to fix/report bugs](#how-to-fixreport-bugs)
+- [Licenses](#licenses)
+- [Contributors](#contributors)
+- [List of Python Class Functions](#list-of-python-class-functions)
+- [List of EPANET 2.2 Functions](#list-of-epanet-2.2-functions)
   
 ## How to cite 
 
@@ -75,7 +75,7 @@ d.getNodeElevations()
 
 **More examples:** 
 
-https://github.com/KIOS-Research/EPYT/tree/main/epyt/examples
+[https://github.com/KIOS-Research/EPYT/tree/main/epyt/examples](https://github.com/KIOS-Research/EPYT/tree/main/epyt/examples#readme)
 
 &uparrow; [Back to top](#table-of-contents)
 
