@@ -182,13 +182,13 @@ d.printv(d.getNodeSourceType())
 d.printv(d.getNodeTankInitialLevel())
 
 d.printv(d.getNodeActualDemand())  # This is called dynamically in a loop
-d.printv(d.getNodeActualDemandSensingNodes(1, 2, 34, 25, 5))
+d.printv(d.getNodeActualDemandSensingNodes([1, 2, 34, 25, 5]))
 d.printv(d.getNodeHydraulicHead())
 d.printv(d.getNodePressure())
 d.printv(d.getNodeActualQuality())
 d.printv(d.getNodeMassFlowRate())
 # getNodeActualQualitySensingNodes Works without adding input values in list
-d.printv(d.getNodeActualQualitySensingNodes(1, 2, 34, 25, 5))
+d.printv(d.getNodeActualQualitySensingNodes([1, 2, 34, 25, 5]))
 
 d.printv(d.getNodeTankMixingModelCode())
 d.printv(d.getNodeTankMixingModelType())
