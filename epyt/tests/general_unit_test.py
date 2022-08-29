@@ -3,6 +3,7 @@ from epyt import epanet
 import numpy as np
 import unittest
 
+
 class AddTest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
@@ -66,7 +67,7 @@ class AddTest(unittest.TestCase):
         length = 600
         self.epanetClass.getLinkPipeCount()
         pipeIndex = self.epanetClass.addLinkPipe(pipeID, fromNode, toNode, length)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkLength(pipeIndex), length)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkLength(pipeIndex), length)
         # Test 3
         pipeID = 'newPipe_3'
         fromNode = '31'
@@ -78,10 +79,10 @@ class AddTest(unittest.TestCase):
         self.epanetClass.getLinkPipeCount()
         pipeIndex = self.epanetClass.addLinkPipe(pipeID, fromNode, toNode, length, diameter, roughness, minorLossCoeff)
         assert self.epanetClass.getLinkPipeCount() == 15, err_msg
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkLength(pipeIndex), length)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkDiameter(pipeIndex), diameter)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkRoughnessCoeff(pipeIndex), roughness)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkMinorLossCoeff(pipeIndex), minorLossCoeff)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkLength(pipeIndex), length)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkDiameter(pipeIndex), diameter)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkRoughnessCoeff(pipeIndex), roughness)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(pipeIndex), minorLossCoeff)
 
     def testaddLinkPipeCV(self):
         err_msg = "Wrong add Link PipeCV output"
@@ -95,10 +96,10 @@ class AddTest(unittest.TestCase):
         minorLossCoeff = 0.2
         cvPipeIndex = self.epanetClass.addLinkPipeCV(cvPipeID, fromNode, toNode, length, diameter, roughness, minorLossCoeff)
         assert self.epanetClass.getLinkPipeCount() == 13, err_msg
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkLength(cvPipeIndex), length)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkDiameter(cvPipeIndex), diameter)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkRoughnessCoeff(cvPipeIndex), roughness)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkMinorLossCoeff(cvPipeIndex), minorLossCoeff)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkLength(cvPipeIndex), length)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkDiameter(cvPipeIndex), diameter)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkRoughnessCoeff(cvPipeIndex), roughness)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(cvPipeIndex), minorLossCoeff)
 
     def testaddLinkPump(self):
         err_msg = "Wrong add Link Pump output"
@@ -111,10 +112,10 @@ class AddTest(unittest.TestCase):
         patternIndex = 1
         pumpIndex = self.epanetClass.addLinkPump(pumpID, fromNode, toNode, initialStatus, initialSetting, power, patternIndex)
         assert self.epanetClass.getLinkPumpCount() == 2, err_msg
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkInitialStatus(pumpIndex), initialStatus)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkInitialSetting(pumpIndex), initialSetting)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkPumpPower(pumpIndex), power)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getLinkPumpPatternIndex(pumpIndex), patternIndex)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkInitialStatus(pumpIndex), initialStatus)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkInitialSetting(pumpIndex), initialSetting)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkPumpPower(pumpIndex), power)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkPumpPatternIndex(pumpIndex), patternIndex)
         return
 
     def testLinkValves(self):
@@ -158,15 +159,15 @@ class AddTest(unittest.TestCase):
         x = coords['x'][junctionIndex]
         y = coords['y'][junctionIndex]
         assert [x, y] == junctionCoords, err_msg
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getNodeElevations(junctionIndex), junctionElevation)
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getNodeBaseDemands(junctionIndex)[1], demand)
+        np.testing.assert_array_almost_equal(self.epanetClass.getNodeElevations(junctionIndex), junctionElevation)
+        np.testing.assert_array_almost_equal(self.epanetClass.getNodeBaseDemands(junctionIndex)[1], demand)
         assert self.epanetClass.getNodeDemandPatternNameID()[1][junctionIndex-1] == demandPatternID, err_msg
 
     def testaddNodeJunctionDemand(self):
         self.epanetClass = epanet('ky10.inp')
         self.epanetClass.addNodeJunctionDemand([1, 2], [100, 110], ['1', '2'], ['new demand1', 'new demand2'])
         assert self.epanetClass.getNodeJunctionDemandName()[2][0:2]  == ['new demand1', 'new demand2'], 'Wrong node junction demand output'
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getNodeBaseDemands()[2][0:2], [100, 110])
+        np.testing.assert_array_almost_equal(self.epanetClass.getNodeBaseDemands()[2][0:2], [100, 110])
 
     def testaddNodeReservoir(self):
         reservoirID = 'newReservoir_1'
@@ -213,7 +214,7 @@ class AddTest(unittest.TestCase):
         0.58, 0.64, 0.71, 0.66]
         patternIndex = self.epanetClass.addPattern(patternID, patternMult)    # Adds a new time pattern given it's ID and the multiplier
         assert self.epanetClass.getPatternNameID(patternIndex) == patternID, 'Wrong pattern Name ID'
-        np.testing.assert_array_almost_equal_nulp(self.epanetClass.getPattern()[2], patternMult)
+        np.testing.assert_array_almost_equal(self.epanetClass.getPattern()[2], patternMult)
 
     def testaddRules(self):
         self.epanetClass.addRules('RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PUMP 9 STATUS IS CLOSED \n PRIORITY 1')
@@ -222,6 +223,7 @@ class AddTest(unittest.TestCase):
         assert rule['Rule_ID'] == 'RULE-1', 'Wrong rule ID'
         self.assertEqual(rule['Premises'][0], 'IF NODE 2 LEVEL >= 140.0',  'Wrong Premises')
         self.assertEqual(rule['Then_Actions'][0], 'THEN PUMP 9 STATUS IS CLOSED','Wrong Then Actions')
+
 
 class DeleteTest(unittest.TestCase):
 
@@ -344,6 +346,7 @@ class DeleteTest(unittest.TestCase):
         self.assertEqual(d.getRuleCount(), 1, err_msg)
         d.unload()
 
+
 class GetTest(unittest.TestCase):
 
     def setUp(self):
@@ -358,14 +361,14 @@ class GetTest(unittest.TestCase):
 
     def testgetComputedHydraulicTimeSeries(self):
         data = self.epanetClass.getComputedHydraulicTimeSeries(['Time','Pressure', 'Velocity'])
-        self.assertEqual(
-            data.Time.all(),
+        np.testing.assert_array_almost_equal(
+            data.Time,
             np.array([    0,  3600,  7200, 10800, 14400, 18000, 21600, 25200, 28800,
                                 32400, 36000, 39600, 43200, 45154, 46800, 50400, 54000, 57600,
-                                61200, 64800, 68400, 72000, 75600, 79200, 81690, 82800, 86400]).all(),
-            'Wrong Time output')
-        self.assertEqual(
-            data.Pressure.all(),
+                                61200, 64800, 68400, 72000, 75600, 79200, 81690, 82800, 86400]),
+            err_msg='Wrong Time output')
+        np.testing.assert_array_almost_equal(
+            data.Pressure,
             np.array([[127.54072491, 119.25732074, 117.02125399, 118.66902368,
                         117.66115716, 118.75815405, 120.73696519, 115.86077993,
                         110.79018511,   0.        ,  51.996     ],
@@ -446,11 +449,11 @@ class GetTest(unittest.TestCase):
                         108.22952342,   0.        ,  48.2175138 ],
                         [125.96844576, 117.46948079, 115.03090241, 116.68717363,
                         115.74356881, 116.7866562 , 118.76214431, 113.93079598,
-                        108.84261138,   0.        ,  50.00371454]]).all(),
-            'Wrong Pressure output')
+                        108.84261138,   0.        ,  50.00371454]]),
+            err_msg='Wrong Pressure output')
 
-        self.assertEqual(
-            data.Velocity.all(),
+        np.testing.assert_array_almost_equal(
+            data.Velocity,
             np.array([[2.35286666e+00, 2.57230086e+00, 5.28331232e-01, 7.80876836e-01,
                         3.42300951e-01, 4.63083582e-01, 9.65991272e-01, 1.96883153e+00,
                         5.35291644e-01, 1.87239674e-01, 8.98762391e-01, 6.71632643e-01,
@@ -558,24 +561,24 @@ class GetTest(unittest.TestCase):
                         [2.38573232e+00, 2.61481977e+00, 5.23638045e-01, 8.01889505e-01,
                         3.45560109e-01, 4.69014194e-01, 9.98856937e-01, 1.99197922e+00,
                         5.22476018e-01, 1.79906568e-01, 9.02098360e-01, 6.65702031e-01,
-                        0.00000000e+00]]).all(),
-            'Wrong velocity output')
+                        0.00000000e+00]]),
+            err_msg='Wrong velocity output')
 
     def testgetComputedQualityTimeSeries(self):
-        self.assertEqual(
-            self.epanetClass.getComputedQualityTimeSeries().NodeQuality[10].all(),
-            np.array([[1., 0.45269294, 0.44701226, 0.43946804, 0.42596667,
+        np.testing.assert_array_almost_equal(
+            self.epanetClass.getComputedQualityTimeSeries().NodeQuality[10],
+            np.array([1., 0.45269294, 0.44701226, 0.43946804, 0.42596667,
                 0.4392986 , 0.45068901, 0.41946084, 0.4033391 , 1.,
-                0.97200717]]).all(),
-            'Wrong NodeQuality output')
-        self.assertEqual(self.epanetClass.getComputedQualityTimeSeries().LinkQuality.all(),
-            np.array([[0.79051035, 0.44701226, 0.43946804, 0.43188486, 0.45136891,
+                0.97200717]),
+            err_msg='Wrong NodeQuality output')
+        np.testing.assert_array_almost_equal(self.epanetClass.getComputedQualityTimeSeries().LinkQuality[10],
+            np.array([0.79051035, 0.44701226, 0.43946804, 0.43188486, 0.45136891,
                 0.40885247, 0.4475449 , 0.440129  , 0.44680907, 0.44516552,
-                0.41946084, 0.40761727, 1.]]).all(),
-            'Wrong Link Quality output')
+                0.41946084, 0.40761727, 1.]),
+            err_msg='Wrong Link Quality output')
 
     def testgetConnectivityMatrix(self):
-        self.assertEqual(self.epanetClass.getConnectivityMatrix().all(),
+        np.testing.assert_array_almost_equal(self.epanetClass.getConnectivityMatrix(),
                          np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
                                 [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
                                 [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1],
@@ -586,8 +589,8 @@ class GetTest(unittest.TestCase):
                                 [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
                                 [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
                                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]]).all(),
-                         'Wrong connectivity matrix output'
+                                [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]]),
+                         err_msg='Wrong connectivity matrix output'
                          )
 
     def testgetControls(self):
@@ -671,7 +674,7 @@ class GetTest(unittest.TestCase):
         # Test 14
         curveIndex = 1
         pointIndex = 1
-        self.assertEqual(d.getCurveValue(curveIndex, pointIndex).all() , np.array([ 0., 38.]).all(), err_msg)
+        np.testing.assert_array_almost_equal(d.getCurveValue(curveIndex, pointIndex) , np.array([ 0., 38.]), err_msg=err_msg)
         d.unload()
 
     def testgetDemandModel(self):
@@ -685,10 +688,10 @@ class GetTest(unittest.TestCase):
 
     def testgetLinkQuality(self):
         err_msg = 'Wrong Quality output'
-        self.assertEqual(self.epanetClass.getLinkQuality().all(),
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkQuality(),
                          np.array([100.0, 100.0, 100.0, 100.0, 100.0,
-                                   100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]).all(),
-                         err_msg)
+                                   100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]),
+                         err_msg=err_msg)
 
     def testgetLinkType(self):
 
@@ -727,8 +730,6 @@ class GetTest(unittest.TestCase):
                         ['10', '11', '12', '13', '21', '22', '23', '31', '32', '9', '2'],
                         err_msg)
         self.assertEqual(self.epanetClass.getNodeNameID([1,5,10]), ['10', '21', '9'], err_msg)
-
-
 
     def testgetLinkPumpData(self):
 
@@ -994,13 +995,13 @@ class GetTest(unittest.TestCase):
                         'Diameter': np.array([50.5]), 'Minimum_Water_Volume': np.array([200296.1666]), 
                         'Maximum_Water_Volume': np.array([50.5]),'Volume_Curve_Index': np.array([0])}  
         self.assertEqual(tData['Index'], desired_tData['Index'])
-        np.testing.assert_array_almost_equal_nulp(tData['Elevation'], desired_tData['Elevation'])
-        np.testing.assert_array_almost_equal_nulp(tData['Initial_Level'], desired_tData['Initial_Level'])
-        np.testing.assert_array_almost_equal_nulp(tData['Minimum_Water_Level'], desired_tData['Minimum_Water_Level'])
-        np.testing.assert_array_almost_equal_nulp(tData['Maximum_Water_Level'], desired_tData['Maximum_Water_Level'])
-        np.testing.assert_array_almost_equal_nulp(tData['Diameter'], desired_tData['Diameter'])
-        np.testing.assert_array_almost_equal_nulp(tData['Minimum_Water_Volume'], desired_tData['Minimum_Water_Volume'])
-        np.testing.assert_array_almost_equal_nulp(tData['Volume_Curve_Index'], desired_tData['Volume_Curve_Index'])
+        np.testing.assert_array_almost_equal(tData['Elevation'], desired_tData['Elevation'])
+        np.testing.assert_array_almost_equal(tData['Initial_Level'], desired_tData['Initial_Level'])
+        np.testing.assert_array_almost_equal(tData['Minimum_Water_Level'], desired_tData['Minimum_Water_Level'])
+        np.testing.assert_array_almost_equal(tData['Maximum_Water_Level'], desired_tData['Maximum_Water_Level'])
+        np.testing.assert_array_almost_equal(tData['Diameter'], desired_tData['Diameter'])
+        np.testing.assert_array_almost_equal(tData['Minimum_Water_Volume'], desired_tData['Minimum_Water_Volume'])
+        np.testing.assert_array_almost_equal(tData['Volume_Curve_Index'], desired_tData['Volume_Curve_Index'])
 
         # ky10
         d = epanet('ky10.inp')
@@ -1060,7 +1061,7 @@ class GetTest(unittest.TestCase):
                     46869.67606562, 122731.80854   ,  27581.3205004 ,  63341.61180725,
                     368207.85033021, 260588.21880625, 312809.01892312, 301081.21859364,
                     193012.038532  ])
-        self.assertEqual(actual.all(), desired.all(), 'Wrong Node Tank Mix Zone Volume Output')
+        np.testing.assert_array_almost_equal(actual, desired, err_msg='Wrong Node Tank Mix Zone Volume Output')
         d.unload()
 
     def testgetNodeType(self):
@@ -1172,7 +1173,7 @@ class GetTest(unittest.TestCase):
                                     4.421e+02, 2.342e+02, 2.630e+01, 4.720e+01, 6.800e+01, 3.522e+02,
                                     6.364e+02, 3.312e+02, 2.600e+01, 2.610e+01, 2.610e+01, 2.247e+02]])
         actual_pattern = d.getPattern()
-        self.assertEqual(actual_pattern.all(), desired_pattern.all(), 'Wrong Patterns Output')
+        np.testing.assert_array_almost_equal(actual_pattern, desired_pattern, err_msg='Wrong Patterns Output')
 
         ''' ---getPatternAverageValue---    '''
         desired_pat_avg_val = [0.8856250000000001, 33.333333333333336, 0.967291666666667, 209.6072916666666]
@@ -2775,7 +2776,7 @@ class AnalysisTest(unittest.TestCase):
            150.        ,   200.        ,   150.        ,   100.        ,
            100.        , -1892.24322665,   792.24322665]])
         actual = comp_vals.Demand
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
     
         # Test Energy
         desired = np.array([[6.72482481e+00, 3.52704749e+00, 2.91862104e-02, 8.89394398e-02,
@@ -2887,7 +2888,7 @@ class AnalysisTest(unittest.TestCase):
          3.29103289e-02, 1.12232080e-03, 1.11456923e-01, 3.68674584e-02,
          9.54579159e+01]])
         actual = comp_vals.Energy
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
         
         # Test Energy
         desired = np.array([[ 1.86617583e+03,  1.23420718e+03,  1.29335135e+02,
@@ -3026,7 +3027,7 @@ class AnalysisTest(unittest.TestCase):
           2.81862454e+01,  1.41333171e+02,  5.86668293e+01,
           1.89224323e+03]])
         actual = comp_vals.Flow
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
 
         # Test Pressure
         desired = np.array([[127.54072491, 119.25732074, 117.02125399, 118.66902368,
@@ -3111,7 +3112,7 @@ class AnalysisTest(unittest.TestCase):
          115.74356881, 116.7866562 , 118.76214431, 113.93079598,
          108.84261138,   0.        ,  50.00371454]])
         actual = comp_vals.Pressure
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
 
         # Test Setting 
         desired = np.array([[100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
@@ -3169,7 +3170,7 @@ class AnalysisTest(unittest.TestCase):
         [100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
          100., 100.,   1.]])
         actual = comp_vals.Setting
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
 
         # Test Head 
         desired = np.array([[1004.34739189,  985.23037329,  970.06982226,  968.87266023,
@@ -3254,7 +3255,7 @@ class AnalysisTest(unittest.TestCase):
           967.12109119,  964.5284011 ,  964.08757054,  962.93744745,
           961.1945797 ,  800.        ,  965.40206447]])
         actual = comp_vals.Head
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
 
         # Test HeadLoss 
         desired = np.array([[ 1.91170186e+01,  1.51605510e+01,  1.19716204e+00,
@@ -3393,7 +3394,7 @@ class AnalysisTest(unittest.TestCase):
           2.11237749e-01,  4.18364374e+00,  3.33382140e+00,
          -2.00718776e+02]])
         actual = comp_vals.HeadLoss
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
 
         # Test State 
         desired = np.array([[3],
@@ -3424,7 +3425,7 @@ class AnalysisTest(unittest.TestCase):
         [3],
         [3]])
         actual = comp_vals.State
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
         
         # Test Tank Volume 
         desired = np.array([[     0.        ,      0.        ,      0.        ,
@@ -3536,119 +3537,119 @@ class AnalysisTest(unittest.TestCase):
               0.        ,      0.        ,      0.        ,
               0.        , 231145.91132522]])
         actual = comp_vals.TankVolume
-        self.assertEqual(actual.all(), desired.all(), err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
         
         # Test Tank Velocity 
-        desired = np.array([[     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 240355.39992932],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 246500.77087736],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 252505.01777571],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 256655.48840308],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 260709.08426249],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 262953.75705037],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 265145.46293336],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 265571.59972454],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 265987.62835619],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 268107.44057455],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 270176.8071875 ],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 273910.33164666],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 277554.22641986],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 280414.65154756],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 276380.61336201],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 267557.68664122],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 260499.344077  ],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 253441.00162603],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 248147.24328703],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 242853.48506405],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 239324.31090452],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 235795.13681264],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 230501.37880408],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 225207.62090786],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 220325.60116484],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 222889.06477206],
-        [     0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        ,      0.        ,      0.        ,
-              0.        , 231145.91132522]])
+        desired = np.array([[2.35286666e+00, 2.57230086e+00, 5.28331232e-01, 7.80876836e-01,
+        3.42300951e-01, 4.63083582e-01, 9.65991272e-01, 1.96883153e+00,
+        5.35291644e-01, 1.87239674e-01, 8.98762391e-01, 6.71632643e-01,
+        0.00000000e+00],
+       [2.33068336e+00, 2.54358132e+00, 5.31503118e-01, 7.66706780e-01,
+        3.40098253e-01, 4.59157105e-01, 9.43807974e-01, 1.95324794e+00,
+        5.43910881e-01, 1.92195745e-01, 8.96553748e-01, 6.75559120e-01,
+        0.00000000e+00],
+       [2.31666322e+00, 2.42681077e+00, 7.06538850e-01, 6.16194761e-01,
+        3.60385189e-01, 4.79042564e-01, 6.52412757e-01, 2.01414361e+00,
+        8.33956122e-01, 3.38033502e-01, 1.03539489e+00, 8.82616905e-01,
+        0.00000000e+00],
+       [2.30143547e+00, 2.40683910e+00, 7.08704481e-01, 6.06673617e-01,
+        3.58881279e-01, 4.77175094e-01, 6.37185006e-01, 2.00395017e+00,
+        8.39530985e-01, 3.41417300e-01, 1.03434444e+00, 8.84484375e-01,
+        0.00000000e+00],
+       [2.29446581e+00, 2.29272219e+00, 8.81628950e-01, 4.66778486e-01,
+        3.80634370e-01, 5.16575880e-01, 3.52840266e-01, 2.08248825e+00,
+        1.11879071e+00, 4.83956208e-01, 1.18416296e+00, 1.07202683e+00,
+        0.00000000e+00],
+       [2.28613994e+00, 2.28166679e+00, 8.82777453e-01, 4.61720309e-01,
+        3.79836799e-01, 5.15884056e-01, 3.44514395e-01, 2.07718101e+00,
+        1.12167872e+00, 4.85750744e-01, 1.18377381e+00, 1.07271866e+00,
+        0.00000000e+00],
+       [2.28598509e+00, 2.17126060e+00, 1.05313231e+00, 3.32329449e-01,
+        4.03374341e-01, 5.67236868e-01, 6.69844709e-02, 2.17052609e+00,
+        1.39244025e+00, 6.24274636e-01, 1.34031534e+00, 1.24830909e+00,
+        0.00000000e+00],
+       [2.28439619e+00, 2.16912714e+00, 1.05334394e+00, 3.31394073e-01,
+        4.03227377e-01, 5.67150521e-01, 6.53955686e-02, 2.16955962e+00,
+        1.39296444e+00, 6.24605306e-01, 1.34026677e+00, 1.24839544e+00,
+        0.00000000e+00],
+       [2.27483897e+00, 2.26665454e+00, 8.84333876e-01, 4.54863175e-01,
+        3.78755949e-01, 5.14956307e-01, 3.33213425e-01, 2.06998989e+00,
+        1.12559170e+00, 4.88182655e-01, 1.18325195e+00, 1.07364641e+00,
+        0.00000000e+00],
+       [2.26690942e+00, 2.25611915e+00, 8.85426211e-01, 4.50052565e-01,
+        3.77997383e-01, 5.14312510e-01, 3.25283877e-01, 2.06494751e+00,
+        1.12833479e+00, 4.89889428e-01, 1.18288981e+00, 1.07429020e+00,
+        0.00000000e+00],
+       [2.25112342e+00, 2.34078445e+00, 7.15844666e-01, 5.75283611e-01,
+        3.53922817e-01, 4.71191987e-01, 5.86872961e-01, 1.97040625e+00,
+        8.57866915e-01, 3.52573840e-01, 1.03097894e+00, 8.90467483e-01,
+        0.00000000e+00],
+       [2.23703453e+00, 2.32226979e+00, 7.17841800e-01, 5.66509789e-01,
+        3.52535919e-01, 4.69565723e-01, 5.72784064e-01, 1.96104697e+00,
+        8.62979515e-01, 3.55694360e-01, 1.03006417e+00, 8.92093747e-01,
+        0.00000000e+00],
+       [2.21526305e+00, 2.39387356e+00, 5.48041427e-01, 6.93165074e-01,
+        3.28613316e-01, 4.39732471e-01, 8.28387669e-01, 1.87271337e+00,
+        5.88352732e-01, 2.18036853e-01, 8.85627391e-01, 6.94983754e-01,
+        0.00000000e+00],
+       [1.06626930e-06, 7.46894277e-01, 7.70294218e-01, 2.87189089e-01,
+        1.74271100e-01, 3.25297366e-01, 1.38687645e+00, 8.51162565e-01,
+        1.14342079e+00, 5.65306840e-01, 8.21257645e-01, 8.09418859e-01,
+        0.00000000e+00],
+       [1.05667364e-06, 7.46894264e-01, 7.70294219e-01, 2.87189086e-01,
+        1.74271099e-01, 3.25297361e-01, 1.38687644e+00, 8.51162566e-01,
+        1.14342079e+00, 5.65306841e-01, 8.21257642e-01, 8.09418864e-01,
+        0.00000000e+00],
+       [1.03714862e-06, 5.97515677e-01, 6.16235394e-01, 2.29751348e-01,
+        1.39416867e-01, 2.60237879e-01, 1.10950134e+00, 6.80929970e-01,
+        9.14736679e-01, 4.52245502e-01, 6.57006108e-01, 6.47535101e-01,
+        0.00000000e+00],
+       [1.01552852e-06, 5.97515652e-01, 6.16235392e-01, 2.29751341e-01,
+        1.39416868e-01, 2.60237880e-01, 1.10950132e+00, 6.80929978e-01,
+        9.14736675e-01, 4.52245499e-01, 6.57006109e-01, 6.47535100e-01,
+        0.00000000e+00],
+       [9.97188290e-07, 4.48137076e-01, 4.62176568e-01, 1.72313606e-01,
+        1.04562635e-01, 1.95178398e-01, 8.32126229e-01, 5.10697378e-01,
+        6.86052563e-01, 3.39184161e-01, 4.92754575e-01, 4.85651337e-01,
+        0.00000000e+00],
+       [9.82963944e-07, 4.48137050e-01, 4.62176566e-01, 1.72313598e-01,
+        1.04562636e-01, 1.95178399e-01, 8.32126211e-01, 5.10697387e-01,
+        6.86052558e-01, 3.39184158e-01, 4.92754575e-01, 4.85651336e-01,
+        0.00000000e+00],
+       [9.70469226e-07, 2.98758484e-01, 3.08117742e-01, 1.14875867e-01,
+        6.97084020e-02, 1.30118916e-01, 5.54751123e-01, 3.40464784e-01,
+        4.57368448e-01, 2.26122821e-01, 3.28503041e-01, 3.23767574e-01,
+        0.00000000e+00],
+       [9.55911660e-07, 2.98758469e-01, 3.08117741e-01, 1.14875862e-01,
+        6.97084027e-02, 1.30118917e-01, 5.54751113e-01, 3.40464789e-01,
+        4.57368445e-01, 2.26122820e-01, 3.28503041e-01, 3.23767573e-01,
+        0.00000000e+00],
+       [9.45234760e-07, 4.48137001e-01, 4.62176562e-01, 1.72313584e-01,
+        1.04562638e-01, 1.95178400e-01, 8.32126177e-01, 5.10697402e-01,
+        6.86052550e-01, 3.39184153e-01, 4.92754576e-01, 4.85651334e-01,
+        0.00000000e+00],
+       [9.28221894e-07, 4.48136976e-01, 4.62176561e-01, 1.72313576e-01,
+        1.04562639e-01, 1.95178401e-01, 8.32126160e-01, 5.10697409e-01,
+        6.86052546e-01, 3.39184150e-01, 4.92754577e-01, 4.85651334e-01,
+        0.00000000e+00],
+       [9.08472163e-07, 5.97515505e-01, 6.16235382e-01, 2.29751297e-01,
+        1.39416875e-01, 2.60237885e-01, 1.10950122e+00, 6.80930023e-01,
+        9.14736650e-01, 4.52245483e-01, 6.57006112e-01, 6.47535094e-01,
+        0.00000000e+00],
+       [2.41636847e+00, 2.74378595e+00, 3.49838258e-01, 9.68602133e-01,
+        3.24414877e-01, 4.87272679e-01, 1.30686816e+00, 1.96101598e+00,
+        2.10786072e-01, 3.59999778e-02, 7.84713183e-01, 4.20500301e-01,
+        0.00000000e+00],
+       [2.40739457e+00, 2.73233851e+00, 3.50950539e-01, 9.62793939e-01,
+        3.23642460e-01, 4.84966403e-01, 1.29789426e+00, 1.95437753e+00,
+        2.14623692e-01, 3.77379168e-02, 7.83415903e-01, 4.22806577e-01,
+        0.00000000e+00],
+       [2.38573232e+00, 2.61481977e+00, 5.23638045e-01, 8.01889505e-01,
+        3.45560109e-01, 4.69014194e-01, 9.98856937e-01, 1.99197922e+00,
+        5.22476018e-01, 1.79906568e-01, 9.02098360e-01, 6.65702031e-01,
+        0.00000000e+00]])
         actual = comp_vals.Velocity
-        self.assertEqual(actual.all(), desired.all(), err_msg) 
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg) 
 
     def testgetComputedQualityTimeSeries(self):   
         d = epanet('Net1.inp')
