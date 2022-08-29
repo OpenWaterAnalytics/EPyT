@@ -1061,7 +1061,7 @@ class GetTest(unittest.TestCase):
                     46869.67606562, 122731.80854   ,  27581.3205004 ,  63341.61180725,
                     368207.85033021, 260588.21880625, 312809.01892312, 301081.21859364,
                     193012.038532  ])
-        np.testing.assert_array_almost_equal(actual, desired, err_msg='Wrong Node Tank Mix Zone Volume Output')
+        np.testing.assert_array_almost_equal(actual, desired, err_msg='Wrong Node Tank Mix Zone Volume Output', decimal=5)
         d.unload()
 
     def testgetNodeType(self):
@@ -2776,7 +2776,7 @@ class AnalysisTest(unittest.TestCase):
            150.        ,   200.        ,   150.        ,   100.        ,
            100.        , -1892.24322665,   792.24322665]])
         actual = comp_vals.Demand
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
     
         # Test Energy
         desired = np.array([[6.72482481e+00, 3.52704749e+00, 2.91862104e-02, 8.89394398e-02,
@@ -2888,7 +2888,7 @@ class AnalysisTest(unittest.TestCase):
          3.29103289e-02, 1.12232080e-03, 1.11456923e-01, 3.68674584e-02,
          9.54579159e+01]])
         actual = comp_vals.Energy
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
         
         # Test Energy
         desired = np.array([[ 1.86617583e+03,  1.23420718e+03,  1.29335135e+02,
@@ -3112,7 +3112,7 @@ class AnalysisTest(unittest.TestCase):
          115.74356881, 116.7866562 , 118.76214431, 113.93079598,
          108.84261138,   0.        ,  50.00371454]])
         actual = comp_vals.Pressure
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
 
         # Test Setting 
         desired = np.array([[100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
@@ -3170,7 +3170,7 @@ class AnalysisTest(unittest.TestCase):
         [100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
          100., 100.,   1.]])
         actual = comp_vals.Setting
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
 
         # Test Head 
         desired = np.array([[1004.34739189,  985.23037329,  970.06982226,  968.87266023,
@@ -3255,7 +3255,7 @@ class AnalysisTest(unittest.TestCase):
           967.12109119,  964.5284011 ,  964.08757054,  962.93744745,
           961.1945797 ,  800.        ,  965.40206447]])
         actual = comp_vals.Head
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
 
         # Test HeadLoss 
         desired = np.array([[ 1.91170186e+01,  1.51605510e+01,  1.19716204e+00,
@@ -3394,7 +3394,7 @@ class AnalysisTest(unittest.TestCase):
           2.11237749e-01,  4.18364374e+00,  3.33382140e+00,
          -2.00718776e+02]])
         actual = comp_vals.HeadLoss
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
 
         # Test State 
         desired = np.array([[3],
@@ -3425,7 +3425,7 @@ class AnalysisTest(unittest.TestCase):
         [3],
         [3]])
         actual = comp_vals.State
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
         
         # Test Tank Volume 
         desired = np.array([[     0.        ,      0.        ,      0.        ,
@@ -3537,7 +3537,7 @@ class AnalysisTest(unittest.TestCase):
               0.        ,      0.        ,      0.        ,
               0.        , 231145.91132522]])
         actual = comp_vals.TankVolume
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5)
         
         # Test Tank Velocity 
         desired = np.array([[2.35286666e+00, 2.57230086e+00, 5.28331232e-01, 7.80876836e-01,
@@ -3649,7 +3649,7 @@ class AnalysisTest(unittest.TestCase):
         5.22476018e-01, 1.79906568e-01, 9.02098360e-01, 6.65702031e-01,
         0.00000000e+00]])
         actual = comp_vals.Velocity
-        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg) 
+        np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=5) 
 
     def testgetComputedQualityTimeSeries(self):   
         d = epanet('Net1.inp')
