@@ -11,13 +11,14 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'epyt'    
+project = 'epyt'
 copyright = '_copyright_'
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here.
 import pathlib
 import sys
 import os
+
 sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 print(pathlib.Path(__file__).parents[2].resolve().as_posix())
 sys.path.insert(0, os.path.join(pathlib.Path(__file__).parents[2].resolve().as_posix(), project))
@@ -26,7 +27,6 @@ author = 'KIOS CoE'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -39,7 +39,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx_copybutton'
-    ]
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -48,7 +48,6 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -60,7 +59,6 @@ exclude_patterns = []
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-
-#extensions = ['sphinx.ext.autosummary',]
-#autodoc_default_flags = ['members']
-#autosummary_generate = True
+# extensions = ['sphinx.ext.autosummary',]
+# autodoc_default_flags = ['members']
+# autosummary_generate = True
