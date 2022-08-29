@@ -3707,8 +3707,7 @@ class AnalysisTest(unittest.TestCase):
                              0.00000000e+00],
                             [2.38573232e+00, 2.61481977e+00, 5.23638045e-01, 8.01889505e-01,
                              3.45560109e-01, 4.69014194e-01, 9.98856937e-01, 1.99197922e+00,
-                             5.22476018e
--01, 1.79906568e-01, 9.02098360e-01, 6.65702031e-01,
+                             5.22476018e-01, 1.79906568e-01, 9.02098360e-01, 6.65702031e-01,
                              0.00000000e+00]])
         actual = comp_vals.Velocity
         np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=2)
