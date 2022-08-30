@@ -48,12 +48,12 @@ class AddTest(unittest.TestCase):
         np.testing.assert_equal(curve_info.CurveNvalue, [1, 3], err_msg=err_msg)
         x_vals_desired = [[1500.0], [0.0, 1000.0, 1350.0]]
         x_vals_actual = curve_info.CurveXvalue
-        for i in range(len(x_vals_actual)): np.testing.assert_equal(x_vals_actual[i], x_vals_desired[i],
-                                                                    err_msg=err_msg)
+        for i in range(len(x_vals_actual)):
+            np.testing.assert_equal(x_vals_actual[i], x_vals_desired[i], err_msg=err_msg)
         y_vals_desired = [[250.0], [730.0, 500.0, 260.0]]
         y_vals_actual = curve_info.CurveYvalue
-        for i in range(len(y_vals_actual)): np.testing.assert_equal(y_vals_actual[i], y_vals_desired[i],
-                                                                    err_msg=err_msg)
+        for i in range(len(y_vals_actual)):
+            np.testing.assert_equal(y_vals_actual[i], y_vals_desired[i], err_msg=err_msg)
 
     def testaddLinkPipe(self):
         err_msg = "Wrong add Link Pipe output"
@@ -297,26 +297,32 @@ class DeleteTest(unittest.TestCase):
         nodeIndex = 1
         baseDemand = 100
         patternId = '1'
+        # Adds a new demand to the 1st node and returns the new demand index
         self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId,
-                                               'new demand')  # Adds a new demand to the 1st node and returns the new demand index
-        self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)  # Retrieves the indices of all demands for the 1st node
+                                               'new demand')
+        # Retrieves the indices of all demands for the 1st node
+        self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)
         self.epanetClass.deleteNodeJunctionDemand(1, 2)
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), [[1, 2]], err_msg)
         # Test 2
+        # Adds a new demand to the first node and returns the new demand index
         self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId,
-                                               'new demand_2')  # Adds a new demand to the first node and returns the new demand index
+                                               'new demand_2')
+        # Adds a new demand to the first node and returns the new demand index
         self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId,
-                                               'new demand_3')  # Adds a new demand to the first node and returns the new demand index
+                                               'new demand_3')
+        # Deletes all the demands of the 1st node
         self.epanetClass.deleteNodeJunctionDemand(1)
-        print('UserWarning expected since the Demand is deleted')  # Deletes all the demands of the 1st node
+        print('UserWarning expected since the Demand is deleted')
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandName(1),
                             {1: [''], 2: ['new demand_2'], 3: ['new demand_3']}, err_msg)
         # Test 3
         nodeIndex = [1, 2, 3]
         baseDemand = [100, 110, 150]
         patternId = ['1', '1', '']
+        # Adds 3 new demands to the first 3 nodes
         self.epanetClass.addNodeJunctionDemand(nodeIndex, baseDemand, patternId, ['new demand_1', 'new demand_2',
-                                                                                  'new demand_3'])  # Adds 3 new demands to the first 3 nodes
+                                                                                  'new demand_3'])
         demand_index_old = self.epanetClass.getNodeJunctionDemandIndex(nodeIndex)
         self.epanetClass.deleteNodeJunctionDemand([1, 2, 3])
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(nodeIndex), demand_index_old, err_msg)

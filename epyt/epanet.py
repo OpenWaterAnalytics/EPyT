@@ -347,10 +347,12 @@ class val:
         :return: None
 
         """
-        if not filename:
+        if filename is None:
             rand_id = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
             filename = 'ToExcelfile_' + rand_id + '.xlsx'
-        if '.xlsx' not in filename: filename = filename + '.xlsx'
+        if '.xlsx' not in filename:
+            filename = filename + '.xlsx'
+
         dictVals = val.to_dict(Vals)
         dictValss = {}
         for i in dictVals:
@@ -361,7 +363,7 @@ class val:
         dictVals = dictValss
         with pd.ExcelWriter(filename, mode="w") as writer:
             for key in dictVals:
-                if key != 'Time':
+                if 'Time' not in key:
                     if not attributes:
                         df = pd.DataFrame(dictVals[key])
                         df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
@@ -443,7 +445,6 @@ class epanet:
 
     def __init__(self, *argv, version=2.2, loadfile=False):
 
-
         # Initial attributes
         self.classversion = '0.0.3'
         self.api = epanetapi(version)
@@ -479,7 +480,8 @@ class epanet:
                 self.BinTempfile = binfile
                 self.api.ENopen(self.TempInpFile, rptfile, binfile)
                 # Parameters
-                if not loadfile: self.__getInitParams()
+                if not loadfile:
+                    self.__getInitParams()
 
             elif (len(argv) == 2) and (argv[1].upper() == 'CREATE'):
                 self.InputFile = argv[0]
@@ -719,8 +721,8 @@ class epanet:
     TimeRuleControlStep = None,  # Time step for evaluating rule-based controls
     TimeSimulationDuration = None,  # Simulation duration
     TimeStartTime = None,  # Number of start time
-    TimeStatisticsIndex = None,  # Index of time series post-processing type ('NONE':0, 'AVERAGE':1, 'MINIMUM':2, 'MAXIMUM':3, 'RANGE':4)
-    TimeStatisticsType = None,  # Type of time series post-processing ('NONE', 'AVERAGE', 'MINIMUM', 'MAXIMUM', 'RANGE')
+    TimeStatisticsIndex = None,  # Index of type ('NONE':0, 'AVERAGE':1, 'MINIMUM':2, 'MAXIMUM':3, 'RANGE':4)
+    TimeStatisticsType = None,  # Type ('NONE', 'AVERAGE', 'MINIMUM', 'MAXIMUM', 'RANGE')
     ToolkitConstants = None,  # Contains all parameters from epanet2.h
     Units_SI_Metric = None,  # Equal with 1 if is SI-Metric
     Units_US_Customary = None,  # Equal with 1 if is US-Customary
@@ -1258,41 +1260,45 @@ class epanet:
         return index
 
     def addNodeJunctionDemand(self, *argv):
-        """ Adds a new demand to a junction given the junction index, base demand, demand time pattern and demand category name. (EPANET Version 2.2)
-        Returns the values of the new demand category index.
+        """ Adds a new demand to a junction given the junction index, base demand, demand time pattern and demand
+        category name. (EPANET Version 2.2) Returns the values of the new demand category index.
         A blank string can be used for demand time pattern and demand name category to indicate
         that no time pattern or category name is associated with the demand.
 
-        Example 1: New demand added with the name 'new demand' to the 1st node, with 100 base demand, using the 1st time pattern.
+        Example 1: New demand added with the name 'new demand' to the 1st node, with 100 base demand,
+        using the 1st time pattern.
 
         >>> d.addNodeJunctionDemand(1, 100, '1', 'new demand')
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
-        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
+        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index.
 
-        Example 2: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 base demand, using the 1st time pattern.
+        Example 2: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 base demand,
+        using the 1st time pattern.
 
         >>> d.addNodeJunctionDemand([1, 2], 100, '1', 'new demand')
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
-        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
+        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index.
 
-        Example 3: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base demand respectively, using the 1st time pattern.
+        Example 3: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base demand
+        respectively, using the 1st time pattern.
 
         >>> d.addNodeJunctionDemand([1, 2], [100, 110], '1', 'new demand')
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
-        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
+        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index.
 
-        Example 4: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base demand respectively, using the 1st time pattern.
+        Example 4: New demands added with the name 'new demand' to the 1st and 2nd node, with 100 and 110 base
+        demand respectively, using the 1st time pattern.
 
         >>> d.addNodeJunctionDemand([1, 2], [100, 110], ['1', '1'], 'new demand')
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
-        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
+        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index.
 
-        Example 5: New demands added with the names 'new demand1' and 'new demand2' to the 1st and 2nd node, with 100 and 110 base demand
-        respectively, using the 1st and 2nd(if exists) time pattern respectively.
+        Example 5: New demands added with the names 'new demand1' and 'new demand2' to the 1st and 2nd node, with 100
+        and 110 base demand respectively, using the 1st and 2nd(if exists) time pattern respectively.
 
         >>> d.addNodeJunctionDemand([1, 2], [100, 110], ['1', '2'], ['new demand1', 'new demand2'])
         >>> d.getNodeJunctionDemandIndex()       # Retrieves the indices of all demands for all nodes.
-        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index for all nodes.
+        >>> d.getNodeJunctionDemandName()[2]     # Retrieves the demand category names of the 2nd demand index.
 
         See also deleteNodeJunctionDemand, getNodeJunctionDemandIndex, getNodeJunctionDemandName,
                  setNodeJunctionDemandName, getNodeBaseDemands.
@@ -1325,6 +1331,7 @@ class epanet:
 
         if isList(nodeIndex) and not isList(demandName):
             demandName = [demandName for i in nodeIndex]
+
         return self.getNodeJunctionDemandIndex(nodeIndex, demandName)
 
     def addNodeReservoir(self, resID, *argv):
@@ -1382,8 +1389,9 @@ class epanet:
         >>> tankIndex = d.addNodeTank(tankID, tankCoords, elevation)
         >>> d.plot()
 
-        Example 4: Adds a new tank with coordinates [X, Y] = [20, 30], elevation = 100, initial level = 130, minimum water level = 110,
-        maximum water level = 160, diameter = 60, minimum water volume = 200000, volume curve ID = ''.
+        Example 4: Adds a new tank with coordinates [X, Y] = [20, 30], elevation = 100, initial level = 130,
+        minimum water level = 110, maximum water level = 160, diameter = 60, minimum water volume = 200000,
+        volume curve ID = ''.
 
         >>> tankID = 'newTank_4'
         >>> tankCoords = [20, 30]
@@ -1451,7 +1459,7 @@ class epanet:
         ... 1.04, 1.2, 0.64, 1.08, 0.53, 0.29, 0.9, 1.11,
         ... 1.06, 1.00, 1.65, 0.55, 0.74, 0.64, 0.46,
         ... 0.58, 0.64, 0.71, 0.66]
-        >>> patternIndex = d.addPattern(patternID, patternMult)    # Adds a new time pattern given it's ID and the multiplier
+        >>> patternIndex = d.addPattern(patternID, patternMult)    # Adds a new time pattern given ID and the multiplier
         >>> d.getPatternNameID()
         >>> d.getPattern()
 
@@ -1469,7 +1477,8 @@ class epanet:
         """ Adds a new rule-based control to a project. (EPANET Version 2.2)
 
         .. note:: Rule format: Following the format used in an EPANET input file.
-                     'RULE ruleid \n IF object objectid attribute relation attributevalue \n THEN object objectid STATUS/SETTING IS value \n PRIORITY value'
+                     'RULE ruleid \n IF object objectid attribute relation attributevalue \n THEN object objectid
+                     STATUS/SETTING IS value \n PRIORITY value'
 
         See more: 'https://nepis.epa.gov/Adobe/PDF/P1007WWU.pdf' (Page 164)
 
@@ -1547,8 +1556,7 @@ class epanet:
                     s = np.array([vertX_temp, vertY_temp], dtype=float)
                     so = R * s
                     # Shift again so the origin goes back to the desired center of rotation.
-                    newxVertCoord = so[0,
-                                    :] + x_center  # Shift again so the origin goes back to the desired center of rotation.
+                    newxVertCoord = so[0, :] + x_center
                     newvyVertCoord = so[1, :] + y_center
                     LinkID = self.getLinkNameID(i)
                     self.setLinkVertices(LinkID, newxVertCoord.tolist()[0], newvyVertCoord.tolist()[0])
@@ -1677,7 +1685,7 @@ class epanet:
 
         Example 1: 
 
-        >>> d.getControls()                                                # Retrieves the parameters of all control statements
+        >>> d.getControls()                                                # Retrieves the parameters of all controls
         >>> d.deleteControls()                                             # Deletes the existing simple controls
         >>> d.getControls()
 
@@ -2239,6 +2247,9 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
+                exec(f"self.printv(val_dict[i])")
+                exec(f"self.printv(val_dict)")
+                exec(f"self.printv(dir(val_dict))")
                 exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
@@ -2267,6 +2278,9 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
+                exec(f"self.printv(val_dict[i])")
+                exec(f"self.printv(val_dict)")
+                exec(f"self.printv(dir(val_dict))")
                 exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
