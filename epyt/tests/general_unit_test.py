@@ -2684,7 +2684,7 @@ class AnalysisTest(unittest.TestCase):
                                           4.85, 18.43, 15.52, 9.7, 7.76, 10.67,
                                           5.82, 7.76, 0., 6.79, 2.91, 16.49,
                                           16.49, 1.455, 1.455, 0., 0.97, 353.5274])
-        np.testing.assert_array_almost_equal(NDemSensN[2], desired_act_dem_sen_2, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(NDemSensN[2], desired_act_dem_sen_2, err_msg=err_msg, decimal=2)
 
         desired_act_dem_sen_20 = np.array([0., 10.08, 17.64, 10.08,
                                            10.08, 6.3, 5.04, 11.34,
@@ -2695,7 +2695,7 @@ class AnalysisTest(unittest.TestCase):
                                            7.56, 10.08, 0., 8.82,
                                            3.78, 21.42, 21.42, 1.89,
                                            1.89, 0., 1.26, -406.70253781])
-        np.testing.assert_array_almost_equal(NDemSensN[20] / 100, desired_act_dem_sen_20 / 100, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(NDemSensN[20], desired_act_dem_sen_20, err_msg=err_msg, decimal=2)
 
         desired_act_dem_sen_50 = np.array([-638.848, 8.24, 14.42, 8.24,
                                            8.24, 5.15, 4.12, 9.27,
@@ -2706,7 +2706,7 @@ class AnalysisTest(unittest.TestCase):
                                            6.18, 8.24, 0., 7.21,
                                            3.09, 17.51, 17.51, 1.545,
                                            1.545, 0., 1.03, 306.38459999])
-        np.testing.assert_array_almost_equal(NDemSensN[50], desired_act_dem_sen_50, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(NDemSensN[50], desired_act_dem_sen_50, err_msg=err_msg, decimal=5)
 
         # Test Node Actual Quality Sensing Nodes
         err_msg = 'Error in Node Actual Quality Sensing Nodes'
@@ -2718,7 +2718,7 @@ class AnalysisTest(unittest.TestCase):
                                             0.99985462, 0.99999968, 0.99997815, 0.99999999, 0.99939214,
                                             0.99992752, 0.99999825, 0.99999996, 0.99999955, 0.99999999,
                                             0.99997897])
-        np.testing.assert_array_almost_equal(NActQual[2], desired_act_qual_sens_2, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(NActQual[2], desired_act_qual_sens_2, err_msg=err_msg, decimal=2)
 
         desired_act_qual_sens_20 = np.array([0.15, 0.13007754, 0.13002584, 0.1301467, 0.13063834,
                                              0.13190425, 0.13328394, 0.69315762, 0.13400906, 1.00316403,
@@ -2728,7 +2728,7 @@ class AnalysisTest(unittest.TestCase):
                                              0.221263, 0.99932869, 0.42258208, 0.99951648, 0.92719315,
                                              0.88435288, 0.99986736, 0.99990912, 0.99581539, 0.99956727,
                                              0.92719315])
-        np.testing.assert_array_almost_equal(NActQual[20], desired_act_qual_sens_20, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(NActQual[20], desired_act_qual_sens_20, err_msg=err_msg, decimal=2)
 
         desired_act_qual_sens_50 = np.array([0.08, 0.08134169, 0.08465141, 0.08746161, 0.08277441,
                                              0.08400952, 0.08591221, 0.08695709, 0.08618052, 0.0901129,
@@ -2738,7 +2738,7 @@ class AnalysisTest(unittest.TestCase):
                                              0.763763, 0.13845722, 0.76376313, 0.94441596, 0.76376264,
                                              0.4377526, 0.0909339, 0.14413847, 0.87968838, 0.41099686,
                                              0.76376316])
-        np.testing.assert_array_almost_equal(NActQual[50] / 1000, desired_act_qual_sens_50 / 1000, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(NActQual[50], desired_act_qual_sens_50, err_msg=err_msg, decimal=2)
 
         # Test Node Mass Flow Rate
         err_msg = 'Error in Node Mass Flow Rate'
@@ -3719,9 +3719,9 @@ class AnalysisTest(unittest.TestCase):
         err_msg = 'Error in getComputedQualityTimeSeries output'
 
         # Test LinkQuality
-        desired_0 = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75]
+        desired_0 = np.array([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75])
         actual_0 = comp_vals.LinkQuality[0]
-        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg, decimal=2)
 
         desired_10 = [0.7905103495922685, 0.447012255612685, 0.43946804267267675, 0.431884859944181,
                       0.45136890741421926,
@@ -3762,43 +3762,41 @@ class AnalysisTest(unittest.TestCase):
         err_msg = 'Error in getComputedTimeSeries output'
 
         # Test LinkQuality
-        desired_0 = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75]
+        desired_0 = np.array([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75])
         actual_0 = comp_vals.LinkQuality[0]
-        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg, decimal=2)
 
         desired_5 = [0.9321969747543335, 0.8248310685157776, 0.6822988986968994, 0.6069462895393372,
                      0.3435664772987366, 0.3247292637825012, 0.7769863605499268, 0.8085265159606934,
                      0.7127845287322998, 0.321151465177536, 0.6564596891403198, 0.45066702365875244, 1.0]
         actual_5 = comp_vals.LinkQuality[5]
-        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg, decimal=5)
 
         desired_20 = [0.7951614856719971, 0.5341360569000244, 0.4999150037765503, 0.3575170338153839,
                       0.3587680757045746, 0.19799287617206573, 0.6330206394195557, 0.3800353407859802,
                       0.5404495596885681, 0.3071078956127167, 0.24770621955394745, 0.33150285482406616,
                       0.9240829944610596]
         actual_20 = comp_vals.LinkQuality[20]
-        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg, decimal=5)
 
         # Test Flow
         desired_0 = [1866.17578125, 1234.2071533203125, 129.33514404296875, 191.1581268310547, 120.66487121582031,
                      40.81052017211914, -766.1758422851562, 481.9686279296875, 188.6962127685547, 29.335134506225586,
                      140.81051635742188, 59.18947982788086, 1866.17578125]
         actual_0 = comp_vals.Flow[0]
-        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg, decimal=5)
 
         desired_5 = [1813.2515869140625, 1094.759033203125, 216.10333251953125, 113.02882385253906, 133.89666748046875,
                      45.463706970214844, -273.2515563964844, 508.4925231933594, 395.4041442871094, 76.10334014892578,
                      185.4636993408203, 94.53629302978516, 1813.2515869140625]
         actual_5 = comp_vals.Flow[5]
-        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg, decimal=5)
 
         desired_20 = [-0.000749712809920311, -215.01913452148438, 113.14051055908203, -42.1822509765625,
-                      36.8594856262207,
-                      17.20063591003418, 660.000732421875, 125.01838684082031, 241.8411102294922, 53.14051818847656,
-                      77.20063018798828,
-                      42.79936599731445, 0.0]
+                      36.8594856262207, 17.20063591003418, 660.000732421875, 125.01838684082031, 241.8411102294922,
+                      53.14051818847656, 77.20063018798828, 42.79936599731445, 0.0]
         actual_20 = comp_vals.Flow[20]
-        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg, decimal=5)
 
     def testgetComputedTimeSeries_ENepanet(self):
         d = epanet('Net1.inp')
@@ -3807,35 +3805,35 @@ class AnalysisTest(unittest.TestCase):
         d.unload()
 
         # Test LinkQuality
-        desired_0 = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75]
+        desired_0 = np.array([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.75])
         actual_0 = comp_vals.LinkQuality[0]
-        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg, decimal=2)
 
         desired_5 = [0.9321969747543335, 0.8248310685157776, 0.6822988986968994, 0.6069462895393372,
                      0.3435664772987366, 0.3247292637825012, 0.7769863605499268, 0.8085265159606934,
                      0.7127845287322998, 0.321151465177536, 0.6564596891403198, 0.45066702365875244, 1.0]
         actual_5 = comp_vals.LinkQuality[5]
-        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg, decimal=5)
 
         desired_20 = [0.7951614856719971, 0.5341360569000244, 0.4999150037765503, 0.3575170338153839,
                       0.3587680757045746, 0.19799287617206573, 0.6330206394195557, 0.3800353407859802,
                       0.5404495596885681, 0.3071078956127167, 0.24770621955394745, 0.33150285482406616,
                       0.9240829944610596]
         actual_20 = comp_vals.LinkQuality[20]
-        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg, decimal=5)
 
         # Test Flow
         desired_0 = [1866.17578125, 1234.2071533203125, 129.33514404296875, 191.1581268310547, 120.66487121582031,
                      40.81052017211914, -766.1758422851562, 481.9686279296875, 188.6962127685547, 29.335134506225586,
                      140.81051635742188, 59.18947982788086, 1866.17578125]
         actual_0 = comp_vals.Flow[0]
-        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_0, desired_0, err_msg=err_msg, decimal=5)
 
         desired_5 = [1813.2515869140625, 1094.759033203125, 216.10333251953125, 113.02882385253906, 133.89666748046875,
                      45.463706970214844, -273.2515563964844, 508.4925231933594, 395.4041442871094, 76.10334014892578,
                      185.4636993408203, 94.53629302978516, 1813.2515869140625]
         actual_5 = comp_vals.Flow[5]
-        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_5, desired_5, err_msg=err_msg, decimal=5)
 
         desired_20 = [-0.000749712809920311, -215.01913452148438, 113.14051055908203, -42.1822509765625,
                       36.8594856262207,
@@ -3843,7 +3841,7 @@ class AnalysisTest(unittest.TestCase):
                       77.20063018798828,
                       42.79936599731445, 0.0]
         actual_20 = comp_vals.Flow[20]
-        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg, decimal=5)
 
 
 if __name__ == "__main__":
