@@ -27,7 +27,7 @@ indexNode = d.getNodeIndex(nodeID)
 
 # Plot pressures.
 fig, axs = plt.subplots(2)
-axs[0].plot(Results.Time, Results.Pressure[:, indexNode-1], linewidth=0.8)
+axs[0].plot(Results.Time, Results.Pressure[:, indexNode - 1], linewidth=0.8)
 axs[0].set_title('Before set curve', fontsize=10)
 axs[0].label_outer()
 axs[0].set_ylabel(f'Pressure ({d.units.NodePressureUnits})', fontsize=5)
@@ -44,7 +44,7 @@ d.setLinkPumpHeadCurveIndex(pumpIndex, headCurve)
 
 # Computed hydraulics.
 Results = d.getComputedTimeSeries()
-axs[1].plot(Results.Time, Results.Pressure[:, indexNode-1], linewidth=0.8)
+axs[1].plot(Results.Time, Results.Pressure[:, indexNode - 1], linewidth=0.8)
 axs[1].set_title('After set curve', fontsize=10)
 axs[1].set_xlabel('Time (hrs)', fontsize=6)
 axs[1].set_ylabel(f'Pressure ({d.units.NodePressureUnits})', fontsize=5)

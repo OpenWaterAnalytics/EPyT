@@ -1,12 +1,10 @@
 """ Set node name IDs
-
     This example contains:
         Load a network.
         Get node name ids.
         Set new node name ids.
         Get new node name ids.
         Unload library.
-   
 """
 from epyt import epanet
 

@@ -1,5 +1,4 @@
 """ b) External Controls, Adds controls in hydraulic analysis STEP-BY-STEP.
- 
     This example contains:
         Load network.
         Delete Controls.
@@ -8,7 +7,6 @@
         Add new controls in live.
         Delete controls.
         Unload library.
-
 """
 from epyt import epanet
 

@@ -8,7 +8,6 @@
         Plot water velocity for specific links.
         Plot water flow for specific links.
         Unload library.
-    
 """
 # Run hydraulic analysis of a network
 from epyt import epanet
@@ -24,7 +23,7 @@ d.plot_close()
 hyd_res = d.getComputedTimeSeries()
 
 # Change time-stamps from seconds to hours
-hrs_time = hyd_res.Time/3600
+hrs_time = hyd_res.Time / 3600
 
 # Plot node pressures for specific nodes 
 node_indices = [1, 3, 5]

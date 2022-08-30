@@ -1,5 +1,4 @@
 """ Defines pattern time for pipe status.
-
  This example contains:
    Add paths and load inp file.
    Get times.
@@ -8,7 +7,6 @@
    Times.
    Create random status for pipes every hour.
    Unload library.
-   
 """
 from epyt import epanet
 import pandas as pd
@@ -56,7 +54,6 @@ d.plot_ts(Y=pd.DataFrame(d.getComputedHydraulicTimeSeries().Flow), title='Change
           xlabel='Time (hrs)', marker=False, color=None)
 
 d.plot_show()
-
 
 # Unload library.
 d.unload()

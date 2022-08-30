@@ -5,7 +5,6 @@
        Print elevations for the two networks.
        Plot networks.
        Unload libraries.
-       
 """
 from epyt import epanet
 

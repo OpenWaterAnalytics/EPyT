@@ -6,7 +6,6 @@
  To keep the code more readable, no error checking is made on the results returned from the Toolkit function calls.
   
   https://github.com/OpenWaterAnalytics/EPANET/wiki/Example-2)
-  
 """
 from epyt import epanet
 
@@ -24,7 +23,7 @@ d.openHydraulicAnalysis()
 nodeIndex = d.getNodeIndex(nodeID)
 
 categoryIndex = 1
-B = d.getNodeBaseDemands()[categoryIndex][nodeIndex-1]
+B = d.getNodeBaseDemands()[categoryIndex][nodeIndex - 1]
 D = [i * B for i in r]
 
 P = []
@@ -36,11 +35,10 @@ for i in range(len(D)):
 
 d.closeHydraulicAnalysis()
 
-d.plot_ts(X=D, Y=P, xlabel='Base Demand (' + d.units.NodeDemandUnits + ')',
-          ylabel='Pressure (' + d.units.NodePressureUnits + ')',
+d.plot_ts(X=D, Y=P, xlabel=f'Base Demand ({d.units.NodeDemandUnits})',
+          ylabel=f'Pressure ({d.units.NodePressureUnits})',
           marker='x', figure_size=[3, 2.5], constrained_layout=True)
 d.plot_show()
 
 # Unload library
 d.unload()
-

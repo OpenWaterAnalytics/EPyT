@@ -6,7 +6,6 @@
       Get from and to nodes for add cv pipe.
       Plot new network with changes.
       Unload library.
-      
 """
 from epyt import epanet
 

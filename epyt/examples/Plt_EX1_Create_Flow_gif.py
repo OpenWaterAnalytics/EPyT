@@ -1,5 +1,4 @@
 """ Create a gif with the flows of Net1.
-
     Requirements:
         pip install imageio
         pip install Pillow
@@ -11,7 +10,6 @@
         Create pngs for every timepoint.
         Create gif from all the pngs.
         Unload library.
-
 """
 import matplotlib.pyplot as plt
 from epyt import epanet
@@ -31,7 +29,7 @@ new_gif_name = f'{d.netName[:-4]}_flows.gif'
 # Run analysis
 comp_analysis_vals = d.getComputedTimeSeries()
 flows = comp_analysis_vals.Flow
-Time = comp_analysis_vals.Time/3600
+Time = comp_analysis_vals.Time / 3600
 
 print("\nCreating flow gif...")
 
@@ -42,7 +40,6 @@ maxFlow = d.max(flows)
 # iterate through flow times
 figToPngNames = []
 for i, values in enumerate(flows):
-
     hr = str(int(Time[i - 1]))
 
     d.plot(flow=values, min_colorbar=minFlow, max_colorbar=maxFlow, figure=False, flow_text=True,

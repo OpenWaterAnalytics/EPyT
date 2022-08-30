@@ -1,5 +1,4 @@
 """ Closes pipes during simulation.
- 
     This example contains:
       Load a network.
       Link index for change the status.

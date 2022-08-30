@@ -5,7 +5,6 @@
       Hydraulic and Quality analysis STEP-BY-STEP.
       Display nodes pressures, links flows, nodes actual qualities, links actual qualities.
       Unload library.
-      
 """
 from epyt import epanet
 

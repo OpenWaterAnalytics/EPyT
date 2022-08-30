@@ -1,5 +1,4 @@
 """ Plot net attributes.
-    
     This example contains:
         Load a network.
         Plot node elevations.
@@ -9,7 +8,6 @@
         Plot Pressure at hour 10 with printed values.
         Plot Flow at hour 10 with printed values.
         Unload library.
-
 """
 from epyt import epanet
 
