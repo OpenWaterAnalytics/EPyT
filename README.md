@@ -147,8 +147,9 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |deleteCurve|Deletes a data curve from a project|
 |deleteLink|Deletes a link|
 |deleteNode|Deletes nodes|
-|deletePattern|Deletes a time pattern from a project
-|deleteProject|Deletes the epanet projec
+|deletePattern|Deletes a time pattern from a project|
+|deletePatternAll|Deletes all time patterns from a project|
+|deleteProject|Deletes the epanet project|
 |deleteRules|Deletes an existing rule-based control given it's index
 |getCMDCODE|Retrieves the CMC code|
 |getComputedHydraulicTimeSeries|Computes hydraulic simulation and retrieves all time-series
