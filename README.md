@@ -26,6 +26,7 @@ For support, please use the OWA community forum : http://community.wateranalytic
 - [How to fix/report bugs](#how-to-fixreport-bugs)
 - [Licenses](#licenses)
 - [Contributors](#contributors)
+- [Contributing](#contributing)
 - [List of Python Class Functions](#list-of-python-class-functions)
 - [List of EPANET 2.2 Functions](#list-of-epanet-2.2-functions)
   
@@ -56,13 +57,11 @@ To be completed.
 **Minimum Example:**
 
 ```python
-from epyt import epanet
-
-d = epanet('Net1.inp')
-
-d.getNodeCount()
-
-d.getNodeElevations()
+>>> from epyt import epanet
+>>> 
+>>> d = epanet('Net1.inp')
+>>> d.getNodeCount()
+>>> d.getNodeElevations()
 ``` 
 
 **More examples:** 
@@ -94,6 +93,9 @@ Keep in mind that some bugs may exist in the `EPANET` libraries, in case you are
 * Demetrios Eliades, [KIOS Research and Innovation Center of Excellence, University of Cyprus](http://www.kios.ucy.ac.cy/)
 
 The `EPyT` is based/inspired on the [EPANET-Matlab Toolkit](https://github.com/OpenWaterAnalytics/EPANET-Matlab-Toolkit).
+
+## Contributing
+If you want to contribute, please check out our [Code of Conduct](https://github.com/KIOS-Research/EPyT/blob/dev/CODE_OF_CONDUCT.md). Everyone is welcome to contribute whether reporting a new [issue](https://github.com/KIOS-Research/EPyT/issues), suggesting a new feature, or writing code. If you want to contribute code, you can create a new fork in the repo to your own account. Make your commits on your dev branch (based on dev) and when you are finished then you can create a pull request to test the code and discuss your changes.
 
 ## Recommendation
 
