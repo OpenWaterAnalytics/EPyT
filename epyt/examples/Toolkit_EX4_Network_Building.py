@@ -43,7 +43,7 @@ d.setNodeCoordinates(index, [-80, 0])
 # Add the tank node at elevation of 850 ft, initial water level
 # at 120 ft, minimum level at 100 ft, maximum level at 150 ft
 # and a diameter of 50.5 ft
-index = d.addNodeTank('T1')  #bug check
+index = d.addNodeTank('T1')  # bug check
 d.setNodeTankData(index, 850, 120, 100, 150, 50.5, 0, '')
 d.setNodeCoordinates(index, [0, 50])
 
@@ -57,16 +57,16 @@ index = d.addLinkPipe('P3', 'J1', 'J3')
 d.setLinkPipeData(index, 5280, 14, 100, 0)
 index = d.addLinkPipe('P4', 'J2', 'J3')
 d.setLinkPipeData(index, 5280, 14, 100, 0)
- 
+
 # Add a pump to the project
 index = d.addLinkPump('PUMP', 'R1', 'J1')
- 
+
 # Create a single point head curve (index = 1) and
 # assign it to the pump
 d.addCurve('C1')
 d.setCurveValue(1, 1, [1500, 250])
 d.setLinkPumpHCurve(index, 1)
- 
+
 # Save the project for future use
 d.saveInputFile(testinp)
 d = epanet(testinp)
