@@ -26,12 +26,12 @@
    Conference on Computing and Control for the Water Industry (CCWI),
    The Netherlands, Nov 2016, p.8. (doi:10.5281/zenodo.831493)
 
+   Other python packages related to the EPANET engine:
    wntr
    Klise, K.A., Murray, R., Haxton, T. (2018). An overview of the Water Network Tool for Resilience (WNTR),
    In Proceedings of the 1st International WDSA/CCWI Joint Conference, Kingston, Ontario, Canada, July 23-25, 075, 8p.
 
    epanet-python
-   The home for Python packages related to the EPANET engine.
    https://github.com/OpenWaterAnalytics/epanet-python
 
    EPANET-Python Toolkit Licence:
