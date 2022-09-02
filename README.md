@@ -98,7 +98,7 @@ Keep in mind that some bugs may exist in the `EPANET` libraries, in case you are
 The `EPyT` is based/inspired on the [EPANET-Matlab Toolkit](https://github.com/OpenWaterAnalytics/EPANET-Matlab-Toolkit).
 
 ## Contributing
-If you want to contribute, please check out our [Code of Conduct](https://github.com/KIOS-Research/EPyT/blob/dev/CODE_OF_CONDUCT.md). Everyone is welcome to contribute whether reporting a new [issue](https://github.com/KIOS-Research/EPyT/issues), suggesting a new feature, or writing code. If you want to contribute code, you can create a new fork in the repo to your own account. Make your commits on your dev branch (based on dev) and when you are finished then you can create a pull request to test the code and discuss your changes.
+If you want to contribute, please check out our [Code of Conduct](https://github.com/KIOS-Research/EPyT/blob/dev/CODE_OF_CONDUCT.md). Everyone is welcome to contribute whether reporting a new [issue](https://github.com/KIOS-Research/EPyT/issues), suggesting a new feature, or writing code. If you want to contribute code, you can create a new fork in the repo to your own account. Make your commits on your dev branch (based on dev) and when you are finished then you can create a [pull request](https://github.com/KIOS-Research/EPyT/pulls) to test the code and discuss your changes.
 
 ## Recommendation
 
