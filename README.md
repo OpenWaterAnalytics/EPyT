@@ -19,16 +19,19 @@ For support, please use the OWA community forum : http://community.wateranalytic
 
 ## Table of Contents
 
-- [How to cite](#how-to-cite)
-- [Requirements](#requirements)
-- [How to install necessary compilers](#how-to-install)
-- [How to use the Toolkit](#how-to-use-the-toolkit)
-- [How to fix/report bugs](#how-to-fixreport-bugs)
-- [Licenses](#licenses)
-- [Contributors](#contributors)
-- [Contributing](#contributing)
-- [List of Python Class Functions](#list-of-python-class-functions)
-- [List of EPANET 2.2 Functions](#list-of-epanet-2.2-functions)
+- [EPANET Python Toolkit (EPyT)](#epanet-python-toolkit-epyt)
+  - [Table of Contents](#table-of-contents)
+  - [How to cite](#how-to-cite)
+  - [Requirements](#requirements)
+  - [How to install](#how-to-install)
+  - [How to use the Toolkit](#how-to-use-the-toolkit)
+  - [How to fix/report bugs](#how-to-fixreport-bugs)
+  - [Licenses](#licenses)
+  - [Contributors](#contributors)
+  - [Contributing](#contributing)
+  - [Recommendation](#recommendation)
+  - [List of Python Class Functions](#list-of-python-class-functions)
+  - [List of EPANET 2.2 Functions](#list-of-epanet-22-functions)
   
 ## How to cite 
 
@@ -148,7 +151,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |deleteLink|Deletes a link|
 |deleteNode|Deletes nodes|
 |deletePattern|Deletes a time pattern from a project|
-|deletePatternAll|Deletes all time patterns from a project|
+|deletePatternsAll|Deletes all time patterns from a project|
 |deleteProject|Deletes the epanet project|
 |deleteRules|Deletes an existing rule-based control given it's index
 |getCMDCODE|Retrieves the CMC code|
