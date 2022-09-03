@@ -20,18 +20,17 @@ For support, please use the OWA community forum : http://community.wateranalytic
 ## Table of Contents
 
 - [EPANET Python Toolkit (EPyT)](#epanet-python-toolkit-epyt)
-  - [Table of Contents](#table-of-contents)
-  - [How to cite](#how-to-cite)
-  - [Requirements](#requirements)
-  - [How to install](#how-to-install)
-  - [How to use the Toolkit](#how-to-use-the-toolkit)
-  - [How to fix/report bugs](#how-to-fixreport-bugs)
-  - [Licenses](#licenses)
-  - [Contributors](#contributors)
-  - [Contributing](#contributing)
-  - [Recommendation](#recommendation)
-  - [List of Python Class Functions](#list-of-python-class-functions)
-  - [List of EPANET 2.2 Functions](#list-of-epanet-22-functions)
+- [How to cite](#how-to-cite)
+- [Requirements](#requirements)
+- [How to install](#how-to-install)
+- [How to use the Toolkit](#how-to-use-the-toolkit)
+- [How to fix/report bugs](#how-to-fixreport-bugs)
+- [Licenses](#licenses)
+- [Contributors](#contributors)
+- [Contributing](#contributing)
+- [Recommendation](#recommendation)
+- [List of Python Class Functions](#list-of-python-class-functions)
+- [List of EPANET 2.2 Functions](#list-of-epanet-22-functions)
   
 ## How to cite 
 
