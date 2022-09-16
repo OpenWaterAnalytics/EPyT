@@ -1043,7 +1043,8 @@ class GetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(tData['Minimum_Water_Level'], desired_tData['Minimum_Water_Level'])
         np.testing.assert_array_almost_equal(tData['Maximum_Water_Level'], desired_tData['Maximum_Water_Level'])
         np.testing.assert_array_almost_equal(tData['Diameter'], desired_tData['Diameter'])
-        np.testing.assert_array_almost_equal(tData['Minimum_Water_Volume'], desired_tData['Minimum_Water_Volume'])
+        np.testing.assert_array_almost_equal(tData['Minimum_Water_Volume'], desired_tData['Minimum_Water_Volume'],
+                                             decimal=3)
         np.testing.assert_array_almost_equal(tData['Volume_Curve_Index'], desired_tData['Volume_Curve_Index'])
 
         # ky10
@@ -1078,16 +1079,17 @@ class GetTest(unittest.TestCase):
                          ['T-1', 'T-10', 'T-11', 'T-12', 'T-13', 'T-2', 'T-3', 'T-4', 'T-5', 'T-6', 'T-7', 'T-8',
                           'T-9'], err_msg)
         np.testing.assert_array_almost_equal(tData['Elevation'], desired_tData['Elevation'], err_msg=err_msg)
-        np.testing.assert_array_almost_equal(tData['Initial_Level'], desired_tData['Initial_Level'], err_msg=err_msg)
+        np.testing.assert_array_almost_equal(tData['Initial_Level'], desired_tData['Initial_Level'], err_msg=err_msg,
+                                             decimal=3)
         np.testing.assert_array_almost_equal(tData['Minimum_Water_Level'], desired_tData['Minimum_Water_Level'],
-                                             err_msg=err_msg)
+                                             decimal=3, err_msg=err_msg)
         np.testing.assert_array_almost_equal(tData['Maximum_Water_Level'], desired_tData['Maximum_Water_Level'],
-                                             err_msg=err_msg)
-        np.testing.assert_array_almost_equal(tData['Diameter'], desired_tData['Diameter'], err_msg=err_msg)
+                                             decimal=3, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(tData['Diameter'], desired_tData['Diameter'], err_msg=err_msg, decimal=3)
         np.testing.assert_array_almost_equal(tData['Minimum_Water_Volume'] / 1000,
-                                             desired_tData['Minimum_Water_Volume'] / 1000, err_msg=err_msg)
+                                             desired_tData['Minimum_Water_Volume'] / 1000, err_msg=err_msg, decimal=3)
         np.testing.assert_array_almost_equal(tData['Volume_Curve_Index'], desired_tData['Volume_Curve_Index'],
-                                             err_msg=err_msg)
+                                             err_msg=err_msg, decimal=3)
         d.unload()
 
     def testgetnodeTankMix(self):
@@ -1116,7 +1118,7 @@ class GetTest(unittest.TestCase):
                             368207.85033021, 260588.21880625, 312809.01892312, 301081.21859364,
                             193012.038532])
         np.testing.assert_array_almost_equal(actual, desired, err_msg='Wrong Node Tank Mix Zone Volume Output',
-                                             decimal=2)
+                                             decimal=1)
         d.unload()
 
     def testgetNodeType(self):
