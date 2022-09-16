@@ -26,7 +26,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="0.0.3",
+    version="1.0.0",
     author="KIOS CoE",
     author_email="kiriakou.marios@ucy.ac.cy",
     description='A Python module for EPANET water distribution simulation libraries. The EPyT is inspired by the '

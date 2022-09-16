@@ -61,6 +61,7 @@ from pkg_resources import resource_filename
 from inspect import getmembers, isfunction, currentframe, getframeinfo
 import matplotlib.pyplot as plt
 from datetime import datetime
+from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
 from pathlib import Path
@@ -83,6 +84,9 @@ import re
 class ToolkitConstants:
     # Limits on the size of character arrays used to store ID names
     # and text messages.
+    def __init__(self):
+        pass
+
     EN_MAXID = 31 + 1  # characters in ID name
     EN_MAXMSG = 255  # characters in message text
 
@@ -465,7 +469,7 @@ class epanet:
     def __init__(self, *argv, version=2.2, loadfile=False):
 
         # Initial attributes
-        self.classversion = '0.0.3'
+        self.classversion = '1.0.0'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
@@ -478,22 +482,23 @@ class epanet:
 
             self.__exist_inp_file = False
             if len(argv) == 1:
-                for root, dirs, files in os.walk(resource_filename("epyt",
-                                                                   "")):
-                    for name in files:
-                        if name == self.InputFile:
-                            self.InputFile = os.path.join(root, self.InputFile)
-                            break
-                    else:
-                        continue
-                    break
+                if not os.path.exists(self.InputFile):
+                    for root, dirs, files in os.walk(resource_filename("epyt",
+                                                                       "")):
+                        for name in files:
+                            if name == self.InputFile:
+                                self.InputFile = os.path.join(root, self.InputFile)
+                                break
+                        else:
+                            continue
+                        break
                 self.__exist_inp_file = True
                 self.api.ENopen(self.InputFile)
                 # Save the temporary input file
                 self.TempInpFile = self.InputFile[0:-4] + '_temp.inp'
                 # Create a new INP file (Working Copy) 
-                # using the SAVE command of EPANET
-                self.saveInputFile(self.TempInpFile)
+                copyfile(self.InputFile, self.TempInpFile)
+                #self.saveInputFile(self.TempInpFile)
                 # Close input file
                 self.closeNetwork()
                 # Load temporary file
