@@ -10167,7 +10167,7 @@ class epanet:
         plt.rcParams["figure.figsize"] = [3, 2]
         plt.rcParams['figure.dpi'] = 300
         if figure:
-            plt.figure()
+            figure = plt.figure()
         plt.axis('off')
 
         if fix_colorbar and flow is not None:
@@ -10403,6 +10403,8 @@ class epanet:
             plt.title(title, fontsize=fontsize, fontweight="bold")
         if figure:
             plt.show(block=False)
+
+        return figure
 
     def plot_close(self):
         """ Close all open figures
