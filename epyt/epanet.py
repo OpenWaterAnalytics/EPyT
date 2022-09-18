@@ -2546,6 +2546,20 @@ class epanet:
         value_final.Status = value_final.Status.astype(int)
         return value_final
 
+    def getAdjacencyMatrix(self):
+        """Compute the adjacency matrix (connectivity graph) considering the flows, at different time steps or the
+        mean flow, Compute the new adjacency matrix based on the mean flow in the network"""
+        Fmean = np.mean(self.getComputedTimeSeries().Flow, 0)
+        Fsign = np.sign(Fmean)
+        Nidx = self.getLinkNodesIndex()
+        A = np.zeros((np.max(Nidx, 0)[0], np.max(Nidx, 0)[1]))
+        for i, nnid in enumerate(Nidx):
+            if Fsign.item(i) == 1:
+                A[nnid[0]-1, nnid[1]-1] = 1
+            else:
+                A[nnid[1]-1, nnid[0]-1] = 1
+        return A
+
     def getConnectivityMatrix(self):
         """ Retrieve the Connectivity Matrix of the network """
         conn_ind = self.getNodesConnectingLinksIndex()

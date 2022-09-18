@@ -153,6 +153,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |deletePatternsAll|Deletes all time patterns from a project|
 |deleteProject|Deletes the epanet project|
 |deleteRules|Deletes an existing rule-based control given it's index
+|getAdjacencyMatrix|Compute the adjacency matrix (connectivity graph) considering the flows, using mean flow|
 |getCMDCODE|Retrieves the CMC code|
 |getComputedHydraulicTimeSeries|Computes hydraulic simulation and retrieves all time-series
 |getComputedQualityTimeSeries|Computes Quality simulation and retrieves all or some time-series
