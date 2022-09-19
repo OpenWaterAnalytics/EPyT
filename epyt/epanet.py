@@ -486,9 +486,10 @@ class epanet:
                     for root, dirs, files in os.walk(resource_filename("epyt",
                                                                        "")):
                         for name in files:
-                            if name == self.InputFile:
-                                self.InputFile = os.path.join(root, self.InputFile)
-                                break
+                            if name.lower().endswith(".inp"):
+                                if name == self.InputFile:
+                                    self.InputFile = os.path.join(root, self.InputFile)
+                                    break
                         else:
                             continue
                         break
@@ -4150,6 +4151,16 @@ class epanet:
                 return self.getLinkNameID(argv[0])
             else:
                 return self.getLinkNameID(vIndices[argv[0] - 1])
+
+    def getNetworksDatabase(self):
+        """Return all EPANET Input Files from EPyT database."""
+        networksdb = []
+        for root, dirs, files in os.walk(resource_filename("epyt",
+                                                          "")):
+            for name in files:
+                if name.lower().endswith(".inp") and '_temp' not in name:
+                    networksdb.append(name)
+        return networksdb
 
     def getNodeActualDemandSensingNodes(self, *argv):
         """ Retrieves the computed demand values at some sensing nodes.

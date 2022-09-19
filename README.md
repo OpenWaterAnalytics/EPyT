@@ -225,6 +225,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |getLinkVerticesCount|Retrieves the number of internal vertex points assigned to a link
 |getLinkWallReactionCoeff|Retrieves the value of all pipe wall chemical reaction coefficient
 |getLinksInfo|Retrieves all link info
+|getNetworksDatabase|Retrieves all EPANET Input Files from EPyT database
 |getNodeActualDemand|Retrieves the computed value of all node actual demands
 |getNodeActualDemandSensingNodes|Retrieves the computed demand values at some sensing nodes
 |getNodeActualQuality|Retrieves the computed values of the actual quality for all nodes
