@@ -17,7 +17,6 @@
     
 """
 from epyt import epanet
-
 # Load network 
 d = epanet("Net1.inp")
 

@@ -1,5 +1,14 @@
 ﻿<a href="http://www.kios.ucy.ac.cy"><img src="https://www.kios.ucy.ac.cy/wp-content/uploads/2021/07/Logotype-KIOS.svg" width="200" height="100"/><a>
 
+[![license](https://img.shields.io/pypi/l/epyt.svg)](https://github.com/KIOS-Research/EPyT/blob/main/LICENSE.md)
+[![pypi](https://img.shields.io/pypi/v/epyt.svg)](https://pypi.org/project/epyt/)
+[![Downloads](https://pepy.tech/badge/epyt)](https://pepy.tech/project/epyt)
+[![Downloads](https://pepy.tech/badge/epyt/month)](https://pepy.tech/project/epyt)
+
+[![build](https://github.com/KIOS-Research/EPyT/actions/workflows/build_tests.yml/badge.svg)](https://github.com/KIOS-Research/EPyT/actions/workflows/build_tests.yml)
+[![Documentation Status](https://readthedocs.org/projects/epanet-python-toolkit-epyt/badge/?version=latest)](https://epanet-python-toolkit-epyt.readthedocs.io/en/latest/?badge=latest)
+
+
 # EPANET Python Toolkit (EPyT)
 
 The `EPANET-Python Toolkit` is an open-source software, originally developed by the [KIOS Research and Innovation Center of Excellence, University of Cyprus](http://www.kios.ucy.ac.cy/) which operates within the Python environment, for providing a programming interface for the latest version of [EPANET](https://github.com/OpenWaterAnalytics/epanet), a hydraulic and quality modeling software created by the US EPA, with Python, a  high-level technical computing software. The goal of the EPANET Python Toolkit is to serve as a common programming framework for research and development in the growing field of smart water networks.
@@ -10,37 +19,28 @@ For support, please use the OWA community forum : http://community.wateranalytic
 
 ## Table of Contents
 
+- [EPANET Python Toolkit (EPyT)](#epanet-python-toolkit-epyt)
 - [How to cite](#how-to-cite)
 - [Requirements](#requirements)
-- [How to install necessary compilers](#How-to-install)
-- [How to use the Toolkit](#How-to-use-the-Toolkit)
-- [How to fix/report bugs](#How-to-fixreport-bugs)
-- [Licenses](#Licenses)
-- [Contributors](#Contributors)
-- [List of Python Class Functions](#List-of-Python-Class-Functions)
-- [List of EPANET 2.2 Functions](#List-of-EPANET-2.2-Functions)
+- [How to install](#how-to-install)
+- [How to use the Toolkit](#how-to-use-the-toolkit)
+- [How to fix/report bugs](#how-to-fixreport-bugs)
+- [Licenses](#licenses)
+- [Contributors](#contributors)
+- [Contributing](#contributing)
+- [Recommendation](#recommendation)
+- [List of Python Class Functions](#list-of-python-class-functions)
+- [List of EPANET 2.2 Functions](#list-of-epanet-22-functions)
   
 ## How to cite 
 
-D.G. Eliades, M. Kyriakou, S. Vrachimis and M.M. Polycarpou, "EPANET-MATLAB Toolkit: An Open-Source Software for Interfacing EPANET with MATLAB", in *Proc. 14th International Conference on Computing and Control for the Water Industry (CCWI)*, The Netherlands, Nov 2016, p.8. (doi:10.5281/zenodo.831493)
-
-```
-@INPROCEEDINGS{Eliades2016, 
-author={Eliades, Demetrios G. and Kyriakou, Marios and Vrachimis, Stelios and Polycarpou, Marios M.}, 
-title={EPANET-MATLAB Toolkit: An Open-Source Software for Interfacing EPANET with MATLAB}, 
-booktitle={Proc. 14th International Conference on Computing and Control for the Water Industry (CCWI)}, 
-year={2016},
-pages={8},
-address = {The Netherlands},
-month={Nov},
-DOI={10.5281/zenodo.831493}}
-```
+To be completed.
 
 &uparrow; [Back to top](#table-of-contents)
 
 ## Requirements
 
-* Python 3.7
+* Python >=3.7
 * Windows, OSX or Linux
 * [EPANET 2.2](https://github.com/OpenWaterAnalytics/epanet)
 
@@ -51,7 +51,6 @@ DOI={10.5281/zenodo.831493}}
 **Environments -> base (root) -> open terminal -> pip install epyt**
 
 * PyPI: <b>pip install epyt</b>
-* Anaconda: <b>conda install -c conda-forge epyt</b> / Not yet implemented.
 
 &uparrow; [Back to top](#table-of-contents)
 
@@ -59,17 +58,17 @@ DOI={10.5281/zenodo.831493}}
 
 **Minimum Example:**
 
-from epyt import epanet
-
-d = epanet('Net1.inp')
-
-d.getNodeCount()
-
-d.getNodeElevations()
+```python
+>>> from epyt import epanet
+>>> 
+>>> d = epanet('Net1.inp')
+>>> d.getNodeCount()
+>>> d.getNodeElevations()
+``` 
 
 **More examples:** 
 
-https://github.com/KIOS-Research/EPYT/tree/main/epyt/examples
+[https://github.com/KIOS-Research/EPYT/tree/main/epyt/examples](https://github.com/KIOS-Research/EPYT/tree/main/epyt/examples#readme)
 
 &uparrow; [Back to top](#table-of-contents)
 
@@ -96,6 +95,9 @@ Keep in mind that some bugs may exist in the `EPANET` libraries, in case you are
 * Demetrios Eliades, [KIOS Research and Innovation Center of Excellence, University of Cyprus](http://www.kios.ucy.ac.cy/)
 
 The `EPyT` is based/inspired on the [EPANET-Matlab Toolkit](https://github.com/OpenWaterAnalytics/EPANET-Matlab-Toolkit).
+
+## Contributing
+If you want to contribute, please check out our [Code of Conduct](https://github.com/KIOS-Research/EPyT/blob/dev/CODE_OF_CONDUCT.md). Everyone is welcome to contribute whether reporting a new [issue](https://github.com/KIOS-Research/EPyT/issues), suggesting a new feature, or writing code. If you want to contribute code, you can create a new fork in the repo to your own account. Make your commits on your dev branch (based on dev) and when you are finished then you can create a [pull request](https://github.com/KIOS-Research/EPyT/pulls) to test the code and discuss your changes.
 
 ## Recommendation
 
@@ -147,9 +149,11 @@ The `EPyT` is based/inspired on the [EPANET-Matlab Toolkit](https://github.com/O
 |deleteCurve|Deletes a data curve from a project|
 |deleteLink|Deletes a link|
 |deleteNode|Deletes nodes|
-|deletePattern|Deletes a time pattern from a project
-|deleteProject|Deletes the epanet projec
+|deletePattern|Deletes a time pattern from a project|
+|deletePatternsAll|Deletes all time patterns from a project|
+|deleteProject|Deletes the epanet project|
 |deleteRules|Deletes an existing rule-based control given it's index
+|getAdjacencyMatrix|Compute the adjacency matrix (connectivity graph) considering the flows, using mean flow|
 |getCMDCODE|Retrieves the CMC code|
 |getComputedHydraulicTimeSeries|Computes hydraulic simulation and retrieves all time-series
 |getComputedQualityTimeSeries|Computes Quality simulation and retrieves all or some time-series
