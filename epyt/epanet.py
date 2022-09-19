@@ -469,7 +469,7 @@ class epanet:
     def __init__(self, *argv, version=2.2, loadfile=False):
 
         # Initial attributes
-        self.classversion = '1.0.0'
+        self.classversion = '1.0.1'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
