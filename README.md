@@ -356,6 +356,9 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |openHydraulicAnalysis|Opens the hydraulics analysis system
 |openQualityAnalysis|Opens the water quality analysis system
 |plot|Plot Network, show all components, plot pressure/flow/elevation|
+|plot_close|Close all open figures|
+|plot_save|Save plot|
+|plot_show|Show plot|
 |reloadNetwork|Reloads the Network (ENopen)
 |runEPANETexe|Runs epanet .exe file|
 |runHydraulicAnalysis|Runs a single period hydraulic analysis, retrieving the current simulation clock time t

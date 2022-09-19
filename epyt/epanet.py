@@ -10426,6 +10426,11 @@ class epanet:
 
         return figure
 
+    def plot_save(self, name, dpi=300):
+        """ Save plot
+        """
+        plt.savefig(name, dpi=dpi)
+
     def plot_close(self):
         """ Close all open figures
         """
