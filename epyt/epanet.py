@@ -2505,9 +2505,6 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
-                exec(f"self.printv(val_dict[i])")
-                exec(f"self.printv(val_dict)")
-                exec(f"self.printv(dir(val_dict))")
                 exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
@@ -2537,9 +2534,6 @@ class epanet:
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
-                exec(f"self.printv(val_dict[i])")
-                exec(f"self.printv(val_dict)")
-                exec(f"self.printv(dir(val_dict))")
                 exec(f"value_final.{i} = np.array(list(val_dict[i].values()))")
             else:
                 exec(f"value_final.{i} = val_dict[i]")
