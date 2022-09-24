@@ -3815,9 +3815,9 @@ class epanet:
         for i in indices:
             value.append(self.api.ENgetlinknodes(i))
         if len(argv) == 1 and not isList(argv[0]):
-            return value[0]
+            return np.array(value[0])
         else:
-            return value
+            return np.array(value)
 
     def getLinkPipeIndex(self):
         """ Retrieves the pipe indices.
@@ -4605,9 +4605,7 @@ class epanet:
         """
         indices = self.__getlinkIndices(*argv)
         values = self.getLinkNodesIndex(indices)
-        connVals = []
-        for i in range(len(values)):
-            connVals.append(self.getNodeNameID((values[i])))
+        connVals = self.getNodeNameID(list(values[:, 0])), self.getNodeNameID(list(values[:, 1]))
         return connVals
 
     def getNodesConnectingLinksIndex(self):
