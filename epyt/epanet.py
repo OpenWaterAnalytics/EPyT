@@ -530,9 +530,6 @@ class epanet:
             self.netName = os.path.basename(self.InputFile)
             self.LibEPANETpath = self.api.LibEPANETpath
             self.LibEPANET = self.api.LibEPANET
-
-            # Hide messages at command window from bin computed
-            self.CMDCODE = 1
             print(f'Input File {self.netName} loaded successfully.\n')
         else:
             self.createProject()
@@ -6696,10 +6693,12 @@ class epanet:
 
         else:
             r = '"%s" "%s" %s %s & exit' % (self.LibEPANET[:-3], inpfile, rptfile, binfile)
-
         try:
-            subprocess.run(r)
-        except:
+            if self.getCMDCODE():
+                subprocess.run(r, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+            else:
+                subprocess.run(r)
+        except Exception as e:
             return [False, '', '']
         fid = open(binfile, "rb")
 
