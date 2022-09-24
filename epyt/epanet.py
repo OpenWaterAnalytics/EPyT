@@ -10549,38 +10549,11 @@ class epanet:
         self.LinkBulkReactionCoeff = self.linkInfo['LinkBulkReactionCoeff']  # Link bulk reaction coeff.
         self.LinkWallReactionCoeff = self.linkInfo['LinkWallReactionCoeff']  # Link wall reaction coeff.
         self.LinkTypeIndex = self.linkInfo['LinkTypeIndex']  # Link type index
-        self.NodesConnectingLinksIndex = self.linkInfo['NodesConnectingLinksIndex']  # Indices of nodes
-        self.NodeNameID = self.getNodeNameID()  # Name ID of all nodes
-        # Name IDs of nodes which connect links which connect links
-        self.NodesConnectingLinksID = self.NodeNameID(list(values[:, 0])), self.NodeNameID(list(values[:, 1]))
-
-        self.nodeInfo = self.getNodesInfo().to_dict()
-        self.NodeElevations = self.nodeInfo['NodeElevations']  # Elevations of nodes
-        self.NodePatternIndex = self.nodeInfo['NodePatternIndex']  # Indices of the patterns
-        self.NodeEmitterCoeff = self.nodeInfo['NodeEmitterCoeff']  # Node emitter coeff.
-        self.NodeInitialQuality = self.nodeInfo['NodeInitialQuality']  # Node initial quality values
-        self.NodeTypeIndex = self.nodeInfo['NodeTypeIndex']  # Index /code of node type
-        self.NodeSourcePatternIndex = self.nodeInfo['NodeSourcePatternIndex']  # Index of pattern for node sources
-        self.NodeSourceTypeIndex = self.nodeInfo['NodeSourceTypeIndex']  # Index of source type
-        self.NodeSourceQuality = self.nodeInfo['NodeSourceQuality']  # Quality of node sources
-        self.demModelInfo = self.getDemandModel()
-        self.libFunctions = self.getLibFunctions()  # EPANET functions in dll
-        self.NodeCount = self.getNodeCount()  # Number of nodes
-        self.NodeTankReservoirCount = self.getNodeTankReservoirCount()  # Number of tanks and reservoirs
-        self.LinkCount = self.getLinkCount()  # Number of links
-        self.PatternCount = self.getPatternCount()  # Number of patterns
-        self.CurveCount = self.getCurveCount()  # Number of curves
-        self.CurveIndex = self.getCurveIndex()  # Index of curves
-        self.ControlRulesCount = self.getControlRulesCount()  # Number of controls
-        self.NodeJunctionCount = self.getNodeJunctionCount()  # Number of junctions
         self.LinkType = self.getLinkType()  # ID of link type
-        self.NodeType = self.getNodeType()  # ID of node type
         self.LinkPipeCount = self.getLinkPipeCount()  # Number of pipes
         self.LinkPumpCount = self.getLinkPumpCount()  # Number of pumps
-        self.NodeReservoirCount = self.getNodeReservoirCount()  # Number of reservoirs
-        self.NodeTankCount = self.getNodeTankCount()  # Number of tanks
         self.LinkValveCount = self.getLinkValveCount()  # Number of valves
-        self.Controls = self.getControls()  # Controls information
+        self.LinkCount = self.getLinkCount()  # Number of links
         self.LinkFlowUnits = self.getFlowUnits()  # Units of flow
         self.LinkNameID = self.getLinkNameID()  # Name ID of links
         self.LinkIndex = self.getLinkIndex()  # Index of links
@@ -10590,6 +10563,36 @@ class epanet:
         self.LinkPipeNameID = self.getLinkPipeNameID()  # Name ID of pipe links
         self.LinkPumpNameID = self.getLinkPumpNameID()  # Name ID of pumps
         self.LinkValveNameID = self.getLinkValveNameID()  # ID name of valves
+        self.LinkPumpHeadCurveIndex = self.getLinkPumpHeadCurveIndex()  # Head curve indices
+        self.LinkPumpPatternNameID = self.getLinkPumpPatternNameID()  # ID of pump pattern
+        self.LinkPumpPatternIndex = self.getLinkPumpPatternIndex()  # Index of pump pattern
+        self.LinkPumpTypeCode = self.getLinkPumpTypeCode()  # Pump index/code
+        self.LinkPumpType = self.getLinkPumpType()  # Pump type e.g. constant horsepower, power function,
+        # user-defined custom curve
+        self.LinkPumpPower = self.getLinkPumpPower()  # Power value
+
+        self.demModelInfo = self.getDemandModel()
+        self.libFunctions = self.getLibFunctions()  # EPANET functions in dll
+
+        self.NodesConnectingLinksIndex = self.linkInfo['NodesConnectingLinksIndex']  # Indices of nodes
+        self.NodesConnectingLinksID = self.getNodesConnectingLinksID()  # Name IDs of nodes which connect links
+        # which connect links
+        self.nodeInfo = self.getNodesInfo().to_dict()
+        self.NodeElevations = self.nodeInfo['NodeElevations']  # Elevations of nodes
+        self.NodePatternIndex = self.nodeInfo['NodePatternIndex']  # Indices of the patterns
+        self.NodeEmitterCoeff = self.nodeInfo['NodeEmitterCoeff']  # Node emitter coeff.
+        self.NodeInitialQuality = self.nodeInfo['NodeInitialQuality']  # Node initial quality values
+        self.NodeTypeIndex = self.nodeInfo['NodeTypeIndex']  # Index /code of node type
+        self.NodeSourcePatternIndex = self.nodeInfo['NodeSourcePatternIndex']  # Index of pattern for node sources
+        self.NodeSourceTypeIndex = self.nodeInfo['NodeSourceTypeIndex']  # Index of source type
+        self.NodeSourceQuality = self.nodeInfo['NodeSourceQuality']  # Quality of node sources
+        self.NodeNameID = self.getNodeNameID()  # Name ID of all nodes
+        self.NodeCount = self.getNodeCount()  # Number of nodes
+        self.NodeTankReservoirCount = self.getNodeTankReservoirCount()  # Number of tanks and reservoirs
+        self.NodeJunctionCount = self.getNodeJunctionCount()  # Number of junctions
+        self.NodeReservoirCount = self.getNodeReservoirCount()  # Number of reservoirs
+        self.NodeTankCount = self.getNodeTankCount()  # Number of tanks
+        self.NodeType = self.getNodeType()  # ID of node type
         self.NodeIndex = self.getNodeIndex()  # Index of nodes
         self.NodeReservoirIndex = self.getNodeReservoirIndex()  # Index of reservoirs
         self.NodeTankIndex = self.getNodeTankIndex()  # Indices of Tanks
@@ -10613,6 +10616,16 @@ class epanet:
         self.NodeTankMinimumFraction = self.getNodeTankMixingFraction()  # Fraction of the total tank volume
         # devoted to the inlet/outlet compartment
         self.NodeTankBulkReactionCoeff = self.getNodeTankBulkReactionCoeff()  # Bulk reaction coefficients in tanks
+        self.NodeDemandPatternNameID = self.getNodeDemandPatternNameID()  # ID of demand patterns
+        self.NodeDemandPatternIndex = self.getNodeDemandPatternIndex()  # Index of demand patterns
+
+        self.CurveCount = self.getCurveCount()  # Number of curves
+        self.CurveIndex = self.getCurveIndex()  # Index of curves
+        self.CurvesInfo = self.getCurvesInfo()  # Curves info
+
+        self.ControlRulesCount = self.getControlRulesCount()  # Number of controls
+        self.Controls = self.getControls()  # Controls information
+
         self.OptionsMaxTrials = self.getOptionsMaxTrials()  # Maximum number of trials (40 is default)
         self.OptionsAccuracyValue = self.getOptionsAccuracyValue()  # Convergence value (0.001 is default)
         self.OptionsQualityTolerance = self.getOptionsQualityTolerance()  # Tolerance for water  (0.01 is default)
@@ -10629,16 +10642,20 @@ class epanet:
         # hydraulic convergence
         self.OptionsHeadLossFormula = self.getOptionsHeadLossFormula()  # Headloss formula (Hazen-Williams,
         # Darcy-Weisbach or Chezy-Manning)
+
+        self.PatternCount = self.getPatternCount()  # Number of patterns
         self.PatternNameID = self.getPatternNameID()  # ID of the patterns
         self.PatternIndex = self.getPatternIndex()
         self.PatternLengths = self.getPatternLengths()  # Length of the patterns
         self.Pattern = self.getPattern()  # Get all patterns - matrix
+
         self.QualityCode = self.getQualityCode()  # Water quality analysis code (None:0/Chemical:1/Age:2/Trace:3)
         self.QualityTraceNodeIndex = self.getQualityTraceNodeIndex()  # Index of trace node (0 if QualityCode<3)
         self.QualityType = self.getQualityType()  # Water quality analysis type (None/Chemical/Age/Trace)
         n = self.getQualityInfo()
         self.QualityChemUnits = n.QualityChemUnits  # Units for quality concentration
         self.QualityChemName = n.QualityChemName  # Name of quality type
+
         self.TimeSimulationDuration = self.getTimeSimulationDuration()  # Simulation duration
         self.TimeHydraulicStep = self.getTimeHydraulicStep()  # Hydraulic time step
         self.TimeQualityStep = self.getTimeQualityStep()  # Quality Step
@@ -10652,32 +10669,22 @@ class epanet:
         self.TimeStatisticsType = self.getTimeStatisticsType()  # Type ('NONE', 'AVERAGE', 'MINIMUM',
         # 'MAXIMUM', 'RANGE')
         self.TimeReportingPeriods = self.getTimeReportingPeriods()  # Reporting periods
-        self.Version = self.getVersion()
         self.TimeStartTime = self.getTimeStartTime()  # Number of start time
         self.TimeHTime = self.getTimeHTime()  # Number of htime
         self.TimeHaltFlag = self.getTimeHaltFlag()  # Number of halt flag
         self.TimeNextEvent = self.getTimeNextEvent()  # Find the next event of the hydraulic time step length,
         # or the time to next fill/empty
         self.NodeTankMaximumWaterVolume = self.getNodeTankMaximumWaterVolume()  # Maximum water volume
-        self.NodeBaseDemands = self.getNodeBaseDemands()
         self.NodeDemandCategoriesNumber = self.getNodeDemandCategoriesNumber()  # Number of demand categories for nodes
         self.PatternAverageValue = self.getPatternAverageValue()  # Average value of patterns
         n = self.getStatistic()
         self.RelativeError = n.RelativeError  # Relative error - hydraulic simulation statistic
         self.Iterations = n.Iterations  # Iterations to reach solution
-        self.NodeDemandPatternNameID = self.getNodeDemandPatternNameID()  # ID of demand patterns
-        self.NodeDemandPatternIndex = self.getNodeDemandPatternIndex()  # Index of demand patterns
-        self.LinkPumpHeadCurveIndex = self.getLinkPumpHeadCurveIndex()  # Head curve indices
-        self.LinkPumpPatternNameID = self.getLinkPumpPatternNameID()  # ID of pump pattern
-        self.LinkPumpPatternIndex = self.getLinkPumpPatternIndex()  # Index of pump pattern
-        self.LinkPumpTypeCode = self.getLinkPumpTypeCode()  # Pump index/code
-        self.LinkPumpType = self.getLinkPumpType()  # Pump type e.g. constant horsepower, power function,
-        # user-defined custom curve
-        self.LinkPumpPower = self.getLinkPumpPower()  # Power value
-        self.CurvesInfo = self.getCurvesInfo()  # Curves info
+
         self.getUnits()  # Get all units of the network parameters
         self.NodeCoordinates = self.getNodeCoordinates()  # Coordinates for each node
         # (long/lat & intermediate pipe coordinates)
+        self.Version = self.getVersion()
 
     def __getlinkIndices(self, *argv):
         if len(argv) > 0:
