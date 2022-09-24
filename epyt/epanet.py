@@ -4388,17 +4388,17 @@ class epanet:
             numdemands = self.getNodeDemandCategoriesNumber()
             indices = self.__getNodeIndices()
             value = {}
-            val = [['' for i in range(self.getNodeCount())] for j in range(max(numdemands))]
+            val_tmp = [['' for _ in range(self.getNodeCount())] for _ in range(max(numdemands))]
             for i in indices:
                 for u in range(numdemands[i - 1]):
                     if v[u + 1][i - 1] != np.array(0):
-                        val[u][i - 1] = m[v[u + 1][i - 1] - 1]
+                        val_tmp[u][i - 1] = m[v[u + 1][i - 1] - 1]
                     else:
-                        val[u][i - 1] = ''
+                        val_tmp[u][i - 1] = ''
                 if numdemands[i - 1] == 0:
-                    val[0][i - 1] = ''
-            for i in range(len(val)):
-                value[i + 1] = list(val[i])
+                    val_tmp[0][i - 1] = ''
+            for i in range(len(val_tmp)):
+                value[i + 1] = list(val_tmp[i])
             return value
         else:
             return None
