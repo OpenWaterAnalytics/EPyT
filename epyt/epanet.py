@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
    EPANET-Python Toolkit (EPyT): A Python toolkit for EPANET libraries
 
@@ -375,8 +376,7 @@ class val:
                 if 'Time' not in key:
                     if not attributes:
                         df = pd.DataFrame(dictVals[key])
-                        df.insert(0, "Index", list(range(1, len(dictVals[key])
-                                                         + 1)), True)
+                        df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
                         df.set_index("Index", inplace=True)
                         df.to_excel(writer, sheet_name=key,
                                     header=dictVals['Time'])
@@ -385,8 +385,7 @@ class val:
                             attributes = [attributes]
                         if key in attributes:
                             df = pd.DataFrame(dictVals[key])
-                            df.insert(0, "Index", list(range(1,
-                                                             len(dictVals[key]) + 1)), True)
+                            df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
                             df.set_index("Index", inplace=True)
                             df.to_excel(writer,
                                         sheet_name=key,
@@ -399,10 +398,7 @@ class val:
                 for key in dictVals:
                     if key != 'Time' and not attributes:
                         df = pd.DataFrame(dictVals[key])
-                        df.insert(0,
-                                  "Index",
-                                  list(range(1, len(dictVals[key]) + 1)),
-                                  True)
+                        df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
                         df.set_index("Index", inplace=True)
                         if first_iter:
                             df.to_excel(
@@ -467,6 +463,62 @@ class epanet:
     """ EPyt main functions class """
 
     def __init__(self, *argv, version=2.2, loadfile=False):
+        # Constants
+        # Demand model types. DDA #0 Demand driven analysis,
+        # PDA #1 Pressure driven analysis.
+        self.DEMANDMODEL = ['DDA', 'PDA']
+        # Link types
+        self.TYPELINK = ['CVPIPE', 'PIPE', 'PUMP', 'PRV', 'PSV',
+                         'PBV', 'FCV', 'TCV', 'GPV']
+        # Constants for mixing models
+        self.TYPEMIXMODEL = ['MIX1', 'MIX2', 'FIFO', 'LIFO']
+        # Node types
+        self.TYPENODE = ['JUNCTION', 'RESERVOIR', 'TANK']
+        # Constants for pumps
+        self.TYPEPUMP = ['CONSTANT_HORSEPOWER', 'POWER_FUNCTION', 'CUSTOM']
+        # Link PUMP status
+        self.TYPEPUMPSTATE = ['XHEAD', '', 'CLOSED', 'OPEN', '', 'XFLOW']
+        # Constants for quality
+        self.TYPEQUALITY = ['NONE', 'CHEM', 'AGE', 'TRACE', 'MULTIS']
+        # Constants for sources
+        self.TYPESOURCE = ['CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED']
+        # Constants for statistics
+        self.TYPESTATS = ['NONE', 'AVERAGE', 'MINIMUM', 'MAXIMUM', 'RANGE']
+        # Constants for control: 'LOWLEVEL', 'HILEVEL', 'TIMER', 'TIMEOFDAY'
+        self.TYPECONTROL = ['LOWLEVEL', 'HIGHLEVEL', 'TIMER', 'TIMEOFDAY']
+        # Constants for report: 'YES', 'NO', 'FULL'
+        self.TYPEREPORT = ['YES', 'NO', 'FULL']
+        # Link Status
+        self.TYPESTATUS = ['CLOSED', 'OPEN']
+        # Constants for pump curves: 'PUMP', 'EFFICIENCY', 'VOLUME', 'HEADLOSS'
+        self.TYPECURVE = ['VOLUME', 'PUMP', 'EFFICIENCY', 'HEADLOSS', 'GENERAL']
+        # Constants of headloss types: HW: Hazen-Williams,
+        # DW: Darcy-Weisbach, CM: Chezy-Manning
+        self.TYPEHEADLOSS = ['HW', 'DW', 'CM']
+        # Constants for units
+        self.TYPEUNITS = ['CFS', 'GPM', 'MGD', 'IMGD', 'AFD',
+                          'LPS', 'LPM', 'MLD', 'CMH', 'CMD']
+        # 0 = closed (max. head exceeded), 1 = temporarily closed,
+        # 2 = closed, 3 = open, 4 = active (partially open)
+        # 5 = open (max. flow exceeded), 6 = open (flow setting not met),
+        # 7 = open (pressure setting not met)
+        self.TYPEBINSTATUS = ['CLOSED (MAX. HEAD EXCEEDED)', 'TEMPORARILY CLOSED',
+                              'CLOSED', 'OPEN', 'ACTIVE(PARTIALY OPEN)',
+                              'OPEN (MAX. FLOW EXCEEDED',
+                              'OPEN (PRESSURE SETTING NOT MET)']
+        # Constants for rule-based controls: 'OPEN', 'CLOSED', 'ACTIVE'
+        self.RULESTATUS = ['OPEN', 'CLOSED', 'ACTIVE']
+        # Constants for rule-based controls: 'IF', 'AND', 'OR'
+        self.LOGOP = ['IF', 'AND', 'OR']
+        # Constants for rule-based controls: 'NODE','LINK','SYSTEM'
+        self.RULEOBJECT = ['NODE', 'LINK', 'SYSTEM']
+        # Constants for rule-based controls: 'DEMAND', 'HEAD', 'GRADE' etc.
+        self.RULEVARIABLE = ['DEMAND', 'HEAD', 'GRADE', 'LEVEL', 'PRESSURE', 'FLOW',
+                             'STATUS', 'SETTING', 'POWER', 'TIME',
+                             'CLOCKTIME', 'FILLTIME', 'DRAINTIME']
+        # Constants for rule-based controls: '=', '~=', '<=' etc.
+        self.RULEOPERATOR = ['=', '~=', '<=', '>=', '<', '>', 'IS',
+                             'NOT', 'BELOW', 'ABOVE']
 
         # Initial attributes
         self.classversion = '1.0.1'
@@ -474,6 +526,7 @@ class epanet:
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
 
+        # ToolkitConstants: Contains all parameters from epanet2_2.h
         self.ToolkitConstants = ToolkitConstants()
         self.api.solve = 0
 
@@ -539,248 +592,6 @@ class epanet:
         plt.rcParams['figure.dpi'] = 300
         plt.rcParams['figure.constrained_layout.use'] = True
         plt.rcParams['figure.max_open_warning'] = 30
-
-    # Constants
-    # Demand model types. DDA #0 Demand driven analysis,
-    # PDA #1 Pressure driven analysis.
-    DEMANDMODEL = ['DDA', 'PDA']
-    # Link types
-    TYPELINK = ['CVPIPE', 'PIPE', 'PUMP', 'PRV', 'PSV',
-                'PBV', 'FCV', 'TCV', 'GPV']
-    # Constants for mixing models
-    TYPEMIXMODEL = ['MIX1', 'MIX2', 'FIFO', 'LIFO']
-    # Node types
-    TYPENODE = ['JUNCTION', 'RESERVOIR', 'TANK']
-    # Constants for pumps
-    TYPEPUMP = ['CONSTANT_HORSEPOWER', 'POWER_FUNCTION', 'CUSTOM']
-    # Link PUMP status
-    TYPEPUMPSTATE = ['XHEAD', '', 'CLOSED', 'OPEN', '', 'XFLOW']
-    # Constants for quality
-    TYPEQUALITY = ['NONE', 'CHEM', 'AGE', 'TRACE', 'MULTIS']
-    # Constants for sources
-    TYPESOURCE = ['CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED']
-    # Constants for statistics
-    TYPESTATS = ['NONE', 'AVERAGE', 'MINIMUM', 'MAXIMUM', 'RANGE']
-    # Constants for control: 'LOWLEVEL', 'HILEVEL', 'TIMER', 'TIMEOFDAY'
-    TYPECONTROL = ['LOWLEVEL', 'HIGHLEVEL', 'TIMER', 'TIMEOFDAY']
-    # Constants for report: 'YES', 'NO', 'FULL'
-    TYPEREPORT = ['YES', 'NO', 'FULL']
-    # Link Status
-    TYPESTATUS = ['CLOSED', 'OPEN']
-    # Constants for pump curves: 'PUMP', 'EFFICIENCY', 'VOLUME', 'HEADLOSS'
-    TYPECURVE = ['VOLUME', 'PUMP', 'EFFICIENCY', 'HEADLOSS', 'GENERAL']
-    # Constants of headloss types: HW: Hazen-Williams,
-    # DW: Darcy-Weisbach, CM: Chezy-Manning
-    TYPEHEADLOSS = ['HW', 'DW', 'CM']
-    # Constants for units
-    TYPEUNITS = ['CFS', 'GPM', 'MGD', 'IMGD', 'AFD',
-                 'LPS', 'LPM', 'MLD', 'CMH', 'CMD']
-    # 0 = closed (max. head exceeded), 1 = temporarily closed,
-    # 2 = closed, 3 = open, 4 = active (partially open)
-    # 5 = open (max. flow exceeded), 6 = open (flow setting not met),
-    # 7 = open (pressure setting not met)
-    TYPEBINSTATUS = ['CLOSED (MAX. HEAD EXCEEDED)', 'TEMPORARILY CLOSED',
-                     'CLOSED', 'OPEN', 'ACTIVE(PARTIALY OPEN)',
-                     'OPEN (MAX. FLOW EXCEEDED',
-                     'OPEN (PRESSURE SETTING NOT MET)']
-    # Constants for rule-based controls: 'OPEN', 'CLOSED', 'ACTIVE'
-    RULESTATUS = ['OPEN', 'CLOSED', 'ACTIVE']
-    # Constants for rule-based controls: 'IF', 'AND', 'OR'
-    LOGOP = ['IF', 'AND', 'OR']
-    # Constants for rule-based controls: 'NODE','LINK','SYSTEM'
-    RULEOBJECT = ['NODE', 'LINK', 'SYSTEM']
-    # Constants for rule-based controls: 'DEMAND', 'HEAD', 'GRADE' etc.
-    RULEVARIABLE = ['DEMAND', 'HEAD', 'GRADE', 'LEVEL', 'PRESSURE', 'FLOW',
-                    'STATUS', 'SETTING', 'POWER', 'TIME',
-                    'CLOCKTIME', 'FILLTIME', 'DRAINTIME']
-    # Constants for rule-based controls: '=', '~=', '<=' etc.
-    RULEOPERATOR = ['=', '~=', '<=', '>=', '<', '>', 'IS',
-                    'NOT', 'BELOW', 'ABOVE']
-
-    # Initial Properties
-    ControlLevelValues = None  # The control level values
-    ControlLinkIndex = None,  # Set of control links index
-    ControlNodeIndex = None,  # Set of control nodes index
-    ControlRules = None,  # Retrieves the parameters of all control statements
-    ControlRulesCount = None,  # Number of controls
-    Controls = None,  # Controls info
-    ControlSettings = None,  # Settings for the controls
-    ControlTypes = None,  # Set of control types
-    ControlTypesIndex = None,  # Index of the control types
-    CurveCount = None,  # Number of curves
-    CurveIndex = None,  # Index of curves
-    CurvesInfo = None,  # Curves info
-    DemandModelCode = None,  # Demand model code DDA - 0, PDA - 1
-    DemandModelPmin = None,  # Demand model Pmin - Pressure below
-    # which there is no demand
-    DemandModelPreq = None,  # Demand model Preq - Pressure required
-    # to deliver full demand
-    DemandModelPexp = None,  # Demand model Pexp - Pressure exponent
-    # in demand function
-    DemandModelType = None,  # Demand model type DDA, PDA
-    EnergyEfficiencyUnits = None,  # Units for efficiency
-    EnergyUnits = None,  # Units for energy
-    Errcode = None,  # Code for the EPANET error message
-    InputFile = None,  # Name of the input file
-    Iterations = None,  # Iterations to reach solution
-    LibEPANET = None,  # EPANET library dll
-    LibEPANETpath = None,  # EPANET library dll path
-    libFunctions = None,  # EPANET functions in dll
-    LinkBulkReactionCoeff = None,  # Bulk reaction coefficient of each link
-    LinkCount = None,  # Number of links
-    LinkDiameter = None,  # Diameter of each link
-    LinkFlowUnits = None,  # Units of flow
-    LinkFrictionFactorUnits = None,  # Units for friction factor
-    LinkIndex = None,  # Index of links
-    LinkInitialSetting = None,  # Initial settings of links
-    LinkInitialStatus = None,  # Initial status of links
-    LinkLength = None,  # Length of links
-    LinkLengthsUnits = None,  # Units of length
-    LinkMinorLossCoeff = None,  # Minor loss coefficient of links
-    LinkMinorLossCoeffUnits = None,  # Minor loss coefficient units
-    LinkNameID = None,  # Name ID of links
-    LinkPipeCount = None,  # Number of pipes
-    LinkPipeDiameterUnits = None,  # Units for pipe diameters
-    LinkPipeIndex = None,  # Index of pipe links
-    LinkPipeNameID = None,  # Name ID of pipe links
-    LinkPipeRoughnessCoeffUnits = None,  # Pipe roughness coefficient units
-    LinkPumpCount = None,  # Number of pumps
-    LinkPumpHeadCurveIndex = None,  # Head curve indices
-    LinkPumpIndex = None,  # Index of pumps
-    LinkPumpNameID = None,  # Name ID of pumps
-    LinkPumpPatternIndex = None,  # Index of pump pattern
-    LinkPumpPatternNameID = None,  # ID of pump pattern
-    LinkPumpPower = None,  # Power value
-    LinkPumpPowerUnits = None,  # Units of power
-    LinkPumpType = None,  # Pump type e.g constant horsepower, power function,
-    # user-defined custom curve
-    LinkPumpTypeCode = None,  # Pump index/code
-    LinkRoughnessCoeff = None,  # Roughness coefficient of links
-    LinkType = None,  # ID of link type
-    LinkTypeIndex = None,  # Index of link type
-    LinkValveCount = None,  # Number of valves
-    LinkValveIndex = None,  # Index of valves
-    LinkValveNameID = None,  # ID name of valves
-    LinkVelocityUnits = None,  # Units for velocity
-    LinkWallReactionCoeff = None,  # Wall reaction coefficient of links
-    NodeBaseDemands = None,  # Base demands of nodes
-    NodeCoordinates = None,  # Coordinates for each node
-    # (long/lat & intermediate pipe coordinates)
-    NodeCount = None,  # Number of nodes
-    NodeDemandPatternIndex = None,  # Index of demand patterns
-    NodeDemandPatternNameID = None,  # ID of demand patterns
-    NodeDemandUnits = None,  # Units for demand
-    NodeElevations = None,  # Elevation of nodes
-    NodeElevationUnits = None,  # Units for elevation
-    NodeEmitterCoeff = None,  # Emmitter Coefficient of nodes
-    NodeEmitterCoefficientUnits = None,  # Units for emitter coefficient
-    NodeHeadUnits = None,  # Nodal head units
-    NodeIndex = None,  # Index of nodes
-    NodeInitialQuality = None,  # Initial quality of nodes
-    NodeJunctionCount = None,  # Number of junctions
-    NodeJunctionIndex = None,  # Index of node junctions
-    NodeJunctionNameID = None,  # Name ID of node junctions
-    NodeNameID = None,  # Name ID of all nodes
-    NodeDemandCategoriesNumber = None,  # Number of demand categories for nodes
-    NodePatternIndex = None,  # Node demand pattern indices
-    NodePressureUnits = None,  # Units for Pressure
-    NodeReservoirCount = None,  # Number of reservoirs
-    NodeReservoirIndex = None,  # Index of reservoirs
-    NodeReservoirNameID = None,  # Name ID of reservoirs
-    NodesConnectingLinksID = None,  # Name IDs of nodes which connect links
-    NodesConnectingLinksIndex = None,  # Indices of nodes which connect links
-    NodeSourcePatternIndex = None,  # Index of pattern for node sources
-    NodeSourceQuality = None,  # Quality of node sources
-    NodeSourceTypeIndex = None,  # Index of source type
-    NodeTankBulkReactionCoeff = None,  # Bulk reaction coefficients in tanks
-    NodeTankCount = None,  # Number of tanks
-    NodeTankDiameter = None,  # Diameters of tanks
-    NodeTankDiameterUnits = None,  # Units for tank diameters
-    NodeTankIndex = None,  # Indices of Tanks
-    NodeTankInitialLevel = None,  # Initial water level in tanks
-    NodeTankInitialWaterVolume = None,  # Initial water volume in tanks
-    NodeTankMaximumWaterLevel = None,  # Maximum water level in tanks
-    NodeTankMaximumWaterVolume = None,  # Maximum water volume
-    NodeTankMinimumFraction = None,  # Fraction of the total tank volume
-    # devoted to the inlet/outlet compartment
-    NodeTankMinimumWaterLevel = None,  # Minimum water level
-    NodeTankMinimumWaterVolume = None,  # Minimum water volume
-    NodeTankMixingModelCode = None,  # Code of mixing model
-    # (MIXED:0, 2COMP:1, FIFO:2, LIFO:3)
-    NodeTankMixingModelType = None,  # Type of mixing model
-    # (MIXED, 2COMP, FIFO, or LIFO)
-    NodeTankMixZoneVolume = None,  # Mixing zone volume
-    NodeTankNameID = None,  # Name ID of Tanks
-    NodeTankReservoirCount = None,  # Number of tanks and reservoirs
-    NodeTankVolumeCurveIndex = None,  # Index of curve for tank volumes
-    NodeTankVolumeUnits = None,  # Units for volume
-    NodeType = None,  # ID of node type
-    NodeTypeIndex = None,  # Index of nodetype
-    OptionsAccuracyValue = None,  # Convergence value (0.001 is default)
-    OptionsEmitterExponent = None,  # Exponent of pressure at an emmiter node
-    # (0.5 is default)
-    OptionsHeadLossFormula = None,  # Headloss formula (Hazen-Williams,
-    # Darcy-Weisbach or Chezy-Manning)
-    OptionsHydraulics = None,  # Save or Use hydraulic soltion.
-    # *** Not yet implemented ***
-    OptionsMaxTrials = None,  # Maximum number of trials (40 is default)
-    OptionsPattern = None,  # *** Not implemented *** #
-    # but get with BinOptionsPattern
-    OptionsPatternDemandMultiplier = None,  # Multiply demand values
-    # (1 is default)
-    OptionsQualityTolerance = None,  # Tolerance for water  (0.01 is default)
-    OptionsSpecificGravity = None,  # *** Not yet implemented ***
-    OptionsUnbalanced = None,  # *** Not yet implemented ***
-    OptionsViscosity = None,  # *** Not yet implemented ***
-    OptionsHeadError = None,
-    OptionsFlowChange = None,
-    Pattern = None,  # Get all patterns - matrix
-    PatternAverageValue = None,  # Average value of patterns
-    PatternCount = None,  # Number of patterns
-    PatternDemandsUnits = None,  # Units for demands
-    PatternIndex = None,  # Indices of the patterns
-    PatternLengths = None,  # Length of the patterns
-    PatternNameID = None,  # ID of the patterns
-    QualityChemName = None,  # Quality Chem Name
-    QualityChemUnits = None,  # Quality Chem Units
-    QualityCode = None,  # Water quality analysis code
-    # (None:0/Chemical:1/Age:2/Trace:3)
-    QualityReactionCoeffBulkUnits = None,  # Bulk reaction coefficient units
-    QualityReactionCoeffWallUnits = None,  # Wall reaction coefficient units
-    QualitySourceMassInjectionUnits = None,  # Units for source mass injection
-    QualityTraceNodeIndex = None,  # Index of trace node (0 if QualityCode<3)
-    QualityType = None,  # Water quality analysis type
-    # (None/Chemical/Age/Trace)
-    QualityUnits = None,  # Units for quality concentration.
-    QualityWaterAgeUnits = None,  # Units for water age
-    RelativeError = None,  # Relative error - hydraulic simulation statistic
-    #         RulePremises=None,
-    #         RuleTrueActions=None,
-    #         RuleFalseActions=None,
-    #         RulePriority=None,
-    TempInpFile = None,  # Name of the temporary input file
-    TimeHaltFlag = None,  # Number of halt flag
-    TimeHTime = None,  # Number of htime
-    TimeHydraulicStep = None,  # Hydraulic time step
-    TimeNextEvent = None,  # Find the lesser of the hydraulic time step length,
-    # or the time to next fill/empty
-    TimePatternStart = None,  # Pattern start time
-    TimePatternStep = None,  # Pattern Step
-    TimeQualityStep = None,  # Quality Step
-    TimeReportingPeriods = None,  # Reporting periods
-    TimeReportingStart = None,  # Start time for reporting
-    TimeReportingStep = None,  # Reporting time step
-    TimeRuleControlStep = None,  # Time step for evaluating rule-based controls
-    TimeSimulationDuration = None,  # Simulation duration
-    TimeStartTime = None,  # Number of start time
-    TimeStatisticsIndex = None,  # Index of type ('NONE':0, 'AVERAGE':1,
-    # 'MINIMUM':2, 'MAXIMUM':3, 'RANGE':4)
-    TimeStatisticsType = None,  # Type ('NONE', 'AVERAGE', 'MINIMUM',
-    # 'MAXIMUM', 'RANGE')
-    ToolkitConstants = None,  # Contains all parameters from epanet2.h
-    Units_SI_Metric = None,  # Equal with 1 if is SI-Metric
-    Units_US_Customary = None,  # Equal with 1 if is US-Customary
-    Version = None  # EPANET version
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -2967,6 +2778,11 @@ class epanet:
     def getDemandModel(self):
         """ Retrieves the type of demand model in use and its parameters.
 
+        Demand model code DDA - 0, PDA - 1
+        Pmin - Pressure below
+        Preq - Pressure required to deliver full demand.
+        Pexp - Pressure exponent in demand function
+
         Example:
 
         >>> model = d.getDemandModel()
@@ -3678,7 +3494,7 @@ class epanet:
         value.LinkBulkReactionCoeff = []
         value.LinkWallReactionCoeff = []
         value.LinkTypeIndex = []
-        value.NodesConnectingLinksIndex = [[0, 0] for i in range(self.getLinkCount())]
+        value.NodesConnectingLinksIndex = [[0, 0] for _ in range(self.getLinkCount())]
         for i in range(1, self.getLinkCount() + 1):
             value.LinkDiameter.append(self.api.ENgetlinkvalue(i, self.ToolkitConstants.EN_DIAMETER))
             value.LinkLength.append(self.api.ENgetlinkvalue(i, self.ToolkitConstants.EN_LENGTH))
@@ -3692,6 +3508,7 @@ class epanet:
             xy = self.api.ENgetlinknodes(i)
             value.NodesConnectingLinksIndex[i - 1][0] = xy[0]
             value.NodesConnectingLinksIndex[i - 1][1] = xy[1]
+        value.NodesConnectingLinksIndex = np.array(value.NodesConnectingLinksIndex)
         return value
 
     def getLinkValveCount(self):
@@ -4152,8 +3969,7 @@ class epanet:
     def getNetworksDatabase(self):
         """Return all EPANET Input Files from EPyT database."""
         networksdb = []
-        for root, dirs, files in os.walk(resource_filename("epyt",
-                                                          "")):
+        for root, dirs, files in os.walk(resource_filename("epyt", "")):
             for name in files:
                 if name.lower().endswith(".inp") and '_temp' not in name:
                     networksdb.append(name)
@@ -10718,112 +10534,152 @@ class epanet:
 
     def __getInitParams(self):
         # Retrieve all initial parameters from the inp file
-        self.CMDCODE = 1
+        self.CMDCODE = 1  # Hide messages at command window from bin computed
+        self.LibEPANET = None,  # EPANET library dll
+        self.LibEPANETpath = None,  # EPANET library dll path
+        self.LinkBulkReactionCoeff = None,  # Bulk reaction coefficient of each link
+        self.OptionsHydraulics = None,  # Save or Use hydraulic soltion. *** Not implemented ***
+        self.OptionsPattern = None,  # *** Not implemented ***
+
         self.linkInfo = self.getLinksInfo().to_dict()
+        self.LinkDiameter = self.linkInfo['LinkDiameter']  # Link diameters
+        self.LinkLength = self.linkInfo['LinkLength']  # Link lengths
+        self.LinkRoughnessCoeff = self.linkInfo['LinkRoughnessCoeff']  # Link roughness coefficients
+        self.LinkMinorLossCoeff = self.linkInfo['LinkMinorLossCoeff']  # Link minor loss coefficients
+        self.LinkInitialStatus = self.linkInfo['LinkInitialStatus']  # Link initial status
+        self.LinkInitialSetting = self.linkInfo['LinkInitialSetting']  # Link initial settings
+        self.LinkBulkReactionCoeff = self.linkInfo['LinkBulkReactionCoeff']  # Link bulk reaction coeff.
+        self.LinkWallReactionCoeff = self.linkInfo['LinkWallReactionCoeff']  # Link wall reaction coeff.
+        self.LinkTypeIndex = self.linkInfo['LinkTypeIndex']  # Link type index
+        self.NodesConnectingLinksIndex = self.linkInfo['NodesConnectingLinksIndex']  # Indices of nodes
+        self.NodeNameID = self.getNodeNameID()  # Name ID of all nodes
+        # Name IDs of nodes which connect links which connect links
+        self.NodesConnectingLinksID = self.NodeNameID(list(values[:, 0])), self.NodeNameID(list(values[:, 1]))
+
         self.nodeInfo = self.getNodesInfo().to_dict()
+        self.NodeElevations = self.nodeInfo['NodeElevations']  # Elevations of nodes
+        self.NodePatternIndex = self.nodeInfo['NodePatternIndex']  # Indices of the patterns
+        self.NodeEmitterCoeff = self.nodeInfo['NodeEmitterCoeff']  # Node emitter coeff.
+        self.NodeInitialQuality = self.nodeInfo['NodeInitialQuality']  # Node initial quality values
+        self.NodeTypeIndex = self.nodeInfo['NodeTypeIndex']  # Index /code of node type
+        self.NodeSourcePatternIndex = self.nodeInfo['NodeSourcePatternIndex']  # Index of pattern for node sources
+        self.NodeSourceTypeIndex = self.nodeInfo['NodeSourceTypeIndex']  # Index of source type
+        self.NodeSourceQuality = self.nodeInfo['NodeSourceQuality']  # Quality of node sources
         self.demModelInfo = self.getDemandModel()
-        self.libFunctions = self.getLibFunctions()
-        self.NodeCount = self.getNodeCount()
-        self.NodeTankReservoirCount = self.getNodeTankReservoirCount()
-        self.LinkCount = self.getLinkCount()
-        self.PatternCount = self.getPatternCount()
-        self.CurveCount = self.getCurveCount()
-        self.CurveIndex = self.getCurveIndex()
-        self.ControlRulesCount = self.getControlRulesCount()
-        self.NodeJunctionCount = self.getNodeJunctionCount()
-        self.LinkType = self.getLinkType()
-        self.NodeType = self.getNodeType()
-        self.LinkPipeCount = self.getLinkPipeCount()
-        self.LinkPumpCount = self.getLinkPumpCount()
-        self.NodeReservoirCount = self.getNodeReservoirCount()
-        self.NodeTankCount = self.getNodeTankCount()
-        self.LinkValveCount = self.getLinkValveCount()
-        self.Controls = self.getControls()
-        self.LinkFlowUnits = self.getFlowUnits()
-        self.LinkNameID = self.getLinkNameID()
-        self.LinkIndex = self.getLinkIndex()
-        self.LinkPipeIndex = self.getLinkPipeIndex()
-        self.LinkPumpIndex = self.getLinkPumpIndex()
-        self.LinkValveIndex = self.getLinkValveIndex()
-        self.LinkPipeNameID = self.getLinkPipeNameID()
-        self.LinkPumpNameID = self.getLinkPumpNameID()
-        self.LinkValveNameID = self.getLinkValveNameID()
-        self.NodeNameID = self.getNodeNameID()
-        self.NodesConnectingLinksID = self.getNodesConnectingLinksID()
-        self.NodesConnectingLinksIndex = self.getNodesConnectingLinksIndex()
-        self.NodeIndex = self.getNodeIndex()
-        self.NodeReservoirIndex = self.getNodeReservoirIndex()
-        self.NodeTankIndex = self.getNodeTankIndex()
-        self.NodeJunctionIndex = self.getNodeJunctionIndex()
-        self.NodeReservoirNameID = self.getNodeReservoirNameID()
-        self.NodeTankNameID = self.getNodeTankNameID()
-        self.NodeJunctionNameID = self.getNodeJunctionNameID()
-        self.NodePatternIndex = self.getNodePatternIndex()
-        self.NodeBaseDemands = self.getNodeBaseDemands()
-        self.NodeTankInitialLevel = self.getNodeTankInitialLevel()
-        self.NodeTankInitialWaterVolume = self.getNodeTankInitialWaterVolume()
-        self.NodeTankMixingModelCode = self.getNodeTankMixingModelCode()
-        self.NodeTankMixingModelType = self.getNodeTankMixingModelType()
-        self.NodeTankMixZoneVolume = self.getNodeTankMixZoneVolume()
-        self.NodeTankDiameter = self.getNodeTankDiameter()
-        self.NodeTankMinimumWaterVolume = self.getNodeTankMinimumWaterVolume()
-        self.NodeTankVolumeCurveIndex = self.getNodeTankVolumeCurveIndex()
-        self.NodeTankMinimumWaterLevel = self.getNodeTankMinimumWaterLevel()
-        self.NodeTankMaximumWaterLevel = self.getNodeTankMaximumWaterLevel()
-        self.NodeTankMinimumFraction = self.getNodeTankMixingFraction()
-        self.NodeTankBulkReactionCoeff = self.getNodeTankBulkReactionCoeff()
-        self.OptionsMaxTrials = self.getOptionsMaxTrials()
-        self.OptionsAccuracyValue = self.getOptionsAccuracyValue()
-        self.OptionsQualityTolerance = self.getOptionsQualityTolerance()
-        self.OptionsEmitterExponent = self.getOptionsEmitterExponent()
-        self.OptionsPatternDemandMultiplier = self.getOptionsPatternDemandMultiplier()
-        self.OptionsHeadError = self.getOptionsHeadError()
-        self.OptionsFlowChange = self.getOptionsFlowChange()
-        self.OptionsHeadLossFormula = self.getOptionsHeadLossFormula()
-        self.PatternNameID = self.getPatternNameID()
+        self.libFunctions = self.getLibFunctions()  # EPANET functions in dll
+        self.NodeCount = self.getNodeCount()  # Number of nodes
+        self.NodeTankReservoirCount = self.getNodeTankReservoirCount()  # Number of tanks and reservoirs
+        self.LinkCount = self.getLinkCount()  # Number of links
+        self.PatternCount = self.getPatternCount()  # Number of patterns
+        self.CurveCount = self.getCurveCount()  # Number of curves
+        self.CurveIndex = self.getCurveIndex()  # Index of curves
+        self.ControlRulesCount = self.getControlRulesCount()  # Number of controls
+        self.NodeJunctionCount = self.getNodeJunctionCount()  # Number of junctions
+        self.LinkType = self.getLinkType()  # ID of link type
+        self.NodeType = self.getNodeType()  # ID of node type
+        self.LinkPipeCount = self.getLinkPipeCount()  # Number of pipes
+        self.LinkPumpCount = self.getLinkPumpCount()  # Number of pumps
+        self.NodeReservoirCount = self.getNodeReservoirCount()  # Number of reservoirs
+        self.NodeTankCount = self.getNodeTankCount()  # Number of tanks
+        self.LinkValveCount = self.getLinkValveCount()  # Number of valves
+        self.Controls = self.getControls()  # Controls information
+        self.LinkFlowUnits = self.getFlowUnits()  # Units of flow
+        self.LinkNameID = self.getLinkNameID()  # Name ID of links
+        self.LinkIndex = self.getLinkIndex()  # Index of links
+        self.LinkPipeIndex = self.getLinkPipeIndex()  # Index of pipe links
+        self.LinkPumpIndex = self.getLinkPumpIndex()  # Index of pumps
+        self.LinkValveIndex = self.getLinkValveIndex()  # Index of valves
+        self.LinkPipeNameID = self.getLinkPipeNameID()  # Name ID of pipe links
+        self.LinkPumpNameID = self.getLinkPumpNameID()  # Name ID of pumps
+        self.LinkValveNameID = self.getLinkValveNameID()  # ID name of valves
+        self.NodeIndex = self.getNodeIndex()  # Index of nodes
+        self.NodeReservoirIndex = self.getNodeReservoirIndex()  # Index of reservoirs
+        self.NodeTankIndex = self.getNodeTankIndex()  # Indices of Tanks
+        self.NodeJunctionIndex = self.getNodeJunctionIndex()  # Index of node junctions
+        self.NodeReservoirNameID = self.getNodeReservoirNameID()  # Name ID of reservoirs
+        self.NodeTankNameID = self.getNodeTankNameID()  # Name ID of Tanks
+        self.NodeJunctionNameID = self.getNodeJunctionNameID()  # Name ID of node junctions
+        self.NodeBaseDemands = self.getNodeBaseDemands()  # Base demands of nodes
+        self.NodeTankInitialLevel = self.getNodeTankInitialLevel()  # Initial water level in tanks
+        self.NodeTankInitialWaterVolume = self.getNodeTankInitialWaterVolume()  # Initial water volume in tanks
+        self.NodeTankMixingModelCode = self.getNodeTankMixingModelCode()  # Code of mixing model
+        # (MIXED:0, 2COMP:1, FIFO:2, LIFO:3)
+        self.NodeTankMixingModelType = self.getNodeTankMixingModelType()  # Type of mixing model
+        # (MIXED, 2COMP, FIFO, or LIFO)
+        self.NodeTankMixZoneVolume = self.getNodeTankMixZoneVolume()  # Mixing zone volume
+        self.NodeTankDiameter = self.getNodeTankDiameter()  # Diameters of tanks
+        self.NodeTankMinimumWaterVolume = self.getNodeTankMinimumWaterVolume()  # Minimum water volume
+        self.NodeTankVolumeCurveIndex = self.getNodeTankVolumeCurveIndex()  # Index of curve for tank volumes
+        self.NodeTankMinimumWaterLevel = self.getNodeTankMinimumWaterLevel()  # Minimum water level
+        self.NodeTankMaximumWaterLevel = self.getNodeTankMaximumWaterLevel()  # Maximum water level in tanks
+        self.NodeTankMinimumFraction = self.getNodeTankMixingFraction()  # Fraction of the total tank volume
+        # devoted to the inlet/outlet compartment
+        self.NodeTankBulkReactionCoeff = self.getNodeTankBulkReactionCoeff()  # Bulk reaction coefficients in tanks
+        self.OptionsMaxTrials = self.getOptionsMaxTrials()  # Maximum number of trials (40 is default)
+        self.OptionsAccuracyValue = self.getOptionsAccuracyValue()  # Convergence value (0.001 is default)
+        self.OptionsQualityTolerance = self.getOptionsQualityTolerance()  # Tolerance for water  (0.01 is default)
+        self.OptionsEmitterExponent = self.getOptionsEmitterExponent()  # Exponent of pressure at an emitter node
+        # (0.5 is default)
+        self.OptionsPatternDemandMultiplier = self.getOptionsPatternDemandMultiplier()  # Multiply demand values
+        # (1 is default)
+        self.OptionsSpecificGravity = None,  # *** Not yet implemented ***
+        self.OptionsUnbalanced = None,  # *** Not yet implemented ***
+        self.OptionsViscosity = None,  # *** Not yet implemented ***
+        self.OptionsHeadError = self.getOptionsHeadError()  # Retrieves the maximum head loss error for
+        # hydraulic convergence
+        self.OptionsFlowChange = self.getOptionsFlowChange()  # Retrieves the maximum flow change for
+        # hydraulic convergence
+        self.OptionsHeadLossFormula = self.getOptionsHeadLossFormula()  # Headloss formula (Hazen-Williams,
+        # Darcy-Weisbach or Chezy-Manning)
+        self.PatternNameID = self.getPatternNameID()  # ID of the patterns
         self.PatternIndex = self.getPatternIndex()
-        self.PatternLengths = self.getPatternLengths()
-        self.Pattern = self.getPattern()
-        self.QualityCode = self.getQualityCode()
-        self.QualityTraceNodeIndex = self.getQualityTraceNodeIndex()
-        self.QualityType = self.getQualityType()
+        self.PatternLengths = self.getPatternLengths()  # Length of the patterns
+        self.Pattern = self.getPattern()  # Get all patterns - matrix
+        self.QualityCode = self.getQualityCode()  # Water quality analysis code (None:0/Chemical:1/Age:2/Trace:3)
+        self.QualityTraceNodeIndex = self.getQualityTraceNodeIndex()  # Index of trace node (0 if QualityCode<3)
+        self.QualityType = self.getQualityType()  # Water quality analysis type (None/Chemical/Age/Trace)
         n = self.getQualityInfo()
-        self.QualityChemUnits = n.QualityChemUnits
-        self.QualityChemName = n.QualityChemName
-        self.TimeSimulationDuration = self.getTimeSimulationDuration()
-        self.TimeHydraulicStep = self.getTimeHydraulicStep()
-        self.TimeQualityStep = self.getTimeQualityStep()
-        self.TimePatternStep = self.getTimePatternStep()
-        self.TimePatternStart = self.getTimePatternStart()
-        self.TimeReportingStep = self.getTimeReportingStep()
-        self.TimeReportingStart = self.getTimeReportingStart()
-        self.TimeRuleControlStep = self.getTimeRuleControlStep()
-        self.TimeStatisticsIndex = self.getTimeStatisticsIndex()
-        self.TimeStatisticsType = self.getTimeStatisticsType()
-        self.TimeReportingPeriods = self.getTimeReportingPeriods()
+        self.QualityChemUnits = n.QualityChemUnits  # Units for quality concentration
+        self.QualityChemName = n.QualityChemName  # Name of quality type
+        self.TimeSimulationDuration = self.getTimeSimulationDuration()  # Simulation duration
+        self.TimeHydraulicStep = self.getTimeHydraulicStep()  # Hydraulic time step
+        self.TimeQualityStep = self.getTimeQualityStep()  # Quality Step
+        self.TimePatternStep = self.getTimePatternStep()  # Pattern Step
+        self.TimePatternStart = self.getTimePatternStart()  # Pattern start time
+        self.TimeReportingStep = self.getTimeReportingStep()  # Reporting time step
+        self.TimeReportingStart = self.getTimeReportingStart()  # Start time for reporting
+        self.TimeRuleControlStep = self.getTimeRuleControlStep()  # Time step for evaluating rule-based controls
+        self.TimeStatisticsIndex = self.getTimeStatisticsIndex()  # Index of type ('NONE':0, 'AVERAGE':1,
+        # 'MINIMUM':2, 'MAXIMUM':3, 'RANGE':4)
+        self.TimeStatisticsType = self.getTimeStatisticsType()  # Type ('NONE', 'AVERAGE', 'MINIMUM',
+        # 'MAXIMUM', 'RANGE')
+        self.TimeReportingPeriods = self.getTimeReportingPeriods()  # Reporting periods
         self.Version = self.getVersion()
-        self.TimeStartTime = self.getTimeStartTime()
-        self.TimeHTime = self.getTimeHTime()
-        self.TimeHaltFlag = self.getTimeHaltFlag()
-        self.TimeNextEvent = self.getTimeNextEvent()
-        self.NodeTankMaximumWaterVolume = self.getNodeTankMaximumWaterVolume()
+        self.TimeStartTime = self.getTimeStartTime()  # Number of start time
+        self.TimeHTime = self.getTimeHTime()  # Number of htime
+        self.TimeHaltFlag = self.getTimeHaltFlag()  # Number of halt flag
+        self.TimeNextEvent = self.getTimeNextEvent()  # Find the next event of the hydraulic time step length,
+        # or the time to next fill/empty
+        self.NodeTankMaximumWaterVolume = self.getNodeTankMaximumWaterVolume()  # Maximum water volume
         self.NodeBaseDemands = self.getNodeBaseDemands()
-        self.NodeDemandCategoriesNumber = self.getNodeDemandCategoriesNumber()
-        self.PatternAverageValue = self.getPatternAverageValue()
+        self.NodeDemandCategoriesNumber = self.getNodeDemandCategoriesNumber()  # Number of demand categories for nodes
+        self.PatternAverageValue = self.getPatternAverageValue()  # Average value of patterns
         n = self.getStatistic()
-        self.RelativeError = n.RelativeError
-        self.Iterations = n.Iterations
-        self.NodeDemandPatternNameID = self.getNodeDemandPatternNameID()
-        self.NodeDemandPatternIndex = self.getNodeDemandPatternIndex()
-        self.LinkPumpHeadCurveIndex = self.getLinkPumpHeadCurveIndex()
-        self.LinkPumpPatternNameID = self.getLinkPumpPatternNameID()
-        self.LinkPumpPatternIndex = self.getLinkPumpPatternIndex()
-        self.LinkPumpTypeCode = self.getLinkPumpTypeCode()
-        self.LinkPumpType = self.getLinkPumpType()
-        self.LinkPumpPower = self.getLinkPumpPower()
-        self.CurvesInfo = self.getCurvesInfo()
-        self.getUnits()
-        self.NodeCoordinates = self.getNodeCoordinates()
+        self.RelativeError = n.RelativeError  # Relative error - hydraulic simulation statistic
+        self.Iterations = n.Iterations  # Iterations to reach solution
+        self.NodeDemandPatternNameID = self.getNodeDemandPatternNameID()  # ID of demand patterns
+        self.NodeDemandPatternIndex = self.getNodeDemandPatternIndex()  # Index of demand patterns
+        self.LinkPumpHeadCurveIndex = self.getLinkPumpHeadCurveIndex()  # Head curve indices
+        self.LinkPumpPatternNameID = self.getLinkPumpPatternNameID()  # ID of pump pattern
+        self.LinkPumpPatternIndex = self.getLinkPumpPatternIndex()  # Index of pump pattern
+        self.LinkPumpTypeCode = self.getLinkPumpTypeCode()  # Pump index/code
+        self.LinkPumpType = self.getLinkPumpType()  # Pump type e.g. constant horsepower, power function,
+        # user-defined custom curve
+        self.LinkPumpPower = self.getLinkPumpPower()  # Power value
+        self.CurvesInfo = self.getCurvesInfo()  # Curves info
+        self.getUnits()  # Get all units of the network parameters
+        self.NodeCoordinates = self.getNodeCoordinates()  # Coordinates for each node
+        # (long/lat & intermediate pipe coordinates)
 
     def __getlinkIndices(self, *argv):
         if len(argv) > 0:
