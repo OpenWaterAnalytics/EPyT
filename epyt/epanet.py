@@ -23,9 +23,7 @@
    Inspired by:
    EPANET-MATLAB Toolkit
    D.G. Eliades, M. Kyriakou, S. Vrachimis and M.M. Polycarpou, 
-   "EPANET-MATLAB Toolkit:
-   An Open-Source Software for Interfacing EPANET with MATLAB",
-   in Proc. 14th International
+   "EPANET-MATLAB Toolkit: An Open-Source Software for Interfacing EPANET with MATLAB", in Proc. 14th International
    Conference on Computing and Control for the Water Industry (CCWI),
    The Netherlands, Nov 2016, p.8. (doi:10.5281/zenodo.831493)
 
@@ -58,8 +56,6 @@
    implied. See the Licence for the specific language governing
    permissions and limitations under the Licence.
 """
-from typing import List
-
 from pkg_resources import resource_filename
 from inspect import getmembers, isfunction, currentframe, getframeinfo
 import matplotlib.pyplot as plt
@@ -312,41 +308,41 @@ class ToolkitConstants:
     EN_R_IS_ACTIVE = 3
 
 
-class epyt_values:
+class EpytValues:
 
     def __init__(self):
         pass
 
-    def disp(values):
+    def disp(self):
         """ Displays the values on the command window
 
-        :param values: Values to be printed on the command window
-        :type values: epyt_values class
+        :param self: Values to be printed on the command window
+        :type self: EpytValues class
         :return: None
 
         """
-        print_values = vars(values)
+        print_values = vars(self)
         print('\n')
         for i in print_values:
             print(f'{i}: {print_values[str(i)]}', end='\n')
 
-    def to_dict(values):
-        """ Transform epyt_values class values to dict format
+    def to_dict(self):
+        """ Transform EpytValues class values to dict format
 
-        :param values: Values to add in the dictionary
-        :type values: epyt_values class
+        :param self: Values to add in the dictionary
+        :type self: EpytValues class
         :return: dictionary with the values
         :rtype: dict
 
         """
-        dict_values = vars(values)
+        dict_values = vars(self)
         return dict_values
 
-    def to_excel(values, filename=None, attributes=None, allValues=False):
-        """ Save to an Excel file the values of epyt_values class
+    def to_excel(self, filename=None, attributes=None, allValues=False):
+        """ Save to an Excel file the values of EpytValues class
 
-        :param values: Values to add to the Excel file
-        :type values: epyt_values class
+        :param self: Values to add to the Excel file
+        :type self: EpytValues class
         :param filename: excel filename, defaults to None
         :type filename: str, optional
         :param attributes: attributes to add to the file, defaults to None
@@ -364,7 +360,7 @@ class epyt_values:
         if '.xlsx' not in filename:
             filename = filename + '.xlsx'
 
-        dictVals = epyt_values.to_dict(values)
+        dictVals = EpytValues.to_dict(self)
         dictValss = {}
         for i in dictVals:
             if isinstance(dictVals[i], (np.ndarray, np.matrix)):
@@ -425,19 +421,19 @@ class epyt_values:
                                 startrow=startrow
                             )
 
-    def to_json(values, filename=None):
+    def to_json(self, filename=None):
         """ Transforms val class values to json object and saves them
         to a json file if filename is provided
 
-        :param values: Values to add in the json file
-        :type values: val class
+        :param self: Values to add in the json file
+        :type self: val class
         :param filename: json filename, defaults to None
         :type filename: str, optional
         :return: the json object with the values
         :rtype: json object
 
         """
-        dictVals = epyt_values.to_dict(values)
+        dictVals = EpytValues.to_dict(self)
         dictValss = {}
         for i in dictVals:
             if isinstance(dictVals[i], (np.ndarray, np.matrix)):
@@ -1659,7 +1655,7 @@ class epanet:
             if 'temp' in filename:
                 try:
                     os.remove(os.path.join(net_dir, filename))
-                except:
+                finally:
                     pass
 
     def deleteControls(self, *argv):
@@ -2079,7 +2075,7 @@ class epanet:
 
         See also getComputedQualityTimeSeries, getComputedTimeSeries.
         """
-        value = epyt_values()
+        value = EpytValues()
         self.openHydraulicAnalysis()
         self.api.solve = 1
         self.initializeHydraulicAnalysis()
@@ -2187,7 +2183,7 @@ class epanet:
         self.closeHydraulicAnalysis()
         value.Time = np.array(value.Time)
 
-        value_final = epyt_values()
+        value_final = EpytValues()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2228,7 +2224,7 @@ class epanet:
 
         See also getComputedHydraulicTimeSeries, getComputedTimeSeries.
         """
-        value = epyt_values()
+        value = EpytValues()
         sensingnodes = 0
         if not self.api.solve:
             self.solveCompleteHydraulics()
@@ -2286,7 +2282,7 @@ class epanet:
             k += 1
         self.closeQualityAnalysis()
         value.Time = np.array(value.Time)
-        value_final = epyt_values()
+        value_final = EpytValues()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2314,7 +2310,7 @@ class epanet:
         for file in Path(".").glob("@#*.txt"):
             file.unlink()
         value.Time = np.array(value.Time)
-        value_final = epyt_values()
+        value_final = EpytValues()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2343,7 +2339,7 @@ class epanet:
         for file in Path(".").glob("@#*.txt"):
             file.unlink()
         value.Time = np.array(value.Time)
-        value_final = epyt_values()
+        value_final = EpytValues()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2424,7 +2420,7 @@ class epanet:
             self.ControlNodeIndex.append(v4)
             self.ControlLevelValues.append(v5)
             self.ControlTypes.append(self.TYPECONTROL[self.ControlTypesIndex[-1]])
-            value[i] = epyt_values()
+            value[i] = EpytValues()
             value[i].Type = self.ControlTypes[-1]
             # value[i].TypeIndex = self.ControlTypesIndex[i-1]
             value[i].LinkID = self.getLinkNameID(self.ControlLinkIndex[-1])
@@ -2529,7 +2525,7 @@ class epanet:
         See also getNodeCount, getNodeJunctionCount, getLinkCount, 
         getControlRulesCount.
         """
-        value = epyt_values()
+        value = EpytValues()
         value.Nodes = self.getNodeCount()
         value.Links = self.getLinkCount()
         value.Junctions = self.getNodeJunctionCount()
@@ -2687,7 +2683,7 @@ class epanet:
         See also setCurve, getCurveType, getCurveLengths, getCurveValue, 
         getCurveNameID, getCurveComment.
         """
-        value = epyt_values()
+        value = EpytValues()
         value.CurveNameID = []
         value.CurveNvalue = []
         value.CurveXvalue = []
@@ -2795,7 +2791,7 @@ class epanet:
         getNodeDemandCategoriesNumber, getNodeDemandPatternIndex, 
         getNodeDemandPatternNameID.
         """
-        value = epyt_values()
+        value = EpytValues()
         [value.DemandModelCode, value.DemandModelPmin, value.DemandModelPreq,
          value.DemandModelPexp] = self.api.ENgetdemandmodel()
         value.DemandModelType = self.DEMANDMODEL[value.DemandModelCode]
@@ -3488,7 +3484,7 @@ class epanet:
         See also getLinkType, getLinkTypeIndex, getLinkDiameter,
         getLinkLength, getLinkRoughnessCoeff, getLinkMinorLossCoeff.
         """
-        value = epyt_values()
+        value = EpytValues()
         value.LinkDiameter = []
         value.LinkLength = []
         value.LinkRoughnessCoeff = []
@@ -4640,7 +4636,7 @@ class epanet:
         See also getNodeElevations, getNodeDemandPatternIndex, getNodeEmitterCoeff,
         getNodeInitialQuality, NodeTypeIndex.
         """
-        value = epyt_values()
+        value = EpytValues()
         value.NodeElevations = self.getNodeElevations()
         value.NodePatternIndex = self.getNodePatternIndex()
         value.NodeEmitterCoeff = self.getNodeEmitterCoeff()
@@ -4908,7 +4904,7 @@ class epanet:
         See also setNodeTankData, getNodeElevations, getNodeTankInitialLevel,
         getNodeTankMinimumWaterLevel, getNodeTankDiameter.
         """
-        tankData = epyt_values()
+        tankData = EpytValues()
         tankIndices = self.getNodeTankIndex()
         if len(argv) == 1:
             if argv[0] in tankIndices:
@@ -5842,7 +5838,7 @@ class epanet:
 
         See also getQualityType, getQualityCode.
         """
-        value = epyt_values()
+        value = EpytValues()
         qual_list = self.api.ENgetqualinfo()
         value.QualityCode = qual_list[0]
         value.QualityChemName = qual_list[1]
@@ -5938,7 +5934,7 @@ class epanet:
 
         See also getRuleID, getRules, addRules.
         """
-        value = epyt_values()
+        value = EpytValues()
         if len(argv) == 0:
             index = list(range(1, self.getRuleCount() + 1))
         elif isList(argv[0]):
@@ -6079,7 +6075,7 @@ class epanet:
         >>> d.getStatistic().disp()
 
         """
-        value = epyt_values()
+        value = EpytValues()
         value.Iterations = self.api.ENgetstatistic(self.ToolkitConstants.EN_ITERATIONS)
         value.RelativeError = self.api.ENgetstatistic(self.ToolkitConstants.EN_RELATIVEERROR)
         value.DeficientNodes = self.api.ENgetstatistic(self.ToolkitConstants.EN_DEFICIENTNODES)
@@ -6319,7 +6315,7 @@ class epanet:
 
         See also getFlowUnits.
         """
-        value = epyt_values()
+        value = EpytValues()
         if self.TYPEUNITS.index(self.getFlowUnits()) < 5:
             value.Units_US_Customary = 1
             value.Units_SI_Metric = 0
@@ -10842,7 +10838,7 @@ class epanet:
         return [np.sum(a == B) for a in np.array(A)]
 
     def __readEpanetBin(self, f, binfile, *argv):
-        value = epyt_values()
+        value = EpytValues()
         if f.readable():
             data = np.fromfile(binfile, dtype=np.uint32)
             value.NumberReportingPeriods = data[-3]
@@ -10968,7 +10964,7 @@ class epanet:
             value.MagicNumber = f.read(10)
 
         if len(argv) > 0:
-            v = epyt_values()
+            v = EpytValues()
             v.Time = [int(i * value.ReportingTimeStepSec) for i in
                       range(int(value.SimulationDurationSec / value.ReportingTimeStepSec) + 1)]
             fields_param = ['NodePressure', 'NodeDemand', 'NodeHead', 'NodeQuality',
@@ -11568,7 +11564,7 @@ class epanetapi:
 
     def ENgetcoord(self, index):
         """ Gets the (x,y) coordinates of a node.
-        
+
 
         ENgetcoord(index)
 
