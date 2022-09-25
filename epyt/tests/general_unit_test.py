@@ -8,8 +8,8 @@ class AddTest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
-        inpname = 'Net1.inp'
-        self.epanetClass = epanet(inpname)
+        inp_name = 'Net1.inp'
+        self.epanetClass = epanet(inp_name)
 
     def tearDown(self):
         """Call after every test case."""
@@ -17,7 +17,7 @@ class AddTest(unittest.TestCase):
 
     """ ------------------------------------------------------------------------- """
 
-    def testaddControl(self):
+    def test_addControl(self):
         err_msg = "Wrong add Control output"
         # Test 1
         index = self.epanetClass.addControls('LINK 12 CLOSED IF NODE 2 ABOVE 20')
@@ -30,11 +30,11 @@ class AddTest(unittest.TestCase):
         assert self.epanetClass.getControls(index).Control == 'LINK 9 1.5 AT TIME 57600.0', err_msg
         # Test 4
         index = self.epanetClass.addControls(0, 13, 0, 11, 100)
-        contorl_dict = {'Type': 'LOWLEVEL', 'LinkID': '9', 'Setting': 'CLOSED', 'NodeID': '2',
+        control_dict = {'Type': 'LOWLEVEL', 'LinkID': '9', 'Setting': 'CLOSED', 'NodeID': '2',
                         'Value': 100.0, 'Control': 'LINK 9 CLOSED IF NODE 2 BELOW 100.0'}
-        self.assertDictEqual(self.epanetClass.getControls(index).to_dict(), contorl_dict, err_msg)
+        self.assertDictEqual(self.epanetClass.getControls(index).to_dict(), control_dict, err_msg)
 
-    def testaddCurve(self):
+    def test_addCurve(self):
         err_msg = "Wrong add Curve output"
         # Test 1
         new_curve__id = 'NewCurve'
@@ -55,7 +55,7 @@ class AddTest(unittest.TestCase):
         for i in range(len(y_vals_actual)):
             np.testing.assert_equal(y_vals_actual[i], y_vals_desired[i], err_msg=err_msg)
 
-    def testaddLinkPipe(self):
+    def test_addLinkPipe(self):
         err_msg = "Wrong add Link Pipe output"
         # Test 1
         pipe_id = 'newPipe_2'
@@ -73,17 +73,17 @@ class AddTest(unittest.TestCase):
         length = 500
         diameter = 15
         roughness = 120
-        minor_loss_coeff = 0.2
+        minor_loss_coefficient = 0.2
         self.epanetClass.getLinkPipeCount()
         pipe_index = self.epanetClass.addLinkPipe(pipe_id, from_node, to_node, length, diameter, roughness,
-                                                  minor_loss_coeff)
+                                                  minor_loss_coefficient)
         assert self.epanetClass.getLinkPipeCount() == 14, err_msg
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkLength(pipe_index), length)
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkDiameter(pipe_index), diameter)
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkRoughnessCoeff(pipe_index), roughness)
-        np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(pipe_index), minor_loss_coeff)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(pipe_index), minor_loss_coefficient)
 
-    def testaddLinkPipeCV(self):
+    def test_addLinkPipeCV(self):
         err_msg = "Wrong add Link PipeCV output"
         # Test 1
         cv_pipe_id = 'newCVPipe_1'
@@ -92,16 +92,17 @@ class AddTest(unittest.TestCase):
         length = 500
         diameter = 15
         roughness = 120
-        minor_loss_coeff = 0.2
+        minor_loss_coefficient = 0.2
         cv_pipe_index = self.epanetClass.addLinkPipeCV(cv_pipe_id, from_node, to_node, length, diameter, roughness,
-                                                       minor_loss_coeff)
+                                                       minor_loss_coefficient)
         assert self.epanetClass.getLinkPipeCount() == 13, err_msg
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkLength(cv_pipe_index), length)
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkDiameter(cv_pipe_index), diameter)
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkRoughnessCoeff(cv_pipe_index), roughness)
-        np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(cv_pipe_index), minor_loss_coeff)
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(cv_pipe_index),
+                                             minor_loss_coefficient)
 
-    def testaddLinkPump(self):
+    def test_addLinkPump(self):
         err_msg = "Wrong add Link Pump output"
         pump_id = 'newPump_1'
         from_node = '11'
@@ -147,25 +148,25 @@ class AddTest(unittest.TestCase):
         valve_index = self.epanetClass.addLinkValveTCV(valve_id, from_node, to_node)
         assert self.epanetClass.getLinkType(valve_index) == 'TCV', 'error in TCV Valve'
 
-    def testaddNodeJunction(self):
+    def test_addNodeJunction(self):
         err_msg = "Wrong add Node Junction output"
         junction_id = 'newJunction_5'
-        junction_coords = [10, 20]
+        junction_coordinates = [10, 20]
         junction_elevation = 500
         demand = 50
         demand_pattern_id = self.epanetClass.getPatternNameID(1)
-        junction_index = self.epanetClass.addNodeJunction(junction_id, junction_coords, junction_elevation, demand,
+        junction_index = self.epanetClass.addNodeJunction(junction_id, junction_coordinates, junction_elevation, demand,
                                                           demand_pattern_id)
         assert self.epanetClass.getNodeJunctionCount() == 10, err_msg
-        coords = self.epanetClass.getNodeCoordinates()
-        x = coords['x'][junction_index]
-        y = coords['y'][junction_index]
-        assert [x, y] == junction_coords, err_msg
+        coordinates = self.epanetClass.getNodeCoordinates()
+        x = coordinates['x'][junction_index]
+        y = coordinates['y'][junction_index]
+        assert [x, y] == junction_coordinates, err_msg
         np.testing.assert_array_almost_equal(self.epanetClass.getNodeElevations(junction_index), junction_elevation)
         np.testing.assert_array_almost_equal(self.epanetClass.getNodeBaseDemands(junction_index)[1], demand)
         assert self.epanetClass.getNodeDemandPatternNameID()[1][junction_index - 1] == demand_pattern_id, err_msg
 
-    def testaddNodeJunctionDemand(self):
+    def test_addNodeJunctionDemand(self):
         self.epanetClass = epanet('ky10.inp')
         self.epanetClass.addNodeJunctionDemand([1, 2], [100, 110], ['1', '2'], ['new demand1', 'new demand2'])
         assert self.epanetClass.getNodeJunctionDemandName()[2][0:2] == ['new demand1',
@@ -173,18 +174,18 @@ class AddTest(unittest.TestCase):
             'Wrong node junction demand output'
         np.testing.assert_array_almost_equal(self.epanetClass.getNodeBaseDemands()[2][0:2], [100, 110])
 
-    def testaddNodeReservoir(self):
+    def test_addNodeReservoir(self):
         reservoir_id = 'newReservoir_1'
-        reservoir_coords = [20, 30]
-        reservoir_index = self.epanetClass.addNodeReservoir(reservoir_id, reservoir_coords)
+        reservoir_coordinates = [20, 30]
+        reservoir_index = self.epanetClass.addNodeReservoir(reservoir_id, reservoir_coordinates)
         assert self.epanetClass.getNodeCount() == 12, 'The Reservoir has not been added'
         x = self.epanetClass.getNodeCoordinates('x')[reservoir_index]
         y = self.epanetClass.getNodeCoordinates('y')[reservoir_index]
-        assert [x, y] == reservoir_coords, 'Wrong Reservoir coordinates'
+        assert [x, y] == reservoir_coordinates, 'Wrong Reservoir coordinates'
 
-    def testaddNodeTank(self):
+    def test_addNodeTank(self):
         tank_id = 'newTank_1'
-        tank_coords = [20, 30]
+        tank_coordinates = [20, 30]
         elevation = 100
         initial_level = 130
         minimum_water_level = 110
@@ -192,12 +193,13 @@ class AddTest(unittest.TestCase):
         diameter = 60
         minimum_water_volume = 200000
         volume_curve_id = ''  # Empty for no curve
-        tank_index = self.epanetClass.addNodeTank(tank_id, tank_coords, elevation, initial_level, minimum_water_level,
-                                                  maximum_water_level, diameter, minimum_water_volume, volume_curve_id)
+        tank_index = self.epanetClass.addNodeTank(tank_id, tank_coordinates, elevation, initial_level,
+                                                  minimum_water_level, maximum_water_level, diameter,
+                                                  minimum_water_volume, volume_curve_id)
         tank_data = self.epanetClass.getNodeTankData(tank_index)
         x = self.epanetClass.getNodeCoordinates('x')[tank_index]
         y = self.epanetClass.getNodeCoordinates('y')[tank_index]
-        assert [x, y] == tank_coords, 'Wrong Tank coordinates'
+        assert [x, y] == tank_coordinates, 'Wrong Tank coordinates'
         assert isclose(tank_data.Elevation, elevation), 'Wrong Elevation output'
         assert isclose(tank_data.Initial_Level, initial_level), 'Wrong Initial Level output'
         assert isclose(tank_data.Minimum_Water_Level, minimum_water_level), 'Wrong Minimum Water Level output'
@@ -205,7 +207,7 @@ class AddTest(unittest.TestCase):
         assert isclose(tank_data.Minimum_Water_Volume, minimum_water_volume), 'Wrong Minimum Water Volume output'
         assert tank_data.Volume_Curve_Index == [0], 'Wrong Volume Curve Index output'
 
-    def testaddPattern(self):
+    def test_addPattern(self):
         # Test 1
         pattern_id = 'new_pattern_1'
         pattern_index = self.epanetClass.addPattern(pattern_id)  # Adds a new time pattern given its ID
@@ -221,7 +223,7 @@ class AddTest(unittest.TestCase):
         assert self.epanetClass.getPatternNameID(pattern_index) == pattern_id, 'Wrong pattern Name ID'
         np.testing.assert_array_almost_equal(self.epanetClass.getPattern()[2], pattern_mult)
 
-    def testaddRules(self):
+    def test_addRules(self):
         self.epanetClass.addRules('RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PUMP 9 STATUS IS CLOSED \n PRIORITY 1')
         assert self.epanetClass.getRuleCount() == 1, 'Wrong Rule Count Number'
         rule = self.epanetClass.getRules()[1]
@@ -235,19 +237,19 @@ class DeleteTest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
-        inpname = 'Net1.inp'
-        self.epanetClass = epanet(inpname)
+        inp_name = 'Net1.inp'
+        self.epanetClass = epanet(inp_name)
 
     def tearDown(self):
         """Call after every test case."""
         self.epanetClass.unload()
 
-    def testdeleteControls(self):
+    def test_deleteControls(self):
         # Test 1
         self.epanetClass.deleteControls()
         assert self.epanetClass.getControls() == {}, 'The Controls have not been deleted'
 
-    def testdeleteCurve(self):
+    def test_deleteCurve(self):
         # Test 1
         d = epanet('BWSN_Network_1.inp')
         id_curve = d.getCurveNameID(1)  # Retrieves the ID of the 1st curve
@@ -259,7 +261,7 @@ class DeleteTest(unittest.TestCase):
         self.assertEqual(d.getCurveNameID(), ['CURVE-2'], 'Curve not deleted')
         d.unload()
 
-    def testdeleteLink(self):
+    def test_deleteLink(self):
         err_msg = 'Link not deleted'
         # Test 1
         id_link = self.epanetClass.getLinkNameID(1)  # Retrieves the ID label of the 1st link
@@ -271,7 +273,7 @@ class DeleteTest(unittest.TestCase):
         self.epanetClass.deleteLink(index_link)  # Deletes the 1st link given it's index
         self.assertNotEqual(self.epanetClass.getLinkCount(), link_count, err_msg)
 
-    def testdeleteNode(self):
+    def test_deleteNode(self):
         err_msg = 'Node not deleted'
         # Test 1
         id_node = self.epanetClass.getNodeNameID(1)  # Retrieves the ID label of the 1st node
@@ -288,7 +290,7 @@ class DeleteTest(unittest.TestCase):
         self.epanetClass.deleteNode(id_nodes)  # Deletes 2 nodes given their IDs
         self.assertNotEqual(self.epanetClass.getNodeNameID([1, 2]), id_nodes, err_msg)
 
-    def testdeleteNodeJunctionDemand(self):
+    def test_deleteNodeJunctionDemand(self):
         err_msg = 'Demand not deleted'
         # Test 1
         node_index = 1
@@ -324,7 +326,7 @@ class DeleteTest(unittest.TestCase):
         self.epanetClass.deleteNodeJunctionDemand([1, 2, 3])
         self.assertNotEqual(self.epanetClass.getNodeJunctionDemandIndex(node_index), demand_index_old, err_msg)
 
-    def testsdeletePattern(self):
+    def test_deletePattern(self):
         err_msg = 'Pattern not deleted'
         # Test 1
         id_pat = self.epanetClass.getPatternNameID(1)  # Retrieves the ID of the 1st pattern
@@ -336,14 +338,14 @@ class DeleteTest(unittest.TestCase):
         self.epanetClass.deletePattern(index)  # Deletes the 1st pattern given its index
         self.assertEqual(self.epanetClass.getPatternNameID(), [], err_msg)
 
-    def testdeletePatternsAll(self):
+    def test_deletePatternsAll(self):
         err_msg = 'All Patterns not deleted'
         d = epanet('BWSN_Network_1.inp')
         d.deletePatternsAll()  # Deletes all the patterns
         self.assertEqual(d.getPatternNameID(), [], err_msg)
         d.unload()
 
-    def testdeleteRules(self):
+    def test_deleteRules(self):
         err_msg = 'Rule not deleted'
         # Test 1
         d = epanet('BWSN_Network_1.inp')
@@ -368,14 +370,14 @@ class GetTest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
-        inpname = 'Net1.inp'
-        self.epanetClass = epanet(inpname)
+        inp_name = 'Net1.inp'
+        self.epanetClass = epanet(inp_name)
 
     def tearDown(self):
         """Call after every test case."""
         self.epanetClass.unload()
 
-    def testgetComputedHydraulicTimeSeries(self):
+    def test_getComputedHydraulicTimeSeries(self):
         data = self.epanetClass.getComputedHydraulicTimeSeries(['Time', 'Pressure', 'Velocity'])
         np.testing.assert_array_almost_equal(
             data.Time,
@@ -580,7 +582,7 @@ class GetTest(unittest.TestCase):
                        0.00000000e+00]]),
             err_msg='Wrong velocity output')
 
-    def testgetComputedQualityTimeSeries(self):
+    def test_getComputedQualityTimeSeries(self):
         np.testing.assert_array_almost_equal(
             self.epanetClass.getComputedQualityTimeSeries().NodeQuality[10],
             np.array([1., 0.45269294, 0.44701226, 0.43946804, 0.42596667,
@@ -593,7 +595,7 @@ class GetTest(unittest.TestCase):
                                                        0.41946084, 0.40761727, 1.]),
                                              err_msg='Wrong Link Quality output')
 
-    def testgetConnectivityMatrix(self):
+    def test_getConnectivityMatrix(self):
         np.testing.assert_array_almost_equal(self.epanetClass.getConnectivityMatrix(),
                                              np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
                                                        [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
@@ -609,13 +611,13 @@ class GetTest(unittest.TestCase):
                                              err_msg='Wrong connectivity matrix output'
                                              )
 
-    def testgetControls(self):
+    def test_getControls(self):
         self.assertDictEqual(self.epanetClass.getControls(1).to_dict(),
                              {'Type': 'LOWLEVEL', 'LinkID': '9', 'Setting': 'OPEN',
                               'NodeID': '2', 'Value': 110.0,
                               'Control': 'LINK 9 OPEN IF NODE 2 BELOW 110.0'})
 
-    def testgetCurveComment(self):
+    def test_getCurveComment(self):
         d = epanet('Net3.inp')
         self.assertEqual(d.getCurveComment([1, 2]),
                          ['PUMP: Pump Curve for Pump 10 (Lake Source)',
@@ -623,7 +625,7 @@ class GetTest(unittest.TestCase):
                          'Wrong curve comment output')
         d.unload()
 
-    def testgetCounts(self):
+    def test_getCounts(self):
         self.maxDiff = None
         self.assertDictEqual(self.epanetClass.getCounts().to_dict(),
                              {'Nodes': 11, 'Links': 13, 'Junctions': 9, 'Reservoirs': 1, 'Tanks': 1,
@@ -631,8 +633,8 @@ class GetTest(unittest.TestCase):
                               'RuleBasedControls': 0, 'Patterns': 1},
                              'Wrong counts output')
 
-    def testgetCurvesData(self):
-        """ ---getCurvesindex---    """
+    def test_getCurvesData(self):
+        """ ---getCurveIndex---    """
         d = epanet('Net3.inp')
         err_msg = 'Wrong curve index'
         # Test 1
@@ -693,24 +695,24 @@ class GetTest(unittest.TestCase):
                                              err_msg=err_msg)
         d.unload()
 
-    def testgetDemandModel(self):
+    def test_getDemandModel(self):
         self.assertDictEqual(self.epanetClass.getDemandModel().to_dict(),
                              {'DemandModelCode': 0, 'DemandModelPmin': 0.0, 'DemandModelPreq': 0.1,
                               'DemandModelPexp': 0.5, 'DemandModelType': 'DDA'},
                              'Wrong demand model data')
 
-    def testgetError(self):
+    def test_getError(self):
         self.assertEqual(self.epanetClass.getError(250), 'Error 250: function call contains invalid format',
                          'Wrong error output')
 
-    def testgetLinkQuality(self):
+    def test_getLinkQuality(self):
         err_msg = 'Wrong Quality output'
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkQuality(),
                                              np.array([100.0, 100.0, 100.0, 100.0, 100.0,
                                                        100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]),
                                              err_msg=err_msg)
 
-    def testgetLinkType(self):
+    def test_getLinkType(self):
         """ ---getLinkType---    """
         err_msg = 'Wrong Link Type output'
         # Test 1
@@ -730,7 +732,7 @@ class GetTest(unittest.TestCase):
         # Test 4
         self.assertEqual(self.epanetClass.getLinkTypeIndex([2, 3]), [1, 1], err_msg)
 
-    def testgetLink_Node_NameID(self):
+    def test_getLink_Node_NameID(self):
         """ ---getLinkNameID---    """
         err_msg = 'Wrong Link IDs'
         self.assertEqual(self.epanetClass.getLinkNameID(),
@@ -746,7 +748,7 @@ class GetTest(unittest.TestCase):
                          err_msg)
         self.assertEqual(self.epanetClass.getNodeNameID([1, 5, 10]), ['10', '21', '9'], err_msg)
 
-    def testgetLinkPumpData(self):
+    def test_getLinkPumpData(self):
         """ ---getLinkPumpEfficiency---    """
         err_msg = 'Wrong Pump Efficiency'
         # Test 1
@@ -829,27 +831,27 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getLinkPumpTypeCode(), [1], err_msg)
         d.unload()
 
-    def testgetLinksInfo(self):
+    def test_getLinksInfo(self):
         # Desired data
-        link_bulk_reaction_coeff = [-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.0]
+        link_bulk_reaction = [-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.0]
         link_diameter = [18.0, 14.0, 10.0, 10.0, 12.0, 6.0, 18.0, 10.0, 12.0, 8.0, 8.0, 6.0, 0.0]
         link_initial_settings = [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                                  1.0]
         link_initial_status = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         link_length = [10530.0, 5280.0, 5280.0, 5280.0, 5280.0, 5280.0, 200.0, 5280.0, 5280.0, 5280.0, 5280.0, 5280.0,
                        0.0]
-        link_minor_loss_coeff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        link_minor_loss = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         link_roughness = [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]
         link_type_index = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2]
-        link_wall_reaction_coeff = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.0]
+        link_wall_reaction = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.0]
         nodes_connecting_link_index = [[1, 2], [2, 3], [3, 4], [5, 6], [6, 7], [8, 9], [11, 3], [2, 5], [3, 6], [4, 7],
                                        [5, 8], [6, 9], [10, 1]]
         # Actual data
         l_info = self.epanetClass.getLinksInfo()
         # Test 1
-        self.assertEqual(l_info.LinkBulkReactionCoeff, link_bulk_reaction_coeff, 'Wrong LinkBulkReactionCoeff output')
+        self.assertEqual(l_info.LinkBulkReactionCoeff, link_bulk_reaction, 'Wrong link bulk reaction output')
         # Test 2
-        self.assertEqual(l_info.LinkDiameter, link_diameter, 'Wrong LinkDiameter output')
+        self.assertEqual(l_info.LinkDiameter, link_diameter, 'Wrong link diameter output')
         # Test 3
         self.assertEqual(l_info.LinkInitialSetting, link_initial_settings, 'Wrong LinkInitialSetting output')
         # Test 4
@@ -857,18 +859,18 @@ class GetTest(unittest.TestCase):
         # Test 5
         self.assertEqual(l_info.LinkLength, link_length, 'Wrong LinkLength output')
         # Test 6
-        self.assertEqual(l_info.LinkMinorLossCoeff, link_minor_loss_coeff, 'Wrong LinkMinorLossCoeff output')
+        self.assertEqual(l_info.LinkMinorLossCoeff, link_minor_loss, 'Wrong minor loss output')
         # Test 7
-        self.assertEqual(l_info.LinkRoughnessCoeff, link_roughness, 'Wrong LinkRoughnessCoeff output')
+        self.assertEqual(l_info.LinkRoughnessCoeff, link_roughness, 'Wrong roughness output')
         # Test 8
-        self.assertEqual(l_info.LinkTypeIndex, link_type_index, 'Wrong LinkTypeIndex output')
+        self.assertEqual(l_info.LinkTypeIndex, link_type_index, 'Wrong link type index output')
         # Test 9
-        self.assertEqual(l_info.LinkWallReactionCoeff, link_wall_reaction_coeff, 'Wrong LinkWallReactionCoeff. output')
+        self.assertEqual(l_info.LinkWallReactionCoeff, link_wall_reaction, 'Wrong wall reaction output')
         # Test 10
         self.assertEqual(l_info.NodesConnectingLinksIndex.tolist(), nodes_connecting_link_index,
                          'Wrong NodesConnectingLinksIndex output')
 
-    def testgetLinkVertices(self):
+    def test_getLinkVertices(self):
         d = epanet('ky10.inp')
         l_vertices = d.getLinkVertices()
         vert_link_2 = [5774062.57, 5774072.58, 5774084.86, 5774143.46, 5774181.97, 5774256.77, 5774331.86, 5774408.93,
@@ -879,13 +881,13 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getLinkVerticesCount([1, 2, 3]), [5, 13, 28], 'Wrong vertices for the first 3 links')
         d.unload()
 
-    def testgetLinkIndex_LinkNodesIndex(self):
+    def test_getLinkIndex_LinkNodesIndex(self):
         indices = self.epanetClass.getLinkIndex()
         self.assertEqual(indices, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 'Wrong link indices')
         l_n_indices = self.epanetClass.getLinkNodesIndex([1, 2, 3])
         self.assertEqual(l_n_indices.tolist(), [[1, 2], [2, 3], [3, 4]], 'Wrong link nodes indices')
 
-    def testgetLinkPipe_Pump_Valve(self):
+    def test_getLinkPipe_Pump_Valve(self):
         d = epanet('Net3.inp')
         # Pipe
         pipe_indices = d.getLinkPipeIndex()
@@ -906,13 +908,13 @@ class GetTest(unittest.TestCase):
         self.assertEqual(valve_ids, ['~@RV-1', '~@RV-2', '~@RV-3'], 'Wrong valve IDs')
         d.unload()
 
-    def testgetNodeInfo(self):
+    def test_getNodeInfo(self):
         n_info = self.epanetClass.getNodesInfo()
         self.assertEqual(list(n_info.NodeElevations),
                          [710.0, 710.0, 700.0, 695.0, 700.0, 695.0, 690.0, 700.0, 710.0, 800.0, 850.0],
                          'Wrong Node Elevation output')
         self.assertEqual(list(n_info.NodeEmitterCoeff), [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                         'Wrong Node Emitter Coeff output')
+                         'Wrong Node Emitter output')
         self.assertEqual(list(n_info.NodeInitialQuality), [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0],
                          'Wrong Node Initial Quality output')
         self.assertEqual(list(n_info.NodePatternIndex), [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0],
@@ -925,14 +927,14 @@ class GetTest(unittest.TestCase):
                          'Wrong Node Source Type Index output')
         self.assertEqual(list(n_info.NodeTypeIndex), [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2], 'Wrong Node Type Index output')
 
-    def testgetNodeBaseDemands(self):
+    def test_getNodeBaseDemands(self):
         b_dems = list(self.epanetClass.getNodeBaseDemands()[1])
         self.assertEqual(b_dems, [0.0, 150.0, 150.0, 100.0, 150.0, 200.0, 150.0, 100.0, 100.0, 0.0, 0.0],
                          'Wrong Node Base Demand output')
 
-    def testgetNodeCoordinates(self):
+    def test_getNodeCoordinates(self):
         # Actual Values
-        coords = self.epanetClass.getNodeCoordinates()
+        coordinates = self.epanetClass.getNodeCoordinates()
         # Desired Values
         x_desired = {1: 20.0, 2: 30.0, 3: 50.0, 4: 70.0, 5: 30.0, 6: 50.0, 7: 70.0, 8: 30.0, 9: 50.0, 10: 10.0,
                      11: 50.0}
@@ -941,10 +943,10 @@ class GetTest(unittest.TestCase):
         x_vert_desired = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: []}
         y_vert_desired = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: []}
         # Test
-        self.assertDictEqual(coords['x'], x_desired, 'Wrong x coordinate values')
-        self.assertDictEqual(coords['y'], y_desired, 'Wrong y coordinate values')
-        self.assertDictEqual(coords['x_vert'], x_vert_desired, 'Wrong x vertices coordinate values')
-        self.assertDictEqual(coords['y_vert'], y_vert_desired, 'Wrong y vertices coordinate values')
+        self.assertDictEqual(coordinates['x'], x_desired, 'Wrong x coordinate values')
+        self.assertDictEqual(coordinates['y'], y_desired, 'Wrong y coordinate values')
+        self.assertDictEqual(coordinates['x_vert'], x_vert_desired, 'Wrong x vertices coordinate values')
+        self.assertDictEqual(coordinates['y_vert'], y_vert_desired, 'Wrong y vertices coordinate values')
 
     def testDemandsInfo(self):
         """ ---getNodeDemandCategoriesNumber---    """
@@ -974,12 +976,12 @@ class GetTest(unittest.TestCase):
                          'Wrong Node Demand Pattern ID Output')
         d.unload()
 
-    def testgetNodeInitialQuality(self):
-        desired_init_qual = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
-        self.assertEqual(list(self.epanetClass.getNodeInitialQuality()), desired_init_qual,
+    def test_getNodeInitialQuality(self):
+        desired_init_quality = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
+        self.assertEqual(list(self.epanetClass.getNodeInitialQuality()), desired_init_quality,
                          'Wrong Initial quality value')
 
-    def testgetNodeJunctionData(self):
+    def test_getNodeJunctionData(self):
         """ ---getNodeJunctionDemandIndex---    """
         d = epanet('BWSN_Network_1.inp')
         err_msg = 'Wrong Junction Demand Index output'
@@ -1001,7 +1003,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodeJunctionNameID(),
                          ['10', '11', '12', '13', '21', '22', '23', '31', '32'], err_msg)
 
-    def testgetNodeReservoirIndex_ID(self):
+    def test_getNodeReservoirIndex_ID(self):
         """ ---getNodeReservoirIndex---    """
         d = epanet('ky9.inp')
         self.assertEqual(d.getNodeReservoirIndex(), [1243, 1244, 1245, 1246], 'Wrong Node Reservoir Index Output')
@@ -1012,7 +1014,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getNodeReservoirNameID([1, 2, 3]), ['R-1', 'R-2', 'R-3'], 'Wrong Node Reservoir ID Output')
         d.unload()
 
-    def testGetNodeConnectingLinksIndex_ID(self):
+    def test_getNodeConnectingLinksIndex_ID(self):
         """ ---getNodesConnectingLinksID---    """
         desired_n_conn_l_id = [['10', '11'], ['11', '12'], ['12', '13'], ['21', '22'], ['22', '23'], ['31', '32'],
                                ['2', '12'], ['11', '21'],
@@ -1028,7 +1030,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodesConnectingLinksIndex().tolist(), desired_n_conn_l_ind,
                          'Wrong Nodes Connecting Links index Output')
 
-    def testgetNodeTankData(self):
+    def test_getNodeTankData(self):
         # Net1
         t_data = self.epanetClass.getNodeTankData().to_dict()
         desired_tdata = {'Index': [11], 'Elevation': np.array([850.]), 'Initial_Level': np.array([120.]),
@@ -1090,7 +1092,7 @@ class GetTest(unittest.TestCase):
                                              err_msg=err_msg, decimal=3)
         d.unload()
 
-    def testgetnodeTankMix(self):
+    def test_getnodeTankMix(self):
         d = epanet('ky10.inp')
 
         """ ---getNodeTankMixingFraction---    """
@@ -1119,7 +1121,7 @@ class GetTest(unittest.TestCase):
                                              decimal=1)
         d.unload()
 
-    def testgetNodeType(self):
+    def test_getNodeType(self):
         """ ---getNodeType---    """
         desired_node_type = ['JUNCTION', 'JUNCTION', 'JUNCTION', 'JUNCTION', 'JUNCTION',
                              'JUNCTION', 'JUNCTION', 'JUNCTION', 'JUNCTION', 'RESERVOIR', 'TANK']
@@ -1131,7 +1133,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodeTypeIndex(), desired_node_type_index, 'Wrong Node Type Index Output')
         self.assertEqual(self.epanetClass.getNodeTypeIndex([10, 11]), [1, 2], 'Wrong Node Type Index Output')
 
-    def testgetOptions(self):
+    def test_getOptions(self):
         d = epanet('BWSN_Network_1.inp')
         self.assertEqual(d.getOptionsAccuracyValue(), 0.005, 'Wrong Options Accuracy Value Output')
         self.assertEqual(d.getOptionsCheckFrequency(), 2.0, 'Wrong Options Check Frequency Output')
@@ -1140,7 +1142,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getOptionsEmitterExponent(), 0.5, 'Wrong Options Emitter Exponent Output')
         self.assertEqual(d.getOptionsExtraTrials(), -1.0, 'Wrong Options Extra Trials Output')
         self.assertEqual(d.getOptionsFlowChange(), 0.0, 'Wrong Options Flow Change Output')
-        self.assertEqual(d.getOptionsGlobalEffic(), 75.0, 'Wrong Options Global Effic Output')
+        self.assertEqual(d.getOptionsGlobalEffic(), 75.0, 'Wrong Options Global Eff. Output')
         self.assertEqual(d.getOptionsGlobalPrice(), 0.0, 'Wrong Options Global Price Output')
         self.assertEqual(d.getOptionsGlobalPattern(), 0.0, 'Wrong Options Global Pattern Output')
         self.assertEqual(d.getOptionsHeadError(), 0.0, 'Wrong Options Head Error Output')
@@ -1158,7 +1160,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getOptionsTankBulkReactionOrder(), 1, 'Wrong Options Tank Bulk Reaction Order Output')
         d.unload()
 
-    def testgetPattern(self):
+    def test_getPattern(self):
         d = epanet('BWSN_Network_1.inp')
 
         """ ---getPattern---    """
@@ -1254,13 +1256,13 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getPatternValue(1, 5), 1.08, 'Wrong Pattern Value Output')
         d.unload()
 
-    def testgetQualityInfo(self):
-        desired_qual_info_dict = {'QualityCode': 1, 'QualityChemName': 'Chlorine',
-                                  'QualityChemUnits': 'mg/L', 'TraceNode': 0, 'QualityType': 'CHEM'}
-        actual_qual_info_dict = self.epanetClass.getQualityInfo().to_dict()
-        self.assertDictEqual(actual_qual_info_dict, desired_qual_info_dict, 'Wrong Quality Info Output')
+    def test_getQualityInfo(self):
+        desired_quality_info_dict = {'QualityCode': 1, 'QualityChemName': 'Chlorine', 'QualityChemUnits': 'mg/L',
+                                     'TraceNode': 0, 'QualityType': 'CHEM'}
+        actual_quality_info_dict = self.epanetClass.getQualityInfo().to_dict()
+        self.assertDictEqual(actual_quality_info_dict, desired_quality_info_dict, 'Wrong Quality Info Output')
 
-    def testgetRuleInfo(self):
+    def test_getRuleInfo(self):
         d = epanet('BWSN_Network_1.inp')
 
         """ ---getRuleID---    """
@@ -1283,7 +1285,7 @@ class GetTest(unittest.TestCase):
         self.assertDictEqual(actual_rule, desired_rule, 'Wrong Rule Output')
         d.unload()
 
-    def testGetTime(self):
+    def test_getTime(self):
         self.assertEqual(self.epanetClass.getTimeSimulationDuration(), 86400, 'Wrong Simulation Duration Output')
         self.assertEqual(self.epanetClass.getTimeHydraulicStep(), 3600, 'Wrong Hydraulic StepOutput')
         self.assertEqual(self.epanetClass.getTimeQualityStep(), 300, 'Wrong Quality Step Output')
@@ -1307,14 +1309,14 @@ class SetTest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
-        inpname = 'Net1.inp'
-        self.epanetClass = epanet(inpname)
+        inp_name = 'Net1.inp'
+        self.epanetClass = epanet(inp_name)
 
     def tearDown(self):
         """Call after every test case."""
         self.epanetClass.unload()
 
-    def testsetControls(self):
+    def test_setControls(self):
         # Test 1
         control_index = 1
         control = 'LINK 9 CLOSED IF NODE 2 ABOVE 180'
@@ -1334,12 +1336,10 @@ class SetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getControls(1).Control, control_1, 'Wrong Control Output')
         self.assertEqual(self.epanetClass.getControls(2).Control, control_2, 'Wrong Control Output')
 
-    def testsetCurve(self):
+    def test_setCurve(self):
         """ ---setCurve---    """
         d = epanet('BWSN_Network_1.inp')
         curve_index = 1
-        # d.getCurvesInfo().CurveXvalue[curve_index - 1]
-        # d.getCurvesInfo().CurveYvalue[curve_index - 1]
         x_y_1 = [0, 730]
         x_y_2 = [1000, 500]
         x_y_3 = [1350, 260]
@@ -1373,7 +1373,7 @@ class SetTest(unittest.TestCase):
         self.assertEqual(d.getCurvesInfo().CurveYvalue[curve_index - 1][0], x_y_values[1], err_msg)
         d.unload()
 
-    def testsetDemandModel(self):
+    def test_setDemandModel(self):
         model_type = 'PDA'
         pmin = 0
         preq = 0.1
@@ -1384,7 +1384,7 @@ class SetTest(unittest.TestCase):
         actual = self.epanetClass.getDemandModel().to_dict()
         self.assertDictEqual(actual, desired, 'Wrong Set Demand Model Output')
 
-    def testsetFlowunits(self):
+    def test_setFlowUnits(self):
         self.epanetClass.setFlowUnitsAFD()
         self.assertEqual(self.epanetClass.getFlowUnits(), 'AFD', 'Error setting flow units to AFD')
         self.epanetClass.setFlowUnitsCFS()
@@ -1406,22 +1406,22 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setFlowUnitsMLD()
         self.assertEqual(self.epanetClass.getFlowUnits(), 'MLD', 'Error setting flow units to MLD')
 
-    def testsetLinkBulkReactionCoeff(self):
-        err_msg = 'Error setting Link Bulk Reaction Coeff'
+    def test_setLinkBulkReactionCoefficient(self):
+        err_msg = 'Error setting Link Bulk Reaction Coefficient'
         # Test 1
         index_pipe = 1
-        coeff = 0
-        self.epanetClass.setLinkBulkReactionCoeff(index_pipe, coeff)
+        coefficient = 0
+        self.epanetClass.setLinkBulkReactionCoeff(index_pipe, coefficient)
         self.assertEqual(self.epanetClass.getLinkBulkReactionCoeff(index_pipe), 0, err_msg)
 
         # Test 2
-        coeffs = self.epanetClass.getLinkBulkReactionCoeff()
-        coeffs_new = [0 for _ in coeffs]
-        self.epanetClass.setLinkBulkReactionCoeff(coeffs_new)
+        coefficients = self.epanetClass.getLinkBulkReactionCoeff()
+        coefficients_new = [0 for _ in coefficients]
+        self.epanetClass.setLinkBulkReactionCoeff(coefficients_new)
         desired_value = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
         self.assertEqual(list(self.epanetClass.getLinkBulkReactionCoeff()), desired_value, err_msg)
 
-    def testsetLinkComment(self):
+    def test_setLinkComment(self):
         err_msg = 'Error setting Link Comment'
         # Test 1
         link_index = 1
@@ -1435,7 +1435,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setLinkComment(link_index, comment)
         self.assertEqual(self.epanetClass.getLinkComment(link_index), comment, err_msg)
 
-    def testsetLinkDiameter(self):
+    def test_setLinkDiameter(self):
         err_msg = 'Error setting Link Diameter'
         # Test 1
         index_pipe = 1
@@ -1449,7 +1449,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setLinkDiameter(index_pipes, diameters)
         self.assertEqual(list(self.epanetClass.getLinkDiameter(index_pipes)), [20, 25], err_msg)
 
-    def testsetLinkInitial_Status_Setting(self):
+    def test_setLinkInitial_Status_Setting(self):
         """ ---setLinkInitialSetting---    """
         err_msg = 'Error setting Link Initial Setting'
         # Test 1
@@ -1479,7 +1479,7 @@ class SetTest(unittest.TestCase):
         desired = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
         self.assertEqual(list(self.epanetClass.getLinkInitialStatus()), desired, err_msg)
 
-    def testsetLinkLength(self):
+    def test_setLinkLength(self):
         err_msg = 'Error setting Link Length'
         d = epanet('BWSN_Network_1.inp')
         # Test 1
@@ -1495,23 +1495,23 @@ class SetTest(unittest.TestCase):
         self.assertEqual(list(d.getLinkLength()), lengths_new, err_msg)
         d.unload()
 
-    def testsetLinkMinorLossCoeff(self):
+    def test_setLinkMinorLossCoefficient(self):
         err_msg = 'Error setting Link Minor Loss Coefficient'
         # Test 1
         index_pipe = 1
-        coeff = 105
-        self.epanetClass.setLinkMinorLossCoeff(index_pipe, coeff)
+        coefficient = 105
+        self.epanetClass.setLinkMinorLossCoeff(index_pipe, coefficient)
         self.assertEqual(self.epanetClass.getLinkMinorLossCoeff(index_pipe), 105, err_msg)
 
         # Test 2
-        coeffs = self.epanetClass.getLinkMinorLossCoeff()
-        coeffs_new = coeffs + 0.2
-        self.epanetClass.setLinkMinorLossCoeff(coeffs_new)
+        coefficients = self.epanetClass.getLinkMinorLossCoeff()
+        coefficients_new = coefficients + 0.2
+        self.epanetClass.setLinkMinorLossCoeff(coefficients_new)
         desired = np.array([105.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
                             0.2, 0.2, 0.2, 0.])
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkMinorLossCoeff(), desired, err_msg=err_msg)
 
-    def testsetLinkNameID(self):
+    def test_setLinkNameID(self):
         err_msg = 'Error setting Link ID'
         d = epanet('BWSN_Network_1.inp')
         # Test 1
@@ -1526,7 +1526,7 @@ class SetTest(unittest.TestCase):
         self.assertEqual(d.getLinkNameID([1, 2, 3, 4]), ['1', '2', '3', '4'], err_msg)
         d.unload()
 
-    def testsetLinkNodesIndex(self):
+    def test_setLinkNodesIndex(self):
         err_msg = 'Error setting Link ID'
         d = epanet('ky10.inp')
         # Test 1
@@ -1544,23 +1544,23 @@ class SetTest(unittest.TestCase):
         self.assertEqual(d.getLinkNodesIndex(link_index).tolist(), [[2, 3], [4, 5]], err_msg)
         d.unload()
 
-    def testsetLinkPipeData(self):
+    def test_setLinkPipeData(self):
         pipe_index = [1, 2]
         length = [1000, 1500]
         diameter = [20, 23]
-        roughness_coeff = [110, 115]
-        minor_loss_coeff = [0.2, 0.3]
-        self.epanetClass.setLinkPipeData(pipe_index, length, diameter, roughness_coeff, minor_loss_coeff)
+        roughness_coefficient = [110, 115]
+        minor_loss_coefficient = [0.2, 0.3]
+        self.epanetClass.setLinkPipeData(pipe_index, length, diameter, roughness_coefficient, minor_loss_coefficient)
         p_data = self.epanetClass.getLinksInfo()
         np.testing.assert_array_almost_equal(p_data.LinkLength[0:2], length, err_msg='Error setting link length')
         np.testing.assert_array_almost_equal(p_data.LinkDiameter[0:2], diameter, err_msg='Error setting link diameter')
-        np.testing.assert_array_almost_equal(p_data.LinkRoughnessCoeff[0:2], roughness_coeff,
+        np.testing.assert_array_almost_equal(p_data.LinkRoughnessCoeff[0:2], roughness_coefficient,
                                              err_msg='Error setting link Roughness Coefficient')
-        np.testing.assert_array_almost_equal(p_data.LinkMinorLossCoeff[0:2], minor_loss_coeff,
+        np.testing.assert_array_almost_equal(p_data.LinkMinorLossCoeff[0:2], minor_loss_coefficient,
                                              err_msg='Error setting link Minor Loss Coefficient')
 
     @staticmethod
-    def testsetLinkPump():
+    def test_setLinkPump():
         d = epanet('Net3_trace.inp')
 
         """ ---setLinkPumpECost---    """
@@ -1639,22 +1639,22 @@ class SetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(d.getLinkPumpPower(), np.array([10., 15.]), err_msg=err_msg)
         d.unload()
 
-    def testsetLinkRoughnessCoeff(self):
+    def test_setLinkRoughnessCoefficient(self):
         err_msg = 'Error setting Link Roughness Coefficient'
         # Test 1
         index_pipe = 1
-        coeff = 105
-        self.epanetClass.setLinkRoughnessCoeff(index_pipe, coeff)
+        coefficient = 105
+        self.epanetClass.setLinkRoughnessCoeff(index_pipe, coefficient)
         self.assertEqual(self.epanetClass.getLinkRoughnessCoeff(index_pipe), 105, err_msg)
 
         # Test 2
-        coeffs = self.epanetClass.getLinkRoughnessCoeff()
-        coeffs_new = coeffs + 10
-        self.epanetClass.setLinkRoughnessCoeff(coeffs_new)
+        coefficients = self.epanetClass.getLinkRoughnessCoeff()
+        coefficients_new = coefficients + 10
+        self.epanetClass.setLinkRoughnessCoeff(coefficients_new)
         desired = np.array([115., 110., 110., 110., 110., 110., 110., 110., 110., 110., 110., 110., 0.])
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkRoughnessCoeff(), desired, err_msg=err_msg)
 
-    def testsetLink_Settings_Status(self):
+    def test_setLink_Settings_Status(self):
         """ ---setLinkSettings---    """
         err_msg = 'Error setting Link settings'
         settings = self.epanetClass.getLinkSettings()
@@ -1671,7 +1671,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setLinkStatus(statuses_new)
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkStatus(), desired, err_msg=err_msg)
 
-    def testsetLinkType(self):
+    def test_setLinkType(self):
         """ ---setLinkTypePipe---    """
         err_msg = 'Error setting Link type to pipe'
         link_id = self.epanetClass.getLinkPumpNameID(1)
@@ -1726,7 +1726,7 @@ class SetTest(unittest.TestCase):
         index = self.epanetClass.setLinkTypeValveTCV(link_id)
         self.assertEqual(self.epanetClass.getLinkType(index), 'TCV', err_msg)
 
-    def testsetLinkVertices(self):
+    def test_setLinkVertices(self):
         link_id = '10'
         x = [22, 24, 28]
         y = [69, 68, 69]
@@ -1738,16 +1738,16 @@ class SetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(self.epanetClass.getLinkVertices(link_id)['y'][1], desired_y,
                                              err_msg='Error setting y vertices')
 
-    def testsetLinkWallReactionCoeff(self):
+    def test_setLinkWallReactionCoefficient(self):
         err_msg = 'Error setting Link Wall reaction coefficient'
-        coeffs = self.epanetClass.getLinkWallReactionCoeff()
-        coeffs_new = [0] * len(coeffs)
-        self.epanetClass.setLinkWallReactionCoeff(coeffs_new)
-        desired_coeff = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
-        np.testing.assert_array_almost_equal(self.epanetClass.getLinkWallReactionCoeff(), desired_coeff,
+        coefficients = self.epanetClass.getLinkWallReactionCoeff()
+        coefficients_new = [0] * len(coefficients)
+        self.epanetClass.setLinkWallReactionCoeff(coefficients_new)
+        desired_coefficient = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+        np.testing.assert_array_almost_equal(self.epanetClass.getLinkWallReactionCoeff(), desired_coefficient,
                                              err_msg=err_msg)
 
-    def testsetNodeBaseDemands(self):
+    def test_setNodeBaseDemands(self):
         d = epanet('BWSN_Network_1.inp')
         err_msg = 'Error setting Node Base Demands'
 
@@ -1771,18 +1771,18 @@ class SetTest(unittest.TestCase):
         d.setNodeBaseDemands(node_index, category_index, demand)
         self.assertAlmostEqual(d.getNodeBaseDemands()[category_index][node_index - 1], demand, err_msg)
 
-    def testsetNodeComment(self):
+    def test_setNodeComment(self):
         self.epanetClass.setNodeComment([1, 2], ['This is a node', 'Test comm'])
         self.assertEqual(self.epanetClass.getNodeComment([1, 2]), ['This is a node', 'Test comm'],
-                         'Erron setting node comments')
+                         'Error setting node comments')
 
-    def testsetNodeCoordinates(self):
+    def test_setNodeCoordinates(self):
         err_msg = 'Error setting Node Coordinates'
 
         # Test 1
         node_index = 1
-        coords = [0, 0]
-        self.epanetClass.setNodeCoordinates(node_index, coords)
+        coordinates = [0, 0]
+        self.epanetClass.setNodeCoordinates(node_index, coordinates)
         desired = {'x': {1: 0.0}, 'y': {1: 0.0}}
         self.assertDictEqual(self.epanetClass.getNodeCoordinates(node_index), desired, err_msg)
 
@@ -1791,8 +1791,8 @@ class SetTest(unittest.TestCase):
         y_values = self.epanetClass.getNodeCoordinates('y')
         x_new = [x_values[i] + 10 for i in x_values]
         y_new = [y_values[i] + 10 for i in y_values]
-        new_coords = [x_new, y_new]
-        self.epanetClass.setNodeCoordinates(new_coords)
+        new_coordinates = [x_new, y_new]
+        self.epanetClass.setNodeCoordinates(new_coordinates)
         desired_new_x = {1: 10.0, 2: 40.0, 3: 60.0, 4: 80.0, 5: 40.0, 6: 60.0, 7: 80.0, 8: 40.0, 9: 60.0, 10: 20.0,
                          11: 60.0}
         x_values_new = self.epanetClass.getNodeCoordinates('x')
@@ -1802,7 +1802,7 @@ class SetTest(unittest.TestCase):
         y_values_new = self.epanetClass.getNodeCoordinates('y')
         self.assertDictEqual(y_values_new, desired_new_y, err_msg)
 
-    def testsetNodeDemandPatternIndex(self):
+    def test_setNodeDemandPatternIndex(self):
         d = epanet('BWSN_Network_1.inp')
         err_msg = 'Error setting Node Demand Pattern Index'
 
@@ -1831,43 +1831,43 @@ class SetTest(unittest.TestCase):
         self.assertEqual(pat_dems, pattern_indices, err_msg)
         d.unload()
 
-    def testsetNodeElevations(self):
+    def test_setNodeElevations(self):
         err_msg = 'Error setting node elevations'
-        elevs = self.epanetClass.getNodeElevations()
-        elevs_new = elevs + 100
-        self.epanetClass.setNodeElevations(elevs_new)
-        np.testing.assert_array_almost_equal(self.epanetClass.getNodeElevations(), elevs_new, err_msg=err_msg)
+        elevations = self.epanetClass.getNodeElevations()
+        elevations_new = elevations + 100
+        self.epanetClass.setNodeElevations(elevations_new)
+        np.testing.assert_array_almost_equal(self.epanetClass.getNodeElevations(), elevations_new, err_msg=err_msg)
 
-    def testsetNodeEmitterCoeff(self):
+    def test_setNodeEmitterCoefficient(self):
         err_msg = 'Error setting node emitter coefficient'
-        nodeset = self.epanetClass.getNodeEmitterCoeff()
-        nodeset[0] = 0.1
-        self.epanetClass.setNodeEmitterCoeff(nodeset)
+        node_set = self.epanetClass.getNodeEmitterCoeff()
+        node_set[0] = 0.1
+        self.epanetClass.setNodeEmitterCoeff(node_set)
         desired = np.array([0.1, 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
         np.testing.assert_array_almost_equal(self.epanetClass.getNodeEmitterCoeff(), desired, err_msg=err_msg)
 
-    def testsetNodeInitialQuality(self):
+    def test_setNodeInitialQuality(self):
         err_msg = 'Error setting node initial quality'
         node_index = 1
         initial_quality = 1
         self.epanetClass.setNodeInitialQuality(node_index, initial_quality)
         self.assertAlmostEqual(self.epanetClass.getNodeInitialQuality(node_index), 1, err_msg)
 
-    def testsetNodeJunctionData(self):
+    def test_setNodeJunctionData(self):
         junction_index = 1
         elev = 35
-        dmnd = 100
-        dmndpat = 'NEW_PATTERN'
-        self.epanetClass.addPattern(dmndpat)
-        self.epanetClass.setNodeJunctionData(junction_index, elev, dmnd, dmndpat)
+        base_demand = 100
+        demand_pattern = 'NEW_PATTERN'
+        self.epanetClass.addPattern(demand_pattern)
+        self.epanetClass.setNodeJunctionData(junction_index, elev, base_demand, demand_pattern)
         self.assertAlmostEqual(self.epanetClass.getNodeElevations(junction_index), elev,
                                'Error setting node junction data (elevation)')
-        self.assertAlmostEqual(self.epanetClass.getNodeBaseDemands(junction_index)[1], dmnd,
+        self.assertAlmostEqual(self.epanetClass.getNodeBaseDemands(junction_index)[1], base_demand,
                                'Error setting node junction data (demand)')
-        self.assertEqual(self.epanetClass.getNodeDemandPatternNameID()[junction_index][0], dmndpat,
+        self.assertEqual(self.epanetClass.getNodeDemandPatternNameID()[junction_index][0], demand_pattern,
                          'Error setting node junction data (demand pattern)')
 
-    def testsetNodeNameID(self):
+    def test_setNodeNameID(self):
         err_msg = 'Error setting node ID'
 
         # Test 1
@@ -1885,7 +1885,7 @@ class SetTest(unittest.TestCase):
         desired = [name_id[0], name_id[4]]
         self.assertEqual(actual, desired, err_msg)
 
-    def testsetNodesConnectingLinksID(self):
+    def test_setNodesConnectingLinksID(self):
         err_msg = 'Error setting nodes connecting links IDs'
 
         # Test 1
@@ -1906,28 +1906,28 @@ class SetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodesConnectingLinksID([2, 3]).tolist(), [['12', '21'], ['13', '22']],
                          err_msg)
 
-    def testsetNodeSourcePatternIndex(self):
+    def test_setNodeSourcePatternIndex(self):
         err_msg = 'Error setting nodes source Pattern Index'
         node_index = [1, 2, 3]
         source_pattern_index = [1, 1, 1]
         self.epanetClass.setNodeSourcePatternIndex(node_index, source_pattern_index)
         self.assertEqual(list(self.epanetClass.getNodeSourcePatternIndex(node_index)), source_pattern_index, err_msg)
 
-    def testsetNodeSourceQuality(self):
+    def test_setNodeSourceQuality(self):
         err_msg = 'Error setting nodes source Quality'
         node_index = [1, 2, 3]
         source_strength = [10, 12, 8]
         self.epanetClass.setNodeSourceQuality(node_index, source_strength)
         self.assertEqual(list(self.epanetClass.getNodeSourceQuality(node_index)), source_strength, err_msg)
 
-    def testsetNodeSourceType(self):
+    def test_setNodeSourceType(self):
         err_msg = 'Error setting nodes source Type'
         node_index = 1
         source_type = 'MASS'
         self.epanetClass.setNodeSourceType(node_index, source_type)
         self.assertEqual(self.epanetClass.getNodeSourceType(node_index)[0], source_type, err_msg)
 
-    def testsetNodeTankBulkReactionCoeff(self):
+    def test_setNodeTankBulkReactionCoefficient(self):
         err_msg = 'Error setting node Tank Bulk Reaction Coefficient'
         d = epanet('BWSN_Network_1.inp')
 
@@ -1943,7 +1943,7 @@ class SetTest(unittest.TestCase):
         d.unload()
 
     @staticmethod
-    def testsetNodeTankCanOverFlow():
+    def test_setNodeTankCanOverFlow():
         err_msg = 'Error setting node Tank Can Overflow'
         d = epanet('BWSN_Network_1.inp')
 
@@ -1961,32 +1961,32 @@ class SetTest(unittest.TestCase):
         d.unload()
 
     @staticmethod
-    def testsetNodeTankData():
+    def test_setNodeTankData():
         d = epanet('Net3_trace.inp')
         tank_index = [1, 2]
         elev = [100, 105]
-        intlvl = [13, 13.5]
-        minlvl = [0.2, 0.25]
-        maxlvl = [30, 35]
+        init_level = [13, 13.5]
+        min_level = [0.2, 0.25]
+        max_level = [30, 35]
         diam = [80, 85]
-        minvol = [50000, 60000]
-        volcurve = ['', '']
-        d.setNodeTankData(tank_index, elev, intlvl, minlvl, maxlvl, diam, minvol, volcurve)
+        min_vol = [50000, 60000]
+        vol_curve = ['', '']
+        d.setNodeTankData(tank_index, elev, init_level, min_level, max_level, diam, min_vol, vol_curve)
         t_data = d.getNodeTankData(tank_index)
         np.testing.assert_array_almost_equal(t_data.Elevation, elev, err_msg='Error Setting Node Tank Elevation')
-        np.testing.assert_array_almost_equal(t_data.Initial_Level, intlvl,
-                                             err_msg='Error Setting Node Tank Inititial Level')
-        np.testing.assert_array_almost_equal(t_data.Minimum_Water_Level, minlvl,
+        np.testing.assert_array_almost_equal(t_data.Initial_Level, init_level,
+                                             err_msg='Error Setting Node Tank Initial Level')
+        np.testing.assert_array_almost_equal(t_data.Minimum_Water_Level, min_level,
                                              err_msg='Error Setting Node Tank Min Water Lever')
-        np.testing.assert_array_almost_equal(t_data.Maximum_Water_Level, maxlvl,
+        np.testing.assert_array_almost_equal(t_data.Maximum_Water_Level, max_level,
                                              err_msg='Error Setting Node Tank Max Water Level')
         np.testing.assert_array_almost_equal(t_data.Diameter, diam, err_msg='Error Setting Node Tank Diameter')
-        np.testing.assert_array_almost_equal(t_data.Minimum_Water_Volume, minvol,
+        np.testing.assert_array_almost_equal(t_data.Minimum_Water_Volume, min_vol,
                                              err_msg='Error Setting Node Tank Min Water Volume')
         np.testing.assert_array_almost_equal(t_data.Elevation, elev, err_msg='Error Setting Node Tank Elevation')
         d.unload()
 
-    def testsetNodeTankDiameter(self):
+    def test_setNodeTankDiameter(self):
         err_msg = 'Error setting Node Tank Diameter'
         d = epanet('BWSN_Network_1.inp')
 
@@ -2003,7 +2003,7 @@ class SetTest(unittest.TestCase):
         self.assertEqual(d.getNodeTankDiameter(1), 120, err_msg)
 
     @staticmethod
-    def testsetTankInitialLevel():
+    def test_setTankInitialLevel():
         err_msg = 'Error setting Node Tank Initial Level'
         d = epanet('BWSN_Network_1.inp')
 
@@ -2018,7 +2018,7 @@ class SetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(d.getNodeTankInitialLevel(), np.array([10., 15.]), err_msg=err_msg)
 
     @staticmethod
-    def testsetNodeTankMaximumWaterLevel():
+    def test_setNodeTankMaximumWaterLevel():
         err_msg = 'Error setting Node Tank Max Water Level'
         d = epanet('BWSN_Network_1.inp')
         tank_index = d.getNodeTankIndex()
@@ -2026,7 +2026,7 @@ class SetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(d.getNodeTankMaximumWaterLevel(), np.array([30., 30.]), err_msg=err_msg)
 
     @staticmethod
-    def testsetNodeTankMinimumWaterLevel():
+    def test_setNodeTankMinimumWaterLevel():
         err_msg = 'Error setting Node Tank Min Water Level'
         d = epanet('BWSN_Network_1.inp')
         tank_index = d.getNodeTankIndex()
@@ -2035,28 +2035,28 @@ class SetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(d.getNodeTankMinimumWaterLevel(), np.array([5., 15.]), err_msg=err_msg)
 
     @staticmethod
-    def testsetNodeTankMinimumWaterVolume():
+    def test_setNodeTankMinimumWaterVolume():
         err_msg = 'Error setting Node Tank Min Water Volume'
         d = epanet('BWSN_Network_1.inp')
         d.setNodeTankMinimumWaterVolume([1500, 2000])
         np.testing.assert_array_almost_equal(d.getNodeTankMinimumWaterVolume(), np.array([1500, 2000]), err_msg=err_msg)
 
     @staticmethod
-    def testsetNodeTankMixingFraction():
+    def test_setNodeTankMixingFraction():
         err_msg = 'Error setting Node Tank Min Water Volume'
         d = epanet('BWSN_Network_1.inp')
         tank_index = d.getNodeTankIndex()
         d.setNodeTankMixingFraction(tank_index, [1, 0])
         np.testing.assert_array_almost_equal(d.getNodeTankMixingFraction(), np.array([1, 0]), err_msg=err_msg)
 
-    def testgetNodeTankMixingModelType(self):
+    def test_getNodeTankMixingModelType(self):
         err_msg = 'Error setting Node Tank Mixing Model Type'
         d = epanet('BWSN_Network_1.inp')
         tank_index = d.getNodeTankIndex()
         d.setNodeTankMixingModelType(tank_index, ['MIX2', 'LIFO'])
         self.assertEqual(d.getNodeTankMixingModelType(), ['MIX2', 'LIFO'], err_msg)
 
-    def testsetNodeType(self):
+    def test_setNodeType(self):
         """ ---setNodeTypeJunction---    """
         index = self.epanetClass.setNodeTypeJunction('2')
         self.assertEqual(self.epanetClass.getNodeType(index), 'JUNCTION', 'Error setting node type to junction')
@@ -2071,7 +2071,7 @@ class SetTest(unittest.TestCase):
         index = self.epanetClass.setNodeTypeTank('13')
         self.assertEqual(self.epanetClass.getNodeType(index), 'TANK', 'Error setting node type to junction')
 
-    def testsetoptions(self):
+    def test_setOptions(self):
         err_msg = 'Error setting Options'
         self.epanetClass.setOptionsAccuracyValue(0.001)
         self.assertEqual(self.epanetClass.getOptionsAccuracyValue(), 0.001, err_msg)
@@ -2120,7 +2120,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setOptionsTankBulkReactionOrder(1)
         self.assertEqual(self.epanetClass.getOptionsTankBulkReactionOrder(), 1, err_msg)
 
-    def testsetQualityType(self):
+    def test_setQualityType(self):
         err_msg = 'Error setting Quality type'
 
         # Test 1
@@ -2143,7 +2143,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setQualityType('trace', node_id)
         self.assertEqual(self.epanetClass.getQualityInfo().TraceNode, 1, err_msg)
 
-    def testsetPattern(self):
+    def test_setPattern(self):
         """ ---setPattern---    """
         err_msg = 'Error setting new pattern'
         pattern_id = 'new_pattern'
@@ -2201,7 +2201,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setPatternValue(pattern_index, pattern_time_step, pattern_factor)
         self.assertEqual(self.epanetClass.getPattern()[1][pattern_time_step - 1], pattern_factor, err_msg)
 
-    def testsetRule(self):
+    def test_setRule(self):
         d = epanet('BWSN_Network_1.inp')
 
         """ ---setRulePremise---    """
@@ -2294,7 +2294,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setRuleThenAction(rule_index, action_index, then_action)
         self.assertEqual(self.epanetClass.getRules()[1]['Then_Actions'], ['THEN PIPE 11 STATUS IS OPEN'], err_msg)
 
-    def testsetTime(self):
+    def test_setTime(self):
         err_msg = 'Error setting time'
         h_step = 1800
         self.epanetClass.setTimeHydraulicStep(h_step)
@@ -2426,11 +2426,11 @@ class AnalysisTest(unittest.TestCase):
         d.openQualityAnalysis()
         d.initializeHydraulicAnalysis(0)
         d.initializeQualityAnalysis(d.ToolkitConstants.EN_NOSAVE)
-        tstep, pressure, t_sim, flow, node_quality, link_quality = 1, [], [], [], [], []
+        t_step, pressure, t_sim, flow, node_quality, link_quality = 1, [], [], [], [], []
         # Extra dynamic variables
-        velocity, head_loss, settings, energy, actual_dem_sens_nodes, mass_flow_rate, actual_qual_sens_nodes \
+        velocity, head_loss, settings, energy, actual_dem_sens_nodes, mass_flow_rate, actual_quality_sens_nodes \
             = [], [], [], [], [], [], []
-        while tstep > 0:
+        while t_step > 0:
             t = d.runHydraulicAnalysis()
             d.runQualityAnalysis()
             pressure.append(d.getNodePressure())
@@ -2445,10 +2445,10 @@ class AnalysisTest(unittest.TestCase):
             settings.append(d.getLinkSettings())
             energy.append(d.getLinkEnergy())
             actual_dem_sens_nodes.append(d.getNodeActualDemandSensingNodes())
-            actual_qual_sens_nodes.append(d.getNodeActualQualitySensingNodes())
+            actual_quality_sens_nodes.append(d.getNodeActualQualitySensingNodes())
             mass_flow_rate.append(d.getNodeMassFlowRate())
 
-            tstep = d.nextHydraulicAnalysisStep()
+            t_step = d.nextHydraulicAnalysisStep()
             d.nextQualityAnalysisStep()
         d.closeQualityAnalysis()
         d.closeHydraulicAnalysis()
@@ -2529,57 +2529,58 @@ class AnalysisTest(unittest.TestCase):
 
         # Test Node Actual Quality
         err_msg = 'Error in Node Actual Quality '
-        desired_actual_qual_n_5 = np.array([0.64, 0.64, 0.67048332, 0.99039853, 0.69538444,
-                                            0.69538444, 0.99479975, 0.9999543, 0.99480261, 0.99998255,
-                                            0.99485289, 0.99521299, 0.99531586, 0.99634925, 0.99711982,
-                                            1.03729065, 1.03153143, 0.99968388, 0.98557096, 0.98550671,
-                                            0.99965067, 0.99961999, 1.0319837, 1.0083734, 1.0326732,
-                                            0.99234298, 0.99985533, 0.99699218, 0.99998949, 1.01354119,
-                                            0.99904712, 0.99995205, 0.99999525, 0.9998032, 0.9999915,
-                                            1.00073598])
-        np.testing.assert_array_almost_equal(node_quality[5], desired_actual_qual_n_5, err_msg=err_msg)
+        desired_actual_quality_n_5 = np.array([0.64, 0.64, 0.67048332, 0.99039853, 0.69538444,
+                                               0.69538444, 0.99479975, 0.9999543, 0.99480261, 0.99998255,
+                                               0.99485289, 0.99521299, 0.99531586, 0.99634925, 0.99711982,
+                                               1.03729065, 1.03153143, 0.99968388, 0.98557096, 0.98550671,
+                                               0.99965067, 0.99961999, 1.0319837, 1.0083734, 1.0326732,
+                                               0.99234298, 0.99985533, 0.99699218, 0.99998949, 1.01354119,
+                                               0.99904712, 0.99995205, 0.99999525, 0.9998032, 0.9999915,
+                                               1.00073598])
+        np.testing.assert_array_almost_equal(node_quality[5], desired_actual_quality_n_5, err_msg=err_msg)
 
-        desired_actual_qual_n_25 = np.array([0.15, 0.15, 0.13021117, 0.13025352, 0.14729473,
-                                             0.1471587, 0.13169433, 0.13385677, 0.1317173, 0.52638193,
-                                             0.13180541, 0.9263402, 0.92638118, 0.92645536, 0.92655419,
-                                             0.92691066, 0.92710259, 0.90358968, 0.13692333, 0.92710674,
-                                             0.93375845, 0.92718604, 0.92684628, 0.92664191, 0.92693835,
-                                             0.92718994, 1.01683607, 0.92719291, 0.99951648, 0.92716929,
-                                             0.19758304, 1.03599597, 0.99983082, 1.00030477, 0.99949038,
-                                             0.92719247])
-        np.testing.assert_array_almost_equal(node_quality[25], desired_actual_qual_n_25, err_msg=err_msg)
+        desired_actual_quality_n_25 = np.array([0.15, 0.15, 0.13021117, 0.13025352, 0.14729473,
+                                                0.1471587, 0.13169433, 0.13385677, 0.1317173, 0.52638193,
+                                                0.13180541, 0.9263402, 0.92638118, 0.92645536, 0.92655419,
+                                                0.92691066, 0.92710259, 0.90358968, 0.13692333, 0.92710674,
+                                                0.93375845, 0.92718604, 0.92684628, 0.92664191, 0.92693835,
+                                                0.92718994, 1.01683607, 0.92719291, 0.99951648, 0.92716929,
+                                                0.19758304, 1.03599597, 0.99983082, 1.00030477, 0.99949038,
+                                                0.92719247])
+        np.testing.assert_array_almost_equal(node_quality[25], desired_actual_quality_n_25, err_msg=err_msg)
 
-        desired_actual_qual_n_45 = np.array([0.09, 0.08927529, 0.08979756, 0.08926078, 0.08747952,
-                                             0.08717831, 0.08676482, 0.09010864, 0.08659873, 0.12272579,
-                                             0.0864319, 0.76375766, 0.76376316, 0.76376316, 0.76376316,
-                                             0.0820711, 0.7432995, 0.15814202, 0.07636707, 0.0854724,
-                                             0.85594054, 0.84164127, 0.76376316, 0.76376316, 0.76376316,
-                                             0.08161471, 0.92705355, 0.12725728, 0.40659917, 0.76376316,
-                                             0.69914026, 0.9270073, 1.00053611, 0.32030924, 1.00047879,
-                                             0.76376316])
-        np.testing.assert_array_almost_equal(node_quality[45] / 1000, desired_actual_qual_n_45 / 1000, err_msg=err_msg)
+        desired_actual_quality_n_45 = np.array([0.09, 0.08927529, 0.08979756, 0.08926078, 0.08747952,
+                                                0.08717831, 0.08676482, 0.09010864, 0.08659873, 0.12272579,
+                                                0.0864319, 0.76375766, 0.76376316, 0.76376316, 0.76376316,
+                                                0.0820711, 0.7432995, 0.15814202, 0.07636707, 0.0854724,
+                                                0.85594054, 0.84164127, 0.76376316, 0.76376316, 0.76376316,
+                                                0.08161471, 0.92705355, 0.12725728, 0.40659917, 0.76376316,
+                                                0.69914026, 0.9270073, 1.00053611, 0.32030924, 1.00047879,
+                                                0.76376316])
+        np.testing.assert_array_almost_equal(node_quality[45] / 1000, desired_actual_quality_n_45 / 1000,
+                                             err_msg=err_msg)
 
         # Test Link Actual Quality
         err_msg = 'Error in Link Actual Quality '
-        desired_actual_qual_l_5 = np.array([0.64, 0.64, 0.64, 0.91723447, 1.01971497,
-                                            0.69538444, 0.76623242, 1.00396346, 0.99480261, 0.99998255,
-                                            0.99485289, 0.99521299, 0.99531586, 0.99634925, 0.99700032,
-                                            1.02051568, 1.00264694, 1.03733108, 0.99971906, 0.99980064,
-                                            1.01236519, 1.02101503, 0.99692542, 0.99998129, 0.9969474,
-                                            1.0177895, 0.99711982, 1.0326732, 1.03327514, 1.02508339,
-                                            0.99405897, 0.99699218, 0.99985533, 0.99995205, 0.99999525,
-                                            0.99673462, 0.99974172, 0.99998949, 0.99999727, 0.9999915])
-        np.testing.assert_array_almost_equal(link_quality[5], desired_actual_qual_l_5, err_msg=err_msg)
+        desired_actual_quality_l_5 = np.array([0.64, 0.64, 0.64, 0.91723447, 1.01971497,
+                                               0.69538444, 0.76623242, 1.00396346, 0.99480261, 0.99998255,
+                                               0.99485289, 0.99521299, 0.99531586, 0.99634925, 0.99700032,
+                                               1.02051568, 1.00264694, 1.03733108, 0.99971906, 0.99980064,
+                                               1.01236519, 1.02101503, 0.99692542, 0.99998129, 0.9969474,
+                                               1.0177895, 0.99711982, 1.0326732, 1.03327514, 1.02508339,
+                                               0.99405897, 0.99699218, 0.99985533, 0.99995205, 0.99999525,
+                                               0.99673462, 0.99974172, 0.99998949, 0.99999727, 0.9999915])
+        np.testing.assert_array_almost_equal(link_quality[5], desired_actual_quality_l_5, err_msg=err_msg)
 
-        desired_actual_qual_l_25 = np.array([0.15, 0.14982569, 0.14433033, 0.13025352, 0.13072138,
-                                             0.1471587, 0.13343018, 0.35084865, 0.1317173, 0.57100102,
-                                             0.13180541, 0.35477286, 0.92638118, 0.92645536, 0.9265464,
-                                             0.92691066, 0.90087915, 0.92710259, 0.80950048, 0.87595265,
-                                             0.71679381, 0.92710674, 0.92718601, 0.90544275, 0.92718604,
-                                             0.92684628, 0.92664191, 0.92693835, 0.92699844, 0.92716929,
-                                             0.92718994, 0.92719291, 0.8686534, 0.74306268, 1.00226608,
-                                             0.1455949, 0.75839028, 0.99895694, 0.9997757, 0.99955681])
-        np.testing.assert_array_almost_equal(link_quality[25], desired_actual_qual_l_25, err_msg=err_msg)
+        desired_actual_quality_l_25 = np.array([0.15, 0.14982569, 0.14433033, 0.13025352, 0.13072138,
+                                                0.1471587, 0.13343018, 0.35084865, 0.1317173, 0.57100102,
+                                                0.13180541, 0.35477286, 0.92638118, 0.92645536, 0.9265464,
+                                                0.92691066, 0.90087915, 0.92710259, 0.80950048, 0.87595265,
+                                                0.71679381, 0.92710674, 0.92718601, 0.90544275, 0.92718604,
+                                                0.92684628, 0.92664191, 0.92693835, 0.92699844, 0.92716929,
+                                                0.92718994, 0.92719291, 0.8686534, 0.74306268, 1.00226608,
+                                                0.1455949, 0.75839028, 0.99895694, 0.9997757, 0.99955681])
+        np.testing.assert_array_almost_equal(link_quality[25], desired_actual_quality_l_25, err_msg=err_msg)
 
         # Test Link Velocity
         err_msg = 'Error in Link Velocity '
@@ -2661,41 +2662,41 @@ class AnalysisTest(unittest.TestCase):
 
         # Test Link Energy
         err_msg = 'Error in Link Energy'
-        desired_enrg_5 = np.array([5.86348910e-01, 1.12498123e-01, 1.26939451e-02, 7.26129840e-03,
-                                   6.13105994e-04, 2.39949829e-01, 5.25274159e-01, 4.23648468e-06,
-                                   7.03406297e-02, 1.34980245e-06, 1.13503817e-01, 2.49192629e-01,
-                                   7.09794855e-02, 2.73455481e-02, 1.33615343e-02, 8.21036573e-03,
-                                   1.44918241e-05, 3.54356768e-04, 1.65210273e-05, 7.80143452e-09,
-                                   1.86190444e-04, 2.43214270e-04, 6.89075030e-05, 9.49665191e-08,
-                                   6.74402862e-05, 2.18518067e-02, 1.01343706e-02, 1.00807262e-02,
-                                   4.22318706e-03, 5.84012767e-05, 4.53421535e-05, 9.54000958e-06,
-                                   8.42412685e-08, 5.86390195e-07, 3.24869652e-08, 2.94048909e-05,
-                                   1.33746844e-07, 5.86390195e-07, 7.05767837e-09, 7.66581151e-09])
-        np.testing.assert_array_almost_equal(energy[5], desired_enrg_5, err_msg=err_msg)
+        desired_energy_5 = np.array([5.86348910e-01, 1.12498123e-01, 1.26939451e-02, 7.26129840e-03,
+                                     6.13105994e-04, 2.39949829e-01, 5.25274159e-01, 4.23648468e-06,
+                                     7.03406297e-02, 1.34980245e-06, 1.13503817e-01, 2.49192629e-01,
+                                     7.09794855e-02, 2.73455481e-02, 1.33615343e-02, 8.21036573e-03,
+                                     1.44918241e-05, 3.54356768e-04, 1.65210273e-05, 7.80143452e-09,
+                                     1.86190444e-04, 2.43214270e-04, 6.89075030e-05, 9.49665191e-08,
+                                     6.74402862e-05, 2.18518067e-02, 1.01343706e-02, 1.00807262e-02,
+                                     4.22318706e-03, 5.84012767e-05, 4.53421535e-05, 9.54000958e-06,
+                                     8.42412685e-08, 5.86390195e-07, 3.24869652e-08, 2.94048909e-05,
+                                     1.33746844e-07, 5.86390195e-07, 7.05767837e-09, 7.66581151e-09])
+        np.testing.assert_array_almost_equal(energy[5], desired_energy_5, err_msg=err_msg)
 
-        desired_enrg_23 = np.array([0.00000000e+00, 7.57281174e-06, 1.01274099e-05, 9.21563204e-06,
-                                    9.40276051e-06, 1.60406707e-04, 5.13468317e-04, 4.98657667e-06,
-                                    2.06213534e-04, 1.58879210e-06, 6.50531961e-04, 5.23384524e-03,
-                                    2.43634232e-03, 3.09009534e-03, 5.08555118e-03, 7.23689933e-04,
-                                    3.57014313e-03, 6.92653436e-08, 6.69087179e-05, 2.59464445e-06,
-                                    1.70978917e-05, 2.86276641e-04, 8.11079405e-05, 1.11780843e-07,
-                                    7.93809451e-05, 2.21606514e-02, 8.21086255e-03, 1.20324897e-02,
-                                    1.19378331e-02, 6.87415312e-05, 5.33702213e-05, 1.12291187e-05,
-                                    9.91566299e-08, 6.90213677e-07, 3.82389540e-08, 4.20717423e-07,
-                                    1.57427429e-07, 6.90213677e-07, 8.30727765e-09, 9.02308390e-09])
-        np.testing.assert_array_almost_equal(energy[23], desired_enrg_23, err_msg=err_msg)
+        desired_energy_23 = np.array([0.00000000e+00, 7.57281174e-06, 1.01274099e-05, 9.21563204e-06,
+                                      9.40276051e-06, 1.60406707e-04, 5.13468317e-04, 4.98657667e-06,
+                                      2.06213534e-04, 1.58879210e-06, 6.50531961e-04, 5.23384524e-03,
+                                      2.43634232e-03, 3.09009534e-03, 5.08555118e-03, 7.23689933e-04,
+                                      3.57014313e-03, 6.92653436e-08, 6.69087179e-05, 2.59464445e-06,
+                                      1.70978917e-05, 2.86276641e-04, 8.11079405e-05, 1.11780843e-07,
+                                      7.93809451e-05, 2.21606514e-02, 8.21086255e-03, 1.20324897e-02,
+                                      1.19378331e-02, 6.87415312e-05, 5.33702213e-05, 1.12291187e-05,
+                                      9.91566299e-08, 6.90213677e-07, 3.82389540e-08, 4.20717423e-07,
+                                      1.57427429e-07, 6.90213677e-07, 8.30727765e-09, 9.02308390e-09])
+        np.testing.assert_array_almost_equal(energy[23], desired_energy_23, err_msg=err_msg)
 
-        desired_enrg_51 = np.array([5.19327654e-01, 1.01923935e-01, 1.07665857e-02, 7.09644859e-03,
-                                    6.63834774e-04, 2.25553307e-01, 4.97914128e-01, 1.41431120e-06,
-                                    6.87996081e-02, 4.50619054e-07, 1.13910209e-01, 2.68125554e-01,
-                                    7.91036229e-02, 3.11617013e-02, 1.78201454e-02, 8.42200819e-03,
-                                    1.65862125e-04, 5.34489931e-04, 5.62728564e-07, 3.08332424e-07,
-                                    2.37676857e-04, 8.11948329e-05, 2.30041321e-05, 3.17036934e-08,
-                                    2.25143153e-05, 3.86967788e-02, 1.71235752e-02, 1.85049621e-02,
-                                    9.64479399e-03, 1.94967257e-05, 1.51370583e-05, 3.18484390e-06,
-                                    2.81231677e-08, 1.95760939e-07, 1.08454726e-08, 5.24245111e-05,
-                                    4.46501460e-08, 1.95760939e-07, 2.35614062e-09, 2.55916022e-09])
-        np.testing.assert_array_almost_equal(energy[51], desired_enrg_51, err_msg=err_msg)
+        desired_energy_51 = np.array([5.19327654e-01, 1.01923935e-01, 1.07665857e-02, 7.09644859e-03,
+                                      6.63834774e-04, 2.25553307e-01, 4.97914128e-01, 1.41431120e-06,
+                                      6.87996081e-02, 4.50619054e-07, 1.13910209e-01, 2.68125554e-01,
+                                      7.91036229e-02, 3.11617013e-02, 1.78201454e-02, 8.42200819e-03,
+                                      1.65862125e-04, 5.34489931e-04, 5.62728564e-07, 3.08332424e-07,
+                                      2.37676857e-04, 8.11948329e-05, 2.30041321e-05, 3.17036934e-08,
+                                      2.25143153e-05, 3.86967788e-02, 1.71235752e-02, 1.85049621e-02,
+                                      9.64479399e-03, 1.94967257e-05, 1.51370583e-05, 3.18484390e-06,
+                                      2.81231677e-08, 1.95760939e-07, 1.08454726e-08, 5.24245111e-05,
+                                      4.46501460e-08, 1.95760939e-07, 2.35614062e-09, 2.55916022e-09])
+        np.testing.assert_array_almost_equal(energy[51], desired_energy_51, err_msg=err_msg)
 
         # Test Node Actual Demand Sensing Nodes
         err_msg = 'Error in Node Actual Demand Sensing Nodes'
@@ -2734,38 +2735,39 @@ class AnalysisTest(unittest.TestCase):
 
         # Test Node Actual Quality Sensing Nodes
         err_msg = 'Error in Node Actual Quality Sensing Nodes'
-        desired_act_qual_sens_2 = np.array([1.02, 1.02, 1.01886289, 0.98075828, 1.01706526,
-                                            1.01649625, 0.984237, 0.9999543, 0.98423092, 0.99999335,
-                                            0.98419022, 0.98407613, 0.98413583, 0.98653162, 0.98921752,
-                                            0.99881135, 0.99929102, 0.99993587, 0.99974241, 0.99933008,
-                                            0.99993153, 0.99992532, 0.99456018, 0.99121529, 0.99586472,
-                                            0.99985462, 0.99999968, 0.99997815, 0.99999999, 0.99939214,
-                                            0.99992752, 0.99999825, 0.99999996, 0.99999955, 0.99999999,
-                                            0.99997897])
-        np.testing.assert_array_almost_equal(actual_qual_sens_nodes[2], desired_act_qual_sens_2, err_msg=err_msg,
+        desired_act_quality_sens_2 = np.array([1.02, 1.02, 1.01886289, 0.98075828, 1.01706526,
+                                               1.01649625, 0.984237, 0.9999543, 0.98423092, 0.99999335,
+                                               0.98419022, 0.98407613, 0.98413583, 0.98653162, 0.98921752,
+                                               0.99881135, 0.99929102, 0.99993587, 0.99974241, 0.99933008,
+                                               0.99993153, 0.99992532, 0.99456018, 0.99121529, 0.99586472,
+                                               0.99985462, 0.99999968, 0.99997815, 0.99999999, 0.99939214,
+                                               0.99992752, 0.99999825, 0.99999996, 0.99999955, 0.99999999,
+                                               0.99997897])
+        np.testing.assert_array_almost_equal(actual_quality_sens_nodes[2], desired_act_quality_sens_2, err_msg=err_msg,
                                              decimal=2)
 
-        desired_act_qual_sens_20 = np.array([0.15, 0.13007754, 0.13002584, 0.1301467, 0.13063834,
-                                             0.13190425, 0.13328394, 0.69315762, 0.13400906, 1.00316403,
-                                             0.13481013, 0.91011792, 0.92718207, 0.92719201, 0.92719315,
-                                             0.13607246, 0.15150492, 0.88631925, 0.23492208, 0.15904258,
-                                             1.00047636, 1.00052995, 0.92719315, 0.92719315, 0.92719315,
-                                             0.221263, 0.99932869, 0.42258208, 0.99951648, 0.92719315,
-                                             0.88435288, 0.99986736, 0.99990912, 0.99581539, 0.99956727,
-                                             0.92719315])
-        np.testing.assert_array_almost_equal(actual_qual_sens_nodes[20], desired_act_qual_sens_20, err_msg=err_msg,
+        desired_act_quality_sens_20 = np.array([0.15, 0.13007754, 0.13002584, 0.1301467, 0.13063834,
+                                                0.13190425, 0.13328394, 0.69315762, 0.13400906, 1.00316403,
+                                                0.13481013, 0.91011792, 0.92718207, 0.92719201, 0.92719315,
+                                                0.13607246, 0.15150492, 0.88631925, 0.23492208, 0.15904258,
+                                                1.00047636, 1.00052995, 0.92719315, 0.92719315, 0.92719315,
+                                                0.221263, 0.99932869, 0.42258208, 0.99951648, 0.92719315,
+                                                0.88435288, 0.99986736, 0.99990912, 0.99581539, 0.99956727,
+                                                0.92719315])
+        np.testing.assert_array_almost_equal(actual_quality_sens_nodes[20], desired_act_quality_sens_20,
+                                             err_msg=err_msg,
                                              decimal=2)
 
-        desired_act_qual_sens_50 = np.array([0.08, 0.08134169, 0.08465141, 0.08746161, 0.08277441,
-                                             0.08400952, 0.08591221, 0.08695709, 0.08618052, 0.0901129,
-                                             0.0866383, 0.24426994, 0.76375642, 0.76375658, 0.76375697,
-                                             0.76375918, 0.76376117, 0.7433078, 0.07708495, 0.76376101,
-                                             0.78462961, 0.76376286, 0.76375982, 0.76375766, 0.76376087,
-                                             0.763763, 0.13845722, 0.76376313, 0.94441596, 0.76376264,
-                                             0.4377526, 0.0909339, 0.14413847, 0.87968838, 0.41099686,
-                                             0.76376316])
-        np.testing.assert_array_almost_equal(actual_qual_sens_nodes[50], desired_act_qual_sens_50, err_msg=err_msg,
-                                             decimal=2)
+        desired_act_quality_sens_50 = np.array([0.08, 0.08134169, 0.08465141, 0.08746161, 0.08277441,
+                                                0.08400952, 0.08591221, 0.08695709, 0.08618052, 0.0901129,
+                                                0.0866383, 0.24426994, 0.76375642, 0.76375658, 0.76375697,
+                                                0.76375918, 0.76376117, 0.7433078, 0.07708495, 0.76376101,
+                                                0.78462961, 0.76376286, 0.76375982, 0.76375766, 0.76376087,
+                                                0.763763, 0.13845722, 0.76376313, 0.94441596, 0.76376264,
+                                                0.4377526, 0.0909339, 0.14413847, 0.87968838, 0.41099686,
+                                                0.76376316])
+        np.testing.assert_array_almost_equal(actual_quality_sens_nodes[50], desired_act_quality_sens_50,
+                                             err_msg=err_msg, decimal=2)
 
         # Test Node Mass Flow Rate
         err_msg = 'Error in Node Mass Flow Rate'
@@ -2776,7 +2778,7 @@ class AnalysisTest(unittest.TestCase):
         self.assertEqual(list(mass_flow_rate[2]), desired_act_dem_mass_flow_rate__2, err_msg)
 
     @staticmethod
-    def testgetComputedHydraulicTimeSeries():
+    def test_getComputedHydraulicTimeSeries():
         d = epanet('Net1.inp')
         comp_vals = d.getComputedHydraulicTimeSeries()
         err_msg = 'Error in getComputedHydraulicTimeSeries output'
@@ -3741,7 +3743,7 @@ class AnalysisTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=2)
 
     @staticmethod
-    def testgetComputedQualityTimeSeries():
+    def test_getComputedQualityTimeSeries():
         d = epanet('Net1.inp')
         comp_vals = d.getComputedQualityTimeSeries()
         d.unload()
@@ -3785,7 +3787,7 @@ class AnalysisTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(actual_25, desired_25, err_msg=err_msg)
 
     @staticmethod
-    def testgetComputedTimeSeries():
+    def test_getComputedTimeSeries():
         d = epanet('Net1.inp')
         comp_vals = d.getComputedTimeSeries()
         d.unload()
@@ -3829,7 +3831,7 @@ class AnalysisTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(actual_20, desired_20, err_msg=err_msg, decimal=5)
 
     @staticmethod
-    def testgetComputedTimeSeries_ENepanet():
+    def test_getComputedTimeSeries_EN_Epanet():
         d = epanet('Net1.inp')
         comp_vals = d.getComputedTimeSeries_ENepanet()
         err_msg = 'Error in getComputedTimeSeries_ENepanet output'
