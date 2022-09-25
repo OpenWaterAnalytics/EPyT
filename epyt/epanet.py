@@ -58,6 +58,8 @@
    implied. See the Licence for the specific language governing
    permissions and limitations under the Licence.
 """
+from typing import List
+
 from pkg_resources import resource_filename
 from inspect import getmembers, isfunction, currentframe, getframeinfo
 import matplotlib.pyplot as plt
@@ -310,48 +312,47 @@ class ToolkitConstants:
     EN_R_IS_ACTIVE = 3
 
 
-class val:
+class epyt_values:
 
     def __init__(self):
         pass
-        # self.RelativeError = None
 
-    def disp(Vals):
+    def disp(values):
         """ Displays the values on the command window
 
-        :param Vals: Values to be printed on the command window
-        :type Vals: val class
+        :param values: Values to be printed on the command window
+        :type values: epyt_values class
         :return: None
 
         """
-        values = vars(Vals)
+        print_values = vars(values)
         print('\n')
-        for i in values:
-            print(f'{i}: {values[str(i)]}', end='\n')
+        for i in print_values:
+            print(f'{i}: {print_values[str(i)]}', end='\n')
 
-    def to_dict(Vals):
-        """ Transform val class values to dict format
+    def to_dict(values):
+        """ Transform epyt_values class values to dict format
 
-        :param Vals: Values to add in the dictionary
-        :type Vals: val class
+        :param values: Values to add in the dictionary
+        :type values: epyt_values class
         :return: dictionary with the values
         :rtype: dict
 
         """
-        values = vars(Vals)
-        return values
+        dict_values = vars(values)
+        return dict_values
 
-    def to_excel(Vals, filename=None, attributes=None, allValues=False):
-        """ Save to an excel file the values of val clas
+    def to_excel(values, filename=None, attributes=None, allValues=False):
+        """ Save to an Excel file the values of epyt_values class
 
-        :param Vals: Values to add to the excel file
-        :type Vals: val class
+        :param values: Values to add to the Excel file
+        :type values: epyt_values class
         :param filename: excel filename, defaults to None
         :type filename: str, optional
         :param attributes: attributes to add to the file, defaults to None
         :type attributes: str or list of str, optional
         :param allValues: 'True' if all the values will be included in a
-            seperate sheet, defaults to False
+            separate sheet, defaults to False
         :type allValues: bool, optional
         :return: None
 
@@ -363,7 +364,7 @@ class val:
         if '.xlsx' not in filename:
             filename = filename + '.xlsx'
 
-        dictVals = val.to_dict(Vals)
+        dictVals = epyt_values.to_dict(values)
         dictValss = {}
         for i in dictVals:
             if isinstance(dictVals[i], (np.ndarray, np.matrix)):
@@ -424,19 +425,19 @@ class val:
                                 startrow=startrow
                             )
 
-    def to_json(Vals, filename=None):
+    def to_json(values, filename=None):
         """ Transforms val class values to json object and saves them
         to a json file if filename is provided
 
-        :param Vals: Values to add in the json file
-        :type Vals: val class
+        :param values: Values to add in the json file
+        :type values: val class
         :param filename: json filename, defaults to None
         :type filename: str, optional
         :return: the json object with the values
         :rtype: json object
 
         """
-        dictVals = val.to_dict(Vals)
+        dictVals = epyt_values.to_dict(values)
         dictValss = {}
         for i in dictVals:
             if isinstance(dictVals[i], (np.ndarray, np.matrix)):
@@ -1251,6 +1252,8 @@ class epanet:
         """
         nodeIndex = argv[0]
         baseDemand = argv[1]
+        demandPattern = ''
+        demandName = ''
         if len(argv) == 2:
             demandPattern = ''
             demandName = ''
@@ -1261,8 +1264,7 @@ class epanet:
             demandPattern = argv[2]
             demandName = argv[3]
         if not isList(nodeIndex):
-            self.api.ENadddemand(nodeIndex, baseDemand,
-                                 demandPattern, demandName)
+            self.api.ENadddemand(nodeIndex, baseDemand, demandPattern, demandName)
         elif isList(nodeIndex) and not isList(baseDemand) and not isList(demandPattern) and not isList(demandName):
             for i in nodeIndex:
                 self.api.ENadddemand(i, baseDemand, demandPattern, demandName)
@@ -1277,7 +1279,7 @@ class epanet:
                 self.api.ENadddemand(nodeIndex[i], baseDemand[i], demandPattern[i], demandName[i])
 
         if isList(nodeIndex) and not isList(demandName):
-            demandName = [demandName for i in nodeIndex]
+            demandName = [demandName for _ in nodeIndex]
 
         return self.getNodeJunctionDemandIndex(nodeIndex, demandName)
 
@@ -2077,10 +2079,11 @@ class epanet:
 
         See also getComputedQualityTimeSeries, getComputedTimeSeries.
         """
-        value = val()
+        value = epyt_values()
         self.openHydraulicAnalysis()
         self.api.solve = 1
         self.initializeHydraulicAnalysis()
+        sensingnodes = 0
         if len(argv) == 0:
             attrs = ['time', 'pressure', 'demand', 'demanddeficit', 'head',
                      'tankvolume', 'flow', 'velocity', 'headloss', 'status',
@@ -2184,7 +2187,7 @@ class epanet:
         self.closeHydraulicAnalysis()
         value.Time = np.array(value.Time)
 
-        value_final = val()
+        value_final = epyt_values()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2225,7 +2228,8 @@ class epanet:
 
         See also getComputedHydraulicTimeSeries, getComputedTimeSeries.
         """
-        value = val()
+        value = epyt_values()
+        sensingnodes = 0
         if not self.api.solve:
             self.solveCompleteHydraulics()
             self.api.solve = 1
@@ -2282,7 +2286,7 @@ class epanet:
             k += 1
         self.closeQualityAnalysis()
         value.Time = np.array(value.Time)
-        value_final = val()
+        value_final = epyt_values()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2310,7 +2314,7 @@ class epanet:
         for file in Path(".").glob("@#*.txt"):
             file.unlink()
         value.Time = np.array(value.Time)
-        value_final = val()
+        value_final = epyt_values()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2339,7 +2343,7 @@ class epanet:
         for file in Path(".").glob("@#*.txt"):
             file.unlink()
         value.Time = np.array(value.Time)
-        value_final = val()
+        value_final = epyt_values()
         val_dict = value.__dict__
         for i in val_dict:
             if type(val_dict[i]) is dict:
@@ -2420,7 +2424,7 @@ class epanet:
             self.ControlNodeIndex.append(v4)
             self.ControlLevelValues.append(v5)
             self.ControlTypes.append(self.TYPECONTROL[self.ControlTypesIndex[-1]])
-            value[i] = val()
+            value[i] = epyt_values()
             value[i].Type = self.ControlTypes[-1]
             # value[i].TypeIndex = self.ControlTypesIndex[i-1]
             value[i].LinkID = self.getLinkNameID(self.ControlLinkIndex[-1])
@@ -2525,7 +2529,7 @@ class epanet:
         See also getNodeCount, getNodeJunctionCount, getLinkCount, 
         getControlRulesCount.
         """
-        value = val()
+        value = epyt_values()
         value.Nodes = self.getNodeCount()
         value.Links = self.getLinkCount()
         value.Junctions = self.getNodeJunctionCount()
@@ -2683,7 +2687,7 @@ class epanet:
         See also setCurve, getCurveType, getCurveLengths, getCurveValue, 
         getCurveNameID, getCurveComment.
         """
-        value = val()
+        value = epyt_values()
         value.CurveNameID = []
         value.CurveNvalue = []
         value.CurveXvalue = []
@@ -2791,7 +2795,7 @@ class epanet:
         getNodeDemandCategoriesNumber, getNodeDemandPatternIndex, 
         getNodeDemandPatternNameID.
         """
-        value = val()
+        value = epyt_values()
         [value.DemandModelCode, value.DemandModelPmin, value.DemandModelPreq,
          value.DemandModelPexp] = self.api.ENgetdemandmodel()
         value.DemandModelType = self.DEMANDMODEL[value.DemandModelCode]
@@ -3484,7 +3488,7 @@ class epanet:
         See also getLinkType, getLinkTypeIndex, getLinkDiameter,
         getLinkLength, getLinkRoughnessCoeff, getLinkMinorLossCoeff.
         """
-        value = val()
+        value = epyt_values()
         value.LinkDiameter = []
         value.LinkLength = []
         value.LinkRoughnessCoeff = []
@@ -3811,7 +3815,7 @@ class epanet:
         See also getNodesConnectingLinksID.
         """
         indices = self.__getlinkIndices(*argv)
-        value = []
+        value: list[list[int]] = []
         for i in indices:
             value.append(self.api.ENgetlinknodes(i))
         if len(argv) == 1 and not isList(argv[0]):
@@ -4118,15 +4122,16 @@ class epanet:
 
         Example 1:
 
-       	>>> d.getNodeDemandCategoriesNumber()               # Retrieves the value of all node base demands categorie number
+       	>>> d.getNodeDemandCategoriesNumber()  # Retrieves the value of all node base demands categorie number
 
         Example 2:
 
-       	>>> d.getNodeDemandCategoriesNumber(1)              # Retrieves the value of the first node base demand categorie number
+       	>>> d.getNodeDemandCategoriesNumber(1)  # Retrieves the value of the first node base demand categorie number
 
         Example 3:
 
-       	>>> d.getNodeDemandCategoriesNumber([1,2,3,4])      # Retrieves the value of the first 4 nodes base demand categorie number
+       	>>> d.getNodeDemandCategoriesNumber([1,2,3,4])  # Retrieves the value of the first 4 nodes base demand
+       	categorie number
 
         See also getNodeBaseDemands, getNodeDemandPatternIndex, getNodeDemandPatternNameID.
         """
@@ -4173,6 +4178,7 @@ class epanet:
         numdemands = self.getNodeDemandCategoriesNumber()
         value = {}
         val = np.zeros((max(numdemands), self.getNodeCount()), dtype=int)
+        v = 0
         for i in self.getNodeIndex():
             v = 0
             for u in range(numdemands[i - 1]):
@@ -4336,6 +4342,7 @@ class epanet:
         See also getNodeJunctionDemandName, getNodeJunctionIndex, getNodeJunctionNameID,
         addNodeJunctionDemand, deleteNodeJunctionDemand, getNodeJunctionCount.
         """
+        value = []
         if len(argv) == 2:
             nodeIndex = argv[0]
             demandName = argv[1]
@@ -4362,7 +4369,7 @@ class epanet:
         elif len(argv) == 0:
             demandName = self.getNodeJunctionDemandName()
             indices = self.__getNodeJunctionIndices(*argv)
-            value = [[0 for i in range(len(indices))] for j in range(len(demandName))]
+            value = [[0 for _ in range(len(indices))] for _ in range(len(demandName))]
             for i in range(len(demandName)):
                 for j in range(len(demandName[i + 1])):
                     demandNameIn = demandName[i + 1][j]
@@ -4605,8 +4612,10 @@ class epanet:
         """
         indices = self.__getlinkIndices(*argv)
         values = self.getLinkNodesIndex(indices)
-        connVals = self.getNodeNameID(list(values[:, 0])), self.getNodeNameID(list(values[:, 1]))
-        return connVals
+        conn_vals = []
+        for value in values:
+            conn_vals.append(self.getNodeNameID(value.tolist()))
+        return np.array(conn_vals)
 
     def getNodesConnectingLinksIndex(self):
         """ Retrieves the indexes of the from/to nodes of all links.
@@ -4631,7 +4640,7 @@ class epanet:
         See also getNodeElevations, getNodeDemandPatternIndex, getNodeEmitterCoeff,
         getNodeInitialQuality, NodeTypeIndex.
         """
-        value = val()
+        value = epyt_values()
         value.NodeElevations = self.getNodeElevations()
         value.NodePatternIndex = self.getNodePatternIndex()
         value.NodeEmitterCoeff = self.getNodeEmitterCoeff()
@@ -4899,7 +4908,7 @@ class epanet:
         See also setNodeTankData, getNodeElevations, getNodeTankInitialLevel,
         getNodeTankMinimumWaterLevel, getNodeTankDiameter.
         """
-        tankData = val()
+        tankData = epyt_values()
         tankIndices = self.getNodeTankIndex()
         if len(argv) == 1:
             if argv[0] in tankIndices:
@@ -5833,7 +5842,7 @@ class epanet:
 
         See also getQualityType, getQualityCode.
         """
-        value = val()
+        value = epyt_values()
         qual_list = self.api.ENgetqualinfo()
         value.QualityCode = qual_list[0]
         value.QualityChemName = qual_list[1]
@@ -5903,6 +5912,7 @@ class epanet:
 
         See also getRules, getRuleInfo, addRules.
         """
+        index = 0
         if len(argv) == 0:
             index = list(range(1, self.getRuleCount()))
         elif len(argv) == 1:
@@ -5928,7 +5938,7 @@ class epanet:
 
         See also getRuleID, getRules, addRules.
         """
-        value = val()
+        value = epyt_values()
         if len(argv) == 0:
             index = list(range(1, self.getRuleCount() + 1))
         elif isList(argv[0]):
@@ -5977,9 +5987,11 @@ class epanet:
         else:
             ruleIndex = [argv[0]]
 
+        objectNameID = ''
         for i in ruleIndex:
             cnt = self.getRuleInfo().Premises[i - 1]
             premises = []
+            space = ''
             for j in range(1, cnt + 1):
                 [logop, object_, objIndex, variable, relop, status, value_premise] = self.api.ENgetpremise(i, j)
                 if j == 1:
@@ -6067,7 +6079,7 @@ class epanet:
         >>> d.getStatistic().disp()
 
         """
-        value = val()
+        value = epyt_values()
         value.Iterations = self.api.ENgetstatistic(self.ToolkitConstants.EN_ITERATIONS)
         value.RelativeError = self.api.ENgetstatistic(self.ToolkitConstants.EN_RELATIVEERROR)
         value.DeficientNodes = self.api.ENgetstatistic(self.ToolkitConstants.EN_DEFICIENTNODES)
@@ -6307,7 +6319,7 @@ class epanet:
 
         See also getFlowUnits.
         """
-        value = val()
+        value = epyt_values()
         if self.TYPEUNITS.index(self.getFlowUnits()) < 5:
             value.Units_US_Customary = 1
             value.Units_SI_Metric = 0
@@ -6589,6 +6601,7 @@ class epanet:
 
         See also unload, saveHydraulicFile.
         """
+        inpname = ''
         if len(argv) == 0:
             inpname = self.TempInpFile
         elif len(argv) == 1:
@@ -8686,6 +8699,7 @@ class epanet:
         See also getNodeTankMixingModelType, setNodeTankBulkReactionCoeff, setNodeTankMixingFraction,
         setNodeTankMinimumWaterVolume, setNodeTankMinimumWaterLevel, setNodeTankData.
         """
+        _type = []
         if len(argv) == 0:
             _type = value
         elif len(argv) == 1:
@@ -8900,6 +8914,7 @@ class epanet:
 
         See also getOptionsHeadLossFormula, setOptionsHeadError, setOptionsFlowChange.
         """
+        codevalue = 0
         if value == 'HW':
             codevalue = 0
         elif value == 'DW':
@@ -9280,6 +9295,7 @@ class epanet:
         See also setRulePremiseObjectNameID, setRulePremiseStatus, setRulePremiseValue,
         setRules, getRules, addRules, deleteRules.
         """
+        objIndex = 0
         premise_new = premise.split()
         logop = self.LOGOP.index(premise_new[0]) + 1
         object_ = eval('self.ToolkitConstants.EN_R_' + premise_new[1])
@@ -9416,6 +9432,8 @@ class epanet:
 
         See also setRules, setRuleThenAction, setRulePriority, getRuleInfo, getRules, addRules, deleteRules.
         """
+        status = ''
+        setting = -1
         else_new = else_action.split()
         if else_new[3] == 'STATUS':
             status = eval('self.ToolkitConstants.EN_R_IS_' + else_new[5])
@@ -9444,6 +9462,7 @@ class epanet:
 
         See also setRulePremise, setRulePremiseObjectNameID, setRulePremiseValue, setRules, getRules, addRules, deleteRules.
         """
+        status_code = 0
         if status == 'OPEN':
             status_code = self.ToolkitConstants.EN_R_IS_OPEN
         elif status == 'CLOSED':
@@ -9493,6 +9512,8 @@ class epanet:
 
         See also setRules, setRuleElseAction, setRulePriority, getRuleInfo, getRules, addRules, deleteRules.
         """
+        status = ''
+        setting = -1
         then_action = then_action.split()
         if then_action[3] == 'STATUS':
             status = eval('self.ToolkitConstants.EN_R_IS_' + then_action[5])
@@ -9642,6 +9663,7 @@ class epanet:
 
         See also getTitle, setLinkComment, setNodeComment.
         """
+        line1 = ''
         line2 = ''
         line3 = ''
         if len(argv) > 0:
@@ -9902,7 +9924,10 @@ class epanet:
         links_to_show_ind = []
         links_ind = self.getLinkIndex()
         links_ID = self.getLinkNameID()
-
+        valves_ID = []
+        junc_ID = []
+        res_ID = []
+        tank_ID = []
         if point is True:
             plot_links = False
         if line is True:
@@ -10011,6 +10036,8 @@ class epanet:
             bar.set_label(label=colorbar_label, size=fontsize)
 
         # Plot Links
+        xV = 0
+        yV = 0
         if plot_links:
             x, y = [0, 0], [0, 0]
             for i in links_ind:
@@ -10235,7 +10262,7 @@ class epanet:
         if title is not None:
             plt.title(title, fontsize=fontsize, fontweight="bold")
         if figure:
-            plt.show(block=False)
+            plt.show()  # (block=False)
 
         return figure
 
@@ -10255,9 +10282,11 @@ class epanet:
         plt.show()
 
     def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color='b', marker='x',
-                figure_size=[3, 2.5], constrained_layout=True, fontsize=5):
+                figure_size=None, constrained_layout=True, fontsize=5):
         """ Plot X Y data
         """
+        if figure_size is None:
+            figure_size = [3, 2.5]
         plt.rc('xtick', labelsize=fontsize - 1)
         plt.rc('ytick', labelsize=fontsize - 1)
         plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
@@ -10401,70 +10430,71 @@ class epanet:
         # The new node has the coordinates and elevation of the deleted
         # node
         # Get node coordinates and info
-        oldIndex = self.getNodeIndex(Id)
-        nodeCoords = self.getNodeCoordinates(oldIndex)
-        vertCoords = self.getLinkVertices()
-        if (nodeCoords['x'][oldIndex] == 0 and nodeCoords['y'][oldIndex] == 0):
+        old_index = self.getNodeIndex(Id)
+        node_coords = self.getNodeCoordinates(old_index)
+        vert_coords = self.getLinkVertices()
+        if node_coords['x'][old_index] == 0 and node_coords['y'][old_index] == 0:
             warnings.warn('Node has zero value for coordinates')
         # Get the elevation
-        elev = self.getNodeElevations(oldIndex)
+        elev = self.getNodeElevations(old_index)
         # Get the connected links and link info
-        connLinkMat = self.getNodesConnectingLinksID()
-        lInfo = self.getLinksInfo()
-        linkTypeMat = self.getLinkType()
-        linkMat, linktypeMat, linknodeIndex, linknodeIndices, choiceMat = [], [], [], [], []
+        conn_link_mat = self.getNodesConnectingLinksID()
+        link_info = self.getLinksInfo()
+        link_type_mat = self.getLinkType()
+        link_mat, link_type_m, link_node_index, link_node_indices, choice_mat = [], [], [], [], []
         # Get data of nameID and type for connected links
-        for i in range(len(connLinkMat)):
-            if connLinkMat[i][0] == Id:
-                linkMat.append(connLinkMat[i][1])
-                linktypeMat.append(linkTypeMat[i])
-                linknodeIndex.append(self.getNodeIndex(connLinkMat[i][1]))
-                linknodeIndices.append(i + 1)
-                choiceMat.append(1 + 1)
-            elif connLinkMat[i][1] == Id:
-                linkMat.append(connLinkMat[i][0])
-                linktypeMat.append(linkTypeMat[i])
-                linknodeIndex.append(self.getNodeIndex(connLinkMat[i][0]))
-                linknodeIndices.append(i + 1)
-                choiceMat.append(2)
+        for i in range(len(conn_link_mat)):
+            if conn_link_mat[i][0] == Id:
+                link_mat.append(conn_link_mat[i][1])
+                link_type_m.append(link_type_mat[i])
+                link_node_index.append(self.getNodeIndex(conn_link_mat[i][1]))
+                link_node_indices.append(i + 1)
+                choice_mat.append(1 + 1)
+            elif conn_link_mat[i][1] == Id:
+                link_mat.append(conn_link_mat[i][0])
+                link_type_m.append(link_type_mat[i])
+                link_node_index.append(self.getNodeIndex(conn_link_mat[i][0]))
+                link_node_indices.append(i + 1)
+                choice_mat.append(2)
         # Delete the node to be replaced
-        self.deleteNode(oldIndex)
+        self.deleteNode(old_index)
         # Create a new node according to the type
-        nodeCoords = [nodeCoords['x'][oldIndex], nodeCoords['y'][oldIndex]]
+        node_coords = [node_coords['x'][old_index], node_coords['y'][old_index]]
+        index = 0
         if Type == 0:
             # Add new jucntion with previous nodes coordinates and elevation
-            index = self.addNodeJunction(Id, nodeCoords, elev)
+            index = self.addNodeJunction(Id, node_coords, elev)
         elif Type == 1:
             # Add new reservoir with previous nodes coordinates and elevation
-            index = self.addNodeReservoir(Id, nodeCoords, elev)
+            index = self.addNodeReservoir(Id, node_coords, elev)
         elif Type == 2:
             # Add new tank with previous nodes coordinates and elevation
-            index = self.addNodeTank(Id, nodeCoords, elev)
+            index = self.addNodeTank(Id, node_coords, elev)
         # Add the deleted links with the newIndex
-        for i in range(len(linkMat)):
-            linkId = 'L_' + Id + str(i)
-            lType_code = eval('self.ToolkitConstants.EN_' + linktypeMat[i])
+        for i in range(len(link_mat)):
+            link_id = 'L_' + Id + str(i)
+            l_type_code = eval('self.ToolkitConstants.EN_' + link_type_m[i])
             # Add a link
             # Check which node x coordinate is smaller to set it as the start
-            if choiceMat[i] == 1:
-                lindex = self.api.ENaddlink(linkId, lType_code, Id, linkMat[i])
+            if choice_mat[i] == 1:
+                lindex = self.api.ENaddlink(link_id, l_type_code, Id, link_mat[i])
             else:
-                lindex = self.api.ENaddlink(linkId, lType_code, linkMat[i], Id)
+                lindex = self.api.ENaddlink(link_id, l_type_code, link_mat[i], Id)
             # add attributes to the new links
-            self.setLinkLength(lindex, lInfo.LinkLength[linknodeIndices[i]])
-            self.setLinkDiameter(lindex, lInfo.LinkDiameter[linknodeIndices[i]])
-            self.setLinkRoughnessCoeff(lindex, lInfo.LinkRoughnessCoeff[linknodeIndices[i]])
-            if lInfo.LinkMinorLossCoeff[linknodeIndices[i]]:
-                self.setLinkMinorLossCoeff(lindex, lInfo.LinkMinorLossCoeff[linknodeIndices(i)])
-            self.setLinkInitialStatus(lindex, lInfo.LinkInitialStatus[linknodeIndices[i]])
-            self.setLinkInitialSetting(lindex, lInfo.LinkInitialSetting[linknodeIndices[i]])
-            self.setLinkBulkReactionCoeff(lindex, lInfo.LinkBulkReactionCoeff[linknodeIndices[i]])
-            self.setLinkWallReactionCoeff(lindex, lInfo.LinkWallReactionCoeff[linknodeIndices[i]])
-            if len(vertCoords['x'][linknodeIndices[i]]) != 0:
+            self.setLinkLength(lindex, link_info.LinkLength[link_node_indices[i]])
+            self.setLinkDiameter(lindex, link_info.LinkDiameter[link_node_indices[i]])
+            self.setLinkRoughnessCoeff(lindex, link_info.LinkRoughnessCoeff[link_node_indices[i]])
+            if link_info.LinkMinorLossCoeff[link_node_indices[i]]:
+                self.setLinkMinorLossCoeff(lindex, link_info.LinkMinorLossCoeff[link_node_indices[i]])
+            self.setLinkInitialStatus(lindex, link_info.LinkInitialStatus[link_node_indices[i]])
+            self.setLinkInitialSetting(lindex, link_info.LinkInitialSetting[link_node_indices[i]])
+            self.setLinkBulkReactionCoeff(lindex, link_info.LinkBulkReactionCoeff[link_node_indices[i]])
+            self.setLinkWallReactionCoeff(lindex, link_info.LinkWallReactionCoeff[link_node_indices[i]])
+            if len(vert_coords['x'][link_node_indices[i]]) != 0:
                 # Add vertices with neighbour nodes
-                xCoord = vertCoords['x'][linknodeIndices[i]]
-                yCoord = vertCoords['y'][linknodeIndices[i]]
-                self.setLinkVertices(linkId, xCoord, yCoord)
+                x_coord = vert_coords['x'][link_node_indices[i]]
+                y_coord = vert_coords['y'][link_node_indices[i]]
+                self.setLinkVertices(link_id, x_coord, y_coord)
         return index
 
     def __checkLinkIfString(self, value):
@@ -10484,6 +10514,9 @@ class epanet:
                 # control setting Value (type should be int) for pump or valve
                 controlSettingValue = float(splitControl[2])
         linkIndex = self.getLinkIndex(splitControl[1])
+        controlTypeIndex = 0
+        nodeIndex = 0
+        controlLevel = 0
         if not linkIndex:
             raise Exception('Wrong link ID. Please change your control.')
         if splitControl[3] == 'IF':
@@ -10809,7 +10842,7 @@ class epanet:
         return [np.sum(a == B) for a in np.array(A)]
 
     def __readEpanetBin(self, f, binfile, *argv):
-        value = val()
+        value = epyt_values()
         if f.readable():
             data = np.fromfile(binfile, dtype=np.uint32)
             value.NumberReportingPeriods = data[-3]
@@ -10935,7 +10968,7 @@ class epanet:
             value.MagicNumber = f.read(10)
 
         if len(argv) > 0:
-            v = val()
+            v = epyt_values()
             v.Time = [int(i * value.ReportingTimeStepSec) for i in
                       range(int(value.SimulationDurationSec / value.ReportingTimeStepSec) + 1)]
             fields_param = ['NodePressure', 'NodeDemand', 'NodeHead', 'NodeQuality',
@@ -11022,9 +11055,10 @@ class epanet:
                         eval(strFunc)
                         j += 1
             else:
-                if (Type == 'TANK'):
+                Index = []
+                if Type == 'TANK':
                     Index = self.getNodeTankIndex()
-                elif (Type == 'PUMP'):
+                elif Type == 'PUMP':
                     Index = self.getLinkPumpIndex()
                 if index not in Index:
                     Index = Index[index - 1]
@@ -11037,10 +11071,11 @@ class epanet:
                 eval(strFunc)
         else:
             count = 0
-            if (Type == 'TANK'):
+            indices = []
+            if Type == 'TANK':
                 count = self.getNodeTankCount()
                 indices = self.getNodeTankIndex()
-            elif (Type == 'PUMP'):
+            elif Type == 'PUMP':
                 count = self.getLinkPumpCount()
                 indices = self.getLinkPumpIndex()
             if isinstance(value, (list, np.ndarray)):
@@ -11062,6 +11097,8 @@ class epanet:
     def __setNodeDemandPattern(self, fun, propertyCode, value, *argv):
 
         categ = 1
+        indices = self.__getNodeJunctionIndices()
+        param = value
         if len(argv) == 2:
             indices = value
             categ = argv[0]
@@ -11069,11 +11106,6 @@ class epanet:
         elif len(argv) == 1:
             indices = value
             param = argv[0]
-        elif len(argv) == 0:
-            indices = self.__getNodeJunctionIndices()
-            param = value
-            # if isList(param):
-            #     categ = len(param)
 
         for c in range(categ):
             if len(argv) == 0 and type(value) is dict:
