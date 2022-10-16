@@ -10278,28 +10278,38 @@ class epanet:
         plt.show()
 
     def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color='b', marker='x',
-                figure_size=None, constrained_layout=True, fontsize=5):
+                figure_size=[3, 2.5], constrained_layout=True, fontsize=5, labels=None):
         """ Plot X Y data
         """
-        if figure_size is None:
-            figure_size = [3, 2.5]
+        num_points = np.atleast_2d(Y).shape[1]
         plt.rc('xtick', labelsize=fontsize - 1)
         plt.rc('ytick', labelsize=fontsize - 1)
         plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
-        if marker:
-            if X is None:
-                plt.plot(Y, color=color, marker=marker)
+        color_is_none = color
+        for i in range(num_points):
+            if color_is_none is None:
+                color = (random.uniform(0, 1), random.uniform(0, 1),
+                         random.uniform(0, 1))
+            if num_points == 1:
+                values = Y
             else:
-                plt.plot(X, Y, color=color, marker=marker)
-        else:
-            if X is None:
-                plt.plot(Y, color=color, linewidth=1)
+                values = Y[:, i]
+            if marker:
+                if X is None:
+                    plt.plot(values, color=color, marker=marker, label=labels[i])
+                else:
+                    plt.plot(X, values, color=color, marker=marker, label=labels[i])
             else:
-                plt.plot(X, Y, color=color, linewidth=1)
+                if X is None:
+                    plt.plot(values, color=color, linewidth=1, label=labels[i])
+                else:
+                    plt.plot(X, values, color=color, linewidth=1, label=labels[i])
         plt.xlabel(xlabel, fontsize=fontsize)
         plt.ylabel(ylabel, fontsize=fontsize)
         plt.title(title, fontsize=fontsize, fontweight="bold")
         # plt.tight_layout()
+        if labels is not None:
+            plt.legend(loc='best', fontsize=fontsize, markerscale=1)
         plt.show(block=False)
 
     def printv(self, var):
