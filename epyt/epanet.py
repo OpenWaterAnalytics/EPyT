@@ -10277,11 +10277,16 @@ class epanet:
         """
         plt.show()
 
-    def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color='b', marker='x',
+    def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color=None, marker='x',
                 figure_size=[3, 2.5], constrained_layout=True, fontsize=5, labels=None):
         """ Plot X Y data
         """
         num_points = np.atleast_2d(Y).shape[1]
+        try:
+            values = Y[:, 1]
+        except:
+            num_points = 1
+
         plt.rc('xtick', labelsize=fontsize - 1)
         plt.rc('ytick', labelsize=fontsize - 1)
         plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
@@ -10290,20 +10295,23 @@ class epanet:
             if color_is_none is None:
                 color = (random.uniform(0, 1), random.uniform(0, 1),
                          random.uniform(0, 1))
-            if num_points == 1:
-                values = Y
-            else:
+            try:
                 values = Y[:, i]
+                label = labels[i]
+            except:
+                values = Y
+                label = None
+
             if marker:
                 if X is None:
-                    plt.plot(values, color=color, marker=marker, label=labels[i])
+                    plt.plot(values, color=color, marker=marker, label=label)
                 else:
-                    plt.plot(X, values, color=color, marker=marker, label=labels[i])
+                    plt.plot(X, values, color=color, marker=marker, label=label)
             else:
                 if X is None:
-                    plt.plot(values, color=color, linewidth=1, label=labels[i])
+                    plt.plot(values, color=color, linewidth=1, label=label)
                 else:
-                    plt.plot(X, values, color=color, linewidth=1, label=labels[i])
+                    plt.plot(X, values, color=color, linewidth=1, label=label)
         plt.xlabel(xlabel, fontsize=fontsize)
         plt.ylabel(ylabel, fontsize=fontsize)
         plt.title(title, fontsize=fontsize, fontweight="bold")
