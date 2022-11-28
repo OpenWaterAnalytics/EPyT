@@ -10031,16 +10031,15 @@ class epanet:
                             (x[0] + x[1]) / 2, (y[0] + y[1]) / 2, links_ind[i - 1], {'fontsize': fontsize}
                         )
                     if link_text:
-                        plt.text(
-                            (x[0] + x[1]) / 2, (y[0] + y[1]) / 2, "{:.2f}".format(flow[i - 1]), {'fontsize': fontsize}
-                        )
+                        plt.text((x[0] + x[1]) / 2, (y[0] + y[1]) / 2, "{:.2f}".format(link_values[i - 1]),
+                                  {'fontsize': fontsize})
                 else:
                     xV_old = x[0]
                     yV_old = y[0]
                     for j in range(len(nodecoords['x_vert'][i])):
                         xV = nodecoords['x_vert'][i][j]
                         yV = nodecoords['y_vert'][i][j]
-                        if fix_colorbar and flow is not None:
+                        if fix_colorbar and link_values is not None:
                             plt.plot([xV_old, xV], [yV_old, yV], '-', linewidth=1, zorder=0, color=colors[i])
                         else:
                             plt.plot([xV_old, xV], [yV_old, yV], color='steelblue', linewidth=0.2, zorder=0)
@@ -10066,8 +10065,7 @@ class epanet:
                         plt.text(
                             nodecoords['x_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
                             nodecoords['y_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
-                            "{:.2f}".format(flow[i - 1]), {'fontsize': fontsize}
-                        )
+                            "{:.2f}".format(link_values[i - 1]), {'fontsize': fontsize})
 
             if not line:
                 # Plot Pumps
@@ -10111,8 +10109,7 @@ class epanet:
                     elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
                         plt.text(xx, yy, i, {'fontsize': fontsize})
                     if node_text:
-                        plt.text(xx, yy, "{:.2f}".format(pressure[i - 1]),
-                                 {'fontsize': fontsize})
+                        plt.text(xx, yy, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
 
         if highlightlink is not None:
             if type(highlightlink) == str:
