@@ -22,14 +22,14 @@
 
    Inspired by:
    EPANET-MATLAB Toolkit
-   D.G. Eliades, M. Kyriakou, S. Vrachimis and M.M. Polycarpou, 
+   D.G. Eliades, M. Kyriakou, S. Vrachimis and M.M. Polycarpou,
    "EPANET-MATLAB Toolkit: An Open-Source Software for Interfacing EPANET with MATLAB", in Proc. 14th International
    Conference on Computing and Control for the Water Industry (CCWI),
    The Netherlands, Nov 2016, p.8. (doi:10.5281/zenodo.831493)
 
    Other python packages related to the EPANET engine:
    wntr
-   Klise, K.A., Murray, R., Haxton, T. (2018). An overview of the Water 
+   Klise, K.A., Murray, R., Haxton, T. (2018). An overview of the Water
    Network Tool for Resilience (WNTR),
    In Proceedings of the 1st International WDSA/CCWI Joint Conference,
    Kingston, Ontario, Canada, July 23-25, 075, 8p.
@@ -518,7 +518,7 @@ class epanet:
                              'NOT', 'BELOW', 'ABOVE']
 
         # Initial attributes
-        self.classversion = '1.0.1'
+        self.classversion = '1.0.2'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
@@ -2382,23 +2382,23 @@ class epanet:
         Example :
 
         # Retrieves the parameters of all control statements
-        >>> d.getControls()             
+        >>> d.getControls()
         # Retrieves the type of the 1st control
-        >>> d.getControls(1).Type       
+        >>> d.getControls(1).Type
         # Retrieves the ID of the link associated with the 1st control
-        >>> d.getControls(1).LinkID     
+        >>> d.getControls(1).LinkID
         # Retrieves the setting of the link associated with the 1st control
-        >>> d.getControls(1).Setting    
+        >>> d.getControls(1).Setting
         # Retrieves the ID of the node associated with the 1st control
-        >>> d.getControls(1).NodeID     
+        >>> d.getControls(1).NodeID
         # Retrieves the value of the node associated with the 1st control
-        >>> d.getControls(1).Value      
+        >>> d.getControls(1).Value
         # Retrieves the 1st control statement
-        >>> d.getControls(1).Control    
+        >>> d.getControls(1).Control
         # Retrieves all the parameters of the first control statement in a dict
-        >>> d.getControls(1).to_dict()  
+        >>> d.getControls(1).to_dict()
         # Retrieves the parameters of the first two control statements
-        >>> d.getControls([1,2])        
+        >>> d.getControls([1,2])
 
         See also setControls, addControls, deleteControls,
         getRules, setRules, addRules, deleteRules.
@@ -2473,17 +2473,17 @@ class epanet:
         Example 1:
 
         # Retrieves the comment string assigned to all the curves
-        >>> d.getCurveComment()       
+        >>> d.getCurveComment()
 
         Example 2:
 
         # Retrieves the comment string assigned to the 1st curve
-        >>> d.getCurveComment(1)      
+        >>> d.getCurveComment(1)
 
         Example 3:
 
         # Retrieves the comment string assigned to the first 2 curves
-        >>> d.getCurveComment([1,2])  
+        >>> d.getCurveComment([1,2])
 
         See also getCurveNameID, getCurveType, getCurvesInfo
         """
@@ -2516,13 +2516,13 @@ class epanet:
         Example:
 
         # Retrieves the number of all network components
-        >>> counts = d.getCounts().to_dict()   
-        # Retrieves the number of nodes 
-        >>> d.getCounts().Nodes                
+        >>> counts = d.getCounts().to_dict()
+        # Retrieves the number of nodes
+        >>> d.getCounts().Nodes
         # Retrieves the number of simple controls
-        >>> d.getCounts().SimpleControls       
+        >>> d.getCounts().SimpleControls
 
-        See also getNodeCount, getNodeJunctionCount, getLinkCount, 
+        See also getNodeCount, getNodeJunctionCount, getLinkCount,
         getControlRulesCount.
         """
         value = EpytValues()
@@ -2552,24 +2552,24 @@ class epanet:
         return self.api.ENgetcount(self.ToolkitConstants.EN_CURVECOUNT)
 
     def getCurveIndex(self, *argv):
-        """ Retrieves the index of a curve with specific ID. 
+        """ Retrieves the index of a curve with specific ID.
 
         Example 1:
 
         # Retrieves the indices of all the curves
-        >>> d.getCurveIndex()              
+        >>> d.getCurveIndex()
 
         Example 2:
 
         # Retrieves the index of the 1st curve given it's ID
         >>> curveID = d.getCurveNameID(1)
-        >>> d.getCurveIndex(curveID)       
+        >>> d.getCurveIndex(curveID)
 
         Example 3:
 
         # Retrieves the indices of the first 2 curves given their ID
         >>> curveID = d.getCurveNameID([1,2])
-        >>> d.getCurveIndex(curveID)       
+        >>> d.getCurveIndex(curveID)
 
         See also getCurveNameID, getCurvesInfo.
         """
@@ -2584,20 +2584,20 @@ class epanet:
         return value
 
     def getCurveLengths(self, *argv):
-        """ Retrieves number of points in a curve. 
+        """ Retrieves number of points in a curve.
 
         The examples are based on: d = epanet('Richmond_standard.inp')
 
         Example:
 
         # Retrieves the number of points in all the curves
-        >>> d.getCurveLengths()         
+        >>> d.getCurveLengths()
         # Retrieves the number of points in the 1st curve
-        >>> d.getCurveLengths(1)        
+        >>> d.getCurveLengths(1)
         # Retrieves the number of points in the first 2 curves
-        >>> d.getCurveLengths([1,2])    
+        >>> d.getCurveLengths([1,2])
         # Retrieves the number of points for curve with id = '1'
-        >>> d.getCurveLengths('1006')   
+        >>> d.getCurveLengths('1006')
 
         See also getCurvesInfo, setCurve.
         """
@@ -2627,16 +2627,16 @@ class epanet:
         return value
 
     def getCurveNameID(self, *argv):
-        """Retrieves the IDs of curves. 
+        """Retrieves the IDs of curves.
 
         Example:
 
         # Retrieves the IDs of all the curves
-        >>> d.getCurveNameID()         
+        >>> d.getCurveNameID()
         # Retrieves the ID of the 1st curve
-        >>> d.getCurveNameID(1)        
+        >>> d.getCurveNameID(1)
         # Retrieves the IDs of the first 2 curves
-        >>> d.getCurveNameID([1,2])    
+        >>> d.getCurveNameID([1,2])
 
         See also setCurveNameID, getCurvesInfo.
         """
@@ -2655,7 +2655,7 @@ class epanet:
 
     def getCurvesInfo(self):
         """
-        Retrieves all the info of curves. 
+        Retrieves all the info of curves.
 
         Returns the following informations:
           1) Curve Name ID
@@ -2667,20 +2667,20 @@ class epanet:
 
         >>> d.getCurvesInfo().disp()
         # Retrieves the IDs of curves
-        >>> d.getCurvesInfo().CurveNameID       
+        >>> d.getCurvesInfo().CurveNameID
         # Retrieves the number of points on curv
         # # Retrieves the number of points on curvee
-        >>> d.getCurvesInfo().CurveNvalue       
+        >>> d.getCurvesInfo().CurveNvalue
         # Retrieves the X values of points of all curves
-        >>> d.getCurvesInfo().CurveXvalue       
+        >>> d.getCurvesInfo().CurveXvalue
         # Retrieves the X values of points of the 1st curve
-        >>> d.getCurvesInfo().CurveXvalue[0]    
+        >>> d.getCurvesInfo().CurveXvalue[0]
         # Retrieves the Y values of points of all curves
-        >>> d.getCurvesInfo().CurveYvalue       
+        >>> d.getCurvesInfo().CurveYvalue
         # Retrieves the Y values of points of the 1st curve
-        >>> d.getCurvesInfo().CurveYvalue[0]    
+        >>> d.getCurvesInfo().CurveYvalue[0]
 
-        See also setCurve, getCurveType, getCurveLengths, getCurveValue, 
+        See also setCurve, getCurveType, getCurveLengths, getCurveValue,
         getCurveNameID, getCurveComment.
         """
         value = EpytValues()
@@ -2702,11 +2702,11 @@ class epanet:
         Example:
 
         # Retrieves the curve-type for all curves
-        >>> d.getCurveType()        
+        >>> d.getCurveType()
         # Retrieves the curve-type for the 1st curve
-        >>> d.getCurveType(1)       
+        >>> d.getCurveType(1)
         # Retrieves the curve-type for the first 2 curves
-        >>> d.getCurveType([1,2])   
+        >>> d.getCurveType([1,2])
 
         See also getCurveTypeIndex, getCurvesInfo.
         """
@@ -2721,11 +2721,11 @@ class epanet:
         Example:
 
         # Retrieves the curve-type index for all curves
-        >>> d.getCurveTypeIndex()        
+        >>> d.getCurveTypeIndex()
         # Retrieves the curve-type index for the 1st curve
-        >>> d.getCurveTypeIndex(1)       
+        >>> d.getCurveTypeIndex(1)
         # Retrieves the curve-type index for the first 2 curves
-        >>> d.getCurveTypeIndex([1,2])   
+        >>> d.getCurveTypeIndex([1,2])
 
         See also getCurveType, getCurvesInfo.
         """
@@ -2734,18 +2734,18 @@ class epanet:
             if isList(indices) else self.api.ENgetcurvetype(indices)
 
     def getCurveValue(self, *argv):
-        """ Retrieves the X, Y values of points of curves. 
+        """ Retrieves the X, Y values of points of curves.
 
         Example:
 
         # Retrieves all the X and Y values of all curves
-        >>> d.getCurveValue()                          
+        >>> d.getCurveValue()
         >>> curveIndex = 1
         # Retrieves all the X and Y values of the 1st curve
-        >>> d.getCurveValue(curveIndex)                
+        >>> d.getCurveValue(curveIndex)
         >>> pointIndex = 1
         # Retrieves the X and Y values of the 1st point of the 1st curve
-        >>> d.getCurveValue(curveIndex, pointIndex)    
+        >>> d.getCurveValue(curveIndex, pointIndex)
 
         See also setCurveValue, setCurve, getCurvesInfo.
         """
@@ -2787,8 +2787,8 @@ class epanet:
 
         >>> model = d.getDemandModel()
 
-        See also setDemandModel, getNodeBaseDemands, 
-        getNodeDemandCategoriesNumber, getNodeDemandPatternIndex, 
+        See also setDemandModel, getNodeBaseDemands,
+        getNodeDemandCategoriesNumber, getNodeDemandPatternIndex,
         getNodeDemandPatternNameID.
         """
         value = EpytValues()
@@ -2798,7 +2798,7 @@ class epanet:
         return value
 
     def getError(self, Errcode):
-        """ Retrieves the text of the message associated with a particular 
+        """ Retrieves the text of the message associated with a particular
         error or warning code.
 
         Example:
@@ -2843,19 +2843,19 @@ class epanet:
         Example 1:
 
         # Retrieves the comments of all links
-        >>> d.getLinkComment()            
+        >>> d.getLinkComment()
 
         Example 2:
 
         >>> linkIndex = 1
         # Retrieves the comment of the 1st link
-        >>> d.getLinkComment(linkIndex)  
+        >>> d.getLinkComment(linkIndex)
 
         Example 3:
 
         >>> linkIndex = [1,2,3,4,5]
         # Retrieves the comments of the first 5 links
-        >>> d.getLinkComment(linkIndex)   
+        >>> d.getLinkComment(linkIndex)
 
         See also setLinkComment, getLinkNameID, getLinksInfo.
         """
@@ -2882,11 +2882,11 @@ class epanet:
         Example 1:
 
         # Retrieves the value of all link quality
-        >>> d.getLinkQuality()       
+        >>> d.getLinkQuality()
         Example 2:
 
         # Retrieves the value of the first link quality
-        >>> d.getLinkQuality(1)      
+        >>> d.getLinkQuality(1)
 
         See also getLinkType, getLinksInfo, getLinkDiameter,
         getLinkRoughnessCoeff, getLinkMinorLossCoeff.
@@ -2899,12 +2899,12 @@ class epanet:
         Example 1:
 
         # Retrieves the link-type code for all links
-        >>> d.getLinkType()      
+        >>> d.getLinkType()
 
         Example 2:
 
         # Retrieves the link-type code for the first link
-        >>> d.getLinkType(1)     
+        >>> d.getLinkType(1)
 
         See also getLinkTypeIndex, getLinksInfo, getLinkDiameter,
         getLinkLength, getLinkRoughnessCoeff, getLinkMinorLossCoeff.
@@ -2928,11 +2928,11 @@ class epanet:
         Example:
 
         # Retrieves the link-type code for all links
-        >>> d.getLinkTypeIndex()          
+        >>> d.getLinkTypeIndex()
         # Retrieves the link-type code for the first link
-        >>> d.getLinkTypeIndex(1)         
+        >>> d.getLinkTypeIndex(1)
         # Retrieves the link-type code for the second and third links
-        >>> d.getLinkTypeIndex([2,3])     
+        >>> d.getLinkTypeIndex([2,3])
 
         See also getLinkType, getLinksInfo, getLinkDiameter,
         getLinkLength, getLinkRoughnessCoeff, getLinkMinorLossCoeff.
@@ -2957,11 +2957,11 @@ class epanet:
         Example 1:
 
         # Retrieves the value of all link diameters
-        >>> d.getLinkDiameter()      
+        >>> d.getLinkDiameter()
         # Retrieves the value of the first link diameter
-        >>> d.getLinkDiameter(1)     
+        >>> d.getLinkDiameter(1)
         # Retrieves the value of the second and third link diameter
-        >>> d.getLinkDiameter([1,2]) 
+        >>> d.getLinkDiameter([1,2])
 
         See also getLinkType, getLinksInfo, getLinkLength,
         getLinkRoughnessCoeff, getLinkMinorLossCoeff.
@@ -2975,12 +2975,12 @@ class epanet:
         Example:
 
         # Retrieves the value of all link lengths
-        >>> d.getLinkLength()        
+        >>> d.getLinkLength()
         # Retrieves the value of the first link length
-        >>> d.getLinkLength(1)       
+        >>> d.getLinkLength(1)
 
         See also getLinkType, getLinksInfo, getLinkDiameter,
-        getLinkRoughnessCoeff, getLinkMinorLossCoeff.ughnessCoeff, 
+        getLinkRoughnessCoeff, getLinkMinorLossCoeff.ughnessCoeff,
         getLinkMinorLossCoeff.
         """
         return self.__getLinkInfo(self.ToolkitConstants.EN_LENGTH, *argv)
@@ -2992,9 +2992,9 @@ class epanet:
         Example:
 
         # Retrieves the value of all link roughness coefficients
-        >>> d.getLinkRoughnessCoeff()       
+        >>> d.getLinkRoughnessCoeff()
         # Retrieves the value of the first link roughness coefficient
-        >>> d.getLinkRoughnessCoeff(1)       
+        >>> d.getLinkRoughnessCoeff(1)
 
         See also getLinkType, getLinksInfo, getLinkDiameter,
         getLinkLength, getLinkMinorLossCoeff.
@@ -3008,9 +3008,9 @@ class epanet:
         Example:
 
         # Retrieves the value of all link minor loss coefficients
-        >>> d.getLinkMinorLossCoeff()        
+        >>> d.getLinkMinorLossCoeff()
         # Retrieves the value of the first link minor loss coefficient
-        >>> d.getLinkMinorLossCoeff(1)       
+        >>> d.getLinkMinorLossCoeff(1)
 
         See also getLinkType, getLinksInfo, getLinkDiameter,
         getLinkLength, getLinkRoughnessCoeff.
@@ -3018,25 +3018,25 @@ class epanet:
         return self.__getLinkInfo(self.ToolkitConstants.EN_MINORLOSS, *argv)
 
     def getLinkNameID(self, *argv):
-        """ Retrieves the ID label(s) of all links, or the IDs of 
+        """ Retrieves the ID label(s) of all links, or the IDs of
         an index set of links.
 
         Example 1:
 
         # Retrieves the ID's of all links
-        >>> d.getLinkNameID()                
+        >>> d.getLinkNameID()
 
         Example 2:
 
         >>> linkIndex = 1
         # Retrieves the ID of the link with index = 1
-        >>> d.getLinkNameID(linkIndex)       
+        >>> d.getLinkNameID(linkIndex)
 
         Example 3:
 
         >>> linkIndices = [1,2,3]
         # Retrieves the IDs of the links with indices = 1, 2, 3
-        >>> d.getLinkNameID(linkIndices)     
+        >>> d.getLinkNameID(linkIndices)
 
         See also getNodeNameID, getLinkPipeNameID, getLinkIndex.
         """
@@ -3060,9 +3060,9 @@ class epanet:
         Example :
 
         # Retrieves the value of all link initial status
-        >>> d.getLinkInitialStatus()        
+        >>> d.getLinkInitialStatus()
         # Retrieves the value of the first link initial status
-        >>> d.getLinkInitialStatus(1)       
+        >>> d.getLinkInitialStatus(1)
 
         See also getLinkType, getLinksInfo, getLinkInitialSetting,
         getLinkBulkReactionCoeff, getLinkWallReactionCoeff.
@@ -3070,15 +3070,15 @@ class epanet:
         return self.__getLinkInfo(self.ToolkitConstants.EN_INITSTATUS, *argv)
 
     def getLinkInitialSetting(self, *argv):
-        """ Retrieves the value of all link roughness for pipes or initial 
+        """ Retrieves the value of all link roughness for pipes or initial
         speed for pumps or initial setting for valves.
 
         Example:
 
         # Retrieves the value of all link initial settings
-        >>> d.getLinkInitialSetting()       
+        >>> d.getLinkInitialSetting()
         # Retrieves the value of the first link initial setting
-        >>> d.getLinkInitialSetting(1)      
+        >>> d.getLinkInitialSetting(1)
 
         See also getLinkType, getLinksInfo, getLinkInitialStatus,
         getLinkBulkReactionCoeff, getLinkWallReactionCoeff.
@@ -3091,12 +3091,12 @@ class epanet:
         Example:
 
         # Retrieves the value of all link bulk chemical reaction coefficient
-        >>> d.getLinkBulkReactionCoeff()      
-        # Retrieves the value of the first link bulk chemical 
+        >>> d.getLinkBulkReactionCoeff()
+        # Retrieves the value of the first link bulk chemical
         # reaction coefficient
-        >>> d.getLinkBulkReactionCoeff(1)     
+        >>> d.getLinkBulkReactionCoeff(1)
 
-        See also getLinkType, getLinksInfo, getLinkRoughnessCoeff, 
+        See also getLinkType, getLinksInfo, getLinkRoughnessCoeff,
         getLinkMinorLossCoeff, getLinkInitialStatus,
         getLinkInitialSetting, getLinkWallReactionCoeff.
         """
@@ -3108,12 +3108,12 @@ class epanet:
         Example :
 
         # Retrieves the value of all pipe wall chemical reaction coefficient
-        >>> d.getLinkWallReactionCoeff()      
-        # Retrieves the value of the first pipe wall chemical 
+        >>> d.getLinkWallReactionCoeff()
+        # Retrieves the value of the first pipe wall chemical
         # reaction coefficient
-        >>> d.getLinkWallReactionCoeff(1)  
+        >>> d.getLinkWallReactionCoeff(1)
 
-        See also getLinkType, getLinksInfo, getLinkRoughnessCoeff, 
+        See also getLinkType, getLinksInfo, getLinkRoughnessCoeff,
         getLinkMinorLossCoeff, getLinkInitialStatus,
         getLinkInitialSetting, getLinkBulkReactionCoeff.
         """
@@ -3133,16 +3133,16 @@ class epanet:
                linkTypes.count(self.ToolkitConstants.EN_PIPE)
 
     def getLinkPumpEfficiency(self, *argv):
-        """ Retrieves the current computed pump efficiency (read only). 
+        """ Retrieves the current computed pump efficiency (read only).
 
         Example :
 
         # Retrieves the current computed pump efficiency for all links
-        >>> d.getLinkPumpEfficiency()        
+        >>> d.getLinkPumpEfficiency()
         # Retrieves the current computed pump efficiency for the first link
-        >>> d.getLinkPumpEfficiency(1)       
+        >>> d.getLinkPumpEfficiency(1)
 
-        See also getLinkFlows, getLinkStatus, getLinkPumpState, 
+        See also getLinkFlows, getLinkStatus, getLinkPumpState,
         getLinkSettings, getLinkEnergy, getLinkActualQuality.
         """
         return self.__getPumpLinkInfo(self.ToolkitConstants.EN_PUMP_EFFIC, *argv)
@@ -3160,17 +3160,17 @@ class epanet:
         return linkTypes.count(self.ToolkitConstants.EN_PUMP)
 
     def getLinkPumpECost(self, *argv):
-        """ Retrieves the pump average energy price. 
+        """ Retrieves the pump average energy price.
 
         Example 1:
 
         # Retrieves the average energy price of all pumps
-        >>> d.getLinkPumpECost()               
+        >>> d.getLinkPumpECost()
 
         Example 2:
 
         # Retrieves the average energy price of the 1st pump
-        >>> d.getLinkPumpECost(1)               
+        >>> d.getLinkPumpECost(1)
 
         Example 3:
 
@@ -3178,7 +3178,7 @@ class epanet:
         >>> pIndex = 950
         >>> pIndices = d.getLinkPumpIndex()
         # Retrieves the average energy price of the pump with link index 950
-        >>> d.getLinkPumpECost(pIndex)           
+        >>> d.getLinkPumpECost(pIndex)
 
         See also setLinkPumpECost, getLinkPumpPower, getLinkPumpHCurve,
         getLinkPumpEPat, getLinkPumpPatternIndex, getLinkPumpPatternNameID.
@@ -3189,28 +3189,28 @@ class epanet:
         )
 
     def getLinkPumpECurve(self, *argv):
-        """ Retrieves the pump efficiency v. flow curve index. 
+        """ Retrieves the pump efficiency v. flow curve index.
 
         Example 1:
 
         # Retrieves the efficiency v. flow curve index of all pumps
-        >>> d.getLinkPumpECurve()                
+        >>> d.getLinkPumpECurve()
 
         Example 2:
 
         # Retrieves the efficiency v. flow curve index of the 1st pump
-        >>> d.getLinkPumpECurve(1)         
+        >>> d.getLinkPumpECurve(1)
 
         Example 3:
 
         # Retrieves the efficiency v. flow curve index of the first 2 pumps
-        >>> d.getLinkPumpECurve([1,2])           
+        >>> d.getLinkPumpECurve([1,2])
 
         Example 4:
 
-        # Retrieves the efficiency v. flow curve index of the pumps with 
+        # Retrieves the efficiency v. flow curve index of the pumps with
         # link index 950
-        >>> d = epanet('Richmond_standard.inp')  
+        >>> d = epanet('Richmond_standard.inp')
         >>> pIndex = 950
         >>> pIndices = d.getLinkPumpIndex()
         >>> d.getLinkPumpECurve(pIndex)
@@ -3225,7 +3225,7 @@ class epanet:
         return self.__returnValue(value)
 
     def getLinkPumpEPat(self, *argv):
-        """ Retrieves the pump energy price time pattern index. 
+        """ Retrieves the pump energy price time pattern index.
 
         Example 1:
 
@@ -3253,7 +3253,7 @@ class epanet:
         return self.__returnValue(value)
 
     def getLinkPumpHCurve(self, *argv):
-        """ Retrieves the pump head v. flow curve index. 
+        """ Retrieves the pump head v. flow curve index.
 
         Example 1:
 
@@ -3281,7 +3281,7 @@ class epanet:
         return self.__returnValue(value)
 
     def getLinkPumpHeadCurveIndex(self):
-        """ Retrieves the index of a head curve for all pumps. 
+        """ Retrieves the index of a head curve for all pumps.
 
         Example:
 
@@ -3302,7 +3302,7 @@ class epanet:
             return [None, None]
 
     def getLinkPumpPatternIndex(self, *argv):
-        """ Retrieves the pump speed time pattern index. 
+        """ Retrieves the pump speed time pattern index.
 
         Example 1:
 
@@ -3328,7 +3328,7 @@ class epanet:
         return self.__returnValue(value)
 
     def getLinkPumpPatternNameID(self, *argv):
-        """ Retrieves pump pattern name ID. 
+        """ Retrieves pump pattern name ID.
         A value of 0 means empty
 
 
@@ -3368,7 +3368,7 @@ class epanet:
         return value
 
     def getLinkPumpPower(self, *argv):
-        """ Retrieves the pump constant power rating (read only). 
+        """ Retrieves the pump constant power rating (read only).
 
         Example 1:
 
@@ -3393,7 +3393,7 @@ class epanet:
         return self.__getPumpLinkInfo(self.ToolkitConstants.EN_PUMP_POWER, *argv)
 
     def getLinkPumpState(self, *argv):
-        """ Retrieves the current computed pump state (read only) (see @ref EN_PumpStateType). 
+        """ Retrieves the current computed pump state (read only) (see @ref EN_PumpStateType).
         same as status: open, active, closed
         Using step-by-step hydraulic analysis,
 
@@ -3434,7 +3434,7 @@ class epanet:
         return value
 
     def getLinkPumpType(self):
-        """ Retrieves the type of a pump. 
+        """ Retrieves the type of a pump.
 
         Example:
 
@@ -3449,7 +3449,7 @@ class epanet:
         return pType
 
     def getLinkPumpTypeCode(self):
-        """ Retrieves the code of type of a pump. 
+        """ Retrieves the code of type of a pump.
 
         Type of pump codes:
           0 = Constant horsepower
@@ -3754,7 +3754,7 @@ class epanet:
         return self.__getLinkInfo(self.ToolkitConstants.EN_ENERGY, *argv)
 
     def getLinkActualQuality(self, *argv):
-        """ Retrieves the current computed link quality (read only). 
+        """ Retrieves the current computed link quality (read only).
 
         Example:
 
@@ -4114,7 +4114,7 @@ class epanet:
                 return {'x': xVal, 'y': yVal}
 
     def getNodeDemandCategoriesNumber(self, *argv):
-        """ Retrieves the value of all node base demands categorie number. 
+        """ Retrieves the value of all node base demands categorie number.
 
         Example 1:
 
@@ -4145,7 +4145,7 @@ class epanet:
         return value
 
     def getNodeDemandDeficit(self, *argv):
-        """  Retrieves the amount that full demand is reduced under PDA. 
+        """  Retrieves the amount that full demand is reduced under PDA.
 
         The example is based on d = epanet('Net1.inp')
 
@@ -4161,7 +4161,7 @@ class epanet:
         return self.__getNodeInfo(self.ToolkitConstants.EN_DEMANDDEFICIT, *argv)
 
     def getNodeDemandPatternIndex(self):
-        """ Retrieves the value of all node base demands pattern index. 
+        """ Retrieves the value of all node base demands pattern index.
 
         Example:
 
@@ -4187,7 +4187,7 @@ class epanet:
         return value
 
     def getNodeDemandPatternNameID(self):
-        """ Retrieves the value of all node base demands pattern name ID. 
+        """ Retrieves the value of all node base demands pattern name ID.
 
         Example:
 
@@ -4316,7 +4316,7 @@ class epanet:
         return self.getNodeTypeIndex().count(self.ToolkitConstants.EN_JUNCTION)
 
     def getNodeJunctionDemandIndex(self, *argv):
-        """ Retrieves the demand index of the junctions. 
+        """ Retrieves the demand index of the junctions.
 
         Example 1:
 
@@ -4692,7 +4692,7 @@ class epanet:
 
     def getNodeResultIndex(self, node_index):
         """ Retrieves the order in which a node's results
-        were saved to an output file. 
+        were saved to an output file.
 
         Example:
 
@@ -4834,7 +4834,7 @@ class epanet:
         return self.__getTankNodeInfo(self.ToolkitConstants.EN_TANK_KBULK, *argv)
 
     def getNodeTankCanOverFlow(self, *argv):
-        """ Retrieves the tank can overflow (= 1) or not (= 0). 
+        """ Retrieves the tank can overflow (= 1) or not (= 0).
 
         Example 1:
 
@@ -4875,7 +4875,7 @@ class epanet:
         return self.getNodeTypeIndex().count(self.ToolkitConstants.EN_TANK)
 
     def getNodeTankData(self, *argv):
-        """ Retrieves a group of properties for a tank. 
+        """ Retrieves a group of properties for a tank.
 
         Tank data that is retrieved:
 
@@ -5040,7 +5040,7 @@ class epanet:
         return self.__getTankNodeInfo(self.ToolkitConstants.EN_MAXLEVEL, *argv)
 
     def getNodeTankMaximumWaterVolume(self, *argv):
-        """ Retrieves the tank maximum water volume. 
+        """ Retrieves the tank maximum water volume.
 
         Example 1:
 
@@ -5253,7 +5253,7 @@ class epanet:
         return self.api.ENgetcount(self.ToolkitConstants.EN_TANKCOUNT)
 
     def getNodeTankVolume(self, *argv):
-        """ Retrieves the tank volume. 
+        """ Retrieves the tank volume.
 
         Example 1:
 
@@ -5367,7 +5367,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_ACCURACY)
 
     def getOptionsCheckFrequency(self):
-        """ Retrieves the frequency of hydraulic status checks. 
+        """ Retrieves the frequency of hydraulic status checks.
 
         Example:
 
@@ -5378,7 +5378,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_CHECKFREQ)
 
     def getOptionsDampLimit(self):
-        """ Retrieves the accuracy level where solution damping begins. 
+        """ Retrieves the accuracy level where solution damping begins.
 
         Example:
 
@@ -5389,7 +5389,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_DAMPLIMIT)
 
     def getOptionsDemandCharge(self):
-        """ Retrieves the energy charge per maximum KW usage. 
+        """ Retrieves the energy charge per maximum KW usage.
 
         Example:
 
@@ -5411,7 +5411,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_EMITEXPON)
 
     def getOptionsExtraTrials(self):
-        """ Retrieves the extra trials allowed if hydraulics don't converge. 
+        """ Retrieves the extra trials allowed if hydraulics don't converge.
 
         Example:
 
@@ -5422,7 +5422,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_UNBALANCED)
 
     def getOptionsFlowChange(self):
-        """ Retrieves the maximum flow change for hydraulic convergence. 
+        """ Retrieves the maximum flow change for hydraulic convergence.
 
         Example:
 
@@ -5433,7 +5433,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_FLOWCHANGE)
 
     def getOptionsGlobalEffic(self):
-        """ Retrieves the global efficiency for pumps(percent). 
+        """ Retrieves the global efficiency for pumps(percent).
 
         Example:
 
@@ -5444,7 +5444,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_GLOBALEFFIC)
 
     def getOptionsGlobalPrice(self):
-        """ Retrieves the global average energy price per kW-Hour. 
+        """ Retrieves the global average energy price per kW-Hour.
 
         Example:
 
@@ -5455,7 +5455,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_GLOBALPRICE)
 
     def getOptionsGlobalPattern(self):
-        """ Retrieves the index of the global energy price pattern. 
+        """ Retrieves the index of the global energy price pattern.
 
         Example:
 
@@ -5466,7 +5466,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_GLOBALPATTERN)
 
     def getOptionsHeadError(self):
-        """ Retrieves the maximum head loss error for hydraulic convergence. 
+        """ Retrieves the maximum head loss error for hydraulic convergence.
 
         Example:
 
@@ -5477,7 +5477,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_HEADERROR)
 
     def getOptionsHeadLossFormula(self):
-        """ Retrieves the headloss formula. 
+        """ Retrieves the headloss formula.
 
         Example:
 
@@ -5489,7 +5489,7 @@ class epanet:
         return self.TYPEHEADLOSS[int(headloss)]
 
     def getOptionsLimitingConcentration(self):
-        """ Retrieves the limiting concentration for growth reactions. 
+        """ Retrieves the limiting concentration for growth reactions.
 
         Example:
 
@@ -5500,7 +5500,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_CONCENLIMIT)
 
     def getOptionsMaximumCheck(self):
-        """ Retrieves the maximum trials for status checking. 
+        """ Retrieves the maximum trials for status checking.
 
         Example:
 
@@ -5533,7 +5533,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_DEMANDMULT)
 
     def getOptionsPipeBulkReactionOrder(self):
-        """ Retrieves the bulk water reaction order for pipes. 
+        """ Retrieves the bulk water reaction order for pipes.
 
         Example:
 
@@ -5544,7 +5544,7 @@ class epanet:
         return int(self.api.ENgetoption(self.ToolkitConstants.EN_BULKORDER))
 
     def getOptionsPipeWallReactionOrder(self):
-        """ Retrieves the wall reaction order for pipes (either 0 or 1). 
+        """ Retrieves the wall reaction order for pipes (either 0 or 1).
 
         Example:
 
@@ -5566,7 +5566,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_TOLERANCE)
 
     def getOptionsSpecificDiffusivity(self):
-        """ Retrieves the specific diffusivity (relative to chlorine at 20 deg C). 
+        """ Retrieves the specific diffusivity (relative to chlorine at 20 deg C).
 
         Example:
 
@@ -5577,7 +5577,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_SP_DIFFUS)
 
     def getOptionsSpecificGravity(self):
-        """ Retrieves the specific gravity. 
+        """ Retrieves the specific gravity.
 
         Example:
 
@@ -5588,7 +5588,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_SP_GRAVITY)
 
     def getOptionsSpecificViscosity(self):
-        """ Retrieves the specific viscosity. 
+        """ Retrieves the specific viscosity.
 
         Example:
 
@@ -5599,7 +5599,7 @@ class epanet:
         return self.api.ENgetoption(self.ToolkitConstants.EN_SP_VISCOS)
 
     def getOptionsTankBulkReactionOrder(self):
-        """ Retrieves the bulk water reaction order for tanks. 
+        """ Retrieves the bulk water reaction order for tanks.
 
         Example:
 
@@ -5633,7 +5633,7 @@ class epanet:
         return value
 
     def getPatternAverageValue(self):
-        """ Retrieves the average values of all the time patterns. 
+        """ Retrieves the average values of all the time patterns.
 
         Example:
 
@@ -5873,7 +5873,7 @@ class epanet:
 
     def getLinkResultIndex(self, link_index):
         """ Retrieves the order in which a link's results
-        were saved to an output file. 
+        were saved to an output file.
 
         Example:
 
@@ -5885,7 +5885,7 @@ class epanet:
         return self.api.ENgetresultindex(self.ToolkitConstants.EN_LINK, link_index)
 
     def getRuleCount(self):
-        """ Retrieves the number of rules. 
+        """ Retrieves the number of rules.
 
         Example:
 
@@ -5896,7 +5896,7 @@ class epanet:
         return self.api.ENgetcount(self.ToolkitConstants.EN_RULECOUNT)
 
     def getRuleID(self, *argv):
-        """ Retrieves the ID name of a rule-based control given its index. 
+        """ Retrieves the ID name of a rule-based control given its index.
 
         # The examples are based on d = epanet('BWSN_Network_1.inp')
 
@@ -5922,7 +5922,7 @@ class epanet:
             return self.api.ENgetruleID(index)
 
     def getRuleInfo(self, *argv):
-        """ Retrieves summary information about a rule-based control given it's index. 
+        """ Retrieves summary information about a rule-based control given it's index.
 
         The examples are based on d = epanet('BWSN_Network_1.inp')
 
@@ -5952,7 +5952,7 @@ class epanet:
         return value
 
     def getRules(self, *argv):
-        """ Retrieves the rule - based control statements. 
+        """ Retrieves the rule - based control statements.
 
         # The examples are based on d = epanet('BWSN_Network_1.inp')
 
@@ -6062,7 +6062,7 @@ class epanet:
         return ruleDict
 
     def getStatistic(self):
-        """ Returns error code. 
+        """ Returns error code.
 
         Input:  none
 
@@ -6684,7 +6684,7 @@ class epanet:
                 self.api.ENsetcontrol(index, control, linkIndex, controlSettingValue, nodeIndex, controlLevel)
 
     def setCurve(self, index, curveVector):
-        """ Sets x, y values for a specific curve. 
+        """ Sets x, y values for a specific curve.
 
         The example is based on d = epanet('BWSN_Network_1.inp')
 
@@ -6738,7 +6738,7 @@ class epanet:
         self.__addComment(self.ToolkitConstants.EN_CURVE, value, cIndices)
 
     def setCurveNameID(self, index, Id):
-        """ Sets the name ID of a curve given it's index and the new ID. 
+        """ Sets the name ID of a curve given it's index and the new ID.
 
         Example 1:
 
@@ -6760,7 +6760,7 @@ class epanet:
             self.api.ENsetcurveid(index, Id)
 
     def setCurveValue(self, index, curvePnt, value):
-        """ Sets x, y point for a specific point number and curve. 
+        """ Sets x, y point for a specific point number and curve.
 
         The example is based on d = epanet('BWSN_Network_1.inp')
 
@@ -6782,7 +6782,7 @@ class epanet:
         self.api.ENsetcurvevalue(index, curvePnt, x, y)
 
     def setDemandModel(self, code, pmin, preq, pexp):
-        """ Sets the type of demand model to use and its parameters. 
+        """ Sets the type of demand model to use and its parameters.
 
         :param code: Type of demand model
             * 'DDA' = Demand driven analysis (in which case the
@@ -7139,7 +7139,7 @@ class epanet:
             self.api.ENsetlinkid(indices, value)
 
     def setLinkNodesIndex(self, linkIndex, startNode, endNode):
-        """ Sets the indexes of a link's start- and end-nodes. 
+        """ Sets the indexes of a link's start- and end-nodes.
 
         Example 1: Sets to the 1st link the start-node index = 2 and end-node index = 3
 
@@ -7169,7 +7169,7 @@ class epanet:
             self.api.ENsetlinknodes(linkIndex, startNode, endNode)
 
     def setLinkPipeData(self, Index, Length, Diameter, RoughnessCoeff, MinorLossCoeff):
-        """ Sets a group of properties for a pipe. 
+        """ Sets a group of properties for a pipe.
 
         :param Index: Pipe Index
         :type Index: int
@@ -7222,7 +7222,7 @@ class epanet:
             self.api.ENsetpipedata(Index[i], Length[i], Diameter[i], RoughnessCoeff[i], MinorLossCoeff[i])
 
     def setLinkPumpECost(self, value, *argv):
-        """ Sets the pump average energy price. 
+        """ Sets the pump average energy price.
 
         The examples are based on d = epanet('Net3_trace.inp')
 
@@ -7260,7 +7260,7 @@ class epanet:
         self.__setEvalLinkNode('ENsetlinkvalue', 'PUMP_ECOST', 'PUMP', value, *argv)
 
     def setLinkPumpECurve(self, value, *argv):
-        """ Sets the pump efficiency v. flow curve index. 
+        """ Sets the pump efficiency v. flow curve index.
 
         The examples are based on d = epanet('Net3_trace.inp')
 
@@ -7297,7 +7297,7 @@ class epanet:
         self.__setEvalLinkNode('ENsetlinkvalue', 'PUMP_ECURVE', 'PUMP', value, *argv)
 
     def setLinkPumpEPat(self, value, *argv):
-        """ Sets the pump energy price time pattern index. 
+        """ Sets the pump energy price time pattern index.
 
         The examples are based on d = epanet('Net3_trace.inp')
 
@@ -7334,7 +7334,7 @@ class epanet:
         self.__setEvalLinkNode('ENsetlinkvalue', 'PUMP_EPAT', 'PUMP', value, *argv)
 
     def setLinkPumpHCurve(self, value, *argv):
-        """ Sets the pump head v. flow curve index. 
+        """ Sets the pump head v. flow curve index.
 
         The examples are based on d = epanet('Net3_trace.inp')
 
@@ -7373,8 +7373,8 @@ class epanet:
     def setLinkPumpHeadCurveIndex(self, value, *argv):
         """ Sets the curves index for pumps index
 
-        >>> d.getLinkPumpHeadCurveIndex()  
-        >>> pumpIndex = d.getLinkPumpIndex(1)  
+        >>> d.getLinkPumpHeadCurveIndex()
+        >>> pumpIndex = d.getLinkPumpIndex(1)
         >>> curveIndex = d.getLinkCurveIndex(2)
         >>> d.setLinkPumpHeadCurveIndex(pumpIndex, curveIndex)
         >>> d.getLinkPumpHeadCurveIndex()
@@ -7396,7 +7396,7 @@ class epanet:
             self.api.ENsetheadcurveindex(indices, value)
 
     def setLinkPumpPatternIndex(self, value, *argv):
-        """ Sets the pump speed time pattern index. 
+        """ Sets the pump speed time pattern index.
 
         The examples are based on d = epanet('Net3_trace.inp')
 
@@ -7439,7 +7439,7 @@ class epanet:
         self.__setEvalLinkNode('ENsetlinkvalue', 'LINKPATTERN', 'PUMP', value, *argv)
 
     def setLinkPumpPower(self, value, *argv):
-        """ Sets the power for pumps. 
+        """ Sets the power for pumps.
 
         The examples are based on d = epanet('Net3_trace.inp')
 
@@ -8048,7 +8048,7 @@ class epanet:
         Example 2:
 
         >>> elevs = d.getNodeElevations()               # Retrieves the elevations of all the nodes
-        >>> elevs_new = elevs + 100 
+        >>> elevs_new = elevs + 100
         >>> d.setNodeElevations(elevs_new)              # Sets the elevations of all nodes
         >>> d.getNodeElevations()
 
@@ -8102,7 +8102,7 @@ class epanet:
         self.__setEval('ENsetnodevalue', 'INITQUAL', 'NODE', value, *argv)
 
     def setNodeJunctionData(self, index, elev, dmnd, dmndpat):
-        """ Sets a group of properties for a junction node. 
+        """ Sets a group of properties for a junction node.
 
         :param index: a junction node's index (starting from 1).
         :type index: int
@@ -8132,7 +8132,7 @@ class epanet:
         self.api.ENsetjuncdata(index, elev, dmnd, dmndpat)
 
     def setNodeJunctionDemandName(self, nodeIndex, demandIndex, demandName):
-        """ Assigns a name to a node's demand category. 
+        """ Assigns a name to a node's demand category.
 
         Example:
 
@@ -8184,7 +8184,7 @@ class epanet:
                     self.api.ENsetnodeid(nameId.index(i) + 1, value[nameId.index(i)])
 
     def setNodesConnectingLinksID(self, linkIndex, startNodeID, endNodeID):
-        """ Sets the IDs of a link's start- and end-nodes. 
+        """ Sets the IDs of a link's start- and end-nodes.
 
         Example 1:
 
@@ -8318,7 +8318,7 @@ class epanet:
         self.__setEvalLinkNode('ENsetnodevalue', 'TANK_KBULK', 'TANK', value, *argv)
 
     def setNodeTankCanOverFlow(self, value, *argv):
-        """ Sets the tank can-overflow (= 1) or not (= 0). 
+        """ Sets the tank can-overflow (= 1) or not (= 0).
 
         The examples are based on d = epanet('BWSN_Network_1.inp')
 
@@ -8356,7 +8356,7 @@ class epanet:
         self.__setEvalLinkNode('ENsetnodevalue', 'CANOVERFLOW', 'TANK', value, *argv)
 
     def setNodeTankData(self, index, elev, intlvl, minlvl, maxlvl, diam, minvol, volcurve):
-        """ Sets a group of properties for a tank. 
+        """ Sets a group of properties for a tank.
 
         :param index: Tank index
         :type index: int
@@ -8778,7 +8778,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_ACCURACY, value)
 
     def setOptionsCheckFrequency(self, value):
-        """ Sets the frequency of hydraulic status checks. 
+        """ Sets the frequency of hydraulic status checks.
 
         Example:
 
@@ -8790,7 +8790,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_CHECKFREQ, value)
 
     def setOptionsDampLimit(self, value):
-        """ Sets the accuracy level where solution damping begins. 
+        """ Sets the accuracy level where solution damping begins.
 
         Example:
 
@@ -8802,7 +8802,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_DAMPLIMIT, value)
 
     def setOptionsDemandCharge(self, value):
-        """ Sets the energy charge per maximum KW usage. 
+        """ Sets the energy charge per maximum KW usage.
 
         Example:
 
@@ -8826,7 +8826,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_EMITEXPON, value)
 
     def setOptionsExtraTrials(self, value):
-        """ Sets the extra trials allowed if hydraulics don't converge. 
+        """ Sets the extra trials allowed if hydraulics don't converge.
 
         Example:
 
@@ -8840,7 +8840,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_UNBALANCED, value)
 
     def setOptionsFlowChange(self, value):
-        """ Sets the maximum flow change for hydraulic convergence. 
+        """ Sets the maximum flow change for hydraulic convergence.
 
         Example:
 
@@ -8852,7 +8852,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_FLOWCHANGE, value)
 
     def setOptionsGlobalEffic(self, value):
-        """ Sets the global efficiency for pumps(percent). 
+        """ Sets the global efficiency for pumps(percent).
 
         Example:
 
@@ -8864,7 +8864,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_GLOBALEFFIC, value)
 
     def setOptionsGlobalPrice(self, value):
-        """ Sets the global average energy price per kW-Hour. 
+        """ Sets the global average energy price per kW-Hour.
 
         Example:
 
@@ -8876,7 +8876,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_GLOBALPRICE, value)
 
     def setOptionsGlobalPattern(self, value):
-        """ Sets the global energy price pattern. 
+        """ Sets the global energy price pattern.
 
         Example:
 
@@ -8888,7 +8888,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_GLOBALPATTERN, value)
 
     def setOptionsHeadError(self, value):
-        """ Sets the maximum head loss error for hydraulic convergence. 
+        """ Sets the maximum head loss error for hydraulic convergence.
 
         Example:
 
@@ -8900,7 +8900,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_HEADERROR, value)
 
     def setOptionsHeadLossFormula(self, value):
-        """ Sets the headloss formula. 
+        """ Sets the headloss formula.
         'HW' = 0, 'DW' = 1, 'CM' = 2
 
         Example:
@@ -8920,7 +8920,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_HEADLOSSFORM, codevalue)
 
     def setOptionsLimitingConcentration(self, value):
-        """ Sets the limiting concentration for growth reactions. 
+        """ Sets the limiting concentration for growth reactions.
 
         Example:
 
@@ -8932,7 +8932,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_CONCENLIMIT, value)
 
     def setOptionsMaximumCheck(self, value):
-        """ Sets the maximum trials for status checking. 
+        """ Sets the maximum trials for status checking.
 
         Example:
 
@@ -8968,7 +8968,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_DEMANDMULT, value)
 
     def setOptionsPipeBulkReactionOrder(self, value):
-        """ Sets the bulk water reaction order for pipes. 
+        """ Sets the bulk water reaction order for pipes.
 
         Example:
 
@@ -8980,7 +8980,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_BULKORDER, value)
 
     def setOptionsPipeWallReactionOrder(self, value):
-        """ Sets the wall reaction order for pipes (either 0 or 1). 
+        """ Sets the wall reaction order for pipes (either 0 or 1).
 
         Example:
 
@@ -9004,7 +9004,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_TOLERANCE, value)
 
     def setOptionsSpecificDiffusivity(self, value):
-        """ Sets the specific diffusivity (relative to chlorine at 20 deg C). 
+        """ Sets the specific diffusivity (relative to chlorine at 20 deg C).
 
         Example:
 
@@ -9016,7 +9016,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_SP_DIFFUS, value)
 
     def setOptionsSpecificGravity(self, value):
-        """ Sets the specific gravity. 
+        """ Sets the specific gravity.
 
         Example:
 
@@ -9028,7 +9028,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_SP_GRAVITY, value)
 
     def setOptionsSpecificViscosity(self, value):
-        """ Sets the specific viscosity. 
+        """ Sets the specific viscosity.
 
         Example:
 
@@ -9040,7 +9040,7 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_SP_VISCOS, value)
 
     def setOptionsTankBulkReactionOrder(self, value):
-        """ Sets the bulk water reaction order for tanks. 
+        """ Sets the bulk water reaction order for tanks.
 
         Example:
 
@@ -9184,7 +9184,7 @@ class epanet:
             self.api.ENsetpattern(1, patternMatrix, len(patternMatrix))
 
     def setPatternNameID(self, index, Id):
-        """ Sets the name ID of a time pattern given it's index and the new ID. 
+        """ Sets the name ID of a time pattern given it's index and the new ID.
 
         Example 1:
 
@@ -9266,7 +9266,7 @@ class epanet:
         self.api.ENsetstatusreport(statuslevel)
 
     def setRulePremise(self, ruleIndex, premiseIndex, premise):
-        """ Sets the premise of a rule - based control. 
+        """ Sets the premise of a rule - based control.
 
         The examples are based on d = epanet('BWSN_Network_1.inp')
 
@@ -9321,7 +9321,7 @@ class epanet:
         self.api.ENsetpremise(ruleIndex, premiseIndex, logop, object_, objIndex, variable, relop, status, value)
 
     def setRulePremiseObjectNameID(self, ruleIndex, premiseIndex, objNameID):
-        """ Sets the ID of an object in a premise of a rule-based control. 
+        """ Sets the ID of an object in a premise of a rule-based control.
 
         # The example is based on d = epanet('BWSN_Network_1.inp')
 
@@ -9345,7 +9345,7 @@ class epanet:
         self.api.ENsetpremiseindex(ruleIndex, premiseIndex, objIndex)
 
     def setRulePremiseValue(self, ruleIndex, premiseIndex, value):
-        """ Sets the value being compared to in a premise of a rule-based control. 
+        """ Sets the value being compared to in a premise of a rule-based control.
 
         The example is based on d = epanet('BWSN_Network_1.inp')
 
@@ -9364,7 +9364,7 @@ class epanet:
         self.api.ENsetpremisevalue(ruleIndex, premiseIndex, value)
 
     def setRules(self, ruleIndex, rule):
-        """ Sets a rule - based control. 
+        """ Sets a rule - based control.
 
         The example is based on d = epanet('Net1.inp')
 
@@ -9402,7 +9402,7 @@ class epanet:
             self.setRulePriority(ruleIndex, float(rule_new[i][-1]))
 
     def setRuleElseAction(self, ruleIndex, actionIndex, else_action):
-        """ Sets rule - based control else actions. 
+        """ Sets rule - based control else actions.
 
         Input Arguments:
          * Rule Index
@@ -9441,7 +9441,7 @@ class epanet:
         self.api.ENsetelseaction(ruleIndex, actionIndex, linkIndex, status, setting)
 
     def setRulePremiseStatus(self, ruleIndex, premiseIndex, status):
-        """ Sets the status being compared to in a premise of a rule-based control. 
+        """ Sets the status being compared to in a premise of a rule-based control.
 
         The example is based on d = epanet('Net1.inp')
 
@@ -9468,7 +9468,7 @@ class epanet:
         self.api.ENsetpremisestatus(ruleIndex, premiseIndex, status_code)
 
     def setRulePriority(self, ruleIndex, priority):
-        """ Sets rule - based control priority. 
+        """ Sets rule - based control priority.
 
         The example is based on d = epanet('BWSN_Network_1.inp')
 
@@ -9485,7 +9485,7 @@ class epanet:
         self.api.ENsetrulepriority(ruleIndex, priority)
 
     def setRuleThenAction(self, ruleIndex, actionIndex, then_action):
-        """ Sets rule - based control then actions. 
+        """ Sets rule - based control then actions.
 
         Input Arguments:
           * Rule Index
@@ -9647,7 +9647,7 @@ class epanet:
         self.api.ENsettimeparam(self.ToolkitConstants.EN_STATISTIC, tmpindex)
 
     def setTitle(self, *argv):
-        """ Sets the title lines of the project. 
+        """ Sets the title lines of the project.
 
         Example:
 
@@ -9879,10 +9879,9 @@ class epanet:
     def plot(self, title=None, line=None, point=None, nodesID=None,
              nodesindex=None, linksID=None, linksindex=None, highlightlink=None,
              highlightnode=None, legend=True, fontsize=5, figure=True,
-             elevation=None, elevation_text=False, pressure=None, pressure_text=False,
-             flow=None, flow_text=False, colorbar='turbo', min_colorbar=None, max_colorbar=None,
-             colors=None, colorbar_label=None, *argv):
-        """ Plot Network, show all components, plot pressure/flow/elevation
+             node_values=None, node_text=False, link_values=None, link_text=False, colorbar='turbo',
+             min_colorbar=None, max_colorbar=None, colors=None, colorbar_label=None, *argv):
+        """ Plot Network, show all components, plot pressure/flow/elevation/waterage/anyvalue
 
         Example 1:
 
@@ -9901,7 +9900,7 @@ class epanet:
         ...    tstep=d.nextHydraulicAnalysisStep()
         >>> d.closeHydraulicAnalysis()
         >>> hr = 10
-        >>> d.plot(pressure = P[hr])
+        >>> d.plot(node_values = P[hr])
         """
         plot_links = True
         plot_nodes = True
@@ -9953,55 +9952,33 @@ class epanet:
         if nodesindex is True:
             text_nodes_ind = True
 
-        if pressure is not None:
+        if node_values is not None:
             plot_nodes = False
             legend = False
             fix_colorbar = True
             if colorbar_label is None:
-                colorbar_label = 'Pressure (' + self.units.NodePressureUnits + ')'
+                colorbar_label = ' '
             if colors is None:
                 if min_colorbar is None:
-                    min_colorbar = np.min(pressure)
+                    min_colorbar = np.min(node_values)
                 if max_colorbar is None:
-                    max_colorbar = np.max(pressure)
-            if pressure is True:
-                pressure = self.getNodePressure()
-            else:
-                pressure = np.squeeze(np.asarray(pressure))
-            if pressure_text is True:
+                    max_colorbar = np.max(node_values)
+            node_values = np.squeeze(np.asarray(node_values))
+            if node_text is True:
                 plot_nodes = True
-        if elevation is not None:
-            plot_nodes = False
-            legend = False
-            if colors is None:
-                if min_colorbar is None:
-                    min_colorbar = np.min(elevation)
-                if max_colorbar is None:
-                    max_colorbar = np.max(elevation)
-            if colorbar_label is None:
-                colorbar_label = 'Elevation (' + self.units.NodeElevationUnits + ')'
-            if elevation is True:
-                elevation = self.getNodeElevations()
-            else:
-                elevation = np.squeeze(np.asarray(elevation))
-            if elevation_text is True:
-                plot_nodes = True
-        if flow is not None:
+        if link_values is not None:
             fix_colorbar = True
             if colorbar_label is None:
-                colorbar_label = 'Flow (' + self.units.LinkFlowUnits + ')'
+                colorbar_label = ' '
             legend = False
-            if flow is True:
-                flow = self.getLinkFlows()
-            else:
-                flow = np.squeeze(np.asarray(flow))
+            link_values = np.squeeze(np.asarray(link_values))
             if colors is None:
                 if min_colorbar is None:
-                    min_colorbar = np.min(flow)
+                    min_colorbar = np.min(link_values)
                 if max_colorbar is None:
-                    max_colorbar = np.max(flow)
-                Flow_new = [(i - min_colorbar) / (max_colorbar - min_colorbar) for i in flow]
-                colors = eval(f"cm.{colorbar}(Flow_new)")
+                    max_colorbar = np.max(link_values)
+                link_values = [(i - min_colorbar) / (max_colorbar - min_colorbar) for i in link_values]
+                colors = eval(f"cm.{colorbar}(link_values)")
 
         # get info from EN functions
         nodenameid = self.getNodeNameID()
@@ -10024,13 +10001,6 @@ class epanet:
             figure = plt.figure()
         plt.axis('off')
 
-        if fix_colorbar and flow is not None:
-            scal = cm.ScalarMappable(norm=mpl.colors.Normalize(min_colorbar, max_colorbar), cmap=colorbar)
-            bar = plt.colorbar(scal, orientation='horizontal', shrink=0.7, pad=0.05)
-            bar.ax.tick_params(labelsize=fontsize)
-            bar.outline.set_visible(False)
-            bar.set_label(label=colorbar_label, size=fontsize)
-
         # Plot Links
         xV = 0
         yV = 0
@@ -10044,7 +10014,7 @@ class epanet:
                 x[1] = nodecoords['x'][toNode]
                 y[1] = nodecoords['y'][toNode]
                 if not nodecoords['x_vert'][i]:  # Check if not vertices
-                    if fix_colorbar and flow is not None:
+                    if fix_colorbar and link_values is not None:
                         plt.plot(x, y, '-', linewidth=0.7, zorder=0, color=colors[i - 1])
                     else:
                         if i != pipeindex[-1]:
@@ -10060,7 +10030,7 @@ class epanet:
                         plt.text(
                             (x[0] + x[1]) / 2, (y[0] + y[1]) / 2, links_ind[i - 1], {'fontsize': fontsize}
                         )
-                    if flow_text:
+                    if link_text:
                         plt.text(
                             (x[0] + x[1]) / 2, (y[0] + y[1]) / 2, "{:.2f}".format(flow[i - 1]), {'fontsize': fontsize}
                         )
@@ -10076,7 +10046,7 @@ class epanet:
                             plt.plot([xV_old, xV], [yV_old, yV], color='steelblue', linewidth=0.2, zorder=0)
                         xV_old = xV
                         yV_old = yV
-                    if fix_colorbar and flow is not None:
+                    if fix_colorbar and link_values is not None:
                         plt.plot([xV, x[1]], [yV, y[1]], '-', linewidth=1, zorder=0, color=colors[i])
                     else:
                         plt.plot([xV, x[1]], [yV, y[1]], color='steelblue', linewidth=0.2, zorder=0)
@@ -10092,7 +10062,7 @@ class epanet:
                             nodecoords['y_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
                             links_ind[i], {'fontsize': fontsize}
                         )
-                    if flow_text:
+                    if link_text:
                         plt.text(
                             nodecoords['x_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
                             nodecoords['y_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
@@ -10140,7 +10110,7 @@ class epanet:
                         plt.text(xx, yy, valves_ID[valveindex.index(i)], {'fontsize': fontsize})
                     elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
                         plt.text(xx, yy, i, {'fontsize': fontsize})
-                    if pressure_text:
+                    if node_text:
                         plt.text(xx, yy, "{:.2f}".format(pressure[i - 1]),
                                  {'fontsize': fontsize})
 
@@ -10184,8 +10154,8 @@ class epanet:
                     plt.text(x, y, tank_ID[tankindex.index(i)], {'fontsize': fontsize})
                 elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
                     plt.text(x, y, i, {'fontsize': fontsize})
-                if pressure_text:
-                    plt.text(x, y, "{:.2f}".format(pressure[i - 1]), {'fontsize': fontsize})
+                if node_text:
+                    plt.text(x, y, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
 
             # Plot Reservoirs
             for i in resindex:
@@ -10200,8 +10170,8 @@ class epanet:
                     plt.text(x, y, res_ID[resindex.index(i)], {'fontsize': fontsize})
                 elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
                     plt.text(x, y, i, {'fontsize': fontsize})
-                if pressure_text:
-                    plt.text(x, y, "{:.2f}".format(pressure[i - 1]), {'fontsize': fontsize})
+                if node_text:
+                    plt.text(x, y, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
 
             # Plot Junctions
             for i in juncind:
@@ -10215,28 +10185,16 @@ class epanet:
                     plt.text(x, y, junc_ID[juncind.index(i)], {'fontsize': fontsize})
                 elif text_nodes_ind or (text_nodes_ind_spec and i in nodes_to_show_ind):
                     plt.text(x, y, i, {'fontsize': fontsize})
-                if pressure_text:
-                    plt.text(x, y, "{:.2f}".format(pressure[i - 1]), {'fontsize': fontsize})
+                if node_text:
+                    plt.text(x, y, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
 
-        if elevation is not None:
-            # Plot Elevation
-            if elevation is True:
-                elevation = self.getNodeElevations()
-            # plot pressure nodes
+        if node_values is not None:
+            # Plot node values
             x = list(nodecoords['x'].values())
             y = list(nodecoords['y'].values())
-            plt.scatter(x, y, c=elevation, cmap=colorbar, s=3.5, zorder=2)
-            # Plot details
-            bar = plt.colorbar(orientation='horizontal', shrink=0.7, pad=0.05)
-            bar.ax.tick_params(labelsize=fontsize)
-            bar.outline.set_visible(False)
-            bar.set_label(label=colorbar_label, size=fontsize)
+            plt.scatter(x, y, c=node_values, cmap=colorbar, s=3.5, zorder=2)
 
-        if pressure is not None:
-            # Plot pressure
-            x = list(nodecoords['x'].values())
-            y = list(nodecoords['y'].values())
-            plt.scatter(x, y, c=pressure, cmap=colorbar, s=3.5, zorder=2)
+        if fix_colorbar and link_values is not None or node_values is not None:
             scal = cm.ScalarMappable(norm=mpl.colors.Normalize(min_colorbar, max_colorbar), cmap=colorbar)
             bar = plt.colorbar(scal, orientation='horizontal', shrink=0.7, pad=0.05)
             bar.ax.tick_params(labelsize=fontsize)
@@ -11224,7 +11182,7 @@ class epanetapi:
 
     def ENaddcurve(self, cid):
         """ Adds a new data curve to a project.
-        
+
 
         ENaddcurve(cid)
 
@@ -11310,7 +11268,7 @@ class epanetapi:
 
     def ENaddrule(self, rule):
         """ Adds a new rule-based control to a project.
-        
+
 
         ENaddrule(rule)
 
@@ -11324,7 +11282,7 @@ class epanetapi:
 
     def ENclearreport(self):
         """ Clears the contents of a project's report file.
-        
+
 
         ENclearreport()
 
@@ -11370,7 +11328,7 @@ class epanetapi:
 
     def ENcopyreport(self, filename):
         """ Copies the current contents of a project's report file to another file.
-        
+
 
         ENcopyreport(filename)
 
@@ -11396,7 +11354,7 @@ class epanetapi:
 
     def ENdeletecontrol(self, index):
         """ Deletes an existing simple control.
-        
+
 
         ENdeletecontrol(index)
 
@@ -11409,7 +11367,7 @@ class epanetapi:
 
     def ENdeletecurve(self, indexCurve):
         """ Deletes a data curve from a project.
-        
+
 
         ENdeletecurve(indexCurve)
 
@@ -11464,7 +11422,7 @@ class epanetapi:
 
     def ENdeletepattern(self, indexPat):
         """ Deletes a time pattern from a project.
-        
+
 
         ENdeletepattern(indexPat)
 
@@ -11490,7 +11448,7 @@ class epanetapi:
 
     def ENdeleterule(self, index):
         """ Deletes an existing rule-based control.
-        
+
 
         ENdeleterule(index)
 
@@ -11503,7 +11461,7 @@ class epanetapi:
 
     def ENgetaveragepatternvalue(self, index):
         """ Retrieves the average of all pattern factors in a time pattern.
-        
+
 
         ENgetaveragepatternvalue(index)
 
@@ -11538,7 +11496,7 @@ class epanetapi:
 
     def ENgetcomment(self, object_, index):
         """ Retrieves the comment of a specific index of a type object.
-        
+
 
         ENgetcomment(object, index, comment)
 
@@ -11649,7 +11607,7 @@ class epanetapi:
 
     def ENgetcurveid(self, index):
         """ Retrieves the ID name of a curve given its index.
-        
+
 
         ENgetcurveid(index)
 
@@ -11668,7 +11626,7 @@ class epanetapi:
 
     def ENgetcurveindex(self, Id):
         """ Retrieves the index of a curve given its ID name.
-        
+
 
         ENgetcurveindex(Id)
 
@@ -11685,7 +11643,7 @@ class epanetapi:
 
     def ENgetcurvelen(self, index):
         """ Retrieves the number of points in a curve.
-        
+
 
         ENgetcurvelen(index)
 
@@ -11702,7 +11660,7 @@ class epanetapi:
 
     def ENgetcurvetype(self, index):
         """ Retrieves a curve's type.
-        
+
 
         ENgetcurvetype(index)
 
@@ -11719,7 +11677,7 @@ class epanetapi:
 
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
-        
+
 
         ENgetcurvevalue(index, period)
 
@@ -11739,7 +11697,7 @@ class epanetapi:
 
     def ENgetdemandindex(self, nodeindex, demandName):
         """ Retrieves the index of a node's named demand category.
-        
+
 
         ENgetdemandindex(nodeindex, demandName)
 
@@ -11758,7 +11716,7 @@ class epanetapi:
 
     def ENgetdemandmodel(self):
         """ Retrieves the type of demand model in use and its parameters.
-        
+
 
         ENgetdemandmodel()
 
@@ -11781,7 +11739,7 @@ class epanetapi:
 
     def ENgetdemandname(self, node_index, demand_index):
         """ Retrieves the name of a node's demand category.
-        
+
 
         ENgetdemandname(node_index, demand_index)
 
@@ -11821,7 +11779,7 @@ class epanetapi:
 
     def ENgetelseaction(self, ruleIndex, actionIndex):
         """ Gets the properties of an ELSE action in a rule-based control.
-        
+
 
         ENgetelseaction(ruleIndex, actionIndex)
 
@@ -11868,7 +11826,7 @@ class epanetapi:
 
     def ENgetheadcurveindex(self, pumpindex):
         """ Retrieves the curve assigned to a pump's head curve.
-        
+
 
         ENgetheadcurveindex(pumpindex)
 
@@ -12145,7 +12103,7 @@ class epanetapi:
 
     def ENgetpremise(self, ruleIndex, premiseIndex):
         """ Gets the properties of a premise in a rule-based control.
-        
+
 
         ENgetpremise(ruleIndex, premiseIndex)
 
@@ -12178,7 +12136,7 @@ class epanetapi:
 
     def ENgetpumptype(self, iIndex):
         """ Retrieves the type of head curve used by a pump.
-        
+
 
         ENgetpumptype(pumpindex)
 
@@ -12230,7 +12188,7 @@ class epanetapi:
 
     def ENgetresultindex(self, objecttype, iIndex):
         """Retrieves the order in which a node or link appears in an output file.
-           
+
 
            ENgetresultindex(objecttype, index)
 
@@ -12248,7 +12206,7 @@ class epanetapi:
 
     def ENgetrule(self, index):
         """ Retrieves summary information about a rule-based control.
-        
+
 
         ENgetrule(index):
 
@@ -12272,7 +12230,7 @@ class epanetapi:
 
     def ENgetruleID(self, index):
         """ Gets the ID name of a rule-based control given its index.
-        
+
 
         ENgetruleID(index)
 
@@ -12310,7 +12268,7 @@ class epanetapi:
 
     def ENgetthenaction(self, ruleIndex, actionIndex):
         """ Gets the properties of a THEN action in a rule-based control.
-        
+
 
         ENgetthenaction(ruleIndex, actionIndex)
 
@@ -12349,7 +12307,7 @@ class epanetapi:
 
     def ENgettitle(self):
         """ Retrieves the title lines of the project.
-        
+
 
         ENgettitle()
 
@@ -12381,7 +12339,7 @@ class epanetapi:
 
     def ENgetvertex(self, index, vertex):
         """ Retrieves the coordinate's of a vertex point assigned to a link.
-        
+
 
         ENgetvertex(index, vertex)
 
@@ -12417,7 +12375,7 @@ class epanetapi:
 
     def ENinit(self, unitsType, headLossType):
         """ Initializes an EPANET project.
-        
+
 
         ENinit(unitsType, headLossType)
 
@@ -12639,7 +12597,7 @@ class epanetapi:
 
     def ENsetbasedemand(self, index, demandIdx, value):
         """ Sets the base demand for one of a node's demand categories.
-        
+
 
         ENsetbasedemand(index, demandIdx, value)
 
@@ -12654,7 +12612,7 @@ class epanetapi:
 
     def ENsetcomment(self, object_, index, comment):
         """ Sets a comment to a specific index
-        
+
 
         ENsetcomment(object, index, comment)
 
@@ -12688,7 +12646,7 @@ class epanetapi:
 
     def ENsetcoord(self, index, x, y):
         """ Sets the (x,y) coordinates of a node.
-        
+
 
         ENsetcoord(index, x, y)
 
@@ -12703,7 +12661,7 @@ class epanetapi:
 
     def ENsetcurve(self, index, x, y, nfactors):
         """ Assigns a set of data points to a curve.
-        
+
 
         ENsetcurve(index, x, y, nfactors)
 
@@ -12726,7 +12684,7 @@ class epanetapi:
 
     def ENsetcurveid(self, index, Id):
         """ Changes the ID name of a data curve given its index.
-        
+
 
         ENsetcurveid(index, Id)
 
@@ -12741,7 +12699,7 @@ class epanetapi:
 
     def ENsetcurvevalue(self, index, pnt, x, y):
         """ Sets the value of a single data point for a curve.
-        
+
 
         ENsetcurvevalue(index, pnt, x, y)
 
@@ -12758,7 +12716,7 @@ class epanetapi:
 
     def ENsetdemandmodel(self, Type, pmin, preq, pexp):
         """ Sets the Type of demand model to use and its parameters.
-        
+
 
         ENsetdemandmodel(index, demandIdx, value)
 
@@ -12776,7 +12734,7 @@ class epanetapi:
 
     def ENsetdemandname(self, node_index, demand_index, demand_name):
         """ Assigns a name to a node's demand category.
-        
+
 
         ENsetdemandname(node_index, demand_index, demand_name)
         Parameters:
@@ -12807,7 +12765,7 @@ class epanetapi:
 
     def ENsetelseaction(self, ruleIndex, actionIndex, linkIndex, status, setting):
         """ Sets the properties of an ELSE action in a rule-based control.
-        
+
 
         ENsetelseaction(ruleIndex, actionIndex, linkIndex, status, setting)
 
@@ -12850,7 +12808,7 @@ class epanetapi:
 
     def ENsetjuncdata(self, index, elev, dmnd, dmndpat):
         """ Sets a group of properties for a junction node.
-        
+
 
         ENsetjuncdata(index, elev, dmnd, dmndpat)
 
@@ -12868,7 +12826,7 @@ class epanetapi:
 
     def ENsetlinkid(self, index, newid):
         """ Changes the ID name of a link.
-        
+
 
         ENsetlinkid(index, newid)
 
@@ -12883,7 +12841,7 @@ class epanetapi:
 
     def ENsetlinknodes(self, index, startnode, endnode):
         """ Sets the indexes of a link's start- and end-nodes.
-        
+
 
         ENsetlinknodes(index, startnode, endnode)
 
@@ -12897,7 +12855,7 @@ class epanetapi:
 
     def ENsetlinktype(self, indexLink, paramcode, actionCode):
         """ Changes a link's type.
-        
+
 
         ENsetlinktype(id, paramcode, actionCode)
 
@@ -12932,7 +12890,7 @@ class epanetapi:
 
     def ENsetnodeid(self, index, newid):
         """ Changes the ID name of a node.
-        
+
 
         ENsetnodeid(index, newid)
 
@@ -12947,7 +12905,7 @@ class epanetapi:
 
     def ENsetnodevalue(self, index, paramcode, value):
         """ Sets a property value for a node.
-        
+
 
         ENsetnodevalue(index, paramcode, value)
 
@@ -12992,7 +12950,7 @@ class epanetapi:
 
     def ENsetpatternid(self, index, Id):
         """ Changes the ID name of a time pattern given its index.
-        
+
 
         ENsetpatternid(index, id)
 
@@ -13020,7 +12978,7 @@ class epanetapi:
 
     def ENsetpipedata(self, index, length, diam, rough, mloss):
         """ Sets a group of properties for a pipe link.
-        
+
 
         ENsetpipedata(index, length, diam, rough, mloss)
 
@@ -13040,7 +12998,7 @@ class epanetapi:
 
     def ENsetpremise(self, ruleIndex, premiseIndex, logop, object_, objIndex, variable, relop, status, value):
         """ Sets the properties of a premise in a rule-based control.
-        
+
 
         ENsetpremise(ruleIndex, premiseIndex, logop, object, objIndex, variable, relop, status, value)
 
@@ -13063,7 +13021,7 @@ class epanetapi:
 
     def ENsetpremiseindex(self, ruleIndex, premiseIndex, objIndex):
         """ Sets the index of an object in a premise of a rule-based control.
-        
+
 
         ENsetpremiseindex(ruleIndex, premiseIndex, objIndex)
 
@@ -13077,7 +13035,7 @@ class epanetapi:
 
     def ENsetpremisestatus(self, ruleIndex, premiseIndex, status):
         """ Sets the status being compared to in a premise of a rule-based control.
-        
+
 
         ENsetpremisestatus(ruleIndex, premiseIndex, status)
 
@@ -13091,7 +13049,7 @@ class epanetapi:
 
     def ENsetpremisevalue(self, ruleIndex, premiseIndex, value):
         """ Sets the value in a premise of a rule-based control.
-        
+
 
         ENsetpremisevalue(ruleIndex, premiseIndex, value)
 
@@ -13136,7 +13094,7 @@ class epanetapi:
 
     def ENsetrulepriority(self, ruleIndex, priority):
         """ Sets the priority of a rule-based control.
-        
+
 
         ENsetrulepriority(ruleIndex, priority)
 
@@ -13163,7 +13121,7 @@ class epanetapi:
 
     def ENsettankdata(self, index, elev, initlvl, minlvl, maxlvl, diam, minvol, volcurve):
         """ Sets a group of properties for a tank node.
-        
+
 
         ENsettankdata(index, elev, initlvl, minlvl, maxlvl, diam, minvol, volcurve)
 
@@ -13186,7 +13144,7 @@ class epanetapi:
 
     def ENsetthenaction(self, ruleIndex, actionIndex, linkIndex, status, setting):
         """ Sets the properties of a THEN action in a rule-based control.
-        
+
 
         ENsetthenaction(ruleIndex, actionIndex, linkIndex, status, setting)
 
@@ -13217,7 +13175,7 @@ class epanetapi:
 
     def ENsettitle(self, line1, line2, line3):
         """ Sets the title lines of the project.
-        
+
 
         ENsettitle(line1, line2, line3)
 
@@ -13232,7 +13190,7 @@ class epanetapi:
 
     def ENsetvertices(self, index, x, y, vertex):
         """ Assigns a set of internal vertex points to a link.
-        
+
 
         ENsetvertices(index, x, y, vertex)
 
