@@ -43,7 +43,7 @@ for i, values in enumerate(pressures):
 
     hr = str(int(Time[i - 1]))
 
-    d.plot(pressure=values, figure=False, min_colorbar=minPressure, max_colorbar=maxPressure,
+    d.plot(node_values=values, figure=False, min_colorbar=minPressure, max_colorbar=maxPressure,
            title=f'Pressures at time {hr} hrs')
 
     PngName = f'{i}.png'
