@@ -42,7 +42,7 @@ figToPngNames = []
 for i, values in enumerate(flows):
     hr = str(int(Time[i - 1]))
 
-    d.plot(flow=values, min_colorbar=minFlow, max_colorbar=maxFlow, figure=False, flow_text=True,
+    d.plot(link_values=values, min_colorbar=minFlow, max_colorbar=maxFlow, figure=False, link_text=True,
            title=f'Flows at time {hr} hrs')
 
     PngName = f'{i}.png'
