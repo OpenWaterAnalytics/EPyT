@@ -5,17 +5,17 @@ Create a flow gif
 
   Create a gif with the flows of Net1.
 
-  Requirements:
-    pip install imageio
-    pip install Pillow
+      Requirements:
+        pip install imageio
+        pip install Pillow
 
-  This example contains:
-    Load a network.
-    Run analysis with getComputedTimeSeries.
-    Set colorbar values based on the min/max of all the Flow values.
-    Create pngs for every timepoint.
-    Create gif from all the pngs.
-    Unload library.
+      This example contains:
+        Load a network.
+        Run analysis with getComputedTimeSeries.
+        Set colorbar values based on the min/max of all the Flow values.
+        Create pngs for every timepoint.
+        Create gif from all the pngs.
+        Unload library.
 
 .. code-block:: python 
 
