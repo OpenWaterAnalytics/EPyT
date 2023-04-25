@@ -32,6 +32,9 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   overview
+   installation
    usage
-   class
+   api
    examples
+   changelog

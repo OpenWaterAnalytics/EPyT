@@ -1,8 +1,5 @@
-Epanet class
-------------
+API documentation
+-----------------
 
-.. autosummary::
-   :toctree:   
-   
-   epanet.epanet
-
+.. autoclass:: epanet.epanet
+   :members:

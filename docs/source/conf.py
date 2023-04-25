@@ -12,7 +12,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'epyt'
-copyright = '_copyright_'
+copyright = '2022, Marios S. Kyriakou'
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here.
 import pathlib
