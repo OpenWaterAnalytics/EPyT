@@ -518,7 +518,7 @@ class epanet:
                              'NOT', 'BELOW', 'ABOVE']
 
         # Initial attributes
-        self.classversion = '1.0.2'
+        self.classversion = '1.0.3'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
