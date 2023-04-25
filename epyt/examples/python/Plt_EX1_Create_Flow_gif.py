@@ -43,7 +43,7 @@ for i, values in enumerate(flows):
     hr = str(int(Time[i - 1]))
 
     d.plot(link_values=values, min_colorbar=minFlow, max_colorbar=maxFlow, figure=False, link_text=True,
-           title=f'Flows at time {hr} hrs')
+           title=f'Flows at time {hr} hrs', colorbar_label=f'Flow ({d.units.LinkFlowUnits})')
 
     PngName = f'{i}.png'
     figToPngNames.append(PngName)

@@ -44,7 +44,7 @@ for i, values in enumerate(pressures):
     hr = str(int(Time[i - 1]))
 
     d.plot(node_values=values, figure=False, min_colorbar=minPressure, max_colorbar=maxPressure,
-           title=f'Pressures at time {hr} hrs')
+           title=f'Pressures at time {hr} hrs', colorbar_label=f'Pressure ({d.units.NodePressureUnits})')
 
     PngName = f'{i}.png'
     figToPngNames.append(PngName)
