@@ -4356,11 +4356,11 @@ class epanet:
                     demandNameIn = demandName[i + 1]
                     value.append(self.api.ENgetdemandindex(nodeIndex, demandNameIn[nodeIndex - 1]))
             else:
+                value = [[0 for i in range(len(nodeIndex))] for j in range(len(demandName))]
                 for i in range(len(demandName)):
                     demandNameIn = demandName[i + 1]
-                    value = [[0 for i in range(len(nodeIndex))] for j in range(len(demandName))]
                     for j in range(len(nodeIndex)):
-                        value[i][j] = self.api.ENgetdemandindex(nodeIndex[j], demandNameIn[nodeIndex[j]])
+                        value[i][j] = self.api.ENgetdemandindex(nodeIndex[j], demandNameIn[nodeIndex[j] - 1])
         elif len(argv) == 0:
             demandName = self.getNodeJunctionDemandName()
             indices = self.__getNodeJunctionIndices(*argv)
