@@ -5,7 +5,7 @@
 [![Downloads](https://pepy.tech/badge/epyt)](https://pepy.tech/project/epyt)
 [![Downloads](https://pepy.tech/badge/epyt/month)](https://pepy.tech/project/epyt)
 
-[![build](https://github.com/KIOS-Research/EPyT/actions/workflows/build_tests.yml/badge.svg)](https://github.com/KIOS-Research/EPyT/actions/workflows/build_tests.yml)
+[![build](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml/badge.svg)](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml)
 [![Documentation Status](https://readthedocs.org/projects/epanet-python-toolkit-epyt/badge/?version=latest)](https://epanet-python-toolkit-epyt.readthedocs.io/en/latest/?badge=latest)
 
 

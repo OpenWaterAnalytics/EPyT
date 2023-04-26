@@ -28,7 +28,7 @@ d = epanet('Net1.inp')
 # Set gif name 
 new_gif_name = f'{d.netName[:-4]}_pressures.gif'
 
-# Run Hyraulic analysis    
+# Run Hydraulic analysis
 comp_analysis_vals = d.getComputedTimeSeries()
 pressures = comp_analysis_vals.Pressure
 Time = comp_analysis_vals.Time/3600
@@ -43,8 +43,8 @@ for i, values in enumerate(pressures):
 
     hr = str(int(Time[i - 1]))
 
-    d.plot(pressure=values, figure=False, min_colorbar=minPressure, max_colorbar=maxPressure,
-           title=f'Pressures at time {hr} hrs')
+    d.plot(node_values=values, figure=False, min_colorbar=minPressure, max_colorbar=maxPressure,
+           title=f'Pressures at time {hr} hrs', colorbar_label=f'Pressure ({d.units.NodePressureUnits})')
 
     PngName = f'{i}.png'
     figToPngNames.append(PngName)

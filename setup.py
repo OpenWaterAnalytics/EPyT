@@ -26,16 +26,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="1.0.1",
+    version="1.0.4",
     author="KIOS CoE",
     author_email="kiriakou.marios@ucy.ac.cy",
     description='A Python module for EPANET water distribution simulation libraries. The EPyT is inspired by the '
                 'EPANET-Matlab Toolkit.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/KIOS-Research/EPyT',
+    url='https://github.com/OpenWaterAnalytics/EPyT',
     project_urls={
-        "Bug Tracker": 'https://github.com/KIOS-Research/EPyT/issues',
+        "Bug Tracker": 'https://github.com/OpenWaterAnalytics/EPyT/issues',
     },
     packages=packages,
     keywords='epanet, water, networks, hydraulics, quality, simulations, emt, epanet matlab toolkit',

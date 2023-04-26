@@ -1,13 +1,11 @@
 Examples
-======== 
-
-
-Contents
---------
+========
 
 .. toctree::
    :maxdepth: 2
 
-   Create_Flow_Gif 
-   Create_Pressure_Gif
+   Simple example
+   Advance example
+   Plt_EX1_Create_Flow_gif
+   Plt_EX2_Create_Pressure_gif
 

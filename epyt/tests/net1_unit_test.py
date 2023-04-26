@@ -7,8 +7,8 @@ class TestGetSetLinksCase(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
-        inpname = 'Net1.inp'
-        self.epanetClass = epanet(inpname)
+        inp_name = 'Net1.inp'
+        self.epanetClass = epanet(inp_name)
 
     def tearDown(self):
         """Call after every test case."""
@@ -44,29 +44,31 @@ class TestGetSetLinksCase(unittest.TestCase):
 
     """ ------------------------------------------------------------------------- """
 
-    def testRoughnessCoeffAll(self):
+    def testRoughnessCoefficientAll(self):
         assert all(self.epanetClass.getLinkRoughnessCoeff() == [100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                                                                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
-                                                                0.0]), "Wrong RoughnessCoeff output"
+                                                                0.0]), "Wrong roughness output"
 
-    def testRoughnessCoeffIndices(self):
+    def testRoughnessCoefficientIndices(self):
         assert all(self.epanetClass.getLinkRoughnessCoeff([1, 5, 10]) == [100.0, 100.0,
-                                                                          100.0]), "Wrong RoughnessCoeff output"
+                                                                          100.0]), "Wrong roughness output"
 
-    def testRoughnessCoeffIndex(self):
-        assert self.epanetClass.getLinkRoughnessCoeff(10) == 100.0, "Wrong RoughnessCoeff output"
+    def testRoughnessCoefficientIndex(self):
+        assert self.epanetClass.getLinkRoughnessCoeff(10) == 100.0, "Wrong roughness output"
 
     """ ------------------------------------------------------------------------- """
 
-    def testMinorLossCoeffAll(self):
+    def testMinorLossCoefficientAll(self):
         assert all(self.epanetClass.getLinkMinorLossCoeff() == [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                                                0.0, 0.0, 0.0, 0.0, 0.0]), "Wrong MinorLossCoeff output"
+                                                                0.0, 0.0, 0.0, 0.0, 0.0]), \
+            "Wrong minor loss coefficient output"
 
-    def testMinorLossCoeffIndices(self):
-        assert all(self.epanetClass.getLinkMinorLossCoeff([1, 5, 10]) == [0.0, 0.0, 0.0]), "Wrong MinorLossCoeff output"
+    def testMinorLossCoefficientIndices(self):
+        assert all(self.epanetClass.getLinkMinorLossCoeff([1, 5, 10]) == [0.0, 0.0, 0.0]), \
+            "Wrong minor loss coefficient output"
 
-    def testMinorLossCoeffIndex(self):
-        assert self.epanetClass.getLinkMinorLossCoeff(10) == 0.0, "Wrong MinorLossCoeff output"
+    def testMinorLossCoefficientIndex(self):
+        assert self.epanetClass.getLinkMinorLossCoeff(10) == 0.0, "Wrong minor loss coefficient output"
 
     """ ------------------------------------------------------------------------- """
 
@@ -82,7 +84,7 @@ class TestGetSetLinksCase(unittest.TestCase):
 
     """ ------------------------------------------------------------------------- """
 
-    def testInitialSettingfAll(self):
+    def testInitialSettingAll(self):
         assert all(self.epanetClass.getLinkInitialSetting() == [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                                                                 100.0, 100.0, 100.0, 100.0, 100.0,
                                                                 1.0]), "Wrong InitialSetting output"
@@ -96,31 +98,32 @@ class TestGetSetLinksCase(unittest.TestCase):
 
     """ ------------------------------------------------------------------------- """
 
-    def testBulkReactionCoeffAll(self):
+    def testBulkReactionCoefficientAll(self):
         assert all(self.epanetClass.getLinkBulkReactionCoeff() == [-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5,
                                                                    -0.5, -0.5, -0.5, -0.5,
-                                                                   0.0]), "Wrong BulkReactionCoeff output"
+                                                                   0.0]), "Wrong bulk reaction coefficient output"
 
-    def testBulkReactionCoeffIndices(self):
-        assert all(self.epanetClass.getLinkBulkReactionCoeff([1, 5, 10]) == [-0.5, -0.5,
-                                                                             -0.5]), "Wrong BulkReactionCoeff output"
+    def testBulkReactionCoefficientIndices(self):
+        assert all(self.epanetClass.getLinkBulkReactionCoeff([1, 5, 10]) == [-0.5, -0.5, -0.5]), \
+            "Wrong bulk reaction coefficient output"
 
-    def testBulkReactionCoeffIndex(self):
-        assert self.epanetClass.getLinkBulkReactionCoeff(10) == -0.5, "Wrong BulkReactionCoeff output"
+    def testBulkReactionCoefficientIndex(self):
+        assert self.epanetClass.getLinkBulkReactionCoeff(10) == -0.5, "Wrong bulk reaction coefficient output"
 
     """ ------------------------------------------------------------------------- """
 
-    def testWallReactionCoeffAll(self):
+    def testWallReactionCoefficientAll(self):
         assert all(self.epanetClass.getLinkWallReactionCoeff() == [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
                                                                    -1.0, -1.0, -1.0, -1.0,
-                                                                   0.0]), "Wrong WallReactionCoeff output"
+                                                                   0.0]), "Wrong wall reaction coefficient output"
 
-    def testWallReactionCoeffIndices(self):
+    def testWallReactionCoefficientIndices(self):
         assert all(self.epanetClass.getLinkWallReactionCoeff([1, 5, 10]) == [-1.0, -1.0,
-                                                                             -1.0]), "Wrong WallReactionCoeff output"
+                                                                             -1.0]), \
+            "Wrong wall reaction coefficient output"
 
-    def testWallReactionCoeffIndex(self):
-        assert self.epanetClass.getLinkWallReactionCoeff(10) == -1.0, "Wrong WallReactionCoeff output"
+    def testWallReactionCoefficientIndex(self):
+        assert self.epanetClass.getLinkWallReactionCoeff(10) == -1.0, "Wrong wall reaction coefficient output"
 
     """ ------------------------------------------------------------------------- """
 
@@ -155,29 +158,29 @@ class TestGetSetLinksCase(unittest.TestCase):
             self.epanetClass.getLinkStatus() == [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), "Wrong LinkStatus output"
 
     def testLinkStatusIndices(self):
-        assert all(self.epanetClass.getLinkStatus(list(range(5, self.epanetClass.getLinkCount() + 1))) == \
-                   [0, 0, 0, 0, 0, 0, 0, 0, 0]), "Wrong LinkStatus output"
+        assert all(self.epanetClass.getLinkStatus(list(range(5, self.epanetClass.getLinkCount() + 1)))
+                   == [0, 0, 0, 0, 0, 0, 0, 0, 0]), "Wrong LinkStatus output"
 
     def testLinkStatusIndex(self):
         assert self.epanetClass.getLinkStatus(13) == 0, "Wrong LinkStatus output"
 
     """ ------------------------------------------------------------------------- """
 
-    def testStepbyStepAnalysis(self):
+    def testStepByStepAnalysis(self):
         # Runs hydraulics Step-by-step
         self.epanetClass.openHydraulicAnalysis()
         self.epanetClass.initializeHydraulicAnalysis()
-        tstep, T, V, H, F = 1, list(), list(), list(), list()
+        t_step, t_sim, velocity, head_loss, flow = 1, list(), list(), list(), list()
         index = 1
-        while (tstep > 0):
+        while t_step > 0:
             t = self.epanetClass.runHydraulicAnalysis()
-            V.append(self.epanetClass.getLinkVelocity(index))
-            H.append(self.epanetClass.getLinkHeadloss(index))
-            F.append(self.epanetClass.getLinkFlows(index))
-            T.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
+            velocity.append(self.epanetClass.getLinkVelocity(index))
+            head_loss.append(self.epanetClass.getLinkHeadloss(index))
+            flow.append(self.epanetClass.getLinkFlows(index))
+            t_sim.append(t)
+            t_step = self.epanetClass.nextHydraulicAnalysisStep()
         self.epanetClass.closeHydraulicAnalysis()
-        V_desired = np.array(
+        v_desired = np.array(
             [2.352866658167868, 2.3306833593092215, 2.3166632197802377, 2.3014354684962814, 2.294465806401654,
              2.286139935062943, 2.2859850879557047, 2.284396185662495, 2.2748389650812535, 2.266909416977331,
              2.251123423567716,
@@ -188,8 +191,8 @@ class TestGetSetLinksCase(unittest.TestCase):
              9.452347598503036e-07, 9.28221894076609e-07, 9.084721628771827e-07, 2.416368471024177,
              2.4073945733540967,
              2.3857323225219194])
-        np.testing.assert_array_almost_equal(V, V_desired, err_msg="Wrong Velocity output")
-        H_desired = np.array(
+        np.testing.assert_array_almost_equal(velocity, v_desired, err_msg="Wrong Velocity output")
+        h_desired = np.array(
             [19.117018607743262, 18.784557106294415, 18.575821630530413, 18.350323106559813, 18.247536420722895,
              18.125096976393024, 18.12282340051479, 18.099494697653654, 17.95951292501252, 17.843745116056084,
              17.61430252411742, 17.410680708749624,
@@ -199,9 +202,9 @@ class TestGetSetLinksCase(unittest.TestCase):
              2.637534635141492e-11,
              2.5352164811920375e-11, 20.08353269330769, 19.945617762391066,
              19.61450487894149])
-        np.testing.assert_array_almost_equal(H, H_desired, err_msg="Wrong HeadLoss output")
-        F_desired = [np.array(1866.17582999), np.array(1848.5811499), np.array(1837.46107838)]
-        np.testing.assert_array_almost_equal(F[0:3], F_desired, err_msg="Wrong Flows output")
+        np.testing.assert_array_almost_equal(head_loss, h_desired, err_msg="Wrong HeadLoss output")
+        f_desired = [np.array(1866.17582999), np.array(1848.5811499), np.array(1837.46107838)]
+        np.testing.assert_array_almost_equal(flow[0:3], f_desired, err_msg="Wrong Flows output")
 
     """ ------------------------------------------------------------------------- """
 
@@ -210,8 +213,8 @@ class TestGetSetLinksCase(unittest.TestCase):
                                                           100.0, 100.0, 100.0, 100.0, 0.0]), "Wrong LinkSetting output"
 
     def testLinkSettingIndices(self):
-        assert all(self.epanetClass.getLinkSettings(list(range(5, self.epanetClass.getLinkCount() + 1))) == \
-                   [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]), "Wrong LinkSetting output"
+        assert all(self.epanetClass.getLinkSettings(list(range(5, self.epanetClass.getLinkCount() + 1)))
+                   == [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0]), "Wrong LinkSetting output"
 
     def testLinkSettingIndex(self):
         assert self.epanetClass.getLinkSettings(13) == 0.0, "Wrong LinkSetting output"
@@ -252,43 +255,43 @@ class TestGetSetLinksCase(unittest.TestCase):
 
     """ ------------------------------------------------------------------------- """
 
-    def testSetLinkRoughnessCoeffAll(self):
+    def testSetLinkRoughnessCoefficientAll(self):
         self.epanetClass.setLinkRoughnessCoeff([2 * i for i in self.epanetClass.getLinkRoughnessCoeff()])
         assert all(self.epanetClass.getLinkRoughnessCoeff() == [200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0,
                                                                 200.0, 200.0, 200.0, 200.0,
-                                                                0.0]), "Wrong SetLinkRoughnessCoeff output"
+                                                                0.0]), "Wrong link roughness output"
 
-    def testSetLinkRoughnessCoeffIndices(self):
+    def testSetLinkRoughnessCoefficientIndices(self):
         self.epanetClass.setLinkRoughnessCoeff([2, 3, 4], [200, 250, 350])  # index,  value
         assert all(self.epanetClass.getLinkRoughnessCoeff([2, 3, 4]) == [200, 250,
-                                                                         350]), "Wrong SetLinkRoughnessCoeff output"
+                                                                         350]), "Wrong link roughness output"
 
-    def testSetLinkRoughnessCoeffIndex(self):
+    def testSetLinkRoughnessCoefficientIndex(self):
         self.epanetClass.setLinkRoughnessCoeff(2, 500)  # index,  value
-        assert self.epanetClass.getLinkRoughnessCoeff(2) == 500, "Wrong SetLinkRoughnessCoeff output"
+        assert self.epanetClass.getLinkRoughnessCoeff(2) == 500, "Wrong link roughness output"
 
     """ ------------------------------------------------------------------------- """
 
-    def testSetLinkMinorLossCoeffAll(self):
-        self.epanetClass.setLinkMinorLossCoeff([1.2 for i in self.epanetClass.getLinkMinorLossCoeff()])
+    def testSetLinkMinorLossCoefficientAll(self):
+        self.epanetClass.setLinkMinorLossCoeff([1.2 for _ in self.epanetClass.getLinkMinorLossCoeff()])
         assert all(self.epanetClass.getLinkMinorLossCoeff() == [1.2, 1.2000000000000002, 1.2000000000000002,
                                                                 1.2000000000000002, 1.2, 1.2,
                                                                 1.2, 1.2000000000000002, 1.2, 1.2, 1.2, 1.2,
-                                                                0.0]), "Wrong SetLinkMinorLossCoeff output"
+                                                                0.0]), "Wrong set minor loss output"
 
-    def testSetLinkMinorLossCoeffIndices(self):
+    def testSetLinkMinorLossCoefficientIndices(self):
         self.epanetClass.setLinkMinorLossCoeff([2, 3, 4], [1.01, 1.02, 1.01])  # index,  value
         assert all(self.epanetClass.getLinkMinorLossCoeff([2, 3, 4]) == [1.01, 1.02,
-                                                                         1.01]), "Wrong SetLinkMinorLossCoeff output"
+                                                                         1.01]), "Wrong set minor loss output"
 
-    def testSetLinkMinorLossCoeffIndex(self):
+    def testSetLinkMinorLossCoefficientIndex(self):
         self.epanetClass.setLinkMinorLossCoeff(2, 1.01)  # index,  value
-        assert self.epanetClass.getLinkMinorLossCoeff(2) == 1.01, "Wrong SetLinkMinorLossCoeff output"
+        assert self.epanetClass.getLinkMinorLossCoeff(2) == 1.01, "Wrong set minor loss output"
 
     """ ------------------------------------------------------------------------- """
 
     def testSetLinkInitialStatusAll(self):
-        self.epanetClass.setLinkInitialStatus([0 for i in self.epanetClass.getLinkInitialStatus()])
+        self.epanetClass.setLinkInitialStatus([0 for _ in self.epanetClass.getLinkInitialStatus()])
         assert all(self.epanetClass.getLinkInitialStatus() == [0] * 13), "Wrong SetLinkInitialStatus output"
 
     def testSetLinkInitialStatusIndices(self):
@@ -297,52 +300,51 @@ class TestGetSetLinksCase(unittest.TestCase):
 
     def testSetLinkInitialStatusIndex(self):
         self.epanetClass.setLinkInitialStatus(2, 0)  # index,  value
-        assert self.epanetClass.getLinkInitialStatus(2) == 0, "Wrong SetLinkInitialStatus output"
+        assert self.epanetClass.getLinkInitialStatus(2) == 0, "Wrong set initial status output"
 
     """ ------------------------------------------------------------------------- """
 
-    def testSetLinkBulkReactionCoeffAll(self):
+    def testSetLinkBulkReactionCoefficientAll(self):
         self.epanetClass.setLinkBulkReactionCoeff([i - 0.055 for i in self.epanetClass.getLinkBulkReactionCoeff()])
         assert all(
             self.epanetClass.getLinkBulkReactionCoeff() == [-0.555, -0.555, -0.555, -0.555, -0.555, -0.555, -0.555,
                                                             -0.555, -0.555, -0.555, -0.555, -0.555,
-                                                            0.0]), "Wrong SetLinkBulkReactionCoeff output"
+                                                            0.0]), "Wrong set link bulk reaction output"
 
-    def testSetLinkBulkReactionCoeffIndices(self):
+    def testSetLinkBulkReactionCoefficientIndices(self):
         self.epanetClass.setLinkBulkReactionCoeff([2, 3, 13], [0.1] * 3)  # index,  value
         assert all(self.epanetClass.getLinkBulkReactionCoeff([2, 3, 13]) == [0.1, 0.1,
-                                                                             0.0]), "Wrong SetLinkBulkReactionCoeff " \
+                                                                             0.0]), "Wrong set link bulk reaction " \
                                                                                     "output"
 
-    def testSetLinkBulkReactionCoeffIndex(self):
+    def testSetLinkBulkReactionCoefficientIndex(self):
         self.epanetClass.setLinkBulkReactionCoeff(1, 0.2)  # index,  value
-        assert self.epanetClass.getLinkBulkReactionCoeff(1) == 0.2, "Wrong SetLinkBulkReactionCoeff output"
+        assert self.epanetClass.getLinkBulkReactionCoeff(1) == 0.2, "Wrong set link bulk reaction output"
 
     """ ------------------------------------------------------------------------- """
 
-    def testSetLinkWallReactionCoeffAll(self):
+    def testSetLinkWallReactionCoefficientAll(self):
         self.epanetClass.setLinkWallReactionCoeff([i * (-1.1) for i in self.epanetClass.getLinkWallReactionCoeff()])
         assert all(self.epanetClass.getLinkWallReactionCoeff() == [1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
                                                                    1.1, 1.1,
-                                                                   0.0]), "Wrong SetLinkWallReactionCoeff output"
+                                                                   0.0]), "Wrong set link wall reaction output"
 
-    def testSetLinkWallReactionCoeffIndices(self):
+    def testSetLinkWallReactionCoefficientIndices(self):
         self.epanetClass.setLinkWallReactionCoeff([2, 3, 13], [-2] * 3)  # index,  value
-        assert all(self.epanetClass.getLinkWallReactionCoeff([2, 3, 13]) == [-2.0, -2.0,
-                                                                             0.0]), "Wrong SetLinkWallReactionCoeff " \
-                                                                                    "output"
+        assert all(self.epanetClass.getLinkWallReactionCoeff([2, 3, 13]) == [-2.0, -2.0, 0.0]), \
+            "Wrong set link wall reaction output"
 
-    def testSetLinkWallReactionCoeffIndex(self):
+    def testSetLinkWallReactionCoefficientIndex(self):
         self.epanetClass.setLinkWallReactionCoeff(2, -2)  # index,  value
-        assert self.epanetClass.getLinkWallReactionCoeff(2) == -2, "Wrong SetLinkWallReactionCoeff output"
+        assert self.epanetClass.getLinkWallReactionCoeff(2) == -2, "Wrong set link wall reaction output"
 
     """ ------------------------------------------------------------------------- """
 
     def testSetLinkInitialSettingAll(self):
-        linkset = self.epanetClass.getLinkInitialSetting()
+        link_set = self.epanetClass.getLinkInitialSetting()
         if self.epanetClass.getLinkValveCount():
-            linkset[self.epanetClass.getLinkValveIndex()] = 0
-        self.epanetClass.setLinkInitialSetting([i * 10 for i in linkset])
+            link_set[self.epanetClass.getLinkValveIndex()] = 0
+        self.epanetClass.setLinkInitialSetting([i * 10 for i in link_set])
         assert all(self.epanetClass.getLinkInitialSetting() == [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0,
                                                                 1000.0, 1000.0, 1000.0, 1000.0, 1000.0,
                                                                 10.0]), "Wrong SetLinkInitialSetting output"
@@ -358,7 +360,7 @@ class TestGetSetLinksCase(unittest.TestCase):
     """ ------------------------------------------------------------------------- """
 
     def testSetLinkStatusAll(self):
-        self.epanetClass.setLinkStatus([1 for i in self.epanetClass.getLinkStatus()])
+        self.epanetClass.setLinkStatus([1 for _ in self.epanetClass.getLinkStatus()])
         assert all(self.epanetClass.getLinkStatus() == [1] * 13), "Wrong SetLinkStatus output"
 
     def testSetLinkStatusIndices(self):

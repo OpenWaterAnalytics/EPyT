@@ -1,29 +1,24 @@
-.. EPYT documentation master file, created by
-   sphinx-quickstart on Mon Mar 28 12:20:36 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-
-|
-
 .. image:: https://www.kios.ucy.ac.cy/wp-content/uploads/2021/07/Logotype-KIOS.svg
     :alt: kios_logo
     :width: 200
     :target: http://www.kios.ucy.ac.cy
+|
+.. image:: https://img.shields.io/pypi/l/epyt.svg
+        :target: https://github.com/KIOS-Research/EPyT/blob/main/LICENSE.md
 
+.. image:: https://img.shields.io/pypi/v/epyt.svg
+        :target: https://pypi.org/project/epyt/
 
-EPANET Python Toolkit (EPyT)
-============================
+.. image:: https://pepy.tech/badge/epyt
+        :target: https://pepy.tech/project/epyt
+        :alt: Downloads
 
+.. image:: https://pepy.tech/badge/epyt/month
+        :target: https://pepy.tech/project/epyt
 
-The **EPANET-Python Toolkit (EPyT)** is an open-source software, originally developed by the `KIOS Research and Innovation Center of Excellence, University of Cyprus <http://www.kios.ucy.ac.cy/>`_ which operates within the Python environment, for providing a programming interface for the latest version of `EPANET <https://github.com/OpenWaterAnalytics/epanet>`_, a hydraulic and quality modeling software created by the US EPA, with Python, a  high-level technical computing software. The goal of the EPANET Python Toolkit is to serve as a common programming framework for research and development in the growing field of smart water networks.
-   
-
-.. note::
-
-   This project is under active development.
-
-
+.. image:: https://readthedocs.org/projects/epanet-python-toolkit-epyt/badge/?version=latest
+        :target: https://epanet-python-toolkit-epyt.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
 
 
 Contents
@@ -32,7 +27,9 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   overview
+   installation
    usage
    api
-   class
    examples
+   changelog
