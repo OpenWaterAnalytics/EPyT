@@ -992,6 +992,7 @@ class epanet:
          The example is based on d = epanet('Net1.inp')
 
         Example:
+
         >>> valveID = 'newValveFCV'
         >>> fromNode = '10'
         >>> toNode = '21'
@@ -1011,6 +1012,7 @@ class epanet:
          The example is based on d = epanet('Net1.inp')
 
         Example:
+
         >>> valveID = 'newValveGPV'
         >>> fromNode = '10'
         >>> toNode = '21'
@@ -1030,6 +1032,7 @@ class epanet:
          The example is based on d = epanet('Net1.inp')
 
         Example:
+
         >>> valveID = 'newValvePBV'
         >>> fromNode = '10'
         >>> toNode = '21'
@@ -1049,6 +1052,7 @@ class epanet:
         # The example is based on d = epanet('Net1.inp')
 
         Example:
+
         >>> valveID = 'newValvePRV'
         >>> fromNode = '10'
         >>> toNode = '21'
@@ -1068,6 +1072,7 @@ class epanet:
         The example is based on d = epanet('Net1.inp')
 
         Example:
+
         >>> valveID = 'newValvePSV'
         >>> fromNode = '10'
         >>> toNode = '21'
@@ -1087,6 +1092,7 @@ class epanet:
         The example is based on d = epanet('Net1.inp')
 
         Example:
+
         >>> valveID = 'newValveTCV'
         >>> fromNode = '10'
         >>> toNode = '21'
@@ -2407,8 +2413,8 @@ class epanet:
         value = {}
         self.ControlTypes = []
         self.ControlTypesIndex, self.ControlLinkIndex, \
-        self.ControlSettings, self.ControlTypes, \
-        self.ControlNodeIndex, self.ControlLevelValues = \
+            self.ControlSettings, self.ControlTypes, \
+            self.ControlNodeIndex, self.ControlLevelValues = \
             [], [], [], [], [], []
         if not isList(indices):
             indices = [indices]
@@ -3130,7 +3136,7 @@ class epanet:
         """
         linkTypes = self.getLinkTypeIndex()
         return linkTypes.count(self.ToolkitConstants.EN_CVPIPE) + \
-               linkTypes.count(self.ToolkitConstants.EN_PIPE)
+            linkTypes.count(self.ToolkitConstants.EN_PIPE)
 
     def getLinkPumpEfficiency(self, *argv):
         """ Retrieves the current computed pump efficiency (read only).
@@ -10032,7 +10038,7 @@ class epanet:
                         )
                     if link_text:
                         plt.text((x[0] + x[1]) / 2, (y[0] + y[1]) / 2, "{:.2f}".format(link_values[i - 1]),
-                                  {'fontsize': fontsize})
+                                 {'fontsize': fontsize})
                 else:
                     xV_old = x[0]
                     yV_old = y[0]
