@@ -28,7 +28,7 @@ d = epanet('Net1.inp')
 # Set gif name 
 new_gif_name = f'{d.netName[:-4]}_pressures.gif'
 
-# Run Hyraulic analysis    
+# Run Hydraulic analysis
 comp_analysis_vals = d.getComputedTimeSeries()
 pressures = comp_analysis_vals.Pressure
 Time = comp_analysis_vals.Time/3600

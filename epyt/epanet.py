@@ -696,9 +696,8 @@ class epanet:
         :return: new curve valueIndex
         :rtype: int
 
-        Example:
+        Example: ID selected without a space in between the letters
 
-        # ID selected without a space in between the letters
         >>> new_curve_ID = 'NewCurve'
         >>> x_y_1 = [0, 730]
         >>> x_y_2 = [1000, 500]
@@ -1840,6 +1839,7 @@ class epanet:
         Returns the remaining(if exist) node demand indices.
 
         Example 1:
+
         >>> nodeIndex = 1
         >>> baseDemand = 100
         >>> patternId = '1'
@@ -1865,6 +1865,7 @@ class epanet:
         >>> d.getNodeJunctionDemandIndex(nodeIndex)
 
         Example 2:
+
         >>> nodeIndex = 1
         >>> baseDemand = 100
         >>> patternId = '1'
@@ -1886,6 +1887,7 @@ class epanet:
         >>> d.getNodeJunctionDemandIndex(nodeIndex)
 
         Example 3:
+
         >>> nodeIndex = [1, 2, 3]
         >>> baseDemand = [100, 110, 150]
         >>> patternId = ['1', '1', '']
@@ -2071,6 +2073,7 @@ class epanet:
         >>> d.getComputedHydraulicTimeSeries().Flow
 
         Example 3:
+
         # Retrieves all the time-series Time, Pressure, Velocity
         >>> data = d.getComputedHydraulicTimeSeries(['Time',
         ...                                         'Pressure',
@@ -2889,6 +2892,7 @@ class epanet:
 
         # Retrieves the value of all link quality
         >>> d.getLinkQuality()
+
         Example 2:
 
         # Retrieves the value of the first link quality
@@ -3096,10 +3100,8 @@ class epanet:
 
         Example:
 
-        # Retrieves the value of all link bulk chemical reaction coefficient
-        >>> d.getLinkBulkReactionCoeff()
-        # Retrieves the value of the first link bulk chemical
-        # reaction coefficient
+        >>> d.getLinkBulkReactionCoeff() # Retrieves the value of all link bulk chemical reaction coefficient
+        # Retrieves the value of the first link bulk chemical reaction coefficient
         >>> d.getLinkBulkReactionCoeff(1)
 
         See also getLinkType, getLinksInfo, getLinkRoughnessCoeff,
@@ -3111,12 +3113,10 @@ class epanet:
     def getLinkWallReactionCoeff(self, *argv):
         """ Retrieves the value of all pipe wall chemical reaction coefficient.
 
-        Example :
+        Example:
 
-        # Retrieves the value of all pipe wall chemical reaction coefficient
-        >>> d.getLinkWallReactionCoeff()
-        # Retrieves the value of the first pipe wall chemical
-        # reaction coefficient
+        >>> d.getLinkWallReactionCoeff()  # Retrieves the value of all pipe wall chemical reaction coefficient
+        # Retrieves the value of the first pipe wall chemical reaction coefficient
         >>> d.getLinkWallReactionCoeff(1)
 
         See also getLinkType, getLinksInfo, getLinkRoughnessCoeff,
@@ -3141,10 +3141,9 @@ class epanet:
     def getLinkPumpEfficiency(self, *argv):
         """ Retrieves the current computed pump efficiency (read only).
 
-        Example :
+        Example:
 
-        # Retrieves the current computed pump efficiency for all links
-        >>> d.getLinkPumpEfficiency()
+        >>> d.getLinkPumpEfficiency()  # Retrieves the current computed pump efficiency for all links
         # Retrieves the current computed pump efficiency for the first link
         >>> d.getLinkPumpEfficiency(1)
 
@@ -3168,14 +3167,12 @@ class epanet:
     def getLinkPumpECost(self, *argv):
         """ Retrieves the pump average energy price.
 
-        Example 1:
+        Example 1: Retrieves the average energy price of all pumps
 
-        # Retrieves the average energy price of all pumps
         >>> d.getLinkPumpECost()
 
-        Example 2:
+        Example 2: Retrieves the average energy price of the 1st pump
 
-        # Retrieves the average energy price of the 1st pump
         >>> d.getLinkPumpECost(1)
 
         Example 3:
@@ -3197,25 +3194,20 @@ class epanet:
     def getLinkPumpECurve(self, *argv):
         """ Retrieves the pump efficiency v. flow curve index.
 
-        Example 1:
+        Example 1: Retrieves the efficiency v. flow curve index of all pumps
 
-        # Retrieves the efficiency v. flow curve index of all pumps
         >>> d.getLinkPumpECurve()
 
-        Example 2:
+        Example 2: Retrieves the efficiency v. flow curve index of the 1st pump
 
-        # Retrieves the efficiency v. flow curve index of the 1st pump
         >>> d.getLinkPumpECurve(1)
 
-        Example 3:
+        Example 3: Retrieves the efficiency v. flow curve index of the first 2 pumps
 
-        # Retrieves the efficiency v. flow curve index of the first 2 pumps
         >>> d.getLinkPumpECurve([1,2])
 
-        Example 4:
+        Example 4: Retrieves the efficiency v. flow curve index of the pumps with link index 950
 
-        # Retrieves the efficiency v. flow curve index of the pumps with
-        # link index 950
         >>> d = epanet('Richmond_standard.inp')
         >>> pIndex = 950
         >>> pIndices = d.getLinkPumpIndex()
@@ -3233,24 +3225,24 @@ class epanet:
     def getLinkPumpEPat(self, *argv):
         """ Retrieves the pump energy price time pattern index.
 
-        Example 1:
+        Example 1: Retrieves the energy price time pattern index of all pumps
 
-        >>> d.getLinkPumpEPat()                # Retrieves the energy price time pattern index of all pumps
+        >>> d.getLinkPumpEPat()
 
-        Example 2:
+        Example 2: Retrieves the energy price time pattern index of the 1st pump
 
-        >>> d.getLinkPumpEPat(1)               # Retrieves the energy price time pattern index of the 1st pump
+        >>> d.getLinkPumpEPat(1)
 
-        Example 3:
+        Example 3: Retrieves the energy price time pattern index of the first 2 pumps
 
-        >>> d.getLinkPumpEPat([1,2])           # Retrieves the energy price time pattern index of the first 2 pumps
+        >>> d.getLinkPumpEPat([1,2])
 
-        Example 4:
+        Example 4: Retrieves the energy price time pattern index of pump with link index 950
 
         >>> d = epanet('Richmond_standard.inp')
         >>> pIndex = 950
         >>> pIndices = d.getLinkPumpIndex()
-        >>> d.getLinkPumpEPat(pIndex)           # Retrieves the energy price time pattern index of pump with link index 950
+        >>> d.getLinkPumpEPat(pIndex)
 
         See also setLinkPumpEPat, getLinkPumpHCurve, getLinkPumpECurve,
         getLinkPumpECost, getLinkPumpPatternIndex, getLinkPumpPatternNameID.
@@ -3261,21 +3253,21 @@ class epanet:
     def getLinkPumpHCurve(self, *argv):
         """ Retrieves the pump head v. flow curve index.
 
-        Example 1:
+        Example 1: Retrieves the head v. flow curve index of all pumps
 
-        >>> d.getLinkPumpHCurve()                # Retrieves the head v. flow curve index of all pumps
+        >>> d.getLinkPumpHCurve()
 
-        Example 2:
+        Example 2: Retrieves the head v. flow curve index of the 1st pump
 
-        >>> d.getLinkPumpHCurve(1)               # Retrieves the head v. flow curve index of the 1st pump
+        >>> d.getLinkPumpHCurve(1)
 
-        Example 3:
+        Example 3: Retrieves the head v. flow curve index of the first 2 pumps
 
-        >>> d.getLinkPumpHCurve([1,2])           # Retrieves the head v. flow curve index of the first 2 pumps
+        >>> d.getLinkPumpHCurve([1,2])
 
-        Example 4:
+        Example 4: Retrieves the head v. flow curve index of pump with link index 950
 
-        >>> d = epanet('Richmond_standard.inp')  # Retrieves the head v. flow curve index of pump with link index 950
+        >>> d = epanet('Richmond_standard.inp')
         >>> pIndex = 950
         >>> pIndices = d.getLinkPumpIndex()
         >>> d.getLinkPumpHCurve(pIndex)
@@ -3310,22 +3302,22 @@ class epanet:
     def getLinkPumpPatternIndex(self, *argv):
         """ Retrieves the pump speed time pattern index.
 
-        Example 1:
+        Example 1: Retrieves the speed time pattern index of all pumps
 
-        >>> d.getLinkPumpPatternIndex()                # Retrieves the speed time pattern index of all pumps
+        >>> d.getLinkPumpPatternIndex()
 
-        Example 2:
+        Example 2: Retrieves the speed time pattern index of the 1st pump
 
-        >>> d.getLinkPumpPatternIndex(1)               # Retrieves the speed time pattern index of the 1st pump
+        >>> d.getLinkPumpPatternIndex(1)
 
-        Example 3:
+        Example 3: Retrieves the speed time pattern index of the first 2 pumps
 
-        >>> d.getLinkPumpPatternIndex([1,2])           # Retrieves the speed time pattern index of the first 2 pumps
+        >>> d.getLinkPumpPatternIndex([1,2])
 
-        Example 4:
+        Example 4: Retrieves the speed time pattern index of the pumps given their indices
 
         >>> pumpIndex = d.getLinkPumpIndex()
-        >>> d.getLinkPumpPatternIndex(pumpIndex)       # Retrieves the speed time pattern index of the pumps given their indices
+        >>> d.getLinkPumpPatternIndex(pumpIndex)
 
         See also setLinkPumpPatternIndex, getLinkPumpPower, getLinkPumpHCurve,
         getLinkPumpECost, getLinkPumpEPat,  getLinkPumpPatternNameID.
@@ -3338,23 +3330,23 @@ class epanet:
         A value of 0 means empty
 
 
-        Example 1:
+        Example 1: Retrieves the pattern name ID of all pumps
 
         >>> d = epanet('ky10.inp')
-        >>> d.getLinkPumpPatternNameID()              # Retrieves the pattern name ID of all pumps
+        >>> d.getLinkPumpPatternNameID()
 
-        Example 2:
+        Example 2: Retrieves the pattern name ID of the 1st pump
 
-        >>> d.getLinkPumpPatternNameID(1)             # Retrieves the pattern name ID of the 1st pump
+        >>> d.getLinkPumpPatternNameID(1)
 
-        Example 3:
+        Example 3: Retrieves the pattern name ID of the first 2 pumps
 
-        >>> d.getLinkPumpPatternNameID([1,2])         # Retrieves the pattern name ID of the first 2 pumps
+        >>> d.getLinkPumpPatternNameID([1,2])
 
-        Example 4:
+        Example 4: Retrieves the pattern name ID of the pumps given their indices
 
         >>> pumpIndex = d.getLinkPumpIndex()
-        >>> d.getLinkPumpPatternNameID(pumpIndex)     # Retrieves the pattern name ID of the pumps given their indices
+        >>> d.getLinkPumpPatternNameID(pumpIndex)
 
         See also getLinkPumpPower, getLinkPumpHCurve, getLinkPumpECurve,
         getLinkPumpECost, getLinkPumpEPat, getLinkPumpPatternIndex.
@@ -3376,22 +3368,22 @@ class epanet:
     def getLinkPumpPower(self, *argv):
         """ Retrieves the pump constant power rating (read only).
 
-        Example 1:
+        Example 1: Retrieves the constant power rating of all pumps
 
-        >>> d.getLinkPumpPower()                # Retrieves the constant power rating of all pumps
+        >>> d.getLinkPumpPower()
 
-        Example 2:
+        Example 2: Retrieves the constant power rating of the 1st pump
 
-        >>> d.getLinkPumpPower(1)               # Retrieves the constant power rating of the 1st pump
+        >>> d.getLinkPumpPower(1)
 
-        Example 3:
+        Example 3: Retrieves the constant power rating of the first 2 pumps
 
-        >>> d.getLinkPumpPower([1,2])           # Retrieves the constant power rating of the first 2 pumps
+        >>> d.getLinkPumpPower([1,2])
 
-        Example 4:
+        Example 4: Retrieves the constant power rating of the pumps given their indices
 
         >>> pumpIndex = d.getLinkPumpIndex()
-        >>> d.getLinkPumpPower(pumpIndex)     # Retrieves the constant power rating of the pumps given their indices
+        >>> d.getLinkPumpPower(pumpIndex)
 
         See also getLinkPumpHCurve, getLinkPumpECurve, getLinkPumpECost,
         getLinkPumpEPat, getLinkPumpPatternIndex, getLinkPumpPatternNameID.
@@ -3521,6 +3513,7 @@ class epanet:
         """ Retrieves the number of valves.
 
         Example:
+
         >>> d = epanet('BWSN_Network_1.inp')
         >>> d.getLinkValveCount()
 
@@ -9983,8 +9976,8 @@ class epanet:
                     min_colorbar = np.min(link_values)
                 if max_colorbar is None:
                     max_colorbar = np.max(link_values)
-                link_values = [(i - min_colorbar) / (max_colorbar - min_colorbar) for i in link_values]
-                colors = eval(f"cm.{colorbar}(link_values)")
+                link_values_t = [(i - min_colorbar) / (max_colorbar - min_colorbar) for i in link_values]
+                colors = eval(f"cm.{colorbar}(link_values_t)")
 
         # get info from EN functions
         nodenameid = self.getNodeNameID()
