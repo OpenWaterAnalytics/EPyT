@@ -32,8 +32,8 @@ Retrieve some examples for the function
    >>> help(d.getNodeElevations)
 
 
-How to fix/report bugs
-----------------------
+**How to fix/report bugs**
+
 To fix a bug Fork the EPyT, Edit the code and make the appropriate change, and then Pull it so that we evaluate it.
 
 Keep in mind that some bugs may exist in the EPANET libraries, in case you are not receiving the expected results.
