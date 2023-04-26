@@ -2,7 +2,7 @@
     :alt: kios_logo
     :width: 200
     :target: http://www.kios.ucy.ac.cy
-
+|
 .. image:: https://img.shields.io/pypi/l/epyt.svg
         :target: https://github.com/KIOS-Research/EPyT/blob/main/LICENSE.md
 
