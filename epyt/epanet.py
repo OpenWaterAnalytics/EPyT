@@ -10233,7 +10233,8 @@ class epanet:
         plt.show()
 
     def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color=None, marker='x',
-                figure_size=[3, 2.5], constrained_layout=True, fontsize=5, labels=None):
+                figure_size=[3, 2.5], constrained_layout=True, fontsize=5, labels=None, save_fig=False,
+                filename='temp', dpi=300, filetype='png'):
         """ Plot X Y data
         """
         num_points = np.atleast_2d(Y).shape[1]
@@ -10244,7 +10245,7 @@ class epanet:
 
         plt.rc('xtick', labelsize=fontsize - 1)
         plt.rc('ytick', labelsize=fontsize - 1)
-        plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
+        fig = plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
         color_is_none = color
         for i in range(num_points):
             if color_is_none is None:
@@ -10274,6 +10275,9 @@ class epanet:
         if labels is not None:
             plt.legend(loc='best', fontsize=fontsize, markerscale=1)
         plt.show(block=False)
+
+        if save_fig:
+            fig.savefig(f'{filename}.png', dpi=dpi, format=filetype, bbox_inches="tight")
 
     def printv(self, var):
         try:
