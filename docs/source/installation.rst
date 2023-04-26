@@ -1,19 +1,17 @@
 Installation
 ============
+There are two ways to install EPyT: using PyPI or downloading the package from the GitHub repository.
 
-How to install EPyT
--------------------
-
-PyPI:
+Using PyPI:
 
 .. code-block:: console
 
    $ pip install epyt
 
-Git:
+Downloading from GitHub:
 
-Download the EPyT package from the GitHub repository:
-https://github.com/OpenWaterAnalytics/EPyT
+To download the EPyT package from the `GitHub repository`_ run the following command:
+.. _GitHub repository: https://github.com/OpenWaterAnalytics/EPyT
 
 .. code-block:: console
 
@@ -21,39 +19,31 @@ https://github.com/OpenWaterAnalytics/EPyT
 
     $ cd EPyT
 
-Install the package by running the following command:
+Then, install the package by running the following command:
 
 .. code-block:: console
 
     $ python setup.py install
 
-Recommendation
---------------
+**Recommendation**
 
-- Install Anaconda
+We recommend using Anaconda and either Spyder IDE or PyCharm to run EPyT.
 
-- Run EPyT with `Spyder IDE`
+**Spyder IDE**
 
-- Run EPyT with `PyCharm`
+To configure Spyder IDE for use with EPyT, follow these steps:
 
-Settings on Spyder IDE
+Update the Python interpreter in Tools -> Preferences.
 
-Tools -> Preferrences: update python interpreter
+    .. image:: https://user-images.githubusercontent.com/2945956/154067349-3aed266f-3a23-4573-8b93-db0b4f224964.png
 
-View -> Window layouts -> Matlab layout
+Select the "Matlab" layout in View -> Window layouts.
+Enable interactive plots in Matplotlib by going to Tools -> Preferences -> IPython console -> Graphics -> Graphics backend -> Backend: Automatic.
 
-Enable interactive plot on matlibplot :
-Tools -> Preferences -> IPython console -> Graphics -> Graphics backend -> Backend: Automatic
+**Requirements**
 
-Requirements
-------------
-
-* Python 3.7
-* Windows, OSX or Linux
-* `EPANET 2.2 <https://github.com/OpenWaterAnalytics/epanet>`_
+- Python 3.7
+- Windows, OSX or Linux
+- `EPANET 2.2 <https://github.com/OpenWaterAnalytics/epanet>`_
 
 .. _installation:
-
-
-
-
