@@ -4806,7 +4806,8 @@ class epanet:
         if len(argv) == 0:
             return np.array(value)
         else:
-            return value[0]
+            return value
+
 
     def getNodeTankBulkReactionCoeff(self, *argv):
         """ Retrieves the tank bulk rate coefficient.
