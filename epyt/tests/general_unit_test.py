@@ -986,7 +986,7 @@ class GetTest(unittest.TestCase):
         d = epanet('BWSN_Network_1.inp')
         err_msg = 'Wrong Junction Demand Index output'
         self.assertEqual(d.getNodeJunctionDemandIndex(1, ''), 1, err_msg)
-        self.assertEqual(d.getNodeJunctionDemandIndex([1, 2, 3]), [[0, 0, 0], [1, 1, 1]], err_msg)
+        self.assertEqual(d.getNodeJunctionDemandIndex([1, 2, 3]), [[1, 1, 1], [1, 1, 1]], err_msg)
         d.unload()
 
         """ ---getNodeJunctionDemandName---    """
@@ -1266,7 +1266,7 @@ class GetTest(unittest.TestCase):
         d = epanet('BWSN_Network_1.inp')
 
         """ ---getRuleID---    """
-        self.assertEqual(d.getRuleID(), ['RULE-0', 'RULE-1', 'RULE-3'], 'Wrong Rule ID Output')
+        self.assertEqual(d.getRuleID(), ['RULE-0', 'RULE-1', 'RULE-3', 'RULE-4'], 'Wrong Rule ID Output')
 
         """ ---getRuleInfo---    """
         desired_rule_info = {'Index': [1, 2, 3, 4], 'Premises': [1, 1, 1, 1], 'ThenActions': [1, 1, 1, 1],
