@@ -5910,7 +5910,7 @@ class epanet:
         """
         index = 0
         if len(argv) == 0:
-            index = list(range(1, self.getRuleCount()))
+            index = list(range(1, self.getRuleCount() + 1))
         elif len(argv) == 1:
             index = argv[0]
         if isList(index):
