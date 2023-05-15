@@ -10,23 +10,18 @@ tags:
 authors:
   - name: Marios Kyriakou
     orcid: 0000-0002-2324-8661
-    equal-contrib: true
     affiliation: 1
 - name: Marios Demetriades
-    equal-contrib: true
     orcid: 0000-0001-7775-4319
     affiliation: 1
-  - name: Stelios Vrachimis
+- name: Stelios Vrachimis
     orcid: 0000-0001-8862-5205
-    equal-contrib: true
     affiliation: “1, 2”
-  - name: Demetrios G. Eliades
+- name: Demetrios G. Eliades
     orcid: 0000-0001-6184-6366
-    equal-contrib: true
     affiliation: 1
-  - name: Marios M. Polycarpou
+- name: Marios M. Polycarpou
     orcid: 0000-0001-6495-9171
-    equal-contrib: true
     affiliation: “1, 2”
 affiliations:
  - name: KIOS Research and Innovation Center of Excellence, University of Cyprus, Cyprus
