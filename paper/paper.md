@@ -10,26 +10,34 @@ tags:
 authors:
   - name: Marios Kyriakou
     orcid: 0000-0002-2324-8661
+    corresponding: true
+    equal-contrib: true
     affiliation: 1
-- name: Marios Demetriades
+  - name: Marios Demetriades
+    equal-contrib: true
     orcid: 0000-0001-7775-4319
     affiliation: 1
-- name: Stelios Vrachimis
+  - name: Stelios Vrachimis
     orcid: 0000-0001-8862-5205
-    affiliation: “1, 2”
-- name: Demetrios G. Eliades
+    equal-contrib: true
+    affiliation: "1, 2"
+  - name: Demetrios G. Eliades
     orcid: 0000-0001-6184-6366
+    equal-contrib: true
     affiliation: 1
-- name: Marios M. Polycarpou
+  - name: Marios M. Polycarpou
     orcid: 0000-0001-6495-9171
-    affiliation: “1, 2”
+    equal-contrib: true
+    affiliation: "1, 2"
 affiliations:
- - name: KIOS Research and Innovation Center of Excellence, University of Cyprus, Cyprus
-   index: 1
-- name: Department of Electrical and Computer Engineering, University of Cyprus, Cyprus
-   index: 2
+  - name: KIOS Research and Innovation Center of Excellence, University of Cyprus, Cyprus
+    index: 1
+  - name: Department of Electrical and Computer Engineering, University of Cyprus, Cyprus
+    index: 2
+    
 date: 15 March 2023
 bibliography: paper.bib
+
 ---
 
 # Summary
@@ -46,7 +54,8 @@ With the increasing popularity of Python in both industry and academia, a compre
 1.	Provide a standardized framework for researchers in Smart Water Networks to implement their scientific findings.
 2.	Reduce the time and effort needed to establish a connection with the EPANET libraries.
 3.	Provide code templates to support the adoption of open science and reproducible research best practices.
-5.	Provide a similar data structure in Python and MATLAB, to facilitate translation between the two environments.
+4. Provide a similar data structure in Python and MATLAB, to facilitate translation between the two environments.
+
 ## Target audience
 The target audience is undergraduate and postgraduate students as well as researchers in the areas of civil, chemical, environmental, mechanical and electrical engineering, as well as computer science, who study smart drinking water distribution networks. Moreover, the toolkit can be used by researchers, data scientists and engineers working in startups and companies for the development of new innovative smart water solutions.
 ## State of the field
@@ -193,7 +202,3 @@ In this paper, we have introduced the EPANET-Python Toolkit, an open-source soft
 This work was co-funded by the European Research Council (ERC) under the ERC Synergy Grant Water-Futures (Grant agreement No. 951424), the European Regional Development Fund and the Republic of Cyprus through the Research and Innovation Foundation under the DigiWATER project (Grant agreement ENTERPRISES/0521/0081), and supported by the European Union Horizon 2020 programme and the Government of the Republic of Cyprus through the Deputy Ministry of Research, Innovation and Digital Policy under the KIOS CoE project (Grant agreement No. 739551).
 
 # References
-
-
-
- 
