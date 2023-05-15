@@ -157,7 +157,7 @@ sensor_node_index = G.getNodeIndex(sensor_node_id)
 eta_bar = 0.02								# Specify maximum uncertainty 2%
 ```
 
-We consider a suitable number of  Monte Carlo Simulations (we use 10the 0 here for computational convenience).
+We consider a suitable number of  Monte Carlo Simulations (we use 100 epochs for computational convenience).
 
 ```python
 nsim = 100							# Select number of simulations
