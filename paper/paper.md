@@ -58,11 +58,11 @@ With the increasing popularity of Python in both industry and academia, a compre
 4.	Provide a similar data structure in Python and MATLAB, to facilitate translation between the two environments.
 
 ## Target audience
-The target audience is undergraduate and postgraduate students as well as researchers in the areas of civil, chemical, environmental, mechanical and electrical engineering, as well as computer science, who study smart drinking water distribution networks. Moreover, the toolkit can be used by researchers, data scientists and engineers working in startups and companies for the development of new innovative smart water solutions.
+The target audience is undergraduate and postgraduate students and researchers in civil, chemical, environmental, mechanical and electrical engineering, as well as computer science, who study smart drinking water distribution networks. Moreover, the toolkit can be used by researchers, data scientists and engineers working in startups and companies for the development of new innovative smart water solutions.
 
 ## State of the field
 As a precursor of EPyT, the open-source [EPANET-MATLAB Toolkit](https://github.com/OpenWaterAnalytics/EPANET-Matlab-Toolkit) (EMT) was released in 2009, and since then it has 
-been extended significantly and is continuously supported by the authors [@eliades2016]. Its purpose is to serve the needs of the smart water researchers and water engineering education community. EMT provides extensive functionalities beyond the EPANET capabilities, to support the design and evaluation of advanced methodologies. It is currently made available under the OpenWaterAnalytics Community. Moreover, EMT introduced the `epanet` class, which provided standardized data structures and function names which are human-readable and self-explanatory. Besides EPyT, a few other relevant Python-based tools connect with EPANET. The most advanced, and relevant to EPyT, is the [Water Network Tool for Resilience](https://github.com/USEPA/WNTR)  (WNTR), which was developed by the US EPA and Sandia National Laboratories and is released under the Revised BSD license [@klise2017]. `WNTR` can facilitate the simulation of both hydraulic and quality dynamics, and in addition, it allows the simulation of various events such as pipe breaks, disasters such as earthquakes, power outages, fires, and contamination events. At the moment, `WNTR` includes only a subset of EPANET functions necessary for its simulation capabilities. The [Object-Oriented Pipe Network Analyzer](https://github.com/oopnet/oopnet) (OOPNET) is a Python package that allows modelling and simulating hydraulic water distribution systems  [@steffelbauer2015]. A drawback is that, since `OOPNET` is based on the runtime executable of EPANET, it does not give currently provide access to the internal library functions. The [OWA-EPANET](https://pypi.org/project/owa-epanet/) is a SWIG auto-generated "thin" wrapper around the EPANET libraries. The goal of this package was to provide a Python interface that requires minimal effort to keep up to date with the core library and can be used by higher-level applications. Other Python-based EPANET toolkits include [epynet](https://github.com/Vitens/epynet), developed by Vitens  and [epanettools](https://pypi.org/project/EPANETTOOLS/) which supports older versions of the EPANET toolkit. Recently a new tool has been published, `viswaternet` which provides a tool for visualizing static and time-varying attributes of EPANET-based water distribution systems; this tool can be used in parallel with EPyT for visualization purposes [@thomas2023].
+been extended significantly and is continuously supported by the authors [@eliades2016]. Its purpose is to serve the needs of the smart water researchers and water engineering education community. EMT provides extensive functionalities beyond the EPANET capabilities, to support the design and evaluation of advanced methodologies. It is currently made available under the OpenWaterAnalytics Community. Moreover, EMT introduced the `epanet` class, which provided standardized data structures and function names which are human-readable and self-explanatory. Besides EPyT, a few other relevant Python-based tools connect with EPANET. The most advanced, and relevant to EPyT, is the [Water Network Tool for Resilience](https://github.com/USEPA/WNTR)  (WNTR), which was developed by the US EPA and Sandia National Laboratories and is released under the Revised BSD license [@klise2017]. `WNTR` can facilitate the simulation of both hydraulic and quality dynamics, and in addition, it allows the simulation of various events such as pipe breaks, disasters such as earthquakes, power outages, fires, and contamination events. At the moment, `WNTR` includes only a subset of EPANET functions necessary for its simulation capabilities. The [Object-Oriented Pipe Network Analyzer](https://github.com/oopnet/oopnet) (OOPNET) is a Python package that allows modelling and simulating hydraulic water distribution systems  [@steffelbauer2015]. A drawback is that, since `OOPNET` is based on the runtime executable of EPANET, it does not give currently provide access to the internal library functions. The [OWA-EPANET](https://pypi.org/project/owa-epanet/) is a SWIG auto-generated "thin" wrapper around the EPANET libraries. The goal of this package was to provide a Python interface that requires minimal effort to keep up to date with the core library and can be used by higher-level applications. Other Python-based EPANET toolkits include [epynet](https://github.com/Vitens/epynet), developed by Vitens and [epanettools](https://pypi.org/project/EPANETTOOLS/) which supports older versions of the EPANET toolkit. Recently a new tool has been published, [viswaternet](https://pypi.org/project/viswaternet/) which provides a tool for visualizing static and time-varying attributes of EPANET-based water distribution systems; this tool can be used in parallel with EPyT for visualization purposes [@thomas2023].
 
 A key unique feature of EPyT, is that it captures the complete function and parameter space of EPANET. Another important aspect of EPyT is that it shares the same function names as the EPANET-MATLAB Toolkit. Our motivation is that this will facilitate the transition of state-of-the-art code originating from academia (which typically uses MATLAB) to more industrial applications (which typically use Python due to its open-source license and its extended set of data analytics modules). 
 
@@ -81,7 +81,7 @@ When the object is constructed, the module reads the EPANET input network file a
 
 ```python
 dir(G)  					# Lists all available functions and properties in G
-help(G.getNodeElevations)  	# Retrieve some examples for the function getNodeElevations
+help(G.getNodeElevations)  	# Retrieve usage examples for getNodeElevations
 ```
 Using object `G`, the user can call all the public toolkit functions. The toolkit contains a set of many functions which allow the user to retrieve or update the network data and simulate hydraulic and quality analysis for different scenarios using the EPANET libraries. Examples of how to retrieve some common network parameter values are provided below:
 ```python
@@ -105,7 +105,7 @@ To access the different values, the user can use the dot notation, such as `H.He
 
 Executing the function `G.plot()` displays a figure of the network along with its components. The nodes i.e., junctions, reservoirs, tanks, and the links, i.e., pipes, valves, and pumps, are depicted using different colors and shapes. 
 
-![The L-Town schematic using the plot function](.\figures\ltown.png){ width=50% }
+![The L-Town schematic using the plot function](figures/ltown.png){ width=75% }
 
 Moreover, when computing the hydraulic and quality parameters, we can use the `plot_ts` function which plots the different time series. An example is provided below for link indices 1 and 5.
 
@@ -115,10 +115,19 @@ hrs_time = H.Time / 3600 					# transform seconds into hours
 link_indices = [1, 5]						# select indices to plot
 link_names = G.getLinkNameID(link_indices)	# get the ID of the link indices
 
-G.plot_ts(X=hrs_time, Y=H.Flow[:, link_indices], title=f'Flow of links with ID: {link_names}', figure_size=[4, 3], legend_location='best', xlabel='Time (hrs)', ylabel=f'Flow ({G.units.LinkFlowUnits})', marker=None, labels=link_names, save_fig=True, filename='figures/paper_flows')
+G.plot_ts(	X=hrs_time, 
+          	Y=H.Flow[:, link_indices], 
+          	title=f'Flow of links with ID: {link_names}', 
+          	figure_size=[4, 3], 
+          	legend_location='best', 
+          	xlabel='Time (hrs)', 
+          	ylabel=f'Flow ({G.units.LinkFlowUnits})', 
+          	marker=None, labels=link_names, 
+          	save_fig=True, 
+          	filename='figures/paper_flows')
 ```
 
-![Flow links.\label{fig:fig1}](figures/paper_flows.png){ width=50% }
+![Flow links.\label{fig:fig1}](figures/paper_flows.png){ width=75% }
 
 The user can unload the epanet dynamic library from Python memory, using the `G.unload()` method.
 # An advanced EPyT example
@@ -142,29 +151,30 @@ G.setDemandModel(type, pmin, preq, pexp)  # Sets the demand model
 We assume we have a pressure sensor at the node with ID "11". We will now create the pressure bounds at that node, using Monte Carlo Simulations. We assume that there is 2% uncertainty in the nominal base demands, with respect to the actual ones. 
 
 ```python
-base_demands = G.getNodeBaseDemands()[1] 			# Get nominal base demands
-sensor_node_id = '11'									
-sensor_node_index = G.getNodeIndex(sensor_node_id)	# Get sensor node index
-eta_bar = 0.02										# Specify maximum uncertainty 2%
+bd = G.getNodeBaseDemands()[1] 				# Get nominal base demands
+sensor_node_id = '11'						# Get sensor node index			
+sensor_node_index = G.getNodeIndex(sensor_node_id)	
+eta_bar = 0.02								# Specify maximum uncertainty 2%
 ```
 
 We consider a suitable number of  Monte Carlo Simulations (we use 10the 0 here for computational convenience).
 
 ```python
-nsim = 100			# Select number of simulations
-np.random.seed(1) 	# Set seed number for reproducibility
-pmcs = [None for _ in range(nsim)] # initialize pressure time series matrix 
-# Compute pressures for each randomized scenario
+nsim = 100							# Select number of simulations
+np.random.seed(1) 					# Set seed number for reproducibility
+pmcs = [None for _ in range(nsim)] 	# initialize pressure time series matrix 
+
+## Compute pressures for each randomized scenario
 for i in range(nsim):
-	delta_bd = (2 * np.random.rand(1, len(base_demands))[0] - 1) * eta_bar * base_demands
-	new_base_demands = base_demands + delta_bd 	# Compute new base demands
-    G.setNodeBaseDemands(new_base_demands)		# Set base demands
-    pmcs[i] = G.getComputedHydraulicTimeSeries().Pressure    # Compute pressures
+	delta_bd = (2 * np.random.rand(1, len(bd))[0] - 1) * eta_bar * bd
+	new_base_demands = bd + delta_bd 			  		   # Compute new demand
+    G.setNodeBaseDemands(new_base_demands)				   # Set base demands
+    pmcs[i] = G.getComputedHydraulicTimeSeries().Pressure  # Compute pressures
     print(f"Epoch {i}")
 ```
 The bounds can be computed using `numpy` methods, and the results are depicted in the following figure. Given a sufficient number of simulations, we expect that under normal conditions, pressure at node "11" will reside between those bounds. 
 
-![Pressure bounds.\label{fig:fig5}](figures/paper_pressure_bounds.png)
+![Pressure bounds.\label{fig:fig5}](figures/paper_pressure_bounds.png){ width=75% }
 
 To demonstrate the detection ability of the proposed approach, we simulate a leakage with 50 gallons per minute (GPM) outflow at the node with ID "7", starting at time 20 hours.  
 
@@ -186,13 +196,16 @@ G.setNodeBaseDemands(leak_node_index, leak_value)
 scada_pressures = G.getComputedHydraulicTimeSeries().Pressure
 ps7 = scada_pressures[:, node_index-1] 		#  Sensor measurement at node "7"
 ```
-![Pressure bounds, Leak Node.\label{fig:fig6}](figures/paper_pressure_bounds_leak.png)
+![Pressure bounds, Leak Node.\label{fig:fig6}](figures/paper_pressure_bounds_leak.png){ width=75% }
 
 The detection algorithm compares the lower pressure bound of node '7' with the actual pressure, as follows. The leakage alert flag is depicted in the next figure.
 
 ```python
-e = ps7 - lb 	# compute the difference between the pressure sensor and the lower bound
-alert = e < 0	# if the difference is less than 0, then raise a detection alert
+e = ps7 - lb 	# compute the difference between the pressure sensor
+				# and the lower bound
+    
+alert = e < 0	# if the difference is less than 0, then
+				# raise a detection alert flag
 ```
 
 ![Leakage alert.\label{fig:fig7}](figures/paper_leakage_alert.png)
