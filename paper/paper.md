@@ -8,7 +8,7 @@ tags:
   - water quality
   - simulation
 authors:
-  - name: Marios Kyriakou
+  - name: Marios S. Kyriakou
     orcid: 0000-0002-2324-8661
     corresponding: true
     equal-contrib: true
@@ -17,7 +17,7 @@ authors:
     equal-contrib: true
     orcid: 0000-0001-7775-4319
     affiliation: 1
-  - name: Stelios Vrachimis
+  - name: Stelios G. Vrachimis
     orcid: 0000-0001-8862-5205
     equal-contrib: true
     affiliation: "1, 2"
@@ -59,7 +59,8 @@ With the increasing popularity of Python in both industry and academia, a compre
 ## Target audience
 The target audience is undergraduate and postgraduate students as well as researchers in the areas of civil, chemical, environmental, mechanical and electrical engineering, as well as computer science, who study smart drinking water distribution networks. Moreover, the toolkit can be used by researchers, data scientists and engineers working in startups and companies for the development of new innovative smart water solutions.
 ## State of the field
-As a precursor of EPyt, the open-source `EPANET-MATLAB Toolkit` (EMT) was released in 2009, and since then it has been extended significantly and is continuously supported by the authors [@eliades2016]. Its purpose is to serve the needs of the smart water researchers and water engineering education community. EMT provides extensive functionalities beyond the EPANET capabilities, to support the design and evaluation of advanced methodologies. It is currently made available under the OpenWaterAnalytics Community (https://github.com/OpenWaterAnalytics/EPANET-Matlab-Toolkit). Moreover, EMT introduced the `epanet` class, which provided standardized data structures and function names which are human-readable and self-explanatory. Besides EPyT, a few other relevant Python-based tools connect with EPANET. The most advanced, and relevant to EPyT, is `WNTR` (Water Network Tool for Resilience), which was developed by the US EPA and Sandia National Laboratories and is released under the Revised BSD license (https://github.com/USEPA/WNTR) [@klise2017]. `WNTR` can facilitate the simulation of both hydraulic and quality dynamics, and in addition, it allows the simulation of various events such as pipe breaks, disasters such as earthquakes, power outages, fires, and contamination events. At the moment, `WNTR` includes only a subset of EPANET functions necessary for its simulation capabilities. `OOPNET` (Object-Oriented Pipe Network Analyzer) is a Python package that allows modelling and simulating hydraulic water distribution systems (https://github.com/oopnet/oopnet) [@steffelbauer2015]. A drawback is that, since `OOPNET` is based on the runtime executable of EPANET, it does not give currently provide access to the internal library functions. The `OWA-EPANET` is a SWIG auto-generated "thin" wrapper around the OWA EPANET (https://pypi.org/project/owa-epanet/). The goal of this package was to provide a Python interface that requires minimal effort to keep up to date with the core library and can be used by higher-level applications. Other Python-based EPANET toolkits include `epynet`, developed by Vitens (https://github.com/Vitens/epynet) and `epanettools` which supports older versions of the EPANET toolkit (https://pypi.org/project/EPANETTOOLS/). Recently a new tool has been published, `viswaternet` which provides a tool for visualizing static and time-varying attributes of EPANET-based water distribution systems; this tool can be used in parallel with EPyT for visualization purposes [@thomas2023].
+As a precursor of EPyT, the open-source `EPANET-MATLAB Toolkit` (EMT) was released in 2009, and since then it has 
+been extended significantly and is continuously supported by the authors [@eliades2016]. Its purpose is to serve the needs of the smart water researchers and water engineering education community. EMT provides extensive functionalities beyond the EPANET capabilities, to support the design and evaluation of advanced methodologies. It is currently made available under the OpenWaterAnalytics Community (https://github.com/OpenWaterAnalytics/EPANET-Matlab-Toolkit). Moreover, EMT introduced the `epanet` class, which provided standardized data structures and function names which are human-readable and self-explanatory. Besides EPyT, a few other relevant Python-based tools connect with EPANET. The most advanced, and relevant to EPyT, is `WNTR` (Water Network Tool for Resilience), which was developed by the US EPA and Sandia National Laboratories and is released under the Revised BSD license (https://github.com/USEPA/WNTR) [@klise2017]. `WNTR` can facilitate the simulation of both hydraulic and quality dynamics, and in addition, it allows the simulation of various events such as pipe breaks, disasters such as earthquakes, power outages, fires, and contamination events. At the moment, `WNTR` includes only a subset of EPANET functions necessary for its simulation capabilities. `OOPNET` (Object-Oriented Pipe Network Analyzer) is a Python package that allows modelling and simulating hydraulic water distribution systems (https://github.com/oopnet/oopnet) [@steffelbauer2015]. A drawback is that, since `OOPNET` is based on the runtime executable of EPANET, it does not give currently provide access to the internal library functions. The `OWA-EPANET` is a SWIG auto-generated "thin" wrapper around the OWA EPANET (https://pypi.org/project/owa-epanet/). The goal of this package was to provide a Python interface that requires minimal effort to keep up to date with the core library and can be used by higher-level applications. Other Python-based EPANET toolkits include `epynet`, developed by Vitens (https://github.com/Vitens/epynet) and `epanettools` which supports older versions of the EPANET toolkit (https://pypi.org/project/EPANETTOOLS/). Recently a new tool has been published, `viswaternet` which provides a tool for visualizing static and time-varying attributes of EPANET-based water distribution systems; this tool can be used in parallel with EPyT for visualization purposes [@thomas2023].
 
 A key unique feature of EPyT, is that it captures the complete function and parameter space of EPANET. Another important aspect of EPyT is that it shares the same function names as the EPANET-MATLAB Toolkit. Our motivation is that this will facilitate the transition of state-of-the-art code originating from academia (which typically uses MATLAB) to more industrial applications (which typically use Python due to its open-source license and its extended set of data analytics modules). 
 # Basic usage of EPyT
@@ -188,7 +189,7 @@ The detection algorithm compares the lower pressure bound of node '7' with the a
 
 ```python
 e = ps7 - lb 	# compute the difference between the pressure sensor and the lower bound
-alert = e < 0	# if the difference is less than 0, then raise a detection alrt
+alert = e < 0	# if the difference is less than 0, then raise a detection alert
 ```
 
 ![Leakage alert.\label{fig:fig7}](figures/paper_leakage_alert.png)
