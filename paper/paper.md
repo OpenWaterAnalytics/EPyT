@@ -133,7 +133,10 @@ G.plot_ts(	X=hrs_time,
 ![Flow links.\label{fig:fig1}](figures/paper_flows.png){ width=75% }
 
 The user can unload the EPANET dynamic library from Python memory, using the `G.unload()` method.
+
+
 # Use case: Computing pressure bounds for leakage detection
+
 A more advanced example is provided below, for designing a simple leakage detection algorithm for the `Net2` benchmark network. The goal is to generate pressure bounds (i.e., the upper and lower levels of pressure expected at every time instance, given the uncertainties) in order to be able to detect changes when these bounds are violated by the measurements of pressure sensors.
 
 ```python
