@@ -201,7 +201,7 @@ ps7 = scada_pressures[:, node_index-1] 		#  Sensor measurement at node "7"
 ```
 ![Pressure bounds, Leak Node.\label{fig:fig6}](figures/paper_pressure_bounds_leak.png){ width=75% }
 
-The detection algorithm compares the lower pressure bound of node '7' with the actual pressure, as follows. 
+The detection algorithm compares the lower pressure bound of node '7' with the actual pressure, as follows. The proposed methodology detects the leakage at time 27, 
 
 ```python
 e = ps7 - lb 	# compute the difference between the pressure sensor
@@ -209,9 +209,10 @@ e = ps7 - lb 	# compute the difference between the pressure sensor
     
 alert = e < 0	# if the difference is less than 0, then
 				# raise a detection alert flag
+    
+detectionTime = np.argmax(alert>1) 	# compute detection time as the first time
+									# the`True` flag appears
 ```
-
-
 
 # Conclusions
 
