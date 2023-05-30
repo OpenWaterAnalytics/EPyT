@@ -160,7 +160,7 @@ sensor_node_index = G.getNodeIndex(sensor_node_id)
 eta_bar = 0.02								# Specify maximum uncertainty 2%
 ```
 
-We consider a suitable number of  Monte Carlo Simulations (we use 100 epochs for computational convenience, however, more simulations would provide a more accurate estimation of the bounds).
+We consider a suitable number of  Monte Carlo Simulations (we use 100 epochs for computational convenience, however, more simulations would provide a more accurate estimation of the bounds). Starting from the current time,  we run the simulations for 56 hours for each randomized scenario, the computed pressure measurements are recorded.  
 
 ```python
 nsim = 100							# Select number of simulations
@@ -175,14 +175,14 @@ for i in range(nsim):
     pmcs[i] = G.getComputedHydraulicTimeSeries().Pressure  # Compute pressures
     print(f"Epoch {i}")
 ```
-The upper and lower bounds can be computed using `numpy` methods, and the results are depicted in the following figure. Given a sufficient number of simulations, we expect that under normal conditions, pressure at node "11" will reside between those bounds. In blue, the average pressure computed by the Monte Carlo simulations is depicted.
+The upper and lower bounds can be computed by processing all the simulated pressure measurements using `numpy` methods, and the results are depicted in the following figure. Given a sufficient number of simulations, we expect that under normal conditions, pressure at node "11" will reside between those bounds. In blue, the average pressure computed by the Monte Carlo simulations is depicted.
 
 ![Pressure bounds.\label{fig:fig5}](figures/paper_pressure_bounds.png){ width=75% }
 
-To demonstrate the detection ability of the proposed approach, we simulate a leakage with 50 gallons per minute (GPM) outflow at the node with ID "7", starting at time 20 hours.  During a leakage event, we expect that the pressure will drop, and for a sufficiently large leak, the measured pressure can fall below the estimated lower bound, thus triggering a leakage warning.
+To demonstrate the detection ability of the proposed approach, we simulate a leakage with 50 gallons per minute (GPM) outflow at the node with ID "7", starting 20 hours after the current time.  During a leakage event, we expect that the pressure will drop, and for a sufficiently large leak, the measured pressure can fall below the estimated lower bound, thus triggering a leakage warning.
 
 ```python
-## Add leakage at Node ID 7 after 20 hours
+## Add leakage at Node ID 7 at 20 hours
 leak_start = 20		# leakage start time
 leak_value = 50  	# leakage outflow (in GPM)
 leak_node_id = '7'	# leakage location
@@ -201,7 +201,7 @@ ps7 = scada_pressures[:, node_index-1] 		#  Sensor measurement at node "7"
 ```
 ![Pressure bounds, Leak Node.\label{fig:fig6}](figures/paper_pressure_bounds_leak.png){ width=75% }
 
-The detection algorithm compares the lower pressure bound of node '7' with the actual pressure, as follows. The proposed methodology detects the leakage at time 27, 
+The detection algorithm compares the lower pressure bound of node '7' with the actual pressure, as follows. We observe that in this use case, until time 27 hours, the sensor measurement was within the upper and lower bounds computed in the previous step, therefore there was a 7 hour delay in detect the leakage.
 
 ```python
 e = ps7 - lb 	# compute the difference between the pressure sensor
