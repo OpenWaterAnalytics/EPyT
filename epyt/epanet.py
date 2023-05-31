@@ -9880,7 +9880,8 @@ class epanet:
              nodesindex=None, linksID=None, linksindex=None, highlightlink=None,
              highlightnode=None, legend=True, fontsize=5, figure=True, fig_size=[3, 2], dpi=300,
              node_values=None, node_text=False, link_values=None, link_text=False, colorbar='turbo',
-             min_colorbar=None, max_colorbar=None, colors=None, colorbar_label=None, *argv):
+             min_colorbar=None, max_colorbar=None, colors=None, colorbar_label=None, highligthlink_linewidth=1,
+             highligthnode_linewidth=3.5, *argv):
         """ Plot Network, show all components, plot pressure/flow/elevation/waterage/anyvalue
 
         Example 1:
@@ -9993,6 +9994,7 @@ class epanet:
         resindex = self.getNodeReservoirIndex()
         tankindex = self.getNodeTankIndex()
         nodecoords = self.getNodeCoordinates()
+        linkvertices = self.getLinkVerticesCount()
 
         # Create figure
         plt.rcParams["figure.figsize"] = fig_size
@@ -10005,6 +10007,10 @@ class epanet:
         xV = 0
         yV = 0
         if plot_links:
+            lindex = [0]
+            if highlightlink is not None:
+                lindex = self.__getLinkIndices(highlightlink)
+                lNodesInd = self.getLinkNodesIndex(lindex)
             x, y = [0, 0], [0, 0]
             for i in links_ind:
                 fromNode = nodeconlinkIndex[i - 1][0]
@@ -10033,18 +10039,27 @@ class epanet:
                     if link_text:
                         plt.text((x[0] + x[1]) / 2, (y[0] + y[1]) / 2, "{:.2f}".format(link_values[i - 1]),
                                  {'fontsize': fontsize})
+
+                    if i in lindex:
+                        plt.plot(x, y, 'r-', linewidth=highligthlink_linewidth, zorder=0)
+
                 else:
                     xV_old = x[0]
                     yV_old = y[0]
+
                     for j in range(len(nodecoords['x_vert'][i])):
                         xV = nodecoords['x_vert'][i][j]
                         yV = nodecoords['y_vert'][i][j]
-                        if fix_colorbar and link_values is not None:
-                            plt.plot([xV_old, xV], [yV_old, yV], '-', linewidth=1, zorder=0, color=colors[i])
+                        if i in lindex:
+                            plt.plot([xV_old, xV], [yV_old, yV], 'r-', linewidth=highligthlink_linewidth, zorder=0)
                         else:
-                            plt.plot([xV_old, xV], [yV_old, yV], color='steelblue', linewidth=0.2, zorder=0)
+                            if fix_colorbar and link_values is not None:
+                                plt.plot([xV_old, xV], [yV_old, yV], '-', linewidth=1, zorder=0, color=colors[i])
+                            else:
+                                plt.plot([xV_old, xV], [yV_old, yV], color='steelblue', linewidth=0.2, zorder=0)
                         xV_old = xV
                         yV_old = yV
+
                     if fix_colorbar and link_values is not None:
                         plt.plot([xV, x[1]], [yV, y[1]], '-', linewidth=1, zorder=0, color=colors[i])
                     else:
@@ -10066,7 +10081,6 @@ class epanet:
                             nodecoords['x_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
                             nodecoords['y_vert'][i][int(len(nodecoords['x_vert'][i]) / 2)],
                             "{:.2f}".format(link_values[i - 1]), {'fontsize': fontsize})
-
             if not line:
                 # Plot Pumps
                 x, y = [0, 0], [0, 0]
@@ -10111,34 +10125,11 @@ class epanet:
                     if node_text:
                         plt.text(xx, yy, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
 
-        if highlightlink is not None:
-            if type(highlightlink) == str:
-                lindex = self.getLinkIndex(highlightlink)
-            else:
-                lindex = highlightlink
-            lNodesInd = self.getLinkNodesIndex(lindex)
-            xy = self.getNodeCoordinates(lNodesInd)
-            x_from_to = list(xy['x'].values())
-            y_from_to = list(xy['y'].values())
-            if self.getLinkVerticesCount(lindex) == 0:
-                plt.plot(x_from_to, y_from_to, 'r-', linewidth=1, zorder=0)
-            else:
-                vertXY = self.getLinkVertices(lindex)
-                x = [x_from_to[0]]
-                x.extend(list(vertXY['x'].values())[0])
-                x.append(x_from_to[1])
-                y = [y_from_to[0]]
-                y.extend(list(vertXY['y'].values())[0])
-                y.append(y_from_to[1])
-                xV_old = x[0]
-                yV_old = y[0]
-                for i in range(len(x)):
-                    plt.plot([xV_old, x[i]], [yV_old, y[i]], 'r-',
-                             linewidth=1.5, zorder=0)
-                    xV_old = x[i]
-                    yV_old = y[i]
-
         if plot_nodes:
+            highlight_nodeIndices = [0]
+            if highlightnode is not None:
+                highlight_nodeIndices = self.__getNodeIndices(highlightnode)
+
             # Plot Tanks
             for i in tankindex:
                 x = nodecoords['x'][i]
@@ -10153,6 +10144,8 @@ class epanet:
                     plt.text(x, y, i, {'fontsize': fontsize})
                 if node_text:
                     plt.text(x, y, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
+                if i in highlight_nodeIndices:
+                    plt.plot(nodecoords['x'][i], nodecoords['y'][i], '.r', markersize=highligthnode_linewidth)
 
             # Plot Reservoirs
             for i in resindex:
@@ -10169,6 +10162,8 @@ class epanet:
                     plt.text(x, y, i, {'fontsize': fontsize})
                 if node_text:
                     plt.text(x, y, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
+                if i in highlight_nodeIndices:
+                    plt.plot(nodecoords['x'][i], nodecoords['y'][i], '.r', markersize=highligthnode_linewidth)
 
             # Plot Junctions
             for i in juncind:
@@ -10185,6 +10180,9 @@ class epanet:
                 if node_text:
                     plt.text(x, y, "{:.2f}".format(node_values[i - 1]), {'fontsize': fontsize})
 
+                if i in highlight_nodeIndices:
+                    plt.plot(nodecoords['x'][i], nodecoords['y'][i], '.r', markersize=highligthnode_linewidth)
+
         if node_values is not None:
             # Plot node values
             x = list(nodecoords['x'].values())
@@ -10197,12 +10195,6 @@ class epanet:
             bar.ax.tick_params(labelsize=fontsize)
             bar.outline.set_visible(False)
             bar.set_label(label=colorbar_label, size=fontsize)
-
-        if highlightnode is not None:
-            nodeIndices = self.__getNodeIndices(highlightnode)
-            for i in nodeIndices:
-                temp_coords = self.getNodeCoordinates(i)
-                plt.plot(temp_coords['x'][i], temp_coords['y'][i], '.r', markersize=3.5)
 
         if legend:
             leg = plt.legend(loc=0, fontsize=fontsize, markerscale=1)
