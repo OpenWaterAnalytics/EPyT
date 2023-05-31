@@ -2869,7 +2869,7 @@ class epanet:
         See also setLinkComment, getLinkNameID, getLinksInfo.
         """
         value = []
-        indices = self.__getNodeIndices(*argv)
+        indices = self.__getLinkIndices(*argv)
         for i in indices:
             value.append(self.api.ENgetcomment(self.ToolkitConstants.EN_LINK, i))
         return value
@@ -3809,7 +3809,7 @@ class epanet:
 
         See also getNodesConnectingLinksID.
         """
-        indices = self.__getlinkIndices(*argv)
+        indices = self.__getLinkIndices(*argv)
         value: list[list[int]] = []
         for i in indices:
             value.append(self.api.ENgetlinknodes(i))
@@ -4605,7 +4605,7 @@ class epanet:
 
         See also getLinkNodesIndex.
         """
-        indices = self.__getlinkIndices(*argv)
+        indices = self.__getLinkIndices(*argv)
         values = self.getLinkNodesIndex(indices)
         conn_vals = []
         for value in values:
@@ -7131,7 +7131,7 @@ class epanet:
             indices = value
             value = argv[0]
         else:
-            indices = self.__getlinkIndices()
+            indices = self.__getLinkIndices()
         if isList(indices):
             for i in value:
                 self.api.ENsetlinkid(indices[value.index(i)], i)
@@ -10692,7 +10692,7 @@ class epanet:
         # (long/lat & intermediate pipe coordinates)
         self.Version = self.getVersion()
 
-    def __getlinkIndices(self, *argv):
+    def __getLinkIndices(self, *argv):
         if len(argv) > 0:
             if type(argv[0]) is list:
                 if type(argv[0][0]) is str:
