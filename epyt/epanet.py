@@ -7386,7 +7386,7 @@ class epanet:
             indices = value
             value = argv[0]
         else:
-            indices = self.getNodeIndices(*argv)
+            indices = self.__getLinkIndices(*argv)
         if isList(indices):
             j = 0
             for i in indices:
