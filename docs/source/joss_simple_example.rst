@@ -1,8 +1,8 @@
-.. code:: ipython2
+.. code-block:: python
 
     from epyt import epanet
 
-.. code:: ipython2
+.. code-block:: python
 
     # Load EPANET Input File
     G = epanet('Net1.inp')
@@ -15,7 +15,7 @@
     
     
 
-.. code:: ipython2
+.. code-block:: python
 
     # Lists all available functions and properties
     dir(G)
@@ -633,7 +633,7 @@
 
 
 
-.. code:: ipython2
+.. code-block:: python
 
     # Retrieve some examples for the function
     help(G.getNodeElevations)
@@ -656,7 +656,7 @@
     
     
 
-.. code:: ipython2
+.. code-block:: python
 
     # Retrieve Link diameters
     diameters = G.getLinkDiameter()
@@ -668,7 +668,7 @@
     [18. 14. 10. 10. 12.  6. 18. 10. 12.  8.  8.  6.  0.]
     
 
-.. code:: ipython2
+.. code-block:: python
 
     # Retrieve Node elevations
     elevations = G.getNodeElevations()
@@ -680,7 +680,7 @@
     [710. 710. 700. 695. 700. 695. 690. 700. 710. 800. 850.]
     
 
-.. code:: ipython2
+.. code-block:: python
 
     # Link diameter for links 2 & 10
     diameters = G.getLinkDiameter([2, 10])
@@ -692,7 +692,7 @@
     [14.  8.]
     
 
-.. code:: ipython2
+.. code-block:: python
 
     # Update the link 10 diameter from 100 to 90
     G.setLinkDiameter(10, 90)
@@ -706,7 +706,7 @@
     90.0
     
 
-.. code:: ipython2
+.. code-block:: python
 
     # Solve hydraulics in library
     # H = G.getComputedHydraulicTimeSeries()
@@ -715,7 +715,7 @@
     # Solve all dynamics in library, create a binary file to store the computed values
     R = G.getComputedTimeSeries()
 
-.. code:: ipython2
+.. code-block:: python
 
     # Plot link flows and quality
     hrs_time = R.Time / 3600
@@ -745,18 +745,21 @@
     
 
 
-
-.. image:: joss_simple_example_files%5Cjoss_simple_example_9_0.png
-
-
-
-.. image:: joss_simple_example_files%5Cjoss_simple_example_9_1.png
+.. image:: _static/joss_simple_example_9_0.png
+   :alt: joss_simple_example_9_0
+   :align: center
 
 
+.. image:: _static/joss_simple_example_9_1.png
+   :alt: joss_simple_example_9_1
+   :align: center
 
-.. image:: joss_simple_example_files%5Cjoss_simple_example_9_2.png
+.. image:: _static/joss_simple_example_9_2.png
+   :alt: joss_simple_example_9_2
+   :align: center
 
 
-
-.. image:: joss_simple_example_files%5Cjoss_simple_example_9_3.png
+.. image:: _static/joss_simple_example_9_3.png
+   :alt: joss_simple_example_9_3
+   :align: center
 

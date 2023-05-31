@@ -1,10 +1,10 @@
-.. code:: ipython2
+.. code-block:: python
 
     from epyt import epanet
     import matplotlib.pyplot as plt
     import numpy as np
 
-.. code:: ipython2
+.. code-block:: python
 
     # Create a function to run the simulation and return the pressure results
     def compute_bounds(G, nsim, base_demands, eta_bar, node_index):
@@ -33,7 +33,7 @@
     
         return pmulti, ub, lb, meanb
 
-.. code:: ipython2
+.. code-block:: python
 
     def activate_PDA(G):
         type = 'PDA'
@@ -43,7 +43,7 @@
         G.setDemandModel(type, pmin, preq, pexp)  # Sets the demand model
     
 
-.. code:: ipython2
+.. code-block:: python
 
     if __name__ == "__main__":
     
@@ -62,7 +62,7 @@
     
     
 
-.. code:: ipython2
+.. code-block:: python
 
         # Get nominal base demands
         base_demands = G.getNodeBaseDemands()[1]
@@ -77,7 +77,7 @@
         7.      3.     17.     17.      1.5     1.5     0.      1.      0.  ]
     
 
-.. code:: ipython2
+.. code-block:: python
 
         # Number of simulations
         nsim = 100
@@ -234,7 +234,7 @@
      50.91321481 51.24257231]
     
 
-.. code:: ipython2
+.. code-block:: python
 
         # Plots
         pressure_units = G.units.NodePressureUnits
@@ -250,11 +250,12 @@
         fig.savefig('figures/paper_pressure_bounds.png', dpi=300)
 
 
+.. image:: _static/joss_advance_example_6_0.png
+   :alt: joss_advance_example_6_0
+   :align: center
 
-.. image:: joss_advance_example_files%5Cjoss_advance_example_6_0.png
 
-
-.. code:: ipython2
+.. code-block:: python
 
         # Add leakage at Node ID 7 after 20 hours
         leak_scenario = 50
@@ -268,19 +269,19 @@
         G.setNodeDemandPatternIndex(leak_node_index, pattern_index)
         G.setNodeBaseDemands(leak_node_index, leak_value)
 
-.. code:: ipython2
+.. code-block:: python
 
         # Compute pressures
         scada_pressures = G.getComputedHydraulicTimeSeries().Pressure
 
-.. code:: ipython2
+.. code-block:: python
 
         p7 = scada_pressures[:, node_index-1]
         e = p7 - lb
         alert = e < 0
         detectionTime = np.argmax(alert>1)
 
-.. code:: ipython2
+.. code-block:: python
 
         # Bounds with Leakage
         fig, ax = plt.subplots(figsize=(4, 3))
@@ -295,11 +296,11 @@
         fig.savefig('figures/paper_pressure_bounds_leak.png', dpi=300)
 
 
+.. image:: _static/joss_advance_example_10_0.png
+   :alt: joss_advance_example_10_0
+   :align: center
 
-.. image:: joss_advance_example_files%5Cjoss_advance_example_10_0.png
-
-
-.. code:: ipython2
+.. code-block:: python
 
         # Leakage alert
         fig, ax = plt.subplots(figsize=(4, 3))
@@ -309,7 +310,6 @@
         plt.show()
         fig.savefig('figures/paper_leakage_alert.png', dpi=300)
 
-
-
-.. image:: joss_advance_example_files%5Cjoss_advance_example_11_0.png
-
+.. image:: _static/joss_advance_example_11_0.png
+   :alt: joss_advance_example_11_0
+   :align: center
