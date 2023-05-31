@@ -13,6 +13,7 @@
 from epyt import epanet
 import random
 
+
 def add_unc(ext, unc):
     # Add uncertainty (unc) to the parameter ext
     ql = [i - unc * i for i in ext]
@@ -20,6 +21,7 @@ def add_unc(ext, unc):
     rand_list = d.to_array([random.uniform(0, 1) for i in range(len(ext))])
     diff = d.to_array(qu) - d.to_array(ql)
     return d.to_array(ql) + d.multiply_elements(diff, rand_list)
+
 
 d = epanet('Net1.inp')
 
@@ -95,11 +97,12 @@ for n in d.getNodeIndex():
     res = d.getComputedQualityTimeSeries()
     CN[n] = res.NodeQuality
 
-#  Plot Quality VS Time
+#  Plot Quality
 for i in d.getNodeIndex():
     d.plot_ts(Y=CN[i], title=f'Scenario: {str(i)} \n Contaminant at node ID: {d.getNodeNameID(i)}',
-              xlabel='Time (hrs)', ylabel='Quality (mg/L)', color=None, marker=None)
-    
+              xlabel='Time (hrs)', ylabel='Quality (mg/L)', color=None, marker=None, fontsize=8,
+              labels=d.getNodeNameID())
+
 d.plot_show()
 
 # Unload library

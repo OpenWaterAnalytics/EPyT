@@ -53,7 +53,7 @@ while tstep > 0:
     D.append(d.getNodeActualDemand())
     H.append(d.getNodeHydraulicHead())
     F.append(d.getLinkFlows())
-    T_H.append(t)
+    T_H.append(t/3600)
     tstep = d.nextHydraulicAnalysisStep()
 d.closeHydraulicAnalysis()
 
@@ -68,7 +68,7 @@ sim_duration = d.getTimeSimulationDuration()
 while tleft > 0 or t < sim_duration:
     t = d.runQualityAnalysis()
     Q.append(d.getNodeActualQuality())
-    T_Q.append(t)
+    T_Q.append(t/3600)
     tleft = d.stepQualityAnalysisTimeLeft()
 d.closeQualityAnalysis()
 
@@ -82,33 +82,34 @@ print(f'Run Time of function d.getComputedHydraulicTimeSeries: {stop_hydraulic -
 print(f'Run Time of function d.getComputedQualityTimeSeries: {stop_quality - start_quality:.5} (sec)')
 
 
-d.plot_ts(X=Results.Time, Y=Results.Flow[:, pipeindex], title='d.getComputedTimeSeries (Ignore events)',
-          xlabel='Time (sec)', ylabel='Flow (' + d.LinkFlowUnits + ') - Link ID "' + d.LinkNameID[pipeindex] + '"',
-          marker=None)
+d.plot_ts(X=Results.Time/3600, Y=Results.Flow[:, pipeindex], title='d.getComputedTimeSeries (Ignore events)',
+          xlabel='Time (hrs)', ylabel='Flow (' + d.LinkFlowUnits + ') - Link ID "' + d.LinkNameID[pipeindex] + '"',
+          marker=None, fontsize=8)
 
 
-d.plot_ts(X=Hydraulics.Time, Y=d.to_array(F)[:, pipeindex], title='d.getComputedHydraulicTimeSeries',
-          xlabel='Time (sec)', ylabel='Flow (' + d.LinkFlowUnits + ') - Link ID "' + d.LinkNameID[pipeindex] + '"', 
-          marker=None)
+d.plot_ts(X=Hydraulics.Time/3600, Y=d.to_array(F)[:, pipeindex], title='d.getComputedHydraulicTimeSeries',
+          xlabel='Time (hrs)', ylabel='Flow (' + d.LinkFlowUnits + ') - Link ID "' + d.LinkNameID[pipeindex] + '"',
+          marker=None, fontsize=8)
 
 
 d.plot_ts(X=T_H, Y=d.to_array(F)[:, pipeindex], title='step by step Hydraulic Analysis',
-          xlabel='Time (sec)', ylabel='Flow (' + d.LinkFlowUnits + ') - Link ID "' + d.LinkNameID[pipeindex] + '"', 
-          marker=None)
+          xlabel='Time (hrs)', ylabel='Flow (' + d.LinkFlowUnits + ') - Link ID "' + d.LinkNameID[pipeindex] + '"',
+          marker=None, fontsize=8)
 
 
-d.plot_ts(X=Results.Time, Y=Results.NodeQuality[:, nodeindex], title='d.getComputedTimeSeries (Ignore events)',
-          xlabel='Time (sec)', ylabel='Node Quality (' + d.QualityChemUnits + ') - Node ID "' + d.NodeNameID[nodeindex] + '"',
-          marker=None)
+d.plot_ts(X=Results.Time/3600, Y=Results.NodeQuality[:, nodeindex], title='d.getComputedTimeSeries (Ignore events)',
+          xlabel='Time (hrs)', ylabel='Node Quality (' + d.QualityChemUnits + ') - Node ID "' + d.NodeNameID[nodeindex] + '"',
+          marker=None, fontsize=8)
 
 
-d.plot_ts(X=Quality.Time, Y=Quality.NodeQuality[:, nodeindex], title='d.getComputedQualityTimeSeries',
-          xlabel='Time (sec)', ylabel='Node Quality (' + d.QualityChemUnits + ') - Link ID "' + d.NodeNameID[nodeindex] + '"',
-          marker=None)
+d.plot_ts(X=Quality.Time/3600, Y=Quality.NodeQuality[:, nodeindex], title='d.getComputedQualityTimeSeries',
+          xlabel='Time (hrs)', ylabel='Node Quality (' + d.QualityChemUnits + ') - Link ID "' + d.NodeNameID[nodeindex] + '"',
+          marker=None, fontsize=8)
 
 
 d.plot_ts(X=T_Q, Y=d.to_array(Q)[:, pipeindex], title='step by step Quality Analysis',
-          xlabel='Time (sec)', ylabel='Node Quality (' + d.QualityChemUnits + ') - Link ID "' + d.NodeNameID[nodeindex] + '"',
-          marker=None)
+          xlabel='Time (hrs)', ylabel='Node Quality (' + d.QualityChemUnits + ') - Link ID "' + d.NodeNameID[nodeindex] + '"',
+          marker=None, fontsize=8)
 
+# Show the plots (plt.show())
 d.plot_show()

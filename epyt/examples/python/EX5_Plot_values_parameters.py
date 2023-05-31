@@ -19,20 +19,20 @@ d.plot_close()
 
 # Plot Node Elevations
 Elevations = d.getNodeElevations()
-d.plot(elevation=True, colorbar='Oranges')
+d.plot(node_values=Elevations, colorbar='Oranges')
 
 # Plot Pressure at hour 10
 res = d.getComputedTimeSeries()
-d.plot(pressure=res.Pressure[10, :], title='Pressure at hour 10')
+d.plot(node_values=res.Pressure[10, :], title='Pressure at hour 10')
 
 # Plot Flow at hour 10
-d.plot(flow=res.Flow[10, :])
+d.plot(link_values=res.Flow[10, :])
 
 # Plot Pressure at hour 10 with printed values
-d.plot(pressure=res.Pressure[10, :], pressure_text=True)
+d.plot(node_values=res.Pressure[10, :], node_text=True)
 
 # Plot Flow at hour 10 with printed values
-d.plot(flow=res.Flow[11, :], flow_text=True)
+d.plot(link_values=res.Flow[11, :], link_text=True)
 
 # Unload library
 d.unload()
