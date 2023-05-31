@@ -10226,7 +10226,7 @@ class epanet:
 
     def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color=None, marker='x',
                 figure_size=[3, 2.5], constrained_layout=True, fontweight='normal', fontsize=12, labels=None,
-                save_fig=False, filename='temp', dpi=300, filetype='png', legend_location='best'):
+                save_fig=False, filename='temp', tight_layout=False, dpi=300, filetype='png', legend_location='best'):
         """ Plot X Y data
         """
         num_points = np.atleast_2d(Y).shape[1]
@@ -10245,9 +10245,12 @@ class epanet:
                          random.uniform(0, 1))
             try:
                 values = Y[:, i]
-                label = labels[i]
             except:
                 values = Y
+
+            if labels is not None:
+                label = labels[i]
+            else:
                 label = None
 
             if marker:
@@ -10263,7 +10266,8 @@ class epanet:
         plt.xlabel(xlabel, fontsize=fontsize)
         plt.ylabel(ylabel, fontsize=fontsize)
         plt.title(title, fontsize=fontsize, fontweight=fontweight)
-        # plt.tight_layout()
+        if tight_layout:
+            plt.tight_layout()
         if labels is not None:
             plt.legend(loc=legend_location, fontsize=fontsize, markerscale=1)
         plt.show(block=False)
