@@ -9878,7 +9878,7 @@ class epanet:
 
     def plot(self, title=None, line=None, point=None, nodesID=None,
              nodesindex=None, linksID=None, linksindex=None, highlightlink=None,
-             highlightnode=None, legend=True, fontsize=5, figure=True,
+             highlightnode=None, legend=True, fontsize=5, figure=True, fig_size=[3, 2], dpi=300,
              node_values=None, node_text=False, link_values=None, link_text=False, colorbar='turbo',
              min_colorbar=None, max_colorbar=None, colors=None, colorbar_label=None, *argv):
         """ Plot Network, show all components, plot pressure/flow/elevation/waterage/anyvalue
@@ -9995,8 +9995,8 @@ class epanet:
         nodecoords = self.getNodeCoordinates()
 
         # Create figure
-        plt.rcParams["figure.figsize"] = [3, 2]
-        plt.rcParams['figure.dpi'] = 300
+        plt.rcParams["figure.figsize"] = fig_size
+        plt.rcParams['figure.dpi'] = dpi
         if figure:
             figure = plt.figure()
         plt.axis('off')
