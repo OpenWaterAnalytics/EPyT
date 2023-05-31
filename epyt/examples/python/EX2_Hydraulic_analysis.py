@@ -44,6 +44,7 @@ etstep = 3600
 d.setTimeReportingStep(etstep)
 d.setTimeHydraulicStep(etstep)
 d.setTimeQualityStep(etstep)
+
 start_4 = time.time()
 d.openHydraulicAnalysis()
 d.initializeHydraulicAnalysis()

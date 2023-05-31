@@ -1,0 +1,123 @@
+[TITLE]
+
+[JUNCTIONS]
+ J1                                  700.0000
+ J2                                  710.0000
+ J3                                  710.0000
+
+[RESERVOIRS]
+ R1                                  650.0000                                
+
+[TANKS]
+ T1                                  850.0000     120.0000     100.0000     150.0000      50.5000 1902813.5831                                
+
+[PIPES]
+ P1                              J1                              J2                                10560.0000      12.0000     100.0000       0.0000       
+ P2                              J1                              T1                                 5280.0000      14.0000     100.0000       0.0000       
+ P3                              J1                              J3                                 5280.0000      14.0000     100.0000       0.0000       
+ P4                              J2                              J3                                 5280.0000      14.0000     100.0000       0.0000       
+
+[PUMPS]
+ PUMP                            R1                              J1                               HEAD C1
+
+[VALVES]
+
+[DEMANDS]
+ J1                                    0.000000                                
+ J2                                  250.000000                                
+ J3                                  500.000000                                
+
+[EMITTERS]
+
+[STATUS]
+
+[PATTERNS]
+
+[CURVES]
+ C1                                 1500.0000     250.0000
+
+[CONTROLS]
+
+[RULES]
+
+[QUALITY]
+
+[SOURCES]
+
+[MIXING]
+ T1                              MIXED          0.0050
+
+[REACTIONS]
+ ORDER  BULK            1.00
+ ORDER  WALL            1
+ ORDER  TANK            1.00
+ GLOBAL BULK            0.000000
+ GLOBAL WALL            0.000000
+
+[ENERGY]
+ GLOBAL EFFIC        75.0000
+ DEMAND CHARGE       0.0000
+
+[TIMES]
+ DURATION            0:00:00
+ HYDRAULIC TIMESTEP  1:00:00
+ QUALITY TIMESTEP    0:06:00
+ REPORT TIMESTEP     1:00:00
+ REPORT START        0:00:00
+ PATTERN TIMESTEP    1:00:00
+ PATTERN START       0:00:00
+ RULE TIMESTEP       0:06:00
+ START CLOCKTIME     0:00:00
+ STATISTIC           NONE
+
+[OPTIONS]
+ UNITS               GPM
+ PRESSURE            PSI
+ HEADLOSS            H-W
+ UNBALANCED          STOP
+ QUALITY             NONE
+ DEMAND MULTIPLIER   1.0000
+ EMITTER EXPONENT    0.5000
+ VISCOSITY           1.000000
+ DIFFUSIVITY         1.000000
+ SPECIFIC GRAVITY    1.000000
+ TRIALS              200
+ ACCURACY            0.00100000
+ TOLERANCE           0.01000000
+ CHECKFREQ           2
+ MAXCHECK            10
+ DAMPLIMIT           0.00000000
+
+[REPORT]
+ PAGESIZE            0
+ STATUS              NO
+ SUMMARY             YES
+ ENERGY              NO
+ MESSAGES            YES
+ NODES               NONE
+ LINKS               NONE
+ Elevation           NO
+ Demand              PRECISION 2
+ Head                PRECISION 2
+ Pressure            PRECISION 2
+ Quality             PRECISION 2
+ Length              NO
+ Diameter            NO
+ Flow                PRECISION 2
+ Velocity            PRECISION 2
+ Headloss            PRECISION 2
+ Quality             NO
+ State               NO
+ Setting             NO
+ Reaction            NO
+
+[COORDINATES]
+ J1                                    0.000000       0.000000
+ J2                                    0.000000    -100.000000
+ J3                                  100.000000       0.000000
+ R1                                  -80.000000       0.000000
+ T1                                    0.000000      50.000000
+
+[VERTICES]
+
+[END]

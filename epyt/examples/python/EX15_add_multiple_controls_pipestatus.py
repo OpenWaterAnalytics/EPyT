@@ -51,7 +51,7 @@ for u in range(hrs):
 print('Create random status')
 
 d.plot_ts(Y=pd.DataFrame(d.getComputedHydraulicTimeSeries().Flow), title='Change status of pipes every hour',
-          xlabel='Time (hrs)', marker=False, color=None)
+          xlabel='Time (hrs)', marker=False, color='b', fontsize=8)
 
 d.plot_show()
 
