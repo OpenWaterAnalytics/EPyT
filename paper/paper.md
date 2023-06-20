@@ -118,16 +118,19 @@ hrs_time = H.Time / 3600 					# transform seconds into hours
 link_indices = [1, 5]						# select indices to plot
 link_names = G.getLinkNameID(link_indices)	# get the ID of the link indices
 
-G.plot_ts(	X=hrs_time, 
-          	Y=H.Flow[:, link_indices], 
-          	title=f'Flow of links with ID: {link_names}', 
-          	figure_size=[4, 3], 
-          	legend_location='best', 
-          	xlabel='Time (hrs)', 
-          	ylabel=f'Flow ({G.units.LinkFlowUnits})', 
-          	marker=None, labels=link_names, 
-          	save_fig=True, 
-          	filename='figures/paper_flows')
+G.plot_ts(X=hrs_time, 
+          Y=R.Flow[:, link_indices], 
+          title=f'Flow of links with ID: {link_names}',
+          figure_size=[4, 3],
+          legend_location='best', 
+          xlabel='Time (hrs)', 
+          ylabel=f'Flow ($m^3$/hour)', 
+          marker=None, 
+          color=['r', 'g'],
+          labels=link_names, 
+          save_fig=True, 
+          filename='figures/paper_flows')
+
 ```
 
 ![Flow links.\label{fig:fig1}](figures/paper_flows.png){ width=75% }
