@@ -62,14 +62,16 @@ if __name__ == "__main__":
 
     # Plots
     pressure_units = G.units.NodePressureUnits
+    plt.rc('xtick', labelsize=8)
+    plt.rc('ytick', labelsize=8)
     fig, ax = plt.subplots(figsize=(4, 3))
     ax.plot(ub, 'k')
     ax.plot(lb, 'k')
     ax.plot(meanb, 'b')
-    ax.legend(['Upper bound', 'Lower bound', 'Average'], loc='upper right', fontsize=7)
+    ax.legend(['Upper bound', 'Lower bound', 'Average'], loc='upper right', fontsize=8)
     ax.set_title(f'Pressure bounds, Node ID: {node_id}', fontsize=8)
-    ax.set_xlabel('Time (hours)', fontsize=7)
-    ax.set_ylabel(f'Pressure ({pressure_units})', fontsize=7)
+    ax.set_xlabel('Time (hours)', fontsize=8)
+    ax.set_ylabel(f'Pressure ({pressure_units})', fontsize=8)
     plt.show()
     fig.savefig('figures/paper_pressure_bounds.png', dpi=300)
 
@@ -94,15 +96,13 @@ if __name__ == "__main__":
 
     # Bounds with Leakage
     fig, ax = plt.subplots(figsize=(4, 3))
-    plt.rc('xtick', labelsize=7)
-    plt.rc('ytick', labelsize=7)
     ax.plot(ub, 'k')
     ax.plot(lb, 'k')
     ax.plot(p7, 'r')
-    ax.legend(['Upper bound', 'Lower bound', 'Sensor'], loc='upper right', fontsize=7)
+    ax.legend(['Upper bound', 'Lower bound', 'Sensor'], loc='upper right', fontsize=8)
     ax.set_title(f'Pressure bounds, Leak Node ID: {leak_node_id}', fontsize=8)
-    ax.set_xlabel('Time (hours)', fontsize=7)
-    ax.set_ylabel(f'Pressure ({pressure_units})', fontsize=7)
+    ax.set_xlabel('Time (hours)', fontsize=8)
+    ax.set_ylabel(f'Pressure ({pressure_units})', fontsize=8)
     plt.show()
     fig.savefig('figures/paper_pressure_bounds_leak.png', dpi=300)
 
@@ -111,6 +111,6 @@ if __name__ == "__main__":
 
     ax.plot(alert)
     ax.set_title(f'Leakage alert', fontsize=8)
-    ax.set_xlabel('Time (hours)', fontsize=7)
+    ax.set_xlabel('Time (hours)', fontsize=8)
     plt.show()
     fig.savefig('figures/paper_leakage_alert.png', dpi=300)
