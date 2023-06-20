@@ -51,6 +51,6 @@ setup(
     ],
     python_requires=">=3.7",
     package_data={f'{module_name}': data},
-    install_requires=['numpy', 'matplotlib', 'pandas'],
+    install_requires=['numpy', 'matplotlib', 'pandas', 'xlsxwriter'],
     include_package_data=True
 )
