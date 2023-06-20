@@ -10241,14 +10241,12 @@ class epanet:
         fig = plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
         color_is_none = color
         for i in range(num_points):
-            if color_is_none is None:
-                color = (random.uniform(0, 1), random.uniform(0, 1),
+            if color is None:
+                color_user = (random.uniform(0, 1), random.uniform(0, 1),
                          random.uniform(0, 1))
             else:
-                try:
-                    color = color_is_none[i]
-                except:
-                    color = color_is_none
+                color_user = color[i]
+
             try:
                 values = Y[:, i]
             except:
@@ -10261,14 +10259,14 @@ class epanet:
 
             if marker:
                 if X is None:
-                    plt.plot(values, color=color, marker=marker, label=label)
+                    plt.plot(values, color=color_user, marker=marker, label=label)
                 else:
-                    plt.plot(X, values, color=color, marker=marker, label=label)
+                    plt.plot(X, values, color=color_user, marker=marker, label=label)
             else:
                 if X is None:
-                    plt.plot(values, color=color, linewidth=1, label=label)
+                    plt.plot(values, color=color_user, linewidth=1, label=label)
                 else:
-                    plt.plot(X, values, color=color, linewidth=1, label=label)
+                    plt.plot(X, values, color=color_user, linewidth=1, label=label)
         plt.xlabel(xlabel, fontsize=fontsize)
         plt.ylabel(ylabel, fontsize=fontsize)
         plt.title(title, fontsize=fontsize_title, fontweight=fontweight)
