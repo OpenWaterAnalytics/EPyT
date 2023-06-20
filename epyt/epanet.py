@@ -10245,7 +10245,10 @@ class epanet:
                 color = (random.uniform(0, 1), random.uniform(0, 1),
                          random.uniform(0, 1))
             else:
-                color = color_is_none[i]
+                try:
+                    color = color_is_none[i]
+                except:
+                    color = color_is_none
             try:
                 values = Y[:, i]
             except:
