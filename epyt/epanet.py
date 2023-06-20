@@ -10225,7 +10225,7 @@ class epanet:
         plt.show()
 
     def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color=None, marker='x',
-                figure_size=[3, 2.5], constrained_layout=True, fontweight='normal', fontsize_title=12, fontsize=10,
+                figure_size=[3, 2.5], constrained_layout=True, fontweight='normal', fontsize_title=8, fontsize=8,
                 labels=None, save_fig=False, filename='temp', tight_layout=False, dpi=300, filetype='png',
                 legend_location='best'):
         """ Plot X Y data
