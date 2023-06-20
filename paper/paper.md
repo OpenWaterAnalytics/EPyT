@@ -122,7 +122,7 @@ To access the different values, the user can use the dot notation, such as `H.He
 
 Executing the function `G.plot()` displays a figure of the network along with its components. The nodes i.e., junctions, reservoirs, tanks, and the links, i.e., pipes, valves, and pumps, are depicted using different colors and shapes. 
 
-![The L-Town network layout using the plot function](figures/ltown.png){ width=75% }
+![The L-Town network layout using the plot function.](figures/ltown.png){ width=75% }
 
 Moreover, when computing the hydraulic and quality parameters, we can use the `plot_ts` function which plots the different time series. An example is provided below for link indices 1 and 5.
 
@@ -221,7 +221,7 @@ G.setNodeBaseDemands(leak_node_index, leak_value)
 
 ## Simulate pressure sensor measurement at node '7'
 scada_pressures = G.getComputedHydraulicTimeSeries().Pressure
-ps7 = scada_pressures[:, node_index-1] 		#  Sensor measurement at node "7"
+ps7 = scada_pressures[:, node_index-1]  #  Sensor measurement at node "7"
 ```
 ![Pressure bounds, Leak Node. When a leakage exists in the network, the pressure may drop below the calculated lower bound at node 7, thus indicating an event.\label{fig:fig6}](figures/paper_pressure_bounds_leak.png){ width=75% }
 
