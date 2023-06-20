@@ -10225,8 +10225,9 @@ class epanet:
         plt.show()
 
     def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color=None, marker='x',
-                figure_size=[3, 2.5], constrained_layout=True, fontweight='normal', fontsize=12, labels=None,
-                save_fig=False, filename='temp', tight_layout=False, dpi=300, filetype='png', legend_location='best'):
+                figure_size=[3, 2.5], constrained_layout=True, fontweight='normal', fontsize_title=12, fontsize=10,
+                labels=None, save_fig=False, filename='temp', tight_layout=False, dpi=300, filetype='png',
+                legend_location='best'):
         """ Plot X Y data
         """
         num_points = np.atleast_2d(Y).shape[1]
@@ -10267,7 +10268,7 @@ class epanet:
                     plt.plot(X, values, color=color, linewidth=1, label=label)
         plt.xlabel(xlabel, fontsize=fontsize)
         plt.ylabel(ylabel, fontsize=fontsize)
-        plt.title(title, fontsize=fontsize, fontweight=fontweight)
+        plt.title(title, fontsize=fontsize_title, fontweight=fontweight)
         if tight_layout:
             plt.tight_layout()
         if labels is not None:
