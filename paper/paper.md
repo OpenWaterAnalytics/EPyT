@@ -127,6 +127,7 @@ G.plot_ts(X=hrs_time,
           ylabel=f'Flow ($m^3$/hour)', 
           marker=None, 
           color=['r', 'g'],
+          fontsize=6,
           labels=link_names, 
           save_fig=True, 
           filename='figures/paper_flows')
