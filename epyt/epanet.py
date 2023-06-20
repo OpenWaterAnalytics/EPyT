@@ -10236,10 +10236,9 @@ class epanet:
         except:
             num_points = 1
 
-        plt.rc('xtick', labelsize=fontsize - 1)
-        plt.rc('ytick', labelsize=fontsize - 1)
+        plt.rc('xtick', labelsize=fontsize)
+        plt.rc('ytick', labelsize=fontsize)
         fig = plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
-        color_is_none = color
         for i in range(num_points):
             if color is None:
                 color_user = (random.uniform(0, 1), random.uniform(0, 1),

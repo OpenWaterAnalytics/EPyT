@@ -24,5 +24,5 @@ link_indices = [1, 5]  # select indices to plot
 link_names = G.getLinkNameID(link_indices)  # get the ID of the link indices
 
 G.plot_ts(X=hrs_time, Y=R.Flow[:, link_indices], title=f'Flow of links with ID: {link_names}', figure_size=[4, 3],
-          legend_location='best', xlabel='Time (hrs)', ylabel=f'Flow ($m^3$/hour)', marker=None, color=['r', 'g'],
-          fontsize=8, fontsize_title=9, labels=link_names, save_fig=True, filename='figures/paper_flows')
+          legend_location='best', xlabel='Time (hours)', ylabel=f'Flow ($m^3$/hour)', marker=None, color=['r', 'g'],
+          fontsize=7, fontsize_title=8, labels=link_names, save_fig=True, filename='figures/paper_flows')

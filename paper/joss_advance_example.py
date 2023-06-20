@@ -94,6 +94,8 @@ if __name__ == "__main__":
 
     # Bounds with Leakage
     fig, ax = plt.subplots(figsize=(4, 3))
+    plt.rc('xtick', labelsize=7)
+    plt.rc('ytick', labelsize=7)
     ax.plot(ub, 'k')
     ax.plot(lb, 'k')
     ax.plot(p7, 'r')
