@@ -221,7 +221,7 @@ G.setNodeBaseDemands(leak_node_index, leak_value)
 
 ## Simulate pressure sensor measurement at node '7'
 scada_pressures = G.getComputedHydraulicTimeSeries().Pressure
-ps7 = scada_pressures[:, node_index-1]  #  Sensor measurement at node "7"
+ps7 = scada_pressures[:, node_index-1]  # Sensor measurement at node "7"
 ```
 ![Pressure bounds, Leak Node. When a leakage exists in the network, the pressure may drop below the calculated lower bound at node 7, thus indicating an event.\label{fig:fig6}](figures/paper_pressure_bounds_leak.png){ width=75% }
 

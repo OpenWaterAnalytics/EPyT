@@ -72,6 +72,7 @@ if __name__ == "__main__":
     ax.set_title(f'Pressure bounds, Node ID: {node_id}', fontsize=8)
     ax.set_xlabel('Time (hours)', fontsize=8)
     ax.set_ylabel(f'Pressure ({pressure_units})', fontsize=8)
+    ax.grid(True)
     plt.show()
     fig.savefig('figures/paper_pressure_bounds.png', dpi=300)
 
@@ -99,6 +100,7 @@ if __name__ == "__main__":
     ax.plot(ub, 'k')
     ax.plot(lb, 'k')
     ax.plot(p7, 'r')
+    ax.grid(True)
     ax.legend(['Upper bound', 'Lower bound', 'Sensor'], loc='upper right', fontsize=8)
     ax.set_title(f'Pressure bounds, Leak Node ID: {leak_node_id}', fontsize=8)
     ax.set_xlabel('Time (hours)', fontsize=8)
