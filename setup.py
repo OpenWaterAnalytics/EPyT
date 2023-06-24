@@ -26,7 +26,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="1.0.5",
+    version="1.0.6",
     author="KIOS CoE",
     author_email="kiriakou.marios@ucy.ac.cy",
     description='A Python module for EPANET water distribution simulation libraries. The EPyT is inspired by the '
@@ -40,7 +40,6 @@ setup(
     packages=packages,
     keywords='epanet, water, networks, hydraulics, quality, simulations, emt, epanet matlab toolkit',
     classifiers=[
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
@@ -51,6 +50,6 @@ setup(
     ],
     python_requires=">=3.7",
     package_data={f'{module_name}': data},
-    install_requires=['numpy', 'matplotlib', 'pandas'],
+    install_requires=['numpy', 'matplotlib', 'pandas', 'xlsxwriter'],
     include_package_data=True
 )

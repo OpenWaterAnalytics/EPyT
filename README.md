@@ -40,7 +40,7 @@ To be completed.
 
 ## Requirements
 
-* Python >=3.7
+* Python >=3.8
 * Windows, OSX or Linux
 * [EPANET 2.2](https://github.com/OpenWaterAnalytics/epanet)
 

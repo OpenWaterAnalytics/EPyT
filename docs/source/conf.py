@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.join(pathlib.Path(__file__).parents[2].resolve().as_p
 author = 'KIOS CoE'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '1.0.5'
 
 # -- General configuration ---------------------------------------------------
 

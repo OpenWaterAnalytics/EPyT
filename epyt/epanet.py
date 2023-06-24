@@ -518,7 +518,7 @@ class epanet:
                              'NOT', 'BELOW', 'ABOVE']
 
         # Initial attributes
-        self.classversion = '1.0.5'
+        self.classversion = '1.0.6'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
@@ -10225,8 +10225,9 @@ class epanet:
         plt.show()
 
     def plot_ts(self, X=None, Y=None, title='', xlabel='', ylabel='', color=None, marker='x',
-                figure_size=[3, 2.5], constrained_layout=True, fontweight='normal', fontsize=12, labels=None,
-                save_fig=False, filename='temp', tight_layout=False, dpi=300, filetype='png', legend_location='best'):
+                figure_size=[3, 2.5], constrained_layout=True, fontweight='normal', fontsize_title=8, fontsize=8,
+                labels=None, save_fig=False, filename='temp', tight_layout=False, dpi=300, filetype='png',
+                legend_location='best'):
         """ Plot X Y data
         """
         num_points = np.atleast_2d(Y).shape[1]
@@ -10235,14 +10236,16 @@ class epanet:
         except:
             num_points = 1
 
-        plt.rc('xtick', labelsize=fontsize - 1)
-        plt.rc('ytick', labelsize=fontsize - 1)
+        plt.rc('xtick', labelsize=fontsize)
+        plt.rc('ytick', labelsize=fontsize)
         fig = plt.figure(figsize=figure_size, constrained_layout=constrained_layout)
-        color_is_none = color
         for i in range(num_points):
-            if color_is_none is None:
-                color = (random.uniform(0, 1), random.uniform(0, 1),
+            if color is None:
+                color_user = (random.uniform(0, 1), random.uniform(0, 1),
                          random.uniform(0, 1))
+            else:
+                color_user = color[i]
+
             try:
                 values = Y[:, i]
             except:
@@ -10255,17 +10258,17 @@ class epanet:
 
             if marker:
                 if X is None:
-                    plt.plot(values, color=color, marker=marker, label=label)
+                    plt.plot(values, color=color_user, marker=marker, label=label)
                 else:
-                    plt.plot(X, values, color=color, marker=marker, label=label)
+                    plt.plot(X, values, color=color_user, marker=marker, label=label)
             else:
                 if X is None:
-                    plt.plot(values, color=color, linewidth=1, label=label)
+                    plt.plot(values, color=color_user, linewidth=1, label=label)
                 else:
-                    plt.plot(X, values, color=color, linewidth=1, label=label)
+                    plt.plot(X, values, color=color_user, linewidth=1, label=label)
         plt.xlabel(xlabel, fontsize=fontsize)
         plt.ylabel(ylabel, fontsize=fontsize)
-        plt.title(title, fontsize=fontsize, fontweight=fontweight)
+        plt.title(title, fontsize=fontsize_title, fontweight=fontweight)
         if tight_layout:
             plt.tight_layout()
         if labels is not None:
