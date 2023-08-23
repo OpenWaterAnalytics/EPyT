@@ -59,6 +59,8 @@ exclude_patterns = []
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_theme = 'default'
+
 # extensions = ['sphinx.ext.autosummary',]
 # autodoc_default_flags = ['members']
 # autosummary_generate = True
