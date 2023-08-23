@@ -6,6 +6,7 @@
 [![Downloads](https://static.pepy.tech/badge/epyt/month)](https://pepy.tech/project/epyt)
 [![build](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml/badge.svg)](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml)
 [![Documentation Status](https://readthedocs.org/projects/epanet-python-toolkit-epyt/badge/?version=latest)](https://epanet-python-toolkit-epyt.readthedocs.io/en/latest/?badge=latest)
+[![DOI](https://zenodo.org/badge/497006956.svg)](https://zenodo.org/badge/latestdoi/497006956)
 
 
 # EPANET Python Toolkit (EPyT)
