@@ -4906,12 +4906,14 @@ class epanet:
         """
         tankData = EpytValues()
         tankIndices = self.getNodeTankIndex()
+
         if len(argv) == 1:
-            result = [True for c in argv[0] if c in tankIndices]
-            if result:
-                tankIndices = argv[0]
+            if isinstance(argv[0], list):
+                result = [True for c in argv[0] if c in tankIndices]
+                if result:
+                    tankIndices = argv[0]
             else:
-                tankIndices = self.getNodeTankIndex(argv[0])
+                tankIndices = argv[0]
 
         tankData.Index = tankIndices
         tankData.Elevation = self.getNodeElevations(tankIndices)
