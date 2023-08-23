@@ -63,7 +63,6 @@ from datetime import datetime
 from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
-mpl.use('TkAgg')
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -10007,7 +10006,7 @@ class epanet:
         plt.rcParams["figure.figsize"] = fig_size
         plt.rcParams['figure.dpi'] = dpi
         if figure:
-            figure = plt.figure(constrained_layout=False)
+            figure = plt.figure()
         plt.axis('off')
 
         # Plot Links
