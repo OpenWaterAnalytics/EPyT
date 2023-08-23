@@ -2922,7 +2922,7 @@ class epanet:
         lTypes = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     lTypes.append(self.TYPELINK[self.api.ENgetlinktype(i)])
             else:
@@ -2950,7 +2950,7 @@ class epanet:
         lTypes = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     lTypes.append(self.api.ENgetlinktype(i))
             else:
@@ -3789,7 +3789,7 @@ class epanet:
         values = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     values.append(self.api.ENgetlinkindex(i))
             else:
@@ -4133,7 +4133,7 @@ class epanet:
         value = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     value.append(self.api.ENgetnumdemands(i))
             else:
@@ -4278,7 +4278,7 @@ class epanet:
         values = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     values.append(self.api.ENgetnodeindex(i))
             else:
@@ -4413,7 +4413,7 @@ class epanet:
         if (len(value) > 0) and (len(argv) > 0):
             index = argv[0]
             try:
-                if type(index) is list:
+                if isinstance(index, list):
                     jIndices = []
                     for i in index:
                         jIndices.append(value[i - 1] + 1)
@@ -4560,7 +4560,7 @@ class epanet:
         if (len(value) > 0) and (len(argv) > 0):
             index = argv[0]
             try:
-                if type(index) is list:
+                if isinstance(index, list):
                     rIndices = []
                     for i in index:
                         rIndices.append(value[i - 1] + 1)
@@ -4668,7 +4668,7 @@ class epanet:
         values = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     values.append(self.api.ENgetnodeid(i))
             else:
@@ -4912,6 +4912,8 @@ class epanet:
                 result = [True for c in argv[0] if c in tankIndices]
                 if result:
                     tankIndices = argv[0]
+                else:
+                    tankIndices = self.getNodeTankIndex(argv[0])
             else:
                 tankIndices = argv[0]
 
@@ -4966,7 +4968,7 @@ class epanet:
         if (len(value) > 0) and (len(argv) > 0):
             index = argv[0]
             try:
-                if type(index) is list:
+                if isinstance(index, list):
                     tIndices = []
                     for i in index:
                         tIndices.append(value[i - 1] + 1)
@@ -5325,7 +5327,7 @@ class epanet:
         nTypes = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     nTypes.append(self.TYPENODE[self.api.ENgetnodetype(i)])
             else:
@@ -5348,7 +5350,7 @@ class epanet:
         nTypes = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     nTypes.append(self.api.ENgetnodetype(i))
             else:
@@ -5774,7 +5776,7 @@ class epanet:
         values = []
         if len(argv) > 0:
             index = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 for i in index:
                     values.append(self.api.ENgetpatternid(i))
             else:
@@ -8704,7 +8706,7 @@ class epanet:
             _type = value
         elif len(argv) == 1:
             _type = argv[0]
-        if type(_type) is list:
+        if isinstance(_type, list):
             code = []
             for i in _type:
                 code.append(self.TYPEMIXMODEL.index(i))
@@ -10004,7 +10006,7 @@ class epanet:
         plt.rcParams["figure.figsize"] = fig_size
         plt.rcParams['figure.dpi'] = dpi
         if figure:
-            figure = plt.figure()
+            figure = plt.figure(constrained_layout=False)
         plt.axis('off')
 
         # Plot Links
@@ -10697,13 +10699,13 @@ class epanet:
 
     def __getLinkIndices(self, *argv):
         if len(argv) > 0:
-            if type(argv[0]) is list:
-                if type(argv[0][0]) is str:
+            if isinstance(argv[0], list):
+                if isinstance(argv[0][0], str):
                     return self.getLinkIndex(argv[0])
                 else:
                     return argv[0]
             else:
-                if type(argv[0]) is str:
+                if isinstance(argv[0], str):
                     return [self.getLinkIndex(argv[0])]
                 else:
                     return [argv[0]]
@@ -10726,13 +10728,13 @@ class epanet:
 
     def __getNodeIndices(self, *argv):
         if len(argv) > 0:
-            if type(argv[0]) is list:
-                if type(argv[0][0]) is str:
+            if isinstance(argv[0], list):
+                if isinstance(argv[0][0], str):
                     return self.getNodeIndex(argv[0])
                 else:
                     return argv[0]
             else:
-                if type(argv[0]) is str:
+                if isinstance(argv[0], str):
                     return [self.getNodeIndex(argv[0])]
                 else:
                     return [argv[0]]
@@ -10967,7 +10969,7 @@ class epanet:
     def __returnValue(self, value):
         if isList(value):
             try:
-                if type(value) is list:
+                if isinstance(value, list):
                     value = np.array(value)
                 value = value.astype(int)
             except:
@@ -10986,7 +10988,7 @@ class epanet:
         if len(argv) == 1:
             index = value
             value = argv[0]
-            if type(index) is list:
+            if isinstance(index, list):
                 j = 0
                 for i in index:
                     if np.isnan(value[j]):
@@ -11018,7 +11020,7 @@ class epanet:
             value = argv[0]
             if isinstance(index, (list, np.ndarray)):
                 j = 0
-                if type(value) is list:
+                if isinstance(value, list):
                     for i in index:
                         strFunc = 'self.api.' + func + '(' + str(
                             i) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value[j]) + ')'
