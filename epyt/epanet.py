@@ -63,6 +63,7 @@ from datetime import datetime
 from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
+mpl.use('TkAgg')
 from pathlib import Path
 import pandas as pd
 import numpy as np
