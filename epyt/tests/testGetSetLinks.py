@@ -1,5 +1,5 @@
 """
-EPANET Python Toolkit (EPyT) Test Part 3
+EPANET Python Toolkit (EPyT) Test Part 2
 This file is provided to ensure that all functions can be executed correctly.
 Step-by-step execution. You may also use the breakpoints,
 indicated with a short dash (-) on the left of each line number.
