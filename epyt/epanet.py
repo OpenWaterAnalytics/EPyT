@@ -518,7 +518,7 @@ class epanet:
                              'NOT', 'BELOW', 'ABOVE']
 
         # Initial attributes
-        self.classversion = '1.0.6'
+        self.classversion = '1.0.7'
         self.api = epanetapi(version)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
@@ -4907,7 +4907,8 @@ class epanet:
         tankData = EpytValues()
         tankIndices = self.getNodeTankIndex()
         if len(argv) == 1:
-            if argv[0] in tankIndices:
+            result = [True for c in argv[0] if c in tankIndices]
+            if result:
                 tankIndices = argv[0]
             else:
                 tankIndices = self.getNodeTankIndex(argv[0])
@@ -7975,7 +7976,8 @@ class epanet:
             for i in indices:
                 self.api.ENsetcoord(i, value[0][indices.index(i)], value[1][indices.index(i)])
         else:
-            value = [value]
+            if len(indices) == 1:
+                value = [value]
             for i in range(len(value)):
                 x = value[i][0]
                 y = value[i][1]
