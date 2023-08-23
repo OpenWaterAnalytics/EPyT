@@ -3,7 +3,7 @@ import os
 
 # python setup.py bdist_wheel
 # python setup.py sdist
-# twine upload dist/*
+# twine upload dist/* --config-file .pypirc
 
 
 module_name = 'epyt'
