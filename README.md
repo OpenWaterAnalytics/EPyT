@@ -34,7 +34,7 @@ For support, please use the OWA community forum : http://community.wateranalytic
   
 ## How to cite 
 
-To be completed.
+Marios S. Kyriakou, Marios Demetriades, Stelios G. Vrachimis, Demetrios G. Eliades, & Marios M. Polycarpou. (2023). OpenWaterAnalytics/EPyT. Zenodo. https://doi.org/10.5281/zenodo.8277487
 
 &uparrow; [Back to top](#table-of-contents)
 
