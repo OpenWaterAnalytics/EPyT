@@ -10,8 +10,8 @@ Using PyPI:
 
 Downloading from GitHub:
 
-To download the EPyT package from the `GitHub repository`_ run the following command:
-.. _GitHub repository: https://github.com/OpenWaterAnalytics/EPyT
+To download the EPyT package from the `GitHub repository` run the following command:
+.. GitHub repository: https://github.com/OpenWaterAnalytics/EPyT
 
 .. code-block:: console
 
