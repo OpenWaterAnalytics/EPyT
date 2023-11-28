@@ -64,10 +64,6 @@ Both methods (direct calls and wrappers) are limited to the functions made avail
 3.	Provide code templates for expanding the capabilities of EPANET and facilitating smart water systems research, while supporting the adoption of open-science and reproducible research best practices.
 4.	Provide a similar data structure in Python and MATLAB, to facilitate translation between the two environments.
 
-## Target audience
-
-The target audience is students and researchers in engineering (civil, environmental, chemical, mechanical, electrical) and computer science, who want to utilize data analytics and Artificial Intelligence (AI) methods in applications related to drinking water networks. Moreover, the toolkit can be used by researchers, data scientists, and engineers working in startups and companies for the development of new innovative smart water solutions.
-
 ## State of the field
 
 As a precursor of EPyT, the open-source [EPANET-MATLAB Toolkit](https://github.
@@ -79,7 +75,7 @@ the *OpenWaterAnalytics Community*. Moreover, EMT introduced the `epanet` class,
 structures and function names which are human-readable and self-explanatory. In addition to EPyT, a few other 
 relevant Python-based tools connect with EPANET. The most advanced, and relevant, is the [Water Network Tool for Resilience](https://github.com/USEPA/WNTR)  (WNTR), which was developed by the US EPA and Sandia National Laboratories, and released under the Revised BSD license [@klise2017]. `WNTR` facilitates the simulation of both hydraulic and quality dynamics, and in addition, it allows the simulation of various events such as pipe breaks, disasters such as earthquakes, power outages, fires, and contamination events. At the moment, `WNTR` includes only a subset of EPANET functions necessary for its simulation capabilities. The [Object-Oriented Pipe Network Analyzer](https://github.com/oopnet/oopnet) (OOPNET) is a Python package that allows modelling and simulating hydraulic water distribution systems  [@steffelbauer2015]. A drawback is that, since `OOPNET` is based on the runtime executable of EPANET, it does not provide access to the internal library functions. The [OWA-EPANET](https://pypi.org/project/owa-epanet/) is a SWIG auto-generated "thin" wrapper around the EPANET libraries. The goal of this package is to provide a Python interface that requires minimal effort to keep up to date with the core library and can be used by higher-level applications. Other Python-based EPANET toolkits include [epynet](https://github.com/Vitens/epynet), developed by Vitens, and [epanettools](https://pypi.org/project/EPANETTOOLS/) which supports older versions of the EPANET toolkit. Recently a new tool has been published, [viswaternet](https://pypi.org/project/viswaternet/) which provides a tool for visualizing static and time-varying attributes of EPANET-based water distribution systems; this tool can be used in parallel with EPyT for visualization purposes [@thomas2023].
 
-A key unique feature of EPyT, is that it captures the complete function and parameter space of EPANET. Another important aspect of EPyT is that it shares the same function names as the EPANET-MATLAB Toolkit. Our motivation is that this will facilitate the transition of state-of-the-art code originating from academia (which typically uses MATLAB) to more industrial applications, which typically use Python due to its open-source license and its extended set of data analytics modules. 
+A key unique feature of EPyT, is that it captures the complete function and parameter space of EPANET. Another important aspect of EPyT is that it shares the same function names as the EPANET-MATLAB Toolkit. Our motivation is that this will facilitate the transition of state-of-the-art code originating from research and academia (which typically uses MATLAB) to more industrial applications, which typically use Python due to its open-source license and its extended set of data analytics modules. 
 
 # Functionality
 The EPyT python class, `epanet`, includes properties of the input network model, static properties, public 
@@ -153,93 +149,7 @@ G.plot_ts(X=hrs_time,
 
 The user can unload the EPANET dynamic library from Python memory, using the `G.unload()` method.
 
-
-# Use case: Computing pressure bounds for leakage detection
-
-A more advanced example is provided below, for designing a simple leakage detection algorithm for the `Net2` benchmark network. The goal is to generate pressure bounds (i.e., the adaptive upper and lower levels of pressure expected at a node, given the uncertainty in model parameters) which can be used to detect events in the system, e.g., by comparing them with available pressure sensor measurements.
-
-```python
-inp_name = 'Net2.inp' 	# Select benchmark network Net2
-G = epanet(inp_name)	# Create object G for Net2
-```
-
-For generating leakage events, it's useful to activate the *Pressure-Driven Analysis* (PDA), instead of using the 
-default *Demand-Driven Analysis* (DDA), as the effect on demands due to pressure drops during leakages is not 
-negligible. Moreover, PDA avoids simulation errors due to negative pressures.
-
-```python
-type = 'PDA'
-pmin = 0 		# pressure below which demand is zero
-preq = 0.1		# pressure required to deliver the full required demand
-pexp = 0.5		# exponent of PDA function
-G.setDemandModel(type, pmin, preq, pexp)  # Sets the demand model
-```
-
-We assume we have a pressure sensor at the node with ID "11". We will now create the pressure bounds at that node, 
-using Monte Carlo Simulations (MCS). We assume that there is 2% uncertainty in the nominal base demands compared to 
-the actual demand, which is evenly distributed with the nominal value as the mean. We consider a suitable number of  
-MCS (we use 100 epochs for computational convenience, however, more simulations would provide a more accurate 
-estimation of the bounds). Starting from the current time,  we run the simulations for 56 hours for each randomized scenario, the computed pressure measurements are recorded.  
-
-```python
-bd = G.getNodeBaseDemands()[1] 				# Get nominal base demands
-sensor_node_id = '11'						# Get sensor node index			
-sensor_node_index = G.getNodeIndex(sensor_node_id)	
-eta_bar = 0.02								# Specify maximum uncertainty 2%
-nsim = 100							# Select number of simulations
-np.random.seed(1) 					# Set seed number for reproducibility
-pmcs = [None for _ in range(nsim)] 	# initialize pressure time series matrix 
-
-## Compute pressures for each randomized scenario
-for i in range(nsim):
-	delta_bd = (2 * np.random.rand(1, len(bd))[0] - 1) * eta_bar * bd
-	new_base_demands = bd + delta_bd 			  		   # Compute new demand
-    G.setNodeBaseDemands(new_base_demands)				   # Set base demands
-    pmcs[i] = G.getComputedHydraulicTimeSeries().Pressure  # Compute pressures
-    print(f"Epoch {i}")
-```
-The upper and lower bounds can be computed by processing all the simulated pressure measurements using `numpy` 
-methods. The results are depicted in Figure 3. Given a sufficient number of simulations, we expect that under normal conditions, pressure at node "11" will reside between those bounds. In blue, the average pressure computed by the MCS is depicted.
-
-![Pressure bounds at node "11" computed considering demand uncertainty and using the Monte-Carlo Simulations method. The average value of the pressure from all simulations is also calculated.\label{fig:fig5}](figures/paper_pressure_bounds.png){ width=75% }
-
-To demonstrate the detection ability of the proposed approach, we simulate a leakage with 50 gallons per minute (GPM) outflow at the node with ID "7", starting 20 hours after the current time.  During a leakage event, we expect that the pressure will drop, and for a sufficiently large leak, the measured pressure can fall below the estimated lower bound, thus triggering a leakage warning.
-
-```python
-## Add leakage at Node ID 7 at 20 hours
-leak_start = 20		# leakage start time
-leak_value = 50  	# leakage outflow (in GPM)
-leak_node_id = '7'	# leakage location
-leak_node_index = G.getNodeIndex(leak_node_id)
-
-## Create a new leakage pattern
-leak_pattern = np.zeros(max(G.getPatternLengths()))
-leak_pattern[leak_start:] = 1
-pattern_index = G.addPattern('leak', leak_pattern)
-G.setNodeDemandPatternIndex(leak_node_index, pattern_index)
-G.setNodeBaseDemands(leak_node_index, leak_value)
-
-## Simulate pressure sensor measurement at node '7'
-scada_pressures = G.getComputedHydraulicTimeSeries().Pressure
-ps7 = scada_pressures[:, node_index-1]  # Sensor measurement at node "7"
-```
-![Pressure bounds, Leak Node. When a leakage exists in the network, the pressure may drop below the calculated lower bound at node 7, thus indicating an event.\label{fig:fig6}](figures/paper_pressure_bounds_leak.png){ width=75% }
-
-The detection algorithm compares the lower pressure bound of node '7' with the actual pressure as follows:
-
-```python
-e = ps7 - lb 	# compute the difference between the pressure sensor
-				# and the lower bound
-    
-alert = e < 0	# if the difference is less than 0, then
-				# raise a detection alert flag
-    
-detectionTime = np.argmax(alert>1) 	# compute detection time as the first time
-									# the`True` flag appears
-```
-
-We observe that in this use case, until time 27 hours, the sensor measurement was within the upper and lower bounds 
-computed in the previous step, therefore there was a 7 hour delay in detecting the leakage.
+A illustrative examples, as well as a use case on how to compute pressure bounds for leakage detection, is provided in the [EPyT Documentation](https://epanet-python-toolkit-epyt.readthedocs.io/).
 
 # Conclusions
 
