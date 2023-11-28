@@ -15,13 +15,9 @@ project = 'epyt'
 copyright = '2022, KIOS Research and Innovation Center of Excellence'
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here.
-import pathlib
 import sys
 import os
-
-sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
-print(pathlib.Path(__file__).parents[2].resolve().as_posix())
-sys.path.insert(0, os.path.join(pathlib.Path(__file__).parents[2].resolve().as_posix(), project))
+sys.path.insert(0, os.path.abspath('..'))
 
 author = 'KIOS CoE'
 
