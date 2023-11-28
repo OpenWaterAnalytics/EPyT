@@ -66,8 +66,7 @@ Both methods (direct calls and wrappers) are limited to the functions made avail
 
 ## State of the field
 
-As a precursor of EPyT, the open-source [EPANET-MATLAB Toolkit](https://github.
-com/OpenWaterAnalytics/EPANET-Matlab-Toolkit) (EMT) was released in 2009, and is continuously supported by the 
+As a precursor of EPyT, the open-source [EPANET-MATLAB Toolkit](https://github.com/OpenWaterAnalytics/EPANET-Matlab-Toolkit) (EMT) was released in 2009, and is continuously supported by the 
 authors [@eliades2016]. As a result of serving the needs of smart water researchers and the water engineering 
 education community, it has been extended significantly. EMT provides extensive functionalities beyond the EPANET 
 capabilities, to support the design and evaluation of research methodologies. It is currently made available under 
@@ -79,7 +78,7 @@ A key unique feature of EPyT, is that it captures the complete function and para
 
 # Functionality
 The EPyT python class, `epanet`, includes properties of the input network model, static properties, public 
-functions, and local functions that directly call the EPANET shared object library or the executable. The full API with detailed examples is provided in the [link](https://epanet-python-toolkit-epyt.readthedocs.io/en/dev/api.html). In the following paragraphs, we introduce a selection of the capabilities of the tool and an illustrative smart water research example.
+functions, and local functions that directly call the EPANET shared object library or the executable. The full API with detailed examples is provided in the [link](https://epanet-python-toolkit-epyt.readthedocs.io/en/latest/api.html). In the following paragraphs, we introduce a selection of the capabilities of the tool and an illustrative smart water research example.
 
 Through EPyT, users can easily load EPANET network models, as demonstrated by importing the module and loading the 
 `L-TOWN.inp` network in a provided example [@vrachimis2022].
