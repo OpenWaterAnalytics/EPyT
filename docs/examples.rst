@@ -144,9 +144,9 @@ Next, we show how to simulate the water distribution network, such as flows/pres
     R = G.getComputedTimeSeries()
 
 
-To access the different values, the user can use the dot notation, such as H.Head to create an array with the hydraulic heads and ``R.NodeQuality`` for the water quality at the nodes. It is important to note that the time intervals may be different for the hydraulic and quality time series, due to the simulation settings; the user can call ``R.Time``, to retrieve the time in seconds.
+To access the different values, the user can use the dot notation, such as ``R.Flow`` to create an array with the flows and ``R.NodeQuality`` for the water quality at the nodes. It is important to note that the time intervals may be different for the hydraulic and quality time series, due to the simulation settings; the user can call ``R.Time``, to retrieve the time in seconds.
 
-Executing the function ``G.plot()`` displays a figure of the network along with its components. The nodes i.e., junctions, reservoirs, tanks, and the links, i.e., pipes, valves, and pumps, are depicted using different colors and shapes.
+Executing the functions ``G.plot()`` or ``G.plot_ts()``, a figure of the network along with its components is displayed. The nodes i.e., junctions, reservoirs, tanks, and the links, i.e., pipes, valves, and pumps, are depicted using different colors and shapes. An example is provided below:
 
 .. code-block:: python
 
