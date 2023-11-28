@@ -1078,6 +1078,21 @@ Advance example
    :alt: joss_advance_example_10_0
    :align: center
 
+The detection algorithm compares the lower pressure bound of node '7' with the actual pressure as follows:
+
+.. code-block:: python
+
+        e = ps7 - lb 	# compute the difference between the pressure sensor
+                        # and the lower bound
+            
+        alert = e < 0	# if the difference is less than 0, then
+                        # raise a detection alert flag
+            
+        detectionTime = np.argmax(alert>1) 	# compute detection time as the first time
+                                            # the`True` flag appears
+
+We observe that in this use case, until time 27 hours, the sensor measurement was within the upper and lower bounds computed in the previous step, therefore there was a 7 hour delay in detecting the leakage.
+
 .. code-block:: python
 
         # Leakage alert
