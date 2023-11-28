@@ -19,6 +19,8 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath('..'))
 
+from epanet import epyt
+
 author = 'KIOS CoE'
 
 # The full version, including alpha/beta/rc tags
