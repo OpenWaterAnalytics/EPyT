@@ -1,5 +1,5 @@
-﻿epanet.epanet
-=============
+﻿API documentation
+-----------------
 
 .. currentmodule:: epanet
 
