@@ -30,7 +30,7 @@ Welcome to EPyT's documentation!
    overview
    installation
    usage
-   source/api
+   api
    examples
    changelog
 
