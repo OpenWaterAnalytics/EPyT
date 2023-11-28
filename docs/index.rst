@@ -30,6 +30,6 @@ Contents
    overview
    installation
    usage
-   api
+   source/api
    examples
    changelog
