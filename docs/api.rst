@@ -1,7 +1,7 @@
 API Documentation
 =================
 
-.. automodule:: epyt.epanet.epanet
+.. automodule:: epyt.epanet
    :members:
    :undoc-members:
    :show-inheritance:
