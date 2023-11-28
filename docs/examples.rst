@@ -6,6 +6,11 @@ In the following examples, we introduce a selection of the capabilities of the t
 Simple example
 --------------
 
+The ``EPyT`` python class, epanet, includes properties of the input network model, static properties, public functions, and local functions that directly call the ``EPANET`` shared object library or the executable. The full API with detailed examples is provided in the link. In the following paragraphs, we introduce a selection of the capabilities of the tool and an illustrative smart water research example.
+
+Through ``EPyT``, users can easily load ``EPANET`` network models, as demonstrated by importing the module and loading the ``Net1.inp`` network in a provided example.
+
+
 .. code-block:: python
 
     from epyt import epanet
@@ -21,13 +26,14 @@ Simple example
     EPANET version 20200 loaded (EPyT version 1.0.5).
     Input File Net1.inp loaded successfully.
 
+In this example, ``G`` is an epanet object which can be defined mathematically as the set comprised of the network graph topology (such as nodes and links), structural parameters (such as pipe lengths, diameters, etc.), and functions (such as hydraulic solvers, etc.). ``G`` can also be shared between different functions as an argument.
 
+When the object is constructed, the module reads the ``EPANET`` input network file and populates more than 500 object parameters. To view some of the parameters and receive assistance with respect to the methods, the user can use the following commands:
 
 .. code-block:: python
 
     # Lists all available functions and properties
     dir(G)
-
 
 
 
@@ -71,6 +77,7 @@ Simple example
         See also setNodeElevations, getNodesInfo, getNodeNameID,
         getNodeType, getNodeEmitterCoeff, getNodeInitialQuality.
 
+Using object ``G``, the user can call all the public toolkit functions. The toolkit contains a large set of functions that allow the user to retrieve or update the network data and simulate hydraulic and quality analysis for different scenarios using the ``EPANET`` libraries. Examples of how to retrieve some common network parameter values are provided below:
 
 
 .. code-block:: python
@@ -91,11 +98,14 @@ Simple example
     elevations = G.getNodeElevations()
     print(elevations)
 
+Variables diameters and elevations are two arrays, corresponding to the number of links, and the number of nodes in the ``Net1`` network, respectively. Note that, in case the network model changes, these parameters will be updated. This is demonstrated in the following example:
+
 
 .. parsed-literal::
 
     [710. 710. 700. 695. 700. 695. 690. 700. 710. 800. 850.]
 
+To modify some parameters, we can use the ``set`` commands.
 
 .. code-block:: python
 
@@ -122,6 +132,7 @@ Simple example
 
     90.0
 
+Next, we show how to simulate the water distribution network, such as flows/pressures and water quality. Various functions have been included in the toolkit to simplify the workflows of solving and retrieving the data from the library memory. One way is to solve the hydraulics and quality equations using the ``EPANET`` library and store the results in data structures.
 
 .. code-block:: python
 
@@ -131,6 +142,11 @@ Simple example
     # Q = G.getComputedQualityTimeSeries()
     # Solve all dynamics in library, create a binary file to store the computed values
     R = G.getComputedTimeSeries()
+
+
+To access the different values, the user can use the dot notation, such as H.Head to create an array with the hydraulic heads and ``R.NodeQuality`` for the water quality at the nodes. It is important to note that the time intervals may be different for the hydraulic and quality time series, due to the simulation settings; the user can call ``R.Time``, to retrieve the time in seconds.
+
+Executing the function ``G.plot()`` displays a figure of the network along with its components. The nodes i.e., junctions, reservoirs, tanks, and the links, i.e., pipes, valves, and pumps, are depicted using different colors and shapes.
 
 .. code-block:: python
 
