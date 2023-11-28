@@ -34,6 +34,8 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.todo',
     'sphinx_copybutton'
 ]
 
@@ -55,7 +57,7 @@ exclude_patterns = []
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
 
 # extensions = ['sphinx.ext.autosummary',]
 # autodoc_default_flags = ['members']
