@@ -149,7 +149,7 @@ G.plot_ts(X=hrs_time,
 
 The user can unload the EPANET dynamic library from Python memory, using the `G.unload()` method.
 
-A illustrative examples, as well as a use case on how to compute pressure bounds for leakage detection, is provided in the [EPyT Documentation](https://epanet-python-toolkit-epyt.readthedocs.io/).
+Illustrative examples, as well as use cases on how to use EPyT, are provided in the [EPyT Documentation](https://epanet-python-toolkit-epyt.readthedocs.io/).
 
 # Conclusions
 
