@@ -5,7 +5,6 @@ import os
 # python setup.py sdist
 # twine upload dist/* --config-file .pypirc
 
-
 module_name = 'epyt'
 data = list()
 packages = list()
@@ -26,8 +25,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="1.0.7",
-    author="KIOS CoE",
+    version="1.0.8",
+    author="Marios S. Kyriakou",
     author_email="kiriakou.marios@ucy.ac.cy",
     description='EPyT: An EPANET-Python Toolkit for Smart Water Network Simulations. The EPyT is inspired by the '
                 'EPANET-Matlab Toolkit.',
