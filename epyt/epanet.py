@@ -3,7 +3,9 @@
    EPANET-Python Toolkit (EPyT): A Python toolkit for EPANET libraries
 
    How to run:
+
    from epyt import epanet
+
    d = epanet('Net1.inp')
 
    EPANET is software that models water distribution piping systems
