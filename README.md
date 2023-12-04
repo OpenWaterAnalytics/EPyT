@@ -37,7 +37,7 @@ For support, please use the OWA community forum : http://community.wateranalytic
 Kyriakou, M. S., Demetriades, M., Vrachimis, S. G., Eliades, D. G., & Polycarpou, M. M. (2023). EPyT: An EPANET-Python Toolkit for Smart Water Network Simulations. Journal of Open Source Software, 8(92), 5947. https://doi.org/10.21105/joss.05947
 
 ```
-@article{Kyriakou_EPyT_An_EPANET-Python_2023,
+@article{Kyriakou2023,
 author = {Kyriakou, Marios S. and Demetriades, Marios and Vrachimis, Stelios G. and Eliades, Demetrios G. and Polycarpou, Marios M.},
 doi = {10.21105/joss.05947},
 journal = {Journal of Open Source Software},
