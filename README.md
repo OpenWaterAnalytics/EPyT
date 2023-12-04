@@ -6,7 +6,7 @@
 [![Downloads](https://static.pepy.tech/badge/epyt/month)](https://pepy.tech/project/epyt)
 [![build](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml/badge.svg)](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml)
 [![Documentation Status](https://readthedocs.org/projects/epanet-python-toolkit-epyt/badge/?version=latest)](https://epanet-python-toolkit-epyt.readthedocs.io/en/latest/?badge=latest)
-[![DOI](https://zenodo.org/badge/497006956.svg)](https://zenodo.org/badge/latestdoi/497006956)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.05947/status.svg)](https://doi.org/10.21105/joss.05947)
 
 
 # EPANET Python Toolkit (EPyT)
@@ -33,8 +33,6 @@ For support, please use the OWA community forum : http://community.wateranalytic
 - [List of EPANET 2.2 Functions](#list-of-epanet-22-functions)
   
 ## How to cite 
-
-Marios S. Kyriakou, Marios Demetriades, Stelios G. Vrachimis, Demetrios G. Eliades, & Marios M. Polycarpou. (2023). OpenWaterAnalytics/EPyT. Zenodo. https://doi.org/10.5281/zenodo.8277487
 
 &uparrow; [Back to top](#table-of-contents)
 
