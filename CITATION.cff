@@ -1,0 +1,56 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Kyriakou
+  given-names: Marios S.
+  orcid: "https://orcid.org/0000-0002-2324-8661"
+- family-names: Demetriades
+  given-names: Marios
+  orcid: "https://orcid.org/0000-0001-7775-4319"
+- family-names: Vrachimis
+  given-names: Stelios G.
+  orcid: "https://orcid.org/0000-0001-8862-5205"
+- family-names: Eliades
+  given-names: Demetrios G.
+  orcid: "https://orcid.org/0000-0001-6184-6366"
+- family-names: Polycarpou
+  given-names: Marios M.
+  orcid: "https://orcid.org/0000-0001-6495-9171"
+contact:
+- family-names: Kyriakou
+  given-names: Marios S.
+  orcid: "https://orcid.org/0000-0002-2324-8661"
+doi: 10.5281/zenodo.10223298
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Kyriakou
+    given-names: Marios S.
+    orcid: "https://orcid.org/0000-0002-2324-8661"
+  - family-names: Demetriades
+    given-names: Marios
+    orcid: "https://orcid.org/0000-0001-7775-4319"
+  - family-names: Vrachimis
+    given-names: Stelios G.
+    orcid: "https://orcid.org/0000-0001-8862-5205"
+  - family-names: Eliades
+    given-names: Demetrios G.
+    orcid: "https://orcid.org/0000-0001-6184-6366"
+  - family-names: Polycarpou
+    given-names: Marios M.
+    orcid: "https://orcid.org/0000-0001-6495-9171"
+  date-published: 2023-12-04
+  doi: 10.21105/joss.05947
+  issn: 2475-9066
+  issue: 92
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 5947
+  title: "EPyT: An EPANET-Python Toolkit for Smart Water Network
+    Simulations"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.05947"
+  volume: 8
+title: "EPyT: An EPANET-Python Toolkit for Smart Water Network
+  Simulations"
