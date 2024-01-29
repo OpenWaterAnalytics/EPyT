@@ -9760,7 +9760,7 @@ class epanet:
         midElev = (self.getNodeElevations(leftNodeIndex) + self.getNodeElevations(rightNodeIndex)) / 2
         self.setNodeJunctionData(newNodeIndex, midElev, 0, '')
         self.setNodeEmitterCoeff(newNodeIndex, self.getNodeEmitterCoeff(leftNodeIndex))
-        if self.getQualityCode()[0] > 0:
+        if self.getQualityCode() > 0:
             midInitQual = (self.getNodeInitialQuality(leftNodeIndex) + self.getNodeInitialQuality(rightNodeIndex)) / 2
             self.setNodeInitialQuality(newNodeIndex, midInitQual)
             self.setNodeSourceQuality(newNodeIndex, self.getNodeSourceQuality(leftNodeIndex)[0])
