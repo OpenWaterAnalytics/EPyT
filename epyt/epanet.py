@@ -9765,7 +9765,7 @@ class epanet:
             self.setNodeInitialQuality(newNodeIndex, midInitQual)
             self.setNodeSourceQuality(newNodeIndex, self.getNodeSourceQuality(leftNodeIndex)[0])
             self.setNodeSourcePatternIndex(newNodeIndex, self.getNodeSourcePatternIndex(leftNodeIndex))
-            if self.getNodeSourceTypeIndex(leftNodeIndex) != 0:
+            if self.getNodeSourceTypeIndex(leftNodeIndex)[0] != 0:
                 self.setNodeSourceType(newNodeIndex, self.getNodeSourceTypeIndex(leftNodeIndex))
 
         # Access link properties
