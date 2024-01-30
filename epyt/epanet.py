@@ -60,6 +60,8 @@
 """
 from pkg_resources import resource_filename
 from inspect import getmembers, isfunction, currentframe, getframeinfo
+from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void_p, c_int, c_double, c_float, c_long, \
+    c_char_p
 import matplotlib.pyplot as plt
 from datetime import datetime
 from epyt import __version__
@@ -75,7 +77,6 @@ import warnings
 import random
 import string
 import struct
-import ctypes
 import math
 import json
 import sys
@@ -535,8 +536,7 @@ class epanet:
             self.__exist_inp_file = False
             if len(argv) == 1:
                 if not os.path.exists(self.InputFile):
-                    for root, dirs, files in os.walk(resource_filename("epyt",
-                                                                       "")):
+                    for root, dirs, files in os.walk(resource_filename("epyt", "")):
                         for name in files:
                             if name.lower().endswith(".inp"):
                                 if name == self.InputFile:
@@ -2817,8 +2817,8 @@ class epanet:
         >>> error = 250
         >>> d.getError(error)
         """
-        errmssg = ctypes.create_string_buffer(150)
-        self.api._lib.ENgeterror(Errcode, ctypes.byref(errmssg), 150)
+        errmssg = create_string_buffer(150)
+        self.api._lib.ENgeterror(Errcode, byref(errmssg), 150)
         return errmssg.value.decode()
 
     def getFlowUnits(self):
@@ -10250,7 +10250,7 @@ class epanet:
         for i in range(num_points):
             if color is None:
                 color_user = (random.uniform(0, 1), random.uniform(0, 1),
-                         random.uniform(0, 1))
+                              random.uniform(0, 1))
             else:
                 color_user = color[i]
 
@@ -10714,18 +10714,18 @@ class epanet:
         else:
             return self.getLinkIndex()
 
-    def __getLinkInfo(self, iCode, *argv):
+    def __getLinkInfo(self, code_p, *argv):
         values = []
         if len(argv) > 0:
             index = argv[0]
             if isinstance(index, (list, np.ndarray)):
                 for i in index:
-                    values.append(self.api.ENgetlinkvalue(i, iCode))
+                    values.append(self.api.ENgetlinkvalue(i, code_p))
             else:
-                values = self.api.ENgetlinkvalue(index, iCode)
+                values = self.api.ENgetlinkvalue(index, code_p)
         else:
             for i in range(self.getLinkCount()):
-                values.append(self.api.ENgetlinkvalue(i + 1, iCode))
+                values.append(self.api.ENgetlinkvalue(i + 1, code_p))
         return np.array(values)
 
     def __getNodeIndices(self, *argv):
@@ -10743,18 +10743,18 @@ class epanet:
         else:
             return self.getNodeIndex()
 
-    def __getNodeInfo(self, iCode, *argv):
+    def __getNodeInfo(self, code_p, *argv):
         value = []
         if len(argv) > 0:
             index = argv[0]
             if isinstance(index, (list, np.ndarray)):
                 for i in index:
-                    value.append(self.api.ENgetnodevalue(i, iCode))
+                    value.append(self.api.ENgetnodevalue(i, code_p))
             else:
-                return self.api.ENgetnodevalue(index, iCode)
+                return self.api.ENgetnodevalue(index, code_p)
         else:
             for i in range(self.getNodeCount()):
-                value.append(self.api.ENgetnodevalue(i + 1, iCode))
+                value.append(self.api.ENgetnodevalue(i + 1, code_p))
         return np.array(value)
 
     def __getNodeJunctionIndices(self, *argv):
@@ -10772,7 +10772,7 @@ class epanet:
             self.NodeTankMixingModelType = self.TYPEMIXMODEL[self.NodeTankMixingModelCode.astype(int)]
         return [self.NodeTankMixingModelCode, self.NodeTankMixingModelType]
 
-    def __getPumpLinkInfo(self, iCode, *argv):
+    def __getPumpLinkInfo(self, code_p, *argv):
         indices = self.getLinkPumpIndex()
         values = []
         if len(argv) > 0:
@@ -10781,7 +10781,7 @@ class epanet:
                 if not sum(self.__isMember(index, indices)):
                     index = self.getLinkPumpIndex(index)
                 for i in index:
-                    values.append(self.api.ENgetlinkvalue(i, iCode))
+                    values.append(self.api.ENgetlinkvalue(i, code_p))
             else:
                 if index not in indices:
                     pIndex = self.getLinkPumpIndex(index)
@@ -10789,13 +10789,13 @@ class epanet:
                         return []
                 else:
                     pIndex = index
-                return self.api.ENgetlinkvalue(pIndex, iCode)
+                return self.api.ENgetlinkvalue(pIndex, code_p)
         else:
             for i in indices:
-                values.append(self.api.ENgetlinkvalue(i, iCode))
+                values.append(self.api.ENgetlinkvalue(i, code_p))
         return np.array(values)
 
-    def __getTankNodeInfo(self, iCode, *argv):
+    def __getTankNodeInfo(self, code_p, *argv):
         indices = self.getNodeTankIndex()
         values = []
         if len(argv) > 0:
@@ -10804,7 +10804,7 @@ class epanet:
                 if not sum(self.__isMember(index, indices)):
                     index = self.getNodeTankIndex(index)
                 for i in index:
-                    values.append(self.api.ENgetnodevalue(i, iCode))
+                    values.append(self.api.ENgetnodevalue(i, code_p))
             else:
                 if index not in indices:
                     pIndex = self.getNodeTankIndex(index)
@@ -10812,10 +10812,10 @@ class epanet:
                         return []
                 else:
                     pIndex = index
-                values = self.api.ENgetnodevalue(pIndex, iCode)
+                values = self.api.ENgetnodevalue(pIndex, code_p)
         else:
             for i in indices:
-                values.append(self.api.ENgetnodevalue(i, iCode))
+                values.append(self.api.ENgetnodevalue(i, code_p))
         return np.array(values)
 
     def __isMember(self, A, B):
@@ -10986,7 +10986,7 @@ class epanet:
         self.api.ENsetcontrol(controlRuleIndex, controlTypeIndex, linkIndex, controlSettingValue, nodeIndex,
                               controlLevel)
 
-    def __setEval(self, func, iCodeStr, Type, value, *argv):
+    def __setEval(self, func, code_pStr, Type, value, *argv):
         if len(argv) == 1:
             index = value
             value = argv[0]
@@ -10996,12 +10996,12 @@ class epanet:
                     if np.isnan(value[j]):
                         continue
                     strFunc = 'self.api.' + func + '(' + str(
-                        i) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value[j]) + ')'
+                        i) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[j]) + ')'
                     eval(strFunc)
                     j += 1
             else:
                 strFunc = 'self.api.' + func + '(' + str(
-                    index) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value) + ')'
+                    index) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
                 eval(strFunc)
         else:
             count = 0
@@ -11013,10 +11013,10 @@ class epanet:
                 if np.isnan(value[i]):
                     continue
                 strFunc = 'self.api.' + func + '(' + str(
-                    i + 1) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value[i]) + ')'
+                    i + 1) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[i]) + ')'
                 eval(strFunc)
 
-    def __setEvalLinkNode(self, func, iCodeStr, Type, value, *argv):
+    def __setEvalLinkNode(self, func, code_pStr, Type, value, *argv):
         if len(argv) == 1:
             index = value
             value = argv[0]
@@ -11025,13 +11025,13 @@ class epanet:
                 if isinstance(value, list):
                     for i in index:
                         strFunc = 'self.api.' + func + '(' + str(
-                            i) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value[j]) + ')'
+                            i) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[j]) + ')'
                         eval(strFunc)
                         j += 1
                 else:
                     for i in index:
                         strFunc = 'self.api.' + func + '(' + str(
-                            i) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value) + ')'
+                            i) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
                         eval(strFunc)
                         j += 1
             else:
@@ -11047,7 +11047,7 @@ class epanet:
                     if isinstance(value, (list, np.ndarray)):
                         value = value[0]
                 strFunc = 'self.api.' + func + '(' + str(
-                    Index) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value) + ')'
+                    Index) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
                 eval(strFunc)
         else:
             count = 0
@@ -11061,12 +11061,12 @@ class epanet:
             if isinstance(value, (list, np.ndarray)):
                 for i in range(count):
                     strFunc = 'self.api.' + func + '(' + str(
-                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value[i]) + ')'
+                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[i]) + ')'
                     eval(strFunc)
             else:
                 for i in range(count):
                     strFunc = 'self.api.' + func + '(' + str(
-                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + iCodeStr + ',' + str(value) + ')'
+                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
                     eval(strFunc)
 
     def __setFlowUnits(self, unitcode, *argv):
@@ -11116,7 +11116,7 @@ class epanetapi:
 
     EN_MAXID = 32  # toolkit constant
 
-    def __init__(self, version=2.2):
+    def __init__(self, version=2.2, msx=False):
         """Load the EPANET library.
 
         Parameters:
@@ -11144,13 +11144,13 @@ class epanetapi:
         else:
             self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"glnx/lib{libname}.so"))
 
-        self._lib = ctypes.cdll.LoadLibrary(self.LibEPANET)
+        self._lib = cdll.LoadLibrary(self.LibEPANET)
         self.LibEPANETpath = os.path.dirname(self.LibEPANET)
 
-        if float(version) >= 2.2 and '64' in str(platform.architecture()):
-            self._ph = ctypes.c_uint64()
-        elif float(version) >= 2.2:
-            self._ph = ctypes.c_uint32()
+        if float(version) >= 2.2 and '64' in str(platform.architecture()) and not msx:
+            self._ph = c_uint64()
+        elif float(version) >= 2.2 and not msx:
+            self._ph = c_uint32()
         else:
             self._ph = None
 
@@ -11164,7 +11164,7 @@ class epanetapi:
         self.inpfile = inpfile.encode("utf-8")
         self.rptfile = rptfile.encode("utf-8")
         self.binfile = binfile.encode("utf-8")
-        self.errcode = self._lib.ENepanet(self.inpfile, self.rptfile, self.binfile, ctypes.c_void_p())
+        self.errcode = self._lib.ENepanet(self.inpfile, self.rptfile, self.binfile, c_void_p())
         self.ENgeterror()
 
     def ENaddcontrol(self, conttype, lindex, setting, nindex, level):
@@ -11182,9 +11182,13 @@ class epanetapi:
         Returns:
         cindex 	index of the new control.
         """
-        index = ctypes.c_int()
-        self.errcode = self._lib.EN_addcontrol(self._ph, conttype, int(lindex), ctypes.c_double(setting), nindex,
-                                               ctypes.c_double(level), ctypes.byref(index))
+        index = c_int()
+        if self._ph is not None:
+            self.errcode = self._lib.EN_addcontrol(self._ph, conttype, int(lindex), c_double(setting), nindex,
+                                                   c_double(level), byref(index))
+        else:
+            self.errcode = self._lib.ENaddcontrol(conttype, int(lindex), c_double(setting), nindex,
+                                                  c_double(level), byref(index))
         self.ENgeterror()
         return index.value
 
@@ -11199,7 +11203,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
         """
-        self.errcode = self._lib.EN_addcurve(self._ph, cid.encode('utf-8'))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_addcurve(self._ph, cid.encode('utf-8'))
+        else:
+            self.errcode = self._lib.ENaddcurve(cid.encode('utf-8'))
+
         self.ENgeterror()
 
     def ENadddemand(self, nodeIndex, baseDemand, demandPattern, demandName):
@@ -11215,9 +11224,16 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_adddemand(self._ph, int(nodeIndex), ctypes.c_double(baseDemand),
-                                              demandPattern.encode("utf-8"),
-                                              demandName.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_adddemand(self._ph, int(nodeIndex), c_double(baseDemand),
+                                                  demandPattern.encode("utf-8"),
+                                                  demandName.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENadddemand(int(nodeIndex), c_double(baseDemand),
+                                                 demandPattern.encode("utf-8"),
+                                                 demandName.encode("utf-8"))
+
         self.ENgeterror()
         return
 
@@ -11236,9 +11252,14 @@ class epanetapi:
         index the index of the newly added link.
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        index = ctypes.c_int()
-        self.errcode = self._lib.EN_addlink(self._ph, linkid.encode('utf-8'), linktype,
-                                            fromnode.encode('utf-8'), tonode.encode('utf-8'), ctypes.byref(index))
+        index = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_addlink(self._ph, linkid.encode('utf-8'), linktype,
+                                                fromnode.encode('utf-8'), tonode.encode('utf-8'), byref(index))
+        else:
+            self.errcode = self._lib.ENaddlink(linkid.encode('utf-8'), linktype,
+                                               fromnode.encode('utf-8'), tonode.encode('utf-8'), byref(index))
         self.ENgeterror()
         return index.value
 
@@ -11255,8 +11276,13 @@ class epanetapi:
         index    the index of the newly added node.
         See also EN_NodeProperty, NodeType
         """
-        index = ctypes.c_int()
-        self.errcode = self._lib.EN_addnode(self._ph, nodeid.encode("utf-8"), nodetype, ctypes.byref(index))
+        index = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_addnode(self._ph, nodeid.encode("utf-8"), nodetype, byref(index))
+        else:
+            self.errcode = self._lib.ENaddnode(nodeid.encode("utf-8"), nodetype, byref(index))
+
         self.ENgeterror()
         return index.value
 
@@ -11270,7 +11296,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
         """
-        self.errcode = self._lib.EN_addpattern(self._ph, patid.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_addpattern(self._ph, patid.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENaddpattern(patid.encode("utf-8"))
+
         self.ENgeterror()
         return
 
@@ -11285,7 +11316,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
         """
-        self.errcode = self._lib.EN_addrule(self._ph, rule.encode('utf-8'))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_addrule(self._ph, rule.encode('utf-8'))
+        else:
+            self.errcode = self._lib.ENaddrule(rule.encode('utf-8'))
+
         self.ENgeterror()
 
     def ENclearreport(self):
@@ -11295,7 +11331,12 @@ class epanetapi:
         ENclearreport()
 
         """
-        self.errcode = self._lib.EN_clearreport(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_clearreport(self._ph)
+        else:
+            self.errcode = self._lib.ENclearreport()
+
         self.ENgeterror()
 
     def ENclose(self):
@@ -11305,8 +11346,13 @@ class epanetapi:
 
         See also ENopen
         """
-        self.errcode = self._lib.EN_close(self._ph)
-        self._ph = ctypes.c_uint64()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_close(self._ph)
+            self._ph = c_uint64()
+        else:
+            self.errcode = self._lib.ENclose()
+
         self.ENgeterror()
         if self.errcode < 100:
             self.isloaded = False
@@ -11319,7 +11365,12 @@ class epanetapi:
 
         See also  ENinitH, ENrunH, ENnextH
         """
-        self.errcode = self._lib.EN_closeH(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_closeH(self._ph)
+        else:
+            self.errcode = self._lib.ENcloseH()
+
         self.ENgeterror()
         return
 
@@ -11330,7 +11381,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
         """
-        self.errcode = self._lib.EN_closeQ(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_closeQ(self._ph)
+        else:
+            self.errcode = self._lib.ENcloseQ()
+
         self.ENgeterror()
         return
 
@@ -11344,7 +11400,12 @@ class epanetapi:
         filename  the full path name of the destination file
 
         """
-        self.errcode = self._lib.EN_copyreport(self._ph, filename.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_copyreport(self._ph, filename.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENcopyreport(filename.encode("utf-8"))
+
         self.ENgeterror()
 
     def ENcreateproject(self):
@@ -11356,7 +11417,12 @@ class epanetapi:
         ph	an EPANET project handle that is passed into all other API functions.
 
         """
-        self.errcode = self._lib.EN_createproject(ctypes.byref(self._ph))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_createproject(byref(self._ph))
+        else:
+            self.errcode = self._lib.ENcreateproject(byref())
+
         self.ENgeterror()
         return
 
@@ -11370,7 +11436,12 @@ class epanetapi:
         index       the index of the control to delete (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deletecontrol(self._ph, int(index))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deletecontrol(self._ph, int(index))
+        else:
+            self.errcode = self._lib.ENdeletecontrol(int(index))
+
         self.ENgeterror()
 
     def ENdeletecurve(self, indexCurve):
@@ -11383,7 +11454,12 @@ class epanetapi:
         indexCurve  The ID name of the curve to be added.
 
         """
-        self.errcode = self._lib.EN_deletecurve(self._ph, int(indexCurve))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deletecurve(self._ph, int(indexCurve))
+        else:
+            self.errcode = self._lib.ENdeletecurve(int(indexCurve))
+
         self.ENgeterror()
 
     def ENdeletedemand(self, nodeIndex, demandIndex):
@@ -11396,7 +11472,12 @@ class epanetapi:
         demandIndex      the position of the demand in the node's demands list (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deletedemand(self._ph, int(nodeIndex), demandIndex)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deletedemand(self._ph, int(nodeIndex), demandIndex)
+        else:
+            self.errcode = self._lib.ENdeletedemand(int(nodeIndex), demandIndex)
+
         self.ENgeterror()
 
     def ENdeletelink(self, indexLink, condition):
@@ -11410,7 +11491,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        self.errcode = self._lib.EN_deletelink(self._ph, int(indexLink), condition)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deletelink(self._ph, int(indexLink), condition)
+        else:
+            self.errcode = self._lib.ENdeletelink(int(indexLink), condition)
+
         self.ENgeterror()
 
     def ENdeletenode(self, indexNode, condition):
@@ -11425,7 +11511,12 @@ class epanetapi:
         See also EN_NodeProperty, NodeType
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_deletenode(self._ph, int(indexNode), condition)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deletenode(self._ph, int(indexNode), condition)
+        else:
+            self.errcode = self._lib.ENdeletenode(int(indexNode), condition)
+
         self.ENgeterror()
 
     def ENdeletepattern(self, indexPat):
@@ -11438,7 +11529,12 @@ class epanetapi:
         indexPat   the time pattern's index (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deletepattern(self._ph, int(indexPat))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deletepattern(self._ph, int(indexPat))
+        else:
+            self.errcode = self._lib.ENdeletepattern(int(indexPat))
+
         self.ENgeterror()
 
     def ENdeleteproject(self):
@@ -11450,7 +11546,12 @@ class epanetapi:
         ph	an EPANET project handle which is returned as NULL.
 
         """
-        self.errcode = self._lib.EN_deleteproject(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deleteproject(self._ph)
+        else:
+            self.errcode = self._lib.ENdeleteproject()
+
         self.ENgeterror()
         return
 
@@ -11464,7 +11565,12 @@ class epanetapi:
         index       the index of the rule to be deleted (starting from 1).
 
         """
-        self.errcode = self._lib.EN_deleterule(self._ph, int(index))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_deleterule(self._ph, int(index))
+        else:
+            self.errcode = self._lib.ENdeleterule(int(index))
+
         self.ENgeterror()
 
     def ENgetaveragepatternvalue(self, index):
@@ -11479,8 +11585,13 @@ class epanetapi:
         Returns:
         value The average of all of the time pattern's factors.
         """
-        value = ctypes.c_double()
-        self.errcode = self._lib.EN_getaveragepatternvalue(self._ph, int(index), ctypes.byref(value))
+        value = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getaveragepatternvalue(self._ph, int(index), byref(value))
+        else:
+            self.errcode = self._lib.ENgetaveragepatternvalue(int(index), byref(value))
+
         self.ENgeterror()
         return value.value
 
@@ -11497,8 +11608,13 @@ class epanetapi:
         Returns:
         value  the category's base demand.
         """
-        bDem = ctypes.c_double()
-        self.errcode = self._lib.EN_getbasedemand(self._ph, int(index), numdemands, ctypes.byref(bDem))
+        bDem = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getbasedemand(self._ph, int(index), numdemands, byref(bDem))
+        else:
+            self.errcode = self._lib.ENgetbasedemand(int(index), numdemands, byref(bDem))
+
         self.ENgeterror()
         return bDem.value
 
@@ -11516,8 +11632,13 @@ class epanetapi:
         Returns:
         out_comment  the comment string assigned to the object.
         """
-        out_comment = ctypes.create_string_buffer(80)
-        self.errcode = self._lib.EN_getcomment(self._ph, object_, int(index), ctypes.byref(out_comment))
+        out_comment = create_string_buffer(80)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcomment(self._ph, object_, int(index), byref(out_comment))
+        else:
+            self.errcode = self._lib.ENgetcomment(object_, int(index), byref(out_comment))
+
         self.ENgeterror()
         return out_comment.value.decode()
 
@@ -11536,13 +11657,19 @@ class epanetapi:
         nindex  the index of the node used to trigger the control (0 for EN_TIMER and EN_TIMEOFDAY controls).
         level   the action level (tank level, junction pressure, or time in seconds) that triggers the control.
         """
-        ctype = ctypes.c_int()
-        lindex = ctypes.c_int()
-        setting = ctypes.c_double()
-        nindex = ctypes.c_int()
-        level = ctypes.c_double()
-        self.errcode = self._lib.EN_getcontrol(self._ph, int(cindex), ctypes.byref(ctype), ctypes.byref(lindex),
-                                               ctypes.byref(setting), ctypes.byref(nindex), ctypes.byref(level))
+        ctype = c_int()
+        lindex = c_int()
+        setting = c_double()
+        nindex = c_int()
+        level = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcontrol(self._ph, int(cindex), byref(ctype), byref(lindex),
+                                                   byref(setting), byref(nindex), byref(level))
+        else:
+            self.errcode = self._lib.ENgetcontrol(int(cindex), byref(ctype), byref(lindex),
+                                                  byref(setting), byref(nindex), byref(level))
+
         self.ENgeterror()
         return [ctype.value, lindex.value, setting.value, nindex.value, level.value]
 
@@ -11559,9 +11686,14 @@ class epanetapi:
         x 	the node's X-coordinate value.
         y   the node's Y-coordinate value.
         """
-        x = ctypes.c_double()
-        y = ctypes.c_double()
-        self.errcode = self._lib.EN_getcoord(self._ph, int(index), ctypes.byref(x), ctypes.byref(y))
+        x = c_double()
+        y = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcoord(self._ph, int(index), byref(x), byref(y))
+        else:
+            self.errcode = self._lib.ENgetcoord(int(index), byref(x), byref(y))
+
         self.ENgeterror()
         return [x.value, y.value]
 
@@ -11576,8 +11708,13 @@ class epanetapi:
         Returns:
         count	number of objects of the specified type
         """
-        count = ctypes.c_int()
-        self.errcode = self._lib.EN_getcount(self._ph, countcode, ctypes.byref(count))
+        count = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcount(self._ph, countcode, byref(count))
+        else:
+            self.errcode = self._lib.ENgetcount(countcode, byref(count))
+
         self.ENgeterror()
         return count.value
 
@@ -11596,12 +11733,18 @@ class epanetapi:
 
         See also ENgetcurvevalue
         """
-        out_id = ctypes.create_string_buffer(self.EN_MAXID)
-        nPoints = ctypes.c_int()
-        xValues = (ctypes.c_double * self.ENgetcurvelen(index))()
-        yValues = (ctypes.c_double * self.ENgetcurvelen(index))()
-        self.errcode = self._lib.EN_getcurve(self._ph, index, ctypes.byref(out_id), ctypes.byref(nPoints),
-                                             ctypes.byref(xValues), ctypes.byref(yValues))
+        out_id = create_string_buffer(self.EN_MAXID)
+        nPoints = c_int()
+        xValues = (c_double * self.ENgetcurvelen(index))()
+        yValues = (c_double * self.ENgetcurvelen(index))()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcurve(self._ph, index, byref(out_id), byref(nPoints),
+                                                 byref(xValues), byref(yValues))
+        else:
+            self.errcode = self._lib.ENgetcurve(index, byref(out_id), byref(nPoints),
+                                                byref(xValues), byref(yValues))
+
         self.ENgeterror()
         curve_attr = {}
         curve_attr['id'] = out_id.value.decode()
@@ -11627,8 +11770,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
         """
-        Id = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getcurveid(self._ph, int(index), ctypes.byref(Id))
+        Id = create_string_buffer(self.EN_MAXID)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcurveid(self._ph, int(index), byref(Id))
+        else:
+            self.errcode = self._lib.ENgetcurveid(int(index), byref(Id))
+
         self.ENgeterror()
         return Id.value.decode()
 
@@ -11644,8 +11792,13 @@ class epanetapi:
         Returns:
         index   The curve's index (starting from 1).
         """
-        index = ctypes.c_int()
-        self.errcode = self._lib.EN_getcurveindex(self._ph, Id.encode("utf-8"), ctypes.byref(index))
+        index = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcurveindex(self._ph, Id.encode("utf-8"), byref(index))
+        else:
+            self.errcode = self._lib.ENgetcurveindex(Id.encode("utf-8"), byref(index))
+
         self.ENgeterror()
         return index.value
 
@@ -11661,8 +11814,13 @@ class epanetapi:
         Returns:
         len  The number of data points assigned to the curve.
         """
-        length = ctypes.c_int()
-        self.errcode = self._lib.EN_getcurvelen(self._ph, int(index), ctypes.byref(length))
+        length = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcurvelen(self._ph, int(index), byref(length))
+        else:
+            self.errcode = self._lib.ENgetcurvelen(int(index), byref(length))
+
         self.ENgeterror()
         return length.value
 
@@ -11678,8 +11836,13 @@ class epanetapi:
         Returns:
         type_  The curve's type (see EN_CurveType).
         """
-        type_ = ctypes.c_int()
-        self.errcode = self._lib.EN_getcurvetype(self._ph, int(index), ctypes.byref(type_))
+        type_ = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcurvetype(self._ph, int(index), byref(type_))
+        else:
+            self.errcode = self._lib.ENgetcurvetype(int(index), byref(type_))
+
         self.ENgeterror()
         return type_.value
 
@@ -11697,9 +11860,14 @@ class epanetapi:
         x  the point's x-value.
         y  the point's y-value.
         """
-        x = ctypes.c_double()
-        y = ctypes.c_double()
-        self.errcode = self._lib.EN_getcurvevalue(self._ph, int(index), period, ctypes.byref(x), ctypes.byref(y))
+        x = c_double()
+        y = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcurvevalue(self._ph, int(index), period, byref(x), byref(y))
+        else:
+            self.errcode = self._lib.ENgetcurvevalue(int(index), period, byref(x), byref(y))
+
         self.ENgeterror()
         return [x.value, y.value]
 
@@ -11716,9 +11884,15 @@ class epanetapi:
         Returns:
         demandIndex  the index of the demand being sought.
         """
-        demandIndex = ctypes.c_int()
-        self.errcode = self._lib.EN_getdemandindex(self._ph, int(nodeindex), demandName.encode('utf-8'),
-                                                   ctypes.byref(demandIndex))
+        demandIndex = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getdemandindex(self._ph, int(nodeindex), demandName.encode('utf-8'),
+                                                       byref(demandIndex))
+        else:
+            self.errcode = self._lib.ENgetdemandindex(int(nodeindex), demandName.encode('utf-8'),
+                                                      byref(demandIndex))
+
         self.ENgeterror()
         return demandIndex.value
 
@@ -11736,12 +11910,18 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        Type = ctypes.c_int()
-        pmin = ctypes.c_double()
-        preq = ctypes.c_double()
-        pexp = ctypes.c_double()
-        self.errcode = self._lib.EN_getdemandmodel(self._ph, ctypes.byref(Type), ctypes.byref(pmin),
-                                                   ctypes.byref(preq), ctypes.byref(pexp))
+        Type = c_int()
+        pmin = c_double()
+        preq = c_double()
+        pexp = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getdemandmodel(self._ph, byref(Type), byref(pmin),
+                                                       byref(preq), byref(pexp))
+        else:
+            self.errcode = self._lib.ENgetdemandmodel(byref(Type), byref(pmin),
+                                                      byref(preq), byref(pexp))
+
         self.ENgeterror()
         return [Type.value, pmin.value, preq.value, pexp.value]
 
@@ -11760,9 +11940,15 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        demand_name = ctypes.create_string_buffer(100)
-        self.errcode = self._lib.EN_getdemandname(self._ph, int(node_index), int(demand_index),
-                                                  ctypes.byref(demand_name))
+        demand_name = create_string_buffer(100)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getdemandname(self._ph, int(node_index), int(demand_index),
+                                                      byref(demand_name))
+        else:
+            self.errcode = self._lib.ENgetdemandname(int(node_index), int(demand_index),
+                                                     byref(demand_name))
+
         self.ENgeterror()
         return demand_name.value.decode()
 
@@ -11780,8 +11966,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        patIndex = ctypes.c_int()
-        self.errcode = self._lib.EN_getdemandpattern(self._ph, int(index), numdemands, ctypes.byref(patIndex))
+        patIndex = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getdemandpattern(self._ph, int(index), numdemands, byref(patIndex))
+        else:
+            self.errcode = self._lib.ENgetdemandpattern(int(index), numdemands, byref(patIndex))
+
         self.ENgeterror()
         return patIndex.value
 
@@ -11800,11 +11991,19 @@ class epanetapi:
         status     the status assigned to the link (see RULESTATUS).
         setting    the value assigned to the link's setting.
         """
-        linkIndex = ctypes.c_int()
-        status = ctypes.c_int()
-        setting = ctypes.c_double()
-        self.errcode = self._lib.EN_getelseaction(self._ph, int(ruleIndex), int(actionIndex), ctypes.byref(linkIndex),
-                                                  ctypes.byref(status), ctypes.byref(setting))
+        linkIndex = c_int()
+        status = c_int()
+        setting = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getelseaction(self._ph, int(ruleIndex), int(actionIndex),
+                                                      byref(linkIndex),
+                                                      byref(status), byref(setting))
+        else:
+            self.errcode = self._lib.ENgetelseaction(int(ruleIndex), int(actionIndex),
+                                                     byref(linkIndex),
+                                                     byref(status), byref(setting))
+
         self.ENgeterror()
         return [linkIndex.value, status.value, setting.value]
 
@@ -11815,8 +12014,8 @@ class epanetapi:
 
         """
         if self.errcode:
-            errmssg = ctypes.create_string_buffer(150)
-            self._lib.ENgeterror(self.errcode, ctypes.byref(errmssg), 150)
+            errmssg = create_string_buffer(150)
+            self._lib.ENgeterror(self.errcode, byref(errmssg), 150)
             warnings.warn(errmssg.value.decode())
 
     def ENgetflowunits(self):
@@ -11827,8 +12026,13 @@ class epanetapi:
         Returns:
         flowunitsindex a flow units code.
         """
-        flowunitsindex = ctypes.c_int()
-        self.errcode = self._lib.EN_getflowunits(self._ph, ctypes.byref(flowunitsindex))
+        flowunitsindex = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getflowunits(self._ph, byref(flowunitsindex))
+        else:
+            self.errcode = self._lib.ENgetflowunits(byref(flowunitsindex))
+
         self.ENgeterror()
         return flowunitsindex.value
 
@@ -11844,8 +12048,13 @@ class epanetapi:
         Returns:
         value   the index of the curve assigned to the pump's head curve.
         """
-        value = ctypes.c_long()
-        self.errcode = self._lib.EN_getheadcurveindex(self._ph, int(pumpindex), ctypes.byref(value))
+        value = c_long()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getheadcurveindex(self._ph, int(pumpindex), byref(value))
+        else:
+            self.errcode = self._lib.ENgetheadcurveindex(int(pumpindex), byref(value))
+
         self.ENgeterror()
         return value.value
 
@@ -11862,8 +12071,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        nameID = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getlinkid(self._ph, int(index), ctypes.byref(nameID))
+        nameID = create_string_buffer(self.EN_MAXID)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getlinkid(self._ph, int(index), byref(nameID))
+        else:
+            self.errcode = self._lib.ENgetlinkid(int(index), byref(nameID))
+
         self.ENgeterror()
         return nameID.value.decode()
 
@@ -11878,8 +12092,13 @@ class epanetapi:
         Returns:
         index   the link's index (starting from 1).
         """
-        index = ctypes.c_int()
-        self.errcode = self._lib.EN_getlinkindex(self._ph, Id.encode("utf-8"), ctypes.byref(index))
+        index = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getlinkindex(self._ph, Id.encode("utf-8"), byref(index))
+        else:
+            self.errcode = self._lib.ENgetlinkindex(Id.encode("utf-8"), byref(index))
+
         self.ENgeterror()
         return index.value
 
@@ -11895,13 +12114,18 @@ class epanetapi:
         from   the index of the link's start node (starting from 1).
         to     the index of the link's end node (starting from 1).
         """
-        fromNode = ctypes.c_int()
-        toNode = ctypes.c_int()
-        self.errcode = self._lib.EN_getlinknodes(self._ph, int(index), ctypes.byref(fromNode), ctypes.byref(toNode))
+        fromNode = c_int()
+        toNode = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getlinknodes(self._ph, int(index), byref(fromNode), byref(toNode))
+        else:
+            self.errcode = self._lib.ENgetlinknodes(int(index), byref(fromNode), byref(toNode))
+
         self.ENgeterror()
         return [fromNode.value, toNode.value]
 
-    def ENgetlinktype(self, iIndex):
+    def ENgetlinktype(self, index):
         """ Retrieves a link's type.
 
         ENgetlinktype(index)
@@ -11912,11 +12136,16 @@ class epanetapi:
         Returns:
         typecode   the link's type (see LinkType).
         """
-        iCode = ctypes.c_int()
-        self.errcode = self._lib.EN_getlinktype(self._ph, int(iIndex), ctypes.byref(iCode))
+        code_p = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getlinktype(self._ph, int(index), byref(code_p))
+        else:
+            self.errcode = self._lib.ENgetlinktype(int(index), byref(code_p))
+
         self.ENgeterror()
-        if iCode.value != -1:
-            return iCode.value
+        if code_p.value != -1:
+            return code_p.value
         else:
             return sys.maxsize
 
@@ -11934,8 +12163,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        fValue = ctypes.c_double()
-        self.errcode = self._lib.EN_getlinkvalue(self._ph, int(index), paramcode, ctypes.byref(fValue))
+        fValue = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getlinkvalue(self._ph, int(index), paramcode, byref(fValue))
+        else:
+            self.errcode = self._lib.ENgetlinkvalue(int(index), paramcode, byref(fValue))
+
         self.ENgeterror()
         return fValue.value
 
@@ -11950,8 +12184,13 @@ class epanetapi:
         Returns:
         nameID nodes id
         """
-        nameID = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getnodeid(self._ph, int(index), ctypes.byref(nameID))
+        nameID = create_string_buffer(self.EN_MAXID)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getnodeid(self._ph, int(index), byref(nameID))
+        else:
+            self.errcode = self._lib.ENgetnodeid(int(index), byref(nameID))
+
         self.ENgeterror()
         return nameID.value.decode()
 
@@ -11966,12 +12205,17 @@ class epanetapi:
         Returns:
         index  the node's index (starting from 1).
         """
-        index = ctypes.c_int()
-        self.errcode = self._lib.EN_getnodeindex(self._ph, Id.encode("utf-8"), ctypes.byref(index))
+        index = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getnodeindex(self._ph, Id.encode("utf-8"), byref(index))
+        else:
+            self.errcode = self._lib.ENgetnodeindex(Id.encode("utf-8"), byref(index))
+
         self.ENgeterror()
         return index.value
 
-    def ENgetnodetype(self, iIndex):
+    def ENgetnodetype(self, index):
         """ Retrieves a node's type given its index.
 
         ENgetnodetype(index)
@@ -11982,12 +12226,17 @@ class epanetapi:
         Returns:
         type the node's type (see NodeType).
         """
-        iCode = ctypes.c_int()
-        self.errcode = self._lib.EN_getnodetype(self._ph, int(iIndex), ctypes.byref(iCode))
-        self.ENgeterror()
-        return iCode.value
+        code_p = c_int()
 
-    def ENgetnodevalue(self, iIndex, iCode):
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getnodetype(self._ph, int(index), byref(code_p))
+        else:
+            self.errcode = self._lib.ENgetnodetype(int(index), byref(code_p))
+
+        self.ENgeterror()
+        return code_p.value
+
+    def ENgetnodevalue(self, index, code_p):
         """ Retrieves a property value for a node.
 
         ENgetnodevalue(index, paramcode)
@@ -12001,8 +12250,15 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        fValue = ctypes.c_double()
-        self.errcode = self._lib.EN_getnodevalue(self._ph, int(iIndex), iCode, ctypes.byref(fValue))
+        fValue = None
+
+        if self._ph is not None:
+            fValue = c_double()
+            self.errcode = self._lib.EN_getnodevalue(self._ph, int(index), code_p, byref(fValue))
+        else:
+            fValue = c_float()
+            self.errcode = self._lib.ENgetnodevalue(int(index), code_p, byref(fValue))
+
         if self.errcode != 240:
             self.ENgeterror()
             return fValue.value
@@ -12021,8 +12277,13 @@ class epanetapi:
         Returns:
         value  the number of demand categories assigned to the node.
         """
-        numDemands = ctypes.c_int()
-        self.errcode = self._lib.EN_getnumdemands(self._ph, int(index), ctypes.byref(numDemands))
+        numDemands = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getnumdemands(self._ph, int(index), byref(numDemands))
+        else:
+            self.errcode = self._lib.ENgetnumdemands(int(index), byref(numDemands))
+
         self.ENgeterror()
         return numDemands.value
 
@@ -12037,8 +12298,13 @@ class epanetapi:
         Returns:
         value the current value of the option.
         """
-        value = ctypes.c_double()
-        self.errcode = self._lib.EN_getoption(self._ph, optioncode, ctypes.byref(value))
+        value = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getoption(self._ph, optioncode, byref(value))
+        else:
+            self.errcode = self._lib.ENgetoption(optioncode, byref(value))
+
         self.ENgeterror()
         return value.value
 
@@ -12055,8 +12321,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
         """
-        nameID = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getpatternid(self._ph, int(index), ctypes.byref(nameID))
+        nameID = create_string_buffer(self.EN_MAXID)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getpatternid(self._ph, int(index), byref(nameID))
+        else:
+            self.errcode = self._lib.ENgetpatternid(int(index), byref(nameID))
+
         self.ENgeterror()
         return nameID.value.decode()
 
@@ -12071,8 +12342,13 @@ class epanetapi:
         Returns:
         index   the time pattern's index (starting from 1).
         """
-        index = ctypes.c_int()
-        self.errcode = self._lib.EN_getpatternindex(self._ph, Id.encode("utf-8"), ctypes.byref(index))
+        index = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getpatternindex(self._ph, Id.encode("utf-8"), byref(index))
+        else:
+            self.errcode = self._lib.ENgetpatternindex(Id.encode("utf-8"), byref(index))
+
         self.ENgeterror()
         return index.value
 
@@ -12087,8 +12363,13 @@ class epanetapi:
         Returns:
         leng   the number of time periods in the pattern.
         """
-        leng = ctypes.c_int()
-        self.errcode = self._lib.EN_getpatternlen(self._ph, int(index), ctypes.byref(leng))
+        leng = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getpatternlen(self._ph, int(index), byref(leng))
+        else:
+            self.errcode = self._lib.ENgetpatternlen(int(index), byref(leng))
+
         self.ENgeterror()
         return leng.value
 
@@ -12104,8 +12385,13 @@ class epanetapi:
         Returns:
         value   the pattern factor for the given time period.
         """
-        value = ctypes.c_double()
-        self.errcode = self._lib.EN_getpatternvalue(self._ph, int(index), period, ctypes.byref(value))
+        value = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getpatternvalue(self._ph, int(index), period, byref(value))
+        else:
+            self.errcode = self._lib.ENgetpatternvalue(int(index), period, byref(value))
+
         self.ENgeterror()
         return value.value
 
@@ -12128,21 +12414,29 @@ class epanetapi:
         status      the status that the object's status is compared to (see RULESTATUS).
         value       the value that the object's variable is compared to.
         """
-        logop = ctypes.c_int()
-        object_ = ctypes.c_int()
-        objIndex = ctypes.c_int()
-        variable = ctypes.c_int()
-        relop = ctypes.c_int()
-        status = ctypes.c_int()
-        value = ctypes.c_double()
-        self.errcode = self._lib.EN_getpremise(self._ph, int(ruleIndex), int(premiseIndex), ctypes.byref(logop),
-                                               ctypes.byref(object_), ctypes.byref(objIndex),
-                                               ctypes.byref(variable), ctypes.byref(relop), ctypes.byref(status),
-                                               ctypes.byref(value))
+        logop = c_int()
+        object_ = c_int()
+        objIndex = c_int()
+        variable = c_int()
+        relop = c_int()
+        status = c_int()
+        value = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getpremise(self._ph, int(ruleIndex), int(premiseIndex), byref(logop),
+                                                   byref(object_), byref(objIndex),
+                                                   byref(variable), byref(relop), byref(status),
+                                                   byref(value))
+        else:
+            self.errcode = self._lib.ENgetpremise(int(ruleIndex), int(premiseIndex), byref(logop),
+                                                  byref(object_), byref(objIndex),
+                                                  byref(variable), byref(relop), byref(status),
+                                                  byref(value))
+
         self.ENgeterror()
         return [logop.value, object_.value, objIndex.value, variable.value, relop.value, status.value, value.value]
 
-    def ENgetpumptype(self, iIndex):
+    def ENgetpumptype(self, index):
         """ Retrieves the type of head curve used by a pump.
 
 
@@ -12154,10 +12448,15 @@ class epanetapi:
         Returns:
         value   the type of head curve used by the pump (see EN_PumpType).
         """
-        iCode = ctypes.c_int()
-        self.errcode = self._lib.EN_getpumptype(self._ph, int(iIndex), ctypes.byref(iCode))
+        code_p = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getpumptype(self._ph, int(index), byref(code_p))
+        else:
+            self.errcode = self._lib.ENgetpumptype(int(index), byref(code_p))
+
         self.ENgeterror()
-        return iCode.value
+        return code_p.value
 
     def ENgetqualinfo(self):
         """ Gets information about the type of water quality analysis requested.
@@ -12170,12 +12469,18 @@ class epanetapi:
         chemunits   concentration units of the constituent.
         tracenode 	index of the node being traced (if applicable).
         """
-        qualType = ctypes.c_int()
-        chemname = ctypes.create_string_buffer(self.EN_MAXID)
-        chemunits = ctypes.create_string_buffer(self.EN_MAXID)
-        tracenode = ctypes.c_int()
-        self.errcode = self._lib.EN_getqualinfo(self._ph, ctypes.byref(qualType), ctypes.byref(chemname),
-                                                ctypes.byref(chemunits), ctypes.byref(tracenode))
+        qualType = c_int()
+        chemname = create_string_buffer(self.EN_MAXID)
+        chemunits = create_string_buffer(self.EN_MAXID)
+        tracenode = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getqualinfo(self._ph, byref(qualType), byref(chemname),
+                                                    byref(chemunits), byref(tracenode))
+        else:
+            self.errcode = self._lib.ENgetqualinfo(byref(qualType), byref(chemname),
+                                                   byref(chemunits), byref(tracenode))
+
         self.ENgeterror()
         return [qualType.value, chemname.value.decode(), chemunits.value.decode(), tracenode.value]
 
@@ -12188,13 +12493,18 @@ class epanetapi:
         qualcode    type of analysis to run (see self.QualityType).
         tracenode 	index of the node being traced (if applicable).
         """
-        qualcode = ctypes.c_int()
-        tracenode = ctypes.c_int()
-        self.errcode = self._lib.EN_getqualtype(self._ph, ctypes.byref(qualcode), ctypes.byref(tracenode))
+        qualcode = c_int()
+        tracenode = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getqualtype(self._ph, byref(qualcode), byref(tracenode))
+        else:
+            self.errcode = self._lib.ENgetqualtype(byref(qualcode), byref(tracenode))
+
         self.ENgeterror()
         return [qualcode.value, tracenode.value]
 
-    def ENgetresultindex(self, objecttype, iIndex):
+    def ENgetresultindex(self, objecttype, index):
         """Retrieves the order in which a node or link appears in an output file.
 
 
@@ -12202,13 +12512,18 @@ class epanetapi:
 
         Parameters:
         objecttype  a type of element (either EN_NODE or EN_LINK).
-        iIndex       the element's current index (starting from 1).
+        index       the element's current index (starting from 1).
 
         Returns:
         value the order in which the element's results were written to file.
         """
-        value = ctypes.c_int()
-        self.errcode = self._lib.EN_getresultindex(self._ph, objecttype, int(iIndex), ctypes.byref(value))
+        value = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getresultindex(self._ph, objecttype, int(index), byref(value))
+        else:
+            self.errcode = self._lib.ENgetresultindex(objecttype, int(index), byref(value))
+
         self.ENgeterror()
         return value.value
 
@@ -12227,12 +12542,20 @@ class epanetapi:
         nElseActions    number of actions in the rule's ELSE section.
         priority        the rule's priority value.
         """
-        nPremises = ctypes.c_int()
-        nThenActions = ctypes.c_int()
-        nElseActions = ctypes.c_int()
-        priority = ctypes.c_double()
-        self.errcode = self._lib.EN_getrule(self._ph, int(index), ctypes.byref(nPremises), ctypes.byref(nThenActions),
-                                            ctypes.byref(nElseActions), ctypes.byref(priority))
+        nPremises = c_int()
+        nThenActions = c_int()
+        nElseActions = c_int()
+        priority = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getrule(self._ph, int(index), byref(nPremises),
+                                                byref(nThenActions),
+                                                byref(nElseActions), byref(priority))
+        else:
+            self.errcode = self._lib.ENgetrule(int(index), byref(nPremises),
+                                               byref(nThenActions),
+                                               byref(nElseActions), byref(priority))
+
         self.ENgeterror()
         return [nPremises.value, nThenActions.value, nElseActions.value, priority.value]
 
@@ -12250,8 +12573,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
         """
-        nameID = ctypes.create_string_buffer(self.EN_MAXID)
-        self.errcode = self._lib.EN_getruleID(self._ph, int(index), ctypes.byref(nameID))
+        nameID = create_string_buffer(self.EN_MAXID)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getruleID(self._ph, int(index), byref(nameID))
+        else:
+            self.errcode = self._lib.ENgetruleID(int(index), byref(nameID))
+
         self.ENgeterror()
         return nameID.value.decode()
 
@@ -12269,8 +12597,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
         """
-        value = ctypes.c_double()
-        self.errcode = self._lib.EN_getstatistic(self._ph, int(code), ctypes.byref(value))
+        value = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getstatistic(self._ph, int(code), byref(value))
+        else:
+            self.errcode = self._lib.ENgetstatistic(int(code), byref(value))
+
         self.ENgeterror()
         return value.value
 
@@ -12289,11 +12622,19 @@ class epanetapi:
         status      the status assigned to the link (see RULESTATUS).
         setting     the value assigned to the link's setting.
         """
-        linkIndex = ctypes.c_int()
-        status = ctypes.c_int()
-        setting = ctypes.c_double()
-        self.errcode = self._lib.EN_getthenaction(self._ph, int(ruleIndex), int(actionIndex), ctypes.byref(linkIndex),
-                                                  ctypes.byref(status), ctypes.byref(setting))
+        linkIndex = c_int()
+        status = c_int()
+        setting = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getthenaction(self._ph, int(ruleIndex), int(actionIndex),
+                                                      byref(linkIndex),
+                                                      byref(status), byref(setting))
+        else:
+            self.errcode = self._lib.ENgetthenaction(int(ruleIndex), int(actionIndex),
+                                                     byref(linkIndex),
+                                                     byref(status), byref(setting))
+
         self.ENgeterror()
         return [linkIndex.value, status.value, setting.value]
 
@@ -12308,8 +12649,13 @@ class epanetapi:
         Returns:
         timevalue the current value of the time parameter (in seconds).
         """
-        timevalue = ctypes.c_long()
-        self.errcode = self._lib.EN_gettimeparam(self._ph, ctypes.c_int(paramcode), ctypes.byref(timevalue))
+        timevalue = c_long()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_gettimeparam(self._ph, c_int(paramcode), byref(timevalue))
+        else:
+            self.errcode = self._lib.ENgettimeparam(c_int(paramcode), byref(timevalue))
+
         self.ENgeterror()
         return timevalue.value
 
@@ -12324,11 +12670,17 @@ class epanetapi:
         line2 second title line
         line3 third title line
         """
-        line1 = ctypes.create_string_buffer(80)
-        line2 = ctypes.create_string_buffer(80)
-        line3 = ctypes.create_string_buffer(80)
-        self.errcode = self._lib.EN_gettitle(self._ph, ctypes.byref(line1), ctypes.byref(line2),
-                                             ctypes.byref(line3))
+        line1 = create_string_buffer(80)
+        line2 = create_string_buffer(80)
+        line3 = create_string_buffer(80)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_gettitle(self._ph, byref(line1), byref(line2),
+                                                 byref(line3))
+        else:
+            self.errcode = self._lib.ENgettitle(byref(line1), byref(line2),
+                                                byref(line3))
+
         self.ENgeterror()
         return [line1.value.decode(), line2.value.decode(), line3.value.decode()]
 
@@ -12340,8 +12692,8 @@ class epanetapi:
         Returns:
         LibEPANET the version of the OWA-EPANET toolkit.
         """
-        LibEPANET = ctypes.c_int()
-        self.errcode = self._lib.EN_getversion(ctypes.byref(LibEPANET))
+        LibEPANET = c_int()
+        self.errcode = self._lib.EN_getversion(byref(LibEPANET))
         self.ENgeterror()
         return LibEPANET.value
 
@@ -12359,9 +12711,14 @@ class epanetapi:
         x  the vertex's X-coordinate value.
         y  the vertex's Y-coordinate value.
         """
-        x = ctypes.c_double()
-        y = ctypes.c_double()
-        self.errcode = self._lib.EN_getvertex(self._ph, int(index), vertex, ctypes.byref(x), ctypes.byref(y))
+        x = c_double()
+        y = c_double()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getvertex(self._ph, int(index), vertex, byref(x), byref(y))
+        else:
+            self.errcode = self._lib.ENgetvertex(int(index), vertex, byref(x), byref(y))
+
         self.ENgeterror()
         return [x.value, y.value]
 
@@ -12376,8 +12733,13 @@ class epanetapi:
         Returns:
         count  the number of vertex points that describe the link's shape.
         """
-        count = ctypes.c_int()
-        self.errcode = self._lib.EN_getvertexcount(self._ph, int(index), ctypes.byref(count))
+        count = c_int()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getvertexcount(self._ph, int(index), byref(count))
+        else:
+            self.errcode = self._lib.ENgetvertexcount(int(index), byref(count))
+
         self.ENgeterror()
         return count.value
 
@@ -12392,7 +12754,12 @@ class epanetapi:
         headLossType the choice of head loss formula (see EN_HeadLossType).
 
         """
-        self.errcode = self._lib.EN_init(self._ph, "", "", unitsType, headLossType)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_init(self._ph, "", "", unitsType, headLossType)
+        else:
+            self.errcode = self._lib.ENinit("", "", unitsType, headLossType)
+
         self.ENgeterror()
 
     def ENinitH(self, flag):
@@ -12406,7 +12773,12 @@ class epanetapi:
         See also  ENinitH, ENrunH, ENnextH, ENreport, ENsavehydfile
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
-        self.errcode = self._lib.EN_initH(self._ph, flag)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_initH(self._ph, flag)
+        else:
+            self.errcode = self._lib.ENinitH(flag)
+
         self.ENgeterror()
         return
 
@@ -12422,7 +12794,12 @@ class epanetapi:
         See also  ENinitQ, ENrunQ, ENnextQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
         """
-        self.errcode = self._lib.EN_initQ(self._ph, saveflag)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_initQ(self._ph, saveflag)
+        else:
+            self.errcode = self._lib.ENinitQ(saveflag)
+
         self.ENgeterror()
         return
 
@@ -12437,8 +12814,13 @@ class epanetapi:
         See also  ENrunH
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
-        tstep = ctypes.c_long()
-        self.errcode = self._lib.EN_nextH(self._ph, ctypes.byref(tstep))
+        tstep = c_long()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_nextH(self._ph, byref(tstep))
+        else:
+            self.errcode = self._lib.ENnextH(byref(tstep))
+
         self.ENgeterror()
         return tstep.value
 
@@ -12453,8 +12835,13 @@ class epanetapi:
         See also  ENstepQ, ENrunQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
         """
-        tstep = ctypes.c_long()
-        self.errcode = self._lib.EN_nextQ(self._ph, ctypes.byref(tstep))
+        tstep = c_long()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_nextQ(self._ph, byref(tstep))
+        else:
+            self.errcode = self._lib.ENnextQ(byref(tstep))
+
         self.ENgeterror()
         return tstep.value
 
@@ -12490,8 +12877,14 @@ class epanetapi:
         if self.isloaded:
             raise RuntimeError("File is loaded and cannot be closed.")
 
-        self._lib.EN_createproject(ctypes.byref(self._ph))
-        self.errcode = self._lib.EN_open(self._ph, self.inpfile, self.rptfile, self.binfile)
+        if self._ph is not None:
+            self._lib.EN_createproject(byref(self._ph))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_open(self._ph, self.inpfile, self.rptfile, self.binfile)
+        else:
+            self.errcode = self._lib.ENopen(self.inpfile, self.rptfile, self.binfile)
+
         self.ENgeterror()
         if self.errcode < 100:
             self.isloaded = True
@@ -12504,7 +12897,12 @@ class epanetapi:
 
         See also  ENinitH, ENrunH, ENnextH, ENcloseH
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html"""
-        self.errcode = self._lib.EN_openH(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_openH(self._ph)
+        else:
+            self.errcode = self._lib.ENopenH()
+
         self.ENgeterror()
         return
 
@@ -12517,7 +12915,12 @@ class epanetapi:
         ENstepQ, ENcloseQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
         """
-        self.errcode = self._lib.EN_openQ(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_openQ(self._ph)
+        else:
+            self.errcode = self._lib.ENopenQ()
+
         self.ENgeterror()
         return
 
@@ -12528,7 +12931,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
         """
-        self.errcode = self._lib.EN_report(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_report(self._ph)
+        else:
+            self.errcode = self._lib.ENreport()
+
         self.ENgeterror()
 
     def ENresetreport(self):
@@ -12538,7 +12946,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
         """
-        self.errcode = self._lib.EN_resetreport(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_resetreport(self._ph)
+        else:
+            self.errcode = self._lib.ENresetreport()
+
         self.ENgeterror()
 
     def ENrunH(self):
@@ -12552,8 +12965,13 @@ class epanetapi:
         See also  ENinitH, ENrunH, ENnextH, ENcloseH
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
-        t = ctypes.c_long()
-        self.errcode = self._lib.EN_runH(self._ph, ctypes.byref(t))
+        t = c_long()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_runH(self._ph, byref(t))
+        else:
+            self.errcode = self._lib.ENrunH(byref(t))
+
         self.ENgeterror()
         return t.value
 
@@ -12568,8 +12986,13 @@ class epanetapi:
         See also  ENopenQ, ENinitQ, ENrunQ, ENnextQ, ENstepQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
         """
-        t = ctypes.c_long()
-        self.errcode = self._lib.EN_runQ(self._ph, ctypes.byref(t))
+        t = c_long()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_runQ(self._ph, byref(t))
+        else:
+            self.errcode = self._lib.ENrunQ(byref(t))
+
         self.ENgeterror()
         return t.value
 
@@ -12580,7 +13003,12 @@ class epanetapi:
         ENsaveH()
 
         """
-        self.errcode = self._lib.EN_saveH(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_saveH(self._ph)
+        else:
+            self.errcode = self._lib.ENsaveH()
+
         self.ENgeterror()
         return
 
@@ -12590,7 +13018,12 @@ class epanetapi:
         ENsaveHydfile(fname)
 
         """
-        self.errcode = self._lib.EN_savehydfile(self._ph, fname.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_savehydfile(self._ph, fname.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENsavehydfile(fname.encode("utf-8"))
+
         self.ENgeterror()
 
     def ENsaveinpfile(self, inpname):
@@ -12599,7 +13032,12 @@ class epanetapi:
         ENsaveinpfile(inpname)
 
         """
-        self.errcode = self._lib.EN_saveinpfile(self._ph, inpname.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_saveinpfile(self._ph, inpname.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENsaveinpfile(inpname.encode("utf-8"))
+
         self.ENgeterror()
         return
 
@@ -12615,7 +13053,12 @@ class epanetapi:
         value    	  the new base demand for the category.
 
         """
-        self.errcode = self._lib.EN_setbasedemand(self._ph, int(index), demandIdx, ctypes.c_double(value))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setbasedemand(self._ph, int(index), demandIdx, c_double(value))
+        else:
+            self.errcode = self._lib.ENsetbasedemand(int(index), demandIdx, c_double(value))
+
         self.ENgeterror()
 
     def ENsetcomment(self, object_, index, comment):
@@ -12631,7 +13074,12 @@ class epanetapi:
         comment    comment to be added.
 
         """
-        self.errcode = self._lib.EN_setcomment(self._ph, object_, index, comment.encode('utf-8'))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setcomment(self._ph, object_, index, comment.encode('utf-8'))
+        else:
+            self.errcode = self._lib.ENsetcomment(object_, index, comment.encode('utf-8'))
+
         self.ENgeterror()
 
     def ENsetcontrol(self, cindex, ctype, lindex, setting, nindex, level):
@@ -12648,8 +13096,16 @@ class epanetapi:
         level   the action level (tank level, junction pressure, or time in seconds) that triggers the control.
 
         """
-        self.errcode = self._lib.EN_setcontrol(self._ph, int(cindex), ctype, lindex, ctypes.c_double(setting), nindex,
-                                               ctypes.c_double(level))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setcontrol(self._ph, int(cindex), ctype, lindex, c_double(setting),
+                                                   nindex,
+                                                   c_double(level))
+        else:
+            self.errcode = self._lib.ENsetcontrol(int(cindex), ctype, lindex, c_double(setting),
+                                                  nindex,
+                                                  c_double(level))
+
         self.ENgeterror()
 
     def ENsetcoord(self, index, x, y):
@@ -12664,7 +13120,12 @@ class epanetapi:
         y          the node's Y-coordinate value.
 
         """
-        self.errcode = self._lib.EN_setcoord(self._ph, int(index), ctypes.c_double(x), ctypes.c_double(y))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setcoord(self._ph, int(index), c_double(x), c_double(y))
+        else:
+            self.errcode = self._lib.ENsetcoord(int(index), c_double(x), c_double(y))
+
         self.ENgeterror()
 
     def ENsetcurve(self, index, x, y, nfactors):
@@ -12683,11 +13144,24 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
         """
         if nfactors == 1:
-            self.errcode = self._lib.EN_setcurve(self._ph, int(index), (ctypes.c_double * 1)(x),
-                                                 (ctypes.c_double * 1)(y), nfactors)
+
+            if self._ph is not None:
+                self.errcode = self._lib.EN_setcurve(self._ph, int(index), (c_double * 1)(x),
+                                                     (c_double * 1)(y), nfactors)
+            else:
+                self.errcode = self._lib.ENsetcurve(int(index), (c_double * 1)(x),
+                                                    (c_double * 1)(y), nfactors)
+
+
         else:
-            self.errcode = self._lib.EN_setcurve(self._ph, int(index), (ctypes.c_double * nfactors)(*x),
-                                                 (ctypes.c_double * nfactors)(*y), nfactors)
+
+            if self._ph is not None:
+                self.errcode = self._lib.EN_setcurve(self._ph, int(index), (c_double * nfactors)(*x),
+                                                     (c_double * nfactors)(*y), nfactors)
+            else:
+                self.errcode = self._lib.ENsetcurve(int(index), (c_double * nfactors)(*x),
+                                                    (c_double * nfactors)(*y), nfactors)
+
         self.ENgeterror()
 
     def ENsetcurveid(self, index, Id):
@@ -12702,7 +13176,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
         """
-        self.errcode = self._lib.EN_setcurveid(self._ph, int(index), Id.encode('utf-8'))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setcurveid(self._ph, int(index), Id.encode('utf-8'))
+        else:
+            self.errcode = self._lib.ENsetcurveid(int(index), Id.encode('utf-8'))
+
         self.ENgeterror()
 
     def ENsetcurvevalue(self, index, pnt, x, y):
@@ -12718,8 +13197,14 @@ class epanetapi:
         y        	  the point's new y-value.
 
         """
-        self.errcode = self._lib.EN_setcurvevalue(self._ph, int(index), pnt,
-                                                  ctypes.c_double(x), ctypes.c_double(y))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setcurvevalue(self._ph, int(index), pnt,
+                                                      c_double(x), c_double(y))
+        else:
+            self.errcode = self._lib.ENsetcurvevalue(int(index), pnt,
+                                                     c_double(x), c_double(y))
+
         self.ENgeterror()
 
     def ENsetdemandmodel(self, Type, pmin, preq, pexp):
@@ -12736,8 +13221,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_setdemandmodel(self._ph, Type, ctypes.c_double(pmin),
-                                                   ctypes.c_double(preq), ctypes.c_double(pexp))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setdemandmodel(self._ph, Type, c_double(pmin),
+                                                       c_double(preq), c_double(pexp))
+        else:
+            self.errcode = self._lib.ENsetdemandmodel(Type, c_double(pmin),
+                                                      c_double(preq), c_double(pexp))
+
         self.ENgeterror()
 
     def ENsetdemandname(self, node_index, demand_index, demand_name):
@@ -12752,8 +13243,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_setdemandname(self._ph, int(node_index), int(demand_index),
-                                                  demand_name.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setdemandname(self._ph, int(node_index), int(demand_index),
+                                                      demand_name.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENsetdemandname(int(node_index), int(demand_index),
+                                                     demand_name.encode("utf-8"))
+
         self.ENgeterror()
         return
 
@@ -12769,7 +13266,11 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        self.errcode = self._lib.EN_setdemandpattern(self._ph, int(index), int(demandIdx), int(patInd))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setdemandpattern(self._ph, int(index), int(demandIdx), int(patInd))
+        else:
+            self.errcode = self._lib.ENsetdemandpattern(int(index), int(demandIdx), int(patInd))
 
     def ENsetelseaction(self, ruleIndex, actionIndex, linkIndex, status, setting):
         """ Sets the properties of an ELSE action in a rule-based control.
@@ -12785,8 +13286,16 @@ class epanetapi:
         setting       the new value assigned to the link's setting.
 
         """
-        self.errcode = self._lib.EN_setelseaction(self._ph, int(ruleIndex), int(actionIndex), int(linkIndex), status,
-                                                  ctypes.c_double(setting))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setelseaction(self._ph, int(ruleIndex), int(actionIndex), int(linkIndex),
+                                                      status,
+                                                      c_double(setting))
+        else:
+            self.errcode = self._lib.ENsetelseaction(int(ruleIndex), int(actionIndex), int(linkIndex),
+                                                     status,
+                                                     c_double(setting))
+
         self.ENgeterror()
 
     def ENsetflowunits(self, code):
@@ -12798,7 +13307,12 @@ class epanetapi:
         code        a flow units code (see EN_FlowUnits)
 
         """
-        self.errcode = self._lib.EN_setflowunits(self._ph, code)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setflowunits(self._ph, code)
+        else:
+            self.errcode = self._lib.ENsetflowunits(code)
+
         self.ENgeterror()
 
     def ENsetheadcurveindex(self, pumpindex, curveindex):
@@ -12811,7 +13325,12 @@ class epanetapi:
         curveindex    the index of a curve to be assigned as the pump's head curve.
 
         """
-        self.errcode = self._lib.EN_setheadcurveindex(self._ph, int(pumpindex), int(curveindex))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setheadcurveindex(self._ph, int(pumpindex), int(curveindex))
+        else:
+            self.errcode = self._lib.ENsetheadcurveindex(int(pumpindex), int(curveindex))
+
         self.ENgeterror()
 
     def ENsetjuncdata(self, index, elev, dmnd, dmndpat):
@@ -12828,8 +13347,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_setjuncdata(self._ph, int(index), ctypes.c_double(elev), ctypes.c_double(dmnd),
-                                                dmndpat.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setjuncdata(self._ph, int(index), c_double(elev), c_double(dmnd),
+                                                    dmndpat.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENsetjuncdata(int(index), c_double(elev), c_double(dmnd),
+                                                   dmndpat.encode("utf-8"))
+
         self.ENgeterror()
 
     def ENsetlinkid(self, index, newid):
@@ -12844,7 +13369,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        self.errcode = self._lib.EN_setlinkid(self._ph, int(index), newid.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setlinkid(self._ph, int(index), newid.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENsetlinkid(int(index), newid.encode("utf-8"))
+
         self.ENgeterror()
 
     def ENsetlinknodes(self, index, startnode, endnode):
@@ -12858,7 +13388,12 @@ class epanetapi:
         startnode     The index of the link's start node (starting from 1).
         endnode       The index of the link's end node (starting from 1).
         """
-        self.errcode = self._lib.EN_setlinknodes(self._ph, int(index), startnode, endnode)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setlinknodes(self._ph, int(index), startnode, endnode)
+        else:
+            self.errcode = self._lib.ENsetlinknodes(int(index), startnode, endnode)
+
         self.ENgeterror()
 
     def ENsetlinktype(self, indexLink, paramcode, actionCode):
@@ -12874,8 +13409,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        indexLink = ctypes.c_int(indexLink)
-        self.errcode = self._lib.EN_setlinktype(self._ph, ctypes.byref(indexLink), paramcode, actionCode)
+        indexLink = c_int(indexLink)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setlinktype(self._ph, byref(indexLink), paramcode, actionCode)
+        else:
+            self.errcode = self._lib.ENsetlinktype(byref(indexLink), paramcode, actionCode)
+
         self.ENgeterror()
         return indexLink.value
 
@@ -12891,8 +13431,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        self.errcode = self._lib.EN_setlinkvalue(self._ph, ctypes.c_int(index), ctypes.c_int(paramcode),
-                                                 ctypes.c_double(value))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setlinkvalue(self._ph, c_int(index), c_int(paramcode),
+                                                     c_double(value))
+        else:
+            self.errcode = self._lib.ENsetlinkvalue(c_int(index), c_int(paramcode),
+                                                    c_double(value))
+
         self.ENgeterror()
         return
 
@@ -12908,7 +13454,11 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_setnodeid(self._ph, int(index), newid.encode('utf-8'))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setnodeid(self._ph, int(index), newid.encode('utf-8'))
+        else:
+            self.errcode = self._lib.ENsetnodeid(int(index), newid.encode('utf-8'))
         self.ENgeterror()
 
     def ENsetnodevalue(self, index, paramcode, value):
@@ -12924,8 +13474,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_setnodevalue(self._ph, ctypes.c_int(index), ctypes.c_int(paramcode),
-                                                 ctypes.c_double(value))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setnodevalue(self._ph, c_int(index), c_int(paramcode),
+                                                     c_double(value))
+        else:
+            self.errcode = self._lib.ENsetnodevalue(c_int(index), c_int(paramcode),
+                                                    c_double(value))
+
         self.ENgeterror()
         return
 
@@ -12938,7 +13494,12 @@ class epanetapi:
         optioncode   a type of analysis option (see EN_Option).
         value        the new value assigned to the option.
         """
-        self.errcode = self._lib.EN_setoption(self._ph, optioncode, ctypes.c_double(value))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setoption(self._ph, optioncode, c_double(value))
+        else:
+            self.errcode = self._lib.ENsetoption(optioncode, c_double(value))
+
         self.ENgeterror()
 
     def ENsetpattern(self, index, factors, nfactors):
@@ -12953,7 +13514,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
         """
-        self.errcode = self._lib.EN_setpattern(self._ph, int(index), (ctypes.c_double * nfactors)(*factors), nfactors)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpattern(self._ph, int(index), (c_double * nfactors)(*factors), nfactors)
+        else:
+            self.errcode = self._lib.ENsetpattern(int(index), (c_double * nfactors)(*factors),
+                                                  nfactors)
+
         self.ENgeterror()
 
     def ENsetpatternid(self, index, Id):
@@ -12968,7 +13535,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
         """
-        self.errcode = self._lib.EN_setpatternid(self._ph, int(index), Id.encode('utf-8'))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpatternid(self._ph, int(index), Id.encode('utf-8'))
+        else:
+            self.errcode = self._lib.ENsetpatternid(int(index), Id.encode('utf-8'))
+
         self.ENgeterror()
 
     def ENsetpatternvalue(self, index, period, value):
@@ -12981,7 +13553,12 @@ class epanetapi:
         period     a time period in the pattern (starting from 1).
         value      the new value of the pattern factor for the given time period.
         """
-        self.errcode = self._lib.EN_setpatternvalue(self._ph, int(index), period, ctypes.c_double(value))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpatternvalue(self._ph, int(index), period, c_double(value))
+        else:
+            self.errcode = self._lib.ENsetpatternvalue(int(index), period, c_double(value))
+
         self.ENgeterror()
 
     def ENsetpipedata(self, index, length, diam, rough, mloss):
@@ -12999,9 +13576,16 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        self.errcode = self._lib.EN_setpipedata(self._ph, int(index), ctypes.c_double(length),
-                                                ctypes.c_double(diam), ctypes.c_double(rough),
-                                                ctypes.c_double(mloss))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpipedata(self._ph, int(index), c_double(length),
+                                                    c_double(diam), c_double(rough),
+                                                    c_double(mloss))
+        else:
+            self.errcode = self._lib.ENsetpipedata(int(index), c_double(length),
+                                                   c_double(diam), c_double(rough),
+                                                   c_double(mloss))
+
         self.ENgeterror()
 
     def ENsetpremise(self, ruleIndex, premiseIndex, logop, object_, objIndex, variable, relop, status, value):
@@ -13023,8 +13607,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
         """
-        self.errcode = self._lib.EN_setpremise(self._ph, int(ruleIndex), int(premiseIndex), logop, object_,
-                                               objIndex, variable, relop, status, ctypes.c_double(value))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpremise(self._ph, int(ruleIndex), int(premiseIndex), logop, object_,
+                                                   objIndex, variable, relop, status, c_double(value))
+        else:
+            self.errcode = self._lib.ENsetpremise(int(ruleIndex), int(premiseIndex), logop, object_,
+                                                  objIndex, variable, relop, status, c_double(value))
+
         self.ENgeterror()
 
     def ENsetpremiseindex(self, ruleIndex, premiseIndex, objIndex):
@@ -13038,7 +13628,12 @@ class epanetapi:
         premiseIndex  the premise's index (starting from 1).
         objIndex      the index of the object (e.g. the index of a tank).
         """
-        self.errcode = self._lib.EN_setpremiseindex(self._ph, int(ruleIndex), int(premiseIndex), objIndex)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpremiseindex(self._ph, int(ruleIndex), int(premiseIndex), objIndex)
+        else:
+            self.errcode = self._lib.ENsetpremiseindex(int(ruleIndex), int(premiseIndex), objIndex)
+
         self.ENgeterror()
 
     def ENsetpremisestatus(self, ruleIndex, premiseIndex, status):
@@ -13052,7 +13647,12 @@ class epanetapi:
         premiseIndex  the premise's index (starting from 1).
         status        the status that the premise's object status is compared to (see RULESTATUS).
         """
-        self.errcode = self._lib.EN_setpremisestatus(self._ph, int(ruleIndex), int(premiseIndex), status)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpremisestatus(self._ph, int(ruleIndex), int(premiseIndex), status)
+        else:
+            self.errcode = self._lib.ENsetpremisestatus(int(ruleIndex), int(premiseIndex), status)
+
         self.ENgeterror()
 
     def ENsetpremisevalue(self, ruleIndex, premiseIndex, value):
@@ -13066,7 +13666,12 @@ class epanetapi:
         premiseIndex  the premise's index (starting from 1).
         value         The value that the premise's variable is compared to.
         """
-        self.errcode = self._lib.EN_setpremisevalue(self._ph, int(ruleIndex), premiseIndex, ctypes.c_double(value))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setpremisevalue(self._ph, int(ruleIndex), premiseIndex, c_double(value))
+        else:
+            self.errcode = self._lib.ENsetpremisevalue(int(ruleIndex), premiseIndex, c_double(value))
+
         self.ENgeterror()
 
     def ENsetqualtype(self, qualcode, chemname, chemunits, tracenode):
@@ -13082,8 +13687,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___options.html
         """
-        self.errcode = self._lib.EN_setqualtype(self._ph, qualcode, chemname.encode("utf-8"),
-                                                chemunits.encode("utf-8"), tracenode.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setqualtype(self._ph, qualcode, chemname.encode("utf-8"),
+                                                    chemunits.encode("utf-8"), tracenode.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENsetqualtype(qualcode, chemname.encode("utf-8"),
+                                                   chemunits.encode("utf-8"), tracenode.encode("utf-8"))
+
         self.ENgeterror()
         return
 
@@ -13097,7 +13708,12 @@ class epanetapi:
 
         See also ENreport
         """
-        self.errcode = self._lib.EN_setreport(self._ph, command.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setreport(self._ph, command.encode("utf-8"))
+        else:
+            self.errcode = self._lib.ENsetreport(command.encode("utf-8"))
+
         self.ENgeterror()
 
     def ENsetrulepriority(self, ruleIndex, priority):
@@ -13110,7 +13726,12 @@ class epanetapi:
         ruleIndex     the rule's index (starting from 1).
         priority      the priority value assigned to the rule.
         """
-        self.errcode = self._lib.EN_setrulepriority(self._ph, int(ruleIndex), ctypes.c_double(priority))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setrulepriority(self._ph, int(ruleIndex), c_double(priority))
+        else:
+            self.errcode = self._lib.ENsetrulepriority(int(ruleIndex), c_double(priority))
+
         self.ENgeterror()
 
     def ENsetstatusreport(self, statuslevel):
@@ -13124,7 +13745,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
         """
-        self.errcode = self._lib.EN_setstatusreport(self._ph, statuslevel)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setstatusreport(self._ph, statuslevel)
+        else:
+            self.errcode = self._lib.ENsetstatusreport(statuslevel)
+
         self.ENgeterror()
 
     def ENsettankdata(self, index, elev, initlvl, minlvl, maxlvl, diam, minvol, volcurve):
@@ -13146,8 +13772,8 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
         self.errcode = self._lib.EN_settankdata(
-            self._ph, index, ctypes.c_double(elev), ctypes.c_double(initlvl), ctypes.c_double(minlvl),
-            ctypes.c_double(maxlvl), ctypes.c_double(diam), ctypes.c_double(minvol), volcurve.encode('utf-8'))
+            self._ph, index, c_double(elev), c_double(initlvl), c_double(minlvl),
+            c_double(maxlvl), c_double(diam), c_double(minvol), volcurve.encode('utf-8'))
         self.ENgeterror()
 
     def ENsetthenaction(self, ruleIndex, actionIndex, linkIndex, status, setting):
@@ -13164,8 +13790,16 @@ class epanetapi:
         setting       the new value assigned to the link's setting.
 
         """
-        self.errcode = self._lib.EN_setthenaction(self._ph, int(ruleIndex), int(actionIndex), int(linkIndex), status,
-                                                  ctypes.c_double(setting))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setthenaction(self._ph, int(ruleIndex), int(actionIndex), int(linkIndex),
+                                                      status,
+                                                      c_double(setting))
+        else:
+            self.errcode = self._lib.ENsetthenaction(int(ruleIndex), int(actionIndex), int(linkIndex),
+                                                     status,
+                                                     c_double(setting))
+
         self.ENgeterror()
 
     def ENsettimeparam(self, paramcode, timevalue):
@@ -13178,7 +13812,12 @@ class epanetapi:
         timevalue    the new value of the time parameter (in seconds).
         """
         self.solve = 0
-        self.errcode = self._lib.EN_settimeparam(self._ph, ctypes.c_int(paramcode), ctypes.c_long(int(timevalue)))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_settimeparam(self._ph, c_int(paramcode), c_long(int(timevalue)))
+        else:
+            self.errcode = self._lib.ENsettimeparam(c_int(paramcode), c_long(int(timevalue)))
+
         self.ENgeterror()
 
     def ENsettitle(self, line1, line2, line3):
@@ -13192,8 +13831,15 @@ class epanetapi:
         line2   second title line
         line3   third title line
         """
-        self.errcode = self._lib.EN_settitle(self._ph, line1.encode("utf-8"), line2.encode("utf-8"),
-                                             line3.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_settitle(self._ph, line1.encode("utf-8"), line2.encode("utf-8"),
+                                                 line3.encode("utf-8"))
+
+        else:
+            self.errcode = self._lib.ENsettitle(line1.encode("utf-8"), line2.encode("utf-8"),
+                                                line3.encode("utf-8"))
+
         self.ENgeterror()
 
     def ENsetvertices(self, index, x, y, vertex):
@@ -13208,8 +13854,15 @@ class epanetapi:
         y          an array of Y-coordinates for the vertex points.
         vertex     the number of vertex points being assigned.
         """
-        self.errcode = self._lib.EN_setvertices(self._ph, int(index), (ctypes.c_double * vertex)(*x),
-                                                (ctypes.c_double * vertex)(*y), vertex)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setvertices(self._ph, int(index), (c_double * vertex)(*x),
+                                                    (c_double * vertex)(*y), vertex)
+
+        else:
+            self.errcode = self._lib.ENsetvertices(int(index), (c_double * vertex)(*x),
+                                                   (c_double * vertex)(*y), vertex)
+
         self.ENgeterror()
 
     def ENsolveH(self):
@@ -13221,7 +13874,13 @@ class epanetapi:
         See also ENopenH, ENinitH, ENrunH, ENnextH, ENcloseH
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
-        self.errcode = self._lib.EN_solveH(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_solveH(self._ph)
+
+        else:
+            self.errcode = self._lib.ENsolveH()
+
         self.ENgeterror()
         return
 
@@ -13233,7 +13892,13 @@ class epanetapi:
 
         See also ENopenQ, ENinitQ, ENrunQ, ENnextQ, ENcloseQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html"""
-        self.errcode = self._lib.EN_solveQ(self._ph)
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_solveQ(self._ph)
+
+        else:
+            self.errcode = self._lib.ENsolveQ()
+
         self.ENgeterror()
         return
 
@@ -13248,8 +13913,14 @@ class epanetapi:
         See also ENrunQ, ENnextQ
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
-        tleft = ctypes.c_long()
-        self.errcode = self._lib.EN_stepQ(self._ph, ctypes.byref(tleft))
+        tleft = c_long()
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_stepQ(self._ph, byref(tleft))
+
+        else:
+            self.errcode = self._lib.ENstepQ(byref(tleft))
+
         self.ENgeterror()
         return tleft.value
 
@@ -13263,7 +13934,13 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
         """
-        self.errcode = self._lib.EN_usehydfile(self._ph, hydfname.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_usehydfile(self._ph, hydfname.encode("utf-8"))
+
+        else:
+            self.errcode = self._lib.ENusehydfile(hydfname.encode("utf-8"))
+
         self.ENgeterror()
         return
 
@@ -13275,5 +13952,11 @@ class epanetapi:
         Parameters:
         line         a text string to write.
         """
-        self.errcode = self._lib.EN_writeline(self._ph, line.encode("utf-8"))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_writeline(self._ph, line.encode("utf-8"))
+
+        else:
+            self.errcode = self._lib.ENwriteline(line.encode("utf-8"))
+
         self.ENgeterror()
