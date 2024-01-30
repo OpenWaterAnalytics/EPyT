@@ -13960,3 +13960,526 @@ class epanetapi:
             self.errcode = self._lib.ENwriteline(line.encode("utf-8"))
 
         self.ENgeterror()
+
+
+class epanetmsxapi:
+    """example msx = epanetmsxapi()"""
+
+    def __init__(self):
+        ops = platform.system().lower()
+        if ops in ["windows"]:
+            dll_path1 = resource_filename("epyt", os.path.join("libraries", "win", 'epanet2_2', '64bit',
+                                                               f"epanetmsx.dll"))
+        """
+        elif ops in ["darwin"]:
+            dll_path1 = resource_filename("epyt", os.path.join("libraries", "mac", 'epanet2_2', '64bit',
+                                                               f"epanetmsx.dll"))
+        else:
+            dll_path1 = resource_filename("epyt", os.path.join("libraries", "glnx", 'epanet2_2', '64bit',
+                                                               f"epanetmsx.dll")) 
+        """
+
+        self.msx_lib = cdll.LoadLibrary(dll_path1)
+
+        # Error ~ function
+        self.msx_error = self.msx_lib.MSXgeterror
+        self.msx_error.argtypes = [c_int, c_char_p, c_int]
+
+    def MSXopen(self, filename):
+        """  Open .msx file
+            msx.MSXopen(filename)
+            msx.MSXopen(Arsenite.msx)"""
+        """  filename example : Arsinite.msx or use full path   """
+        print("Opening MSX file:", filename)
+        if not os.path.exists(filename):
+            raise FileNotFoundError(f"File not found: {filename}")
+
+        filename = c_char_p(filename.encode('utf-8'))
+        err = self.msx_lib.MSXopen(filename)
+        if err != 0:
+            self.MSXerror(err)
+            if err == 503:
+                print("Error 503 may indicate a problem with the MSX file or the MSX library.")
+        else:
+            print("MSX file opened successfully.")
+        return err
+
+    def MSXclose(self):
+        """  Close .msx file
+            example : msx.MSXclose()"""
+        err = self.msx_lib.MSXclose()
+        if err != 0:
+            self.MSXerror(err)
+        return err
+
+    def MSXerror(self, err_code):
+        """ Function that every other function uses in case of an error """
+        errmsg = create_string_buffer(256)
+        self.msx_error(err_code, errmsg, 256)
+        print(errmsg.value.decode())
+
+    def MSXgetindex(self, obj_type, obj_id):
+        """      """
+        index = c_int()
+        err = self.msx_lib.MSXgetindex(obj_type, obj_id, byref(index))
+        if err != 0:
+            raise RuntimeError(self.MSXerror(err))
+        return index.value
+
+    def MSXgetID(self, obj_type, index, id_len=80):
+        """ Retrieves the ID name of an object given its internal
+            index number
+            msx.MSXgetID(obj_type, index, id_len)
+            print(msx.MSXgetID(3,1,8))
+
+            Parameters:
+                obj_type: type of object being sought and must be on of the
+                following pre-defined constants:
+                MSX_SPECIES (for chemical species)
+                MSX_CONSTANT(for reaction constant)
+                MSX_PARAMETER(for a reaction parameter)
+                MSX_PATTERN (for a time pattern)
+
+                index: the sequence number of the object (starting from 1
+                as listed in the MSX input file)
+
+                id_len: the maximum number of characters that id can hold
+
+                Returns:
+                    id object's ID name"""
+
+        obj_id = create_string_buffer(id_len + 1)
+        err = self.msx_lib.MSXgetID(obj_type, index, obj_id, id_len)
+        if err != 0:
+            raise RuntimeError(self.MSXerror(err))
+        return obj_id.value.decode()
+
+    def MSXgetIDlen(self, obj_type, index):
+        """Retrieves the number of characters in the ID name of an MSX
+           object given its internal index number
+           msx.MSXgetIDlen(obj_type, index)
+           print(msx.MSXgetIDlen(3,3))
+           Parameters:
+            obj_type: type of object being sought and must be on of the
+                  following pre-defined constants:
+                  MSX_SPECIES (for chemical species)
+                  MSX_CONSTANT(for reaction constant)
+                  MSX_PARAMETER(for a reaction parameter)
+                  MSX_PATTERN (for a time pattern)
+
+            index: the sequence number of the object (starting from 1
+                   as listed in the MSX input file)
+
+            Returns : the number of characters in the ID name of MSX object
+
+            """
+        len = c_int()
+        err = self.msx_lib.MSXgetIDlen(obj_type, index, byref(len))
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return len.value
+
+    def MSXgetspecies(self, index):
+        """ Retrieves the attributes of a chemical species given its
+            internal index number
+            msx.MSXgetspecies(index)
+            msx.MSXgetspecies(1)
+            Parameters:
+             index : integer -> sequence number of the species
+
+            Returns:
+                type : is returned with one of the following pre-defined constants:
+                       MSX_BULK (defined as 0) for a bulk water species , or
+                       MSX_WALL (defined as 1) for a pipe wall surface species
+                units: mass units that were defined for the species in question
+                atol : the absolute concentration tolerance defined for the species.
+                rtol : the relative concentration tolerance defined for the species.  """
+        type = c_int()
+        units = create_string_buffer(16)
+        atol = c_double()
+        rtol = c_double()
+
+        err = self.msx_lib.MSXgetspecies(
+            index, byref(type), units, byref(atol), byref(rtol))
+
+        if type.value == 0:
+            type = 'BULK'
+        elif type.value == 1:
+            type = 'WALL'
+
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return type, units.value.decode("utf-8"), atol.value, rtol.value
+
+    def MSXgetcount(self, code):
+        """      """
+        count = c_int()
+        err = self.msx_lib.MSXgetcount(code, byref(count))
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return err, count.value
+
+    def MSXgetconstant(self, index):
+        """ Retrieves the value of a particular rection constant  """
+        """msx.MSXgetconstant(index)
+        msx.MSXgetconstant(1)"""
+        """" Parameters:
+        index : integer is the sequence number of the reaction
+                constant ( starting from 1 ) as it 
+                appeared in the MSX input file
+
+        Returns: value -> the value assigned to the constant.    """
+        value = c_double()
+        err = self.msx_lib.MSXgetconstant(index, byref(value))
+        if err:
+            raise Warning(self.MSXerror(err))
+        return value.value
+
+    def MSXgetparameter(self, obj_type, index, param):
+        """Retrieves the value of a particular reaction parameter for a given
+           pipe
+           msx.MSXgetparameter(obj_type, index, param)
+           msx.MSXgetparameter(1,1,1)
+           Parameters:
+               obj_type: is type of object being queried and must be either:
+                    MSX_NODE (defined as 0) for a node or
+                    MSX_LINK(defined as 1) for alink
+
+               index: is the internal sequence number (starting from 1)
+                      assigned to the node or link
+
+               param: the sequence number of the parameter (starting from 1
+                      as listed in the MSX input file)
+
+               Returns:
+                   value : the value assigned to the parameter for the node or link
+                           of interest.        """
+        value = c_double()
+        err = self.msx_lib.MSXgetparameter(obj_type, index, param, byref(value))
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return value.value
+
+    def MSXgetpatternlen(self, pattern_index):
+        """      """
+        len = c_int()
+        err = self.msx_lib.MSXgetpatternlen(pattern_index, byref(len))
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return len.value
+
+    def MSXgetpatternvalue(self, pattern_index, period):
+        """  Retrieves the multiplier at a specific time period for a
+             given source time pattern
+            msx.MSXgetpatternvalue(pattern_index, period)
+            msx.MSXgetpatternvalue(1,1)
+             Parameters:
+                 pattern_index: the internal sequence number(starting from 1)
+                 of the pattern as it appears in the MSX input file
+
+                 period: the index of the time period (starting from 1) whose
+                 multiplier is being sought """
+        value = c_double()
+        err = self.msx_lib.MSXgetpatternvalue(pattern_index, period, byref(value))
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return value.value
+
+    def MSXgetinitqual(self, obj_type, index, species):
+        """  Retrieves the intial concetration of a particular chemical species
+             assigned to a specific node or link of the pipe network
+            msx.MSXgetinitqual(obj_type, index)
+            msx.MSXgetinitqual(1,1,1)
+             Parameters:
+
+                 type : type of object being queeried and must be either:
+                        MSX_NODE (defined as 0) for a node or ,
+                        MSX_LINK (defined as 1) for a link
+
+                 index : the internal sequence number (starting from 1) assigned
+                         to the node or link
+
+                 species: the sequence number of the species (starting from 1)
+
+                 Returns:
+                        value: the initial concetration of the species at the node or
+                               link of interest."""
+        # obj_type = c_int(obj_type)
+        value = c_double()
+        # species = c_int(species)
+        # index = c_int(index)
+        err = self.msx_lib.MSXgetinitqual(obj_type, index, species, byref(value))
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return value.value
+
+    def MSXgetsource(self, node_index, species_index):
+        """ Retrieves information on any external source of a particular
+            chemical species assigned to a specific node or link of the pipe
+            network.
+            msx.MSXgetsource(node_index, species_index)
+            msx.MSXgetsource(1,1)
+
+            Parameters:
+                node_index: the internal sequence number (starting from 1)
+                assigned to the node of interest.
+
+                species_index: the sequence number of the species of interest
+                (starting from 1 as listed in MSX input file)
+            Returns:
+
+                type: the type of external source to be utilized and will be one of
+                     the following predefined constants:
+                    MSX_NOSOURCE (defined as -1) for no source
+                    MSX_CONCEN (defined as 0) for a concetration sourc
+                    MSX_MASS (defined as 1) for a mass booster source
+                    MSX_SETPOINT (defined as 2) for a setpoint source
+                    MSX_FLOWPACE (defined as 3) for a flow paced source
+
+                level: the baseline concentration ( or mass flow rate) of the source)
+
+                pat : the index of the time pattern used to add variability to the
+                      the source's baseline level (and will be 0 if no pattern
+                      was defined for the source)
+              """
+        type = c_int()
+        level = c_double()
+        pattern = c_int()
+        node_index = c_int(node_index)
+        err = self.msx_lib.MSXgetsource(node_index, species_index,
+                                        byref(type), byref(level), byref(pattern))
+
+        if type.value == -1:
+            type = 'NOSOURCE'
+        elif type.value == 0:
+            type = 'CONCEN'
+        elif type.value == 1:
+            type = 'MASS'
+        elif type.value == 2:
+            type = 'SETPOINT'
+        elif type.value == 3:
+            type = 'FLOWPACED'
+
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+        return type, level.value, pattern.value
+
+    def MSXsaveoutfile(self, filename):
+        """ Saves water quality results computed for each node, link
+            and reporting time period to a named binary file.
+            msx.MSXsaveoutfile(filename)
+            msx.MSXsaveoufile(Arsenite.msx)
+
+            Parameters:
+                filename: name of the permanent output results file"""
+        err = self.msx_lib.MSXsaveoutfile(filename.encode())
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsavemsxfile(self, filename):
+        """ Saves the data associated with the current MSX project into a new
+            MSX input file
+            msx.MSXsavemsxfile(filename)
+            msx.MSXsavemsxfile(Arsenite.msx)
+
+            Parameters:
+                filename: name of the file to which data are saved"""
+        err = self.msx_lib.MSXsavemsxfile(filename.encode())
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsetconstant(self, index, value):
+        """ Assigns a new value to a specific reaction constant
+            msx.MSXsetconstant(index, value)
+            msx.MSXsetconstant(1,10)"""
+        """" Parameters
+             index : integer -> is the sequence number of the reaction
+             constant ( starting from 1 ) as it appeared in the MSX
+             input file
+
+             Value: float -> the new value to be assigned to the constant."""
+
+        value = c_double(value)
+        err = self.msx_lib.MSXsetconstant(index, value)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsetparameter(self, obj_type, index, param, value):
+        """ Assigns a value to a particular reaction parameter for a given pipe
+            or tank within the pipe network
+            msx.MSXsetparameter(obj_type, index, param, value)
+            msx.MSXsetparameter(1,1,1,15)
+            Parameters:
+                 obj_type: is type of object being queried and must be either:
+                    MSX_NODE (defined as 0) for a node or
+                    MSX_LINK (defined as 1) for a link
+
+               index: is the internal sequence number (starting from 1)
+                      assigned to the node or link
+
+               param: the sequence number of the parameter (starting from 1
+                      as listed in the MSX input file)
+
+               value: the value to be assigned to the parameter for the node or
+                      link of interest.                 """
+        value = c_double(value)
+        err = self.msx_lib.MSXsetparameter(obj_type, index, param, value)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsetinitqual(self, obj_type, index, species, value):
+        """  Assigns an initial concetration of a particular chemical species
+             node or link of the pipe network
+             msx.MSXsetinitqual(obj_type, index, species, value)
+             msx.MSXsetinitqual(1,1,1,15)
+             Parameters:
+                 type: type of object being queried and must be either :
+                       MSX_NODE(defined as 0) for a node or
+                       MSX_LINK(defined as 1) for a link
+                 index: integer -> the internal sequence number (starting from 1)
+                        assigned to the node or link
+
+                 species: the sequence number of the species (starting from 1 as listed in
+                 MASx input file)
+
+                 value: float -> the initial concetration of the species to be applied at the node or link
+                        of interest.
+                 """
+
+        value = c_double(value)
+        err = self.msx_lib.MSXsetinitqual(obj_type, index, species, value)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsetpattern(self, index, factors, nfactors):
+        """   """
+        err = self.msx_lib.MSXsetpattern(index, factors, nfactors)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsetpatternvalue(self, pattern, period, value):
+        """Assigns a new value to the multiplier for a specific time period
+                      in a given MSX source time pattern.
+            msx.MSXsetpatternvalue(pattern, period, value)
+            msx.MSXsetpatternvalue(1,1,10)
+           Parameters:
+               pattern: the internal sequence number (starting from 1) of the
+               pattern as it appears in the MSX input file.
+
+               period: the time period (starting from 1) in the pattern to be replaced
+               value:  the new multiplier value to use for that time period."""
+        value = c_double(value)
+        err = self.msx_lib.MSXsetpatternvalue(pattern, period, value)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsolveQ(self):
+        """ Solves for water quality over the entire simulation period
+            and saves the results to an internal scratch file
+            msx.MSXsolveQ()"""
+        err = self.msx_lib.MSXsolveQ()
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXsolveH(self):
+        """ Solves for system hydraulics over the entire simulation period
+            saving results to an internal scratch file
+            msx.MSXsolveH() """
+        err = self.msx_lib.MSXsolveH()
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXaddpattern(self, pattern_id):
+        """             """
+        err = self.msx_lib.MSXaddpattern(pattern_id.encode())
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXusehydfile(self, filename):
+        """             """
+        err = self.msx_lib.MSXusehydfile(filename.encode())
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXstep(self):
+        """     """
+        t = c_int()
+        tleft = c_int()
+        err = self.msx_lib.MSXstep(byref(t), byref(tleft))
+
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+        return t.value, tleft.value
+
+    def MSXinit(self, flag):
+        """                 """
+        err = self.msx_lib.MSXinit(flag)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXreport(self):
+        """ Writes water quality simulations results as instructed by
+            MSX input file to a text file.
+            msx.MSXreport()"""
+        err = self.msx_lib.MSXreport()
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXgetqual(self, type, index, species):
+        """         """
+
+        value = (0)
+        err = self.msx_lib.MSXgetqual(type, index, species, value)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+        return value.value
+
+    def MSXsetsource(self, node, species, type, level, pat):
+        """"Sets the attributes of an external source of particular chemical
+            species to specific node of the pipe network
+            msx.setsource(node, species, type, level, pat)
+            msx.MSXsetsource(1,1,3,10.565,1)
+            Parameters:
+                node: the internal sequence number (starting from1) assigned
+                      to the node of interest.
+
+                species: the sequence number of the species of interest (starting
+                         from 1 as listed in the MSX input file)
+
+                type: the type of external source to be utilized and will be one of
+                      the following predefined constants:
+                      MSX_NOSOURCE (defined as -1) for no source
+                      MSX_CONCEN (defined as 0) for a concetration source
+                      MSX_MASS (defined as 1) for a mass booster source
+                      MSX_SETPOINT (defined as 2) for a setpoint source
+                      MSX_FLOWPACE (defined as 3) for a flow paced source
+
+                level: the baseline concetration (or mass flow rate) of the source
+
+                pat: the index of the time pattern used to add variability to the
+                     source's baseline level ( use 0 if the source has a constant strength)     """
+        level = c_double(level)
+        pat = c_int(pat)
+        type = c_int(type)
+        err = self.msx_lib.MSXsetsource(node, species, type, level, pat)
+        if err:
+            raise RuntimeError(self.MSXerror(err))
+
+    def MSXgeterror(self, err):
+        """Returns the text for an error message given its error code.
+        msx.MSXgeterror(err)
+        msx.MSXgeterror(516)
+        Parameters:
+            err: the code number of an error condition generated by EPANET-MSX
+
+        Returns:
+            errmsg: the text of the error message corresponding to the error code"""
+        errmsg = create_string_buffer(80)
+        e = self.msx_lib.MSXgeterror(err, errmsg, 80)
+
+        if e:
+            raise RuntimeError(errmsg.value.decode())
+
+        return errmsg.value.decode()
