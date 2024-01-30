@@ -62,6 +62,7 @@ from pkg_resources import resource_filename
 from inspect import getmembers, isfunction, currentframe, getframeinfo
 import matplotlib.pyplot as plt
 from datetime import datetime
+from epyt import __version__
 from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
@@ -520,8 +521,7 @@ class epanet:
                              'NOT', 'BELOW', 'ABOVE']
 
         # Initial attributes
-        self.classversion = '1.0.7'
-        self.api = epanetapi(version)
+        self.classversion = __version__
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
 

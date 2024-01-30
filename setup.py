@@ -1,4 +1,5 @@
 from setuptools import setup
+from epyt import __version__
 import os
 
 # python setup.py bdist_wheel
@@ -25,7 +26,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name=module_name,
-    version="1.0.8",
+    version=f"{__version__}",
     author="Marios S. Kyriakou",
     author_email="kiriakou.marios@ucy.ac.cy",
     description='EPyT: An EPANET-Python Toolkit for Smart Water Network Simulations. The EPyT is inspired by the '
