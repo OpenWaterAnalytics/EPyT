@@ -9760,12 +9760,12 @@ class epanet:
         midElev = (self.getNodeElevations(leftNodeIndex) + self.getNodeElevations(rightNodeIndex)) / 2
         self.setNodeJunctionData(newNodeIndex, midElev, 0, '')
         self.setNodeEmitterCoeff(newNodeIndex, self.getNodeEmitterCoeff(leftNodeIndex))
-        if self.getQualityCode()[0] > 0:
+        if self.getQualityCode() > 0:
             midInitQual = (self.getNodeInitialQuality(leftNodeIndex) + self.getNodeInitialQuality(rightNodeIndex)) / 2
             self.setNodeInitialQuality(newNodeIndex, midInitQual)
             self.setNodeSourceQuality(newNodeIndex, self.getNodeSourceQuality(leftNodeIndex)[0])
             self.setNodeSourcePatternIndex(newNodeIndex, self.getNodeSourcePatternIndex(leftNodeIndex))
-            if self.getNodeSourceTypeIndex(leftNodeIndex) != 0:
+            if self.getNodeSourceTypeIndex(leftNodeIndex)[0] != 0:
                 self.setNodeSourceType(newNodeIndex, self.getNodeSourceTypeIndex(leftNodeIndex))
 
         # Access link properties
