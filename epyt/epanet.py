@@ -2446,11 +2446,11 @@ class epanet:
             value[i].Value = self.ControlLevelValues[-1]
             if self.ControlTypes[-1] == 'LOWLEVEL':
                 value[i].Control = 'LINK ' + value[i].LinkID + ' ' + \
-                                   value[i].Setting + ' IF NODE ' + \
+                                   str(value[i].Setting) + ' IF NODE ' + \
                                    value[i].NodeID + ' BELOW ' + str(value[i].Value)
             elif self.ControlTypes[-1] == 'HIGHLEVEL':
                 value[i].Control = 'LINK ' + value[i].LinkID + ' ' + \
-                                   value[i].Setting + ' IF NODE ' + \
+                                   str(value[i].Setting) + ' IF NODE ' + \
                                    value[i].NodeID + ' ABOVE ' + str(value[i].Value)
             elif self.ControlTypes[-1] == 'TIMER':
                 value[i].Control = 'LINK ' + value[i].LinkID + ' ' + \
