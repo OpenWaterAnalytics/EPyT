@@ -3,7 +3,7 @@ Usage
 
 Minimum Example:
 
-.. code-block:: console
+.. code-block:: python
    
    from epyt import epanet
    d = epanet('Net1.inp')
@@ -12,7 +12,7 @@ Minimum Example:
 
 Plot the network:
 
-.. code-block:: console
+.. code-block:: python
 
    d.plot()
 
@@ -21,13 +21,13 @@ Plot the network:
 
 Lists all available functions and properties:
 
-.. code-block:: console
+.. code-block:: python
 
    dir(d)
 
 Retrieve some examples for the function:
 
-.. code-block:: console
+.. code-block:: python
 
    help(d.getNodeElevations)
 
