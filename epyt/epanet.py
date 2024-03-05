@@ -311,6 +311,25 @@ class ToolkitConstants:
     EN_R_IS_CLOSED = 2
     EN_R_IS_ACTIVE = 3
 
+    # MSX Constants
+    MSX_NODE = 0
+    MSX_LINK = 1
+    MSX_TANK = 2
+    MSX_SPECIES = 3
+    MSX_TERM = 4
+    MSX_PARAMETER = 5
+    MSX_CONSTANT = 6
+    MSX_PATTERN = 7
+
+    MSX_BULK = 0
+    MSX_WALL = 1
+
+    MSX_NOSOURCE = -1
+    MSX_CONCEN = 0
+    MSX_MASS = 1
+    MSX_SETPOINT = 2
+    MSX_FLOWPACED = 3
+
 
 class EpytValues:
 
@@ -463,7 +482,7 @@ def isList(var):
 class epanet:
     """ EPyt main functions class """
 
-    def __init__(self, *argv, version=2.2, loadfile=False):
+    def __init__(self, *argv, version=2.2, loadfile=False, msx=False):
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
@@ -523,6 +542,7 @@ class epanet:
 
         # Initial attributes
         self.classversion = __version__
+        self.api = epanetapi(version, msx=msx)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
 
@@ -591,6 +611,10 @@ class epanet:
         plt.rcParams['figure.dpi'] = 300
         plt.rcParams['figure.constrained_layout.use'] = True
         plt.rcParams['figure.max_open_warning'] = 30
+
+        if msx:
+            self.msx = epanetmsxapi()
+            MSX_SPECIES = 3
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -4809,7 +4833,6 @@ class epanet:
             return np.array(value)
         else:
             return value
-
 
     def getNodeTankBulkReactionCoeff(self, *argv):
         """ Retrieves the tank bulk rate coefficient.
@@ -11108,6 +11131,803 @@ class epanet:
                     eval('self.api.' + fun + '(i, categ, param[j])')
                 j += 1
 
+    """MSX Funtions"""
+
+    def loadMSXfile(self, msxname):
+        self.msx.MSXopen(msxname)
+        self.msxname = msxname
+
+    def unloadMSX(self):
+        self.msx.MSXclose()
+
+    def getMSXSpeciesCount(self):
+        MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
+        return self.msx.MSXgetcount(MSX_SPECIES)
+
+    def getMSXConstantsCount(self):
+        MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
+        return self.msx.MSXgetcount(MSX_CONSTANT)
+
+    def getMSXParametersCount(self):
+        MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
+        return self.msx.MSXgetcount(MSX_PARAMETER)
+
+    def getMSXPatternsCount(self):
+        MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
+        return self.msx.MSXgetcount(MSX_PATTERN)
+
+    def saveMSXFile(self, msxname):
+        self.msx.MSXsavemsxfile(msxname)
+
+    def saveMSXQualityFile(self, outfname):
+        self.msx.MSXsaveoutfile(outfname)
+
+    def solveMSXCompleteHydraulics(self):
+        self.msx.MSXsolveH()
+
+    def solveMSXCompleteQuality(self):
+        self.msx.MSXsolveQ()
+
+    def writeMSXReport(self):
+        self.msx.MSXreport()
+
+    def useMSXHydraulicFile(self, hydname):
+        self.msx.MSXusehydfile(hydname)
+
+    def getMSXPatternValue(self, patternIndex, patternStep):
+        return self.msx.MSXgetpatternvalue(patternIndex, patternStep)
+
+    def initializeMSXQualityAnalysis(self, flag):
+        self.msx.MSXinit(flag)
+
+    def stepMSXQualityAnalysisTimeLeft(self):
+        t, tleft = self.msx.MSXstep()
+        return t, tleft
+
+    def getMSXError(self, code):
+        self.msx.MSXgeterror(code)
+
+    def get_MSX_Options(self, param="", getall=False):
+        msxname = self.msxname
+        options = {}
+        options["AREA_UNITS"] = "FT2"
+        options["RATE_UNITS"] = "HR"
+        options["SOLVER"] = "EUL"
+        options["TIMESTEP"] = 300
+        options["ATOL"] = 0.01
+        options["RTOL"] = 0.001
+        options["COUPLING"] = "NONE"
+        options["COMPILER"] = "NONE"
+
+        try:
+            with open(msxname, 'r') as f:
+                sect = 0
+                for line in f:
+                    if line.startswith("[OPTIONS]"):
+                        sect = 1
+                        continue
+                    elif line.startswith("[END") or line.startswith("[REPORTS]"):
+                        break
+                    elif sect == 1:
+                        if not line.strip():
+                            continue
+                        if line.startswith("["):
+                            continue
+                        key, value = line.split(None, 1)
+                        if key == param or not param:
+                            if key == "TIMESTEP":
+                                options["TIMESTEP"] = float(value)
+                            elif key == "AREA_UNITS":
+                                options["AREA_UNITS"] = value.strip()
+                            elif key == "RATE_UNITS":
+                                options["RATE_UNITS"] = value.strip()
+                            elif key == "SOLVER":
+                                options["SOLVER"] = value.strip()
+                            elif key == "RTOL":
+                                options["RTOL"] = float(value)
+                            elif key == "ATOL":
+                                options["ATOL"] = float(value)
+                            elif key == "COUPLING":
+                                options["COUPLING"] = value.strip()
+                            elif key == "COMPILER":
+                                options["COMPILER"] = value.strip()
+                            else:
+                                options[key] = value
+
+                            if not getall and param:
+                                return options[param]
+
+        except FileNotFoundError:
+            warnings.warn("Please load MSX File.")
+            return {}
+        return options
+
+    def getMSXTimeStep(self):
+        return self.get_MSX_Options("TIMESTEP")
+
+    def getMSXRateUnits(self):
+        return self.get_MSX_Options("RATE_UNITS")
+
+    def getMSXAreaUnits(self):
+        return self.get_MSX_Options("AREA_UNITS")
+
+    def getMSXCompiler(self):
+        return self.get_MSX_Options("COMPILER")
+
+    def getMSXCoupling(self):
+        return self.get_MSX_Options("COUPLING")
+
+    def getMSXSolver(self):
+        return self.get_MSX_Options("SOLVER")
+
+    def getMSXAtol(self):
+        return self.get_MSX_Options("ATOL")
+
+    def getMSXRtol(self):
+        return self.get_MSX_Options("RTOL")
+
+    def getMSXConstantsNameID(self, varagin=None):
+        x = self.getMSXConstantsCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            for i in range(1, x + 1):
+                varagin[i] = i + 1
+        MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
+        if x > 0:
+            for i in varagin:
+                len = self.msx.MSXgetIDlen(MSX_CONSTANT, i)
+                value[i] = self.msx.MSXgetID(MSX_CONSTANT, i, len)
+        return value
+
+    def getMSXParametersNameID(self, varagin=None):
+        x = self.getMSXParametersCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            for i in range(1, x + 1):
+                varagin[i] = i + 1
+        MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
+        if x > 0:
+            for i in varagin:
+                len = self.msx.MSXgetIDlen(MSX_PARAMETER, i)
+                value[i] = self.msx.MSXgetID(MSX_PARAMETER, i, len)
+        return value
+
+    def getMSXPatternsNameID(self, varagin=None):
+        x = self.getMSXPatternsCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            for i in range(1, x + 1):
+                varagin[i] = i + 1
+        MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
+        if x > 0:
+            for i in varagin:
+                len = self.msx.MSXgetIDlen(MSX_PATTERN, i)
+                value[i] = self.msx.MSXgetID(MSX_PATTERN, i, len)
+        return value
+
+    def getMSXSpeciesNameID(self, varagin=None):
+        x = self.getMSXSpeciesCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            for i in range(1, x + 1):
+                varagin[i] = i + 1
+        MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
+        if x > 0:
+            for i in varagin:
+                len = self.msx.MSXgetIDlen(MSX_SPECIES, i)
+                value[i] = self.msx.MSXgetID(MSX_SPECIES, i, len)
+        return value
+
+    def getMSXParametersIndex(self, varagin=None):
+        x = self.getMSXParametersCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            varagin = self.getMSXParametersNameID()
+            y = [value for value in varagin.values()]
+        else:
+            y = varagin
+        MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
+        if x > 0:
+            for i in y:
+                value[i] = self.msx.MSXgetindex(MSX_PARAMETER, i)
+        return value
+
+    def getMSXSpeciesIndex(self, varagin=None):
+        x = self.getMSXSpeciesCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            varagin = self.getMSXSpeciesNameID()
+            y = [value for value in varagin.values()]
+        else:
+            y = varagin
+        MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
+        if x > 0:
+            for i in y:
+                value[i] = self.msx.MSXgetindex(MSX_SPECIES, i)
+        return value
+
+    def getMSXPatternsIndex(self, varagin=None):
+        x = self.getMSXSpeciesCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            varagin = self.getMSXPatternsNameID()
+            y = [value for value in varagin.values()]
+        else:
+            y = varagin
+        MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
+        if x > 0:
+            for i in y:
+                value[i] = self.msx.MSXgetindex(MSX_PATTERN, i)
+        return value
+
+    def getMSXConstantsIndex(self, varagin=None):
+        x = self.getMSXConstantsCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            varagin = self.getMSXConstantsNameID()
+            y = [value for value in varagin.values()]
+        else:
+            y = varagin
+        MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
+        if x > 0:
+            for i in y:
+                value[i] = self.msx.MSXgetindex(MSX_CONSTANT, i)
+        return value
+
+    def getMSXConstantsValue(self, varagin=None):
+        x = self.getMSXConstantsCount()
+        value = {}
+        if varagin is None:
+            varagin = {}
+            for i in range(1, x + 1):
+                varagin[i] = i + 1
+        if x > 0:
+            for i in varagin:
+                value[i] = self.msx.MSXgetconstant(i)
+        return value
+
+    def getMSXParametersPipesValue(self):
+        x = self.getLinkPipeCount()
+        y = self.getMSXParametersCount()
+        value = []
+        for i in range(1, x + 1):
+            value_row = []
+            for j in range(1, y + 1):
+                param = self.msx.MSXgetparameter(1, i, j)
+                value_row.append(param)
+            value.append(value_row)
+        return value
+
+    def getMSXParametersTanksValue(self):
+        x = self.getNodeTankIndex()
+        y = self.getMSXParametersCount()
+        value = {}
+        for i in x:
+            value[i] = []
+            for j in range(1, y + 1):
+                param = self.msx.MSXgetparameter(0, i, j)
+                value[i].append(param)
+        return value
+
+    def getMSXPatternsLengths(self, varagin=None):
+        x = self.getMSXPatternsCount()
+        value = {}
+        if varagin is None:
+            for i in range(1, x + 1):
+                value[i] = self.msx.MSXgetpatternlen(i)
+        else:
+            if x > 0:
+                for i in varagin:
+                    value[i] = self.msx.MSXgetpatternlen(i)
+        return value
+
+    def getMSXPattern(self):
+        val = self.getMSXPatternsLengths()
+        y = [value for value in val.values()]
+        tmpmaxlen = max(y)
+        value = [[0] * tmpmaxlen for _ in range(self.getMSXPatternsCount())]
+        for i in range(1, self.getMSXPatternsCount() + 1):
+            z = self.getMSXPatternsLengths([i])
+            tmplength = [value for value in z.values()]
+            for j in range(1, tmplength[0] + 1):
+                value[i - 1][j - 1] = self.msx.MSXgetpatternvalue(i, j)
+            if tmplength[0] < tmpmaxlen:
+                for j in range(tmplength + 1, tmpmaxlen + 1):
+                    value[i - 1][j - 1] = value[i - 1][j - tmplength - 1]
+
+        return value
+
+    def getMSXSpeciesType(self, varagin=None):
+
+        x = self.getMSXSpeciesCount()
+        value = []
+
+        if varagin is None:
+            varagin = {}
+            for i in range(1, x + 1):
+                varagin[i] = i + 1
+        if x > 0:
+            for i in varagin:
+                y = {}
+                y = self.msx.MSXgetspecies(i)
+                value.append(y[0])
+        return value
+
+    def getMSXSpeciesUnits(self, varagin=None):
+        x = self.getMSXSpeciesCount()
+        value = []
+
+        if varagin is None:
+            varagin = {}
+            for i in range(1, x + 1):
+                varagin[i] = i + 1
+        if x > 0:
+            for i in varagin:
+                y = {}
+                y = self.msx.MSXgetspecies(i)
+                value.append(y[1])
+        return value
+
+    def getEquations(self):
+        msxname = self.msxname
+        Terms = {}
+        Pipes = {}
+        Tanks = {}
+        with open(msxname, 'r') as f:
+
+            sect = 0
+            i = 1
+            t = 1
+            k = 1
+            while True:
+                tline = f.readline()
+                if not tline:
+                    break
+                tline = tline.strip()
+                if not tline:
+                    continue
+                tok = tline.split()[0]
+
+                if not tok:
+                    continue
+                if tok[0] == ';':
+                    continue
+
+                if tok[0] == '[':
+
+                    if tok[1:6].upper() == 'TERMS':
+                        sect = 1
+                        continue
+                    elif tok[1:6].upper() == 'PIPE]':
+                        sect = 2
+                        continue
+                    elif tok[1:6].upper() == 'TANK]':
+                        sect = 3
+                        continue
+                    elif tok[1:6].upper() == '[END':
+                        break
+                    else:
+                        sect = 0
+                        continue
+                if sect == 0:
+                    continue
+
+                elif sect == 1:
+                    Terms[i] = tline
+                    i = i + 1
+                elif sect == 2:
+                    Pipes[t] = tline
+                    t = t + 1
+                elif sect == 3:
+                    Tanks[k] = tline
+                    k = k + 1
+            return Terms, Pipes, Tanks
+
+    def getMSXEquationsTerms(self):
+        x, y, z = self.getEquations()
+        x = list(x.values())
+        return x
+
+    def getMSXEquationsPipes(self):
+        x, y, z = self.getEquations()
+        y = list(y.values())
+        return y
+
+    def getMSXEquationsTanks(self):
+        x, y, z = self.getEquations()
+        z = list(z.values())
+        return z
+
+    def getMSXSources(self):
+        value = []
+        for i in range(1, self.getNodeCount() + 1):
+            value_row = []
+            for j in range(1, self.getMSXSpeciesCount() + 1):
+                y = self.msx.MSXgetsource(i, j)
+                value_row.append(y)
+            value.append(value_row)
+        return value
+
+    def getMSXSourceType(self, varagin=None):
+        value = []
+        if varagin == None:
+            for i in range(1, self.getNodeCount() + 1):
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetsource(i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        else:
+            for i in varagin:
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetsource(i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        source = []
+        for i in value:
+            source.append([item[0] for item in i])
+        return source
+
+    def getMSXSourceLevel(self, varagin=None):
+        value = []
+        if varagin == None:
+            for i in range(1, self.getNodeCount() + 1):
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetsource(i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        else:
+            for i in varagin:
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetsource(i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        sourcelevel = []
+        for i in value:
+            sourcelevel.append([item[1] for item in i])
+        return sourcelevel
+
+    def getMSXSourcePatternIndex(self, varagin=None):
+        value = []
+        if varagin == None:
+            for i in range(1, self.getNodeCount() + 1):
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetsource(i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        else:
+            for i in varagin:
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetsource(i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        sourcepatternindex = []
+        for i in value:
+            sourcepatternindex.append([item[2] for item in i])
+        return sourcepatternindex
+
+    def getMSXLinkInitqualValue(self, varagin=None):
+        value = []
+        if varagin == None:
+            for i in range(1, self.getLinkCount() + 1):
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetinitqual(1, i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        else:
+            for i in varagin:
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetinitqual(1, i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        return value
+
+    def getMSXNodeInitqualValue(self, varagin=None):
+        value = []
+        if varagin == None:
+            for i in range(1, self.getNodeCount() + 1):
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetinitqual(0, i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        else:
+            for i in varagin:
+                value_row = []
+                for j in range(1, self.getMSXSpeciesCount() + 1):
+                    y = self.msx.MSXgetinitqual(0, i, j)
+                    value_row.append(y)
+                value.append(value_row)
+        return value
+
+    def getMSXSpeciesATOL(self):
+        value = []
+        for i in range(1, self.getMSXSpeciesCount()):
+            Atol = []
+            value.append(self.msx.MSXgetspecies(i))
+            Atol.append([item[2] for item in value])
+        return Atol
+
+    def getMSXSpeciesRTOL(self):
+        value = []
+        for i in range(1, self.getMSXSpeciesCount()):
+            Rtol = []
+            value.append(self.msx.MSXgetspecies(i))
+            Rtol.append([item[3] for item in value])
+        return Rtol
+
+    def getMSXSpeciesConcentration(self, type, index, species):
+        return self.msx.MSXgetqual(type, index, species)
+
+    def getMSXSourceNodeNameID(self):
+        nodes = []
+        for i in range(1, self.getNodeCount() + 1):
+            source = []
+            value = []
+            flag = 0
+            value_row = []
+            for j in range(1, self.getMSXSpeciesCount() + 1):
+                y = self.msx.MSXgetsource(i, j)
+                value_row.append(y)
+                value.append(value_row)
+            for k in value:
+                source.append([item[0] for item in k])
+            for sublist in source:
+                for item in sublist:
+                    if item!='NOSOURCE':
+                        flag = 1
+                        break
+            if flag == 1:
+                nodes.append(i)
+        return nodes
+
+    def MSXPythonSetup(self, msxname):
+
+        self.msxname = msxname[:-4] + '_temp.msx'
+        copyfile(msxname,self.msxname)
+
+        self.msx.MSXopen(self.msxname)
+
+        self.MSXEquationsTerms = self.getMSXEquationsTerms()
+        self.MSXEquationsPipes = self.getMSXEquationsPipes()
+        self.MSXEquationsTanks = self.getMSXEquationsTanks()
+        self.MSXSpeciesCount = self.getMSXSpeciesCount()
+        self.MSXConstantsCount = self.getMSXConstantsCount()
+        self.MSXParametersCount = self.getMSXParametersCount()
+        self.MSXPatternsCount = self.getMSXPatternsCount()
+        self.MSXSpeciesIndex = self.getMSXSpeciesIndex()
+        self.MSXSpeciesNameID = self.getMSXSpeciesNameID()
+        self.MSXSpeciesType = self.getMSXSpeciesType()
+        self.MSXSpeciesUnits = self.getMSXSpeciesUnits()
+        self.MSXSpeciesATOL = self.getMSXSpeciesATOL()
+        self.MSXSpeciesRTOL = self.getMSXSpeciesRTOL()
+        self.MSXConstantsNameID = self.getMSXConstantsNameID()
+        self.MSXConstantsValue = self.getMSXConstantsValue()
+        self.MSXConstantsIndex = self.getMSXConstantsIndex()
+        self.MSXParametersNameID = self.getMSXParametersNameID()
+        self.MSXParametersIndex = self.getMSXParametersIndex()
+        self.MSXParametersTanksValue = self.getMSXParametersTanksValue()
+        self.MSXParametersPipesValue = self.getMSXParametersPipesValue()
+        self.MSXPatternsNameID = self.getMSXPatternsNameID()
+        self.MSXPatternsIndex = self.getMSXPatternsIndex()
+        self.MSXPatternsLengths = self.getMSXPatternsLengths()
+        self.MSXNodeInitqualValue = self.getMSXNodeInitqualValue()
+        self.MSXLinkInitqualValue = self.getMSXLinkInitqualValue()
+        self.MSXSources = self.getMSXSources()
+        self.MSXSourceType = self.getMSXSourceType()
+        self.MSXSourceLevel = self.getMSXSourceLevel()
+        self.MSXSourcePatternIndex = self.getMSXSourcePatternIndex()
+        self.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
+        self.MSXPattern = self.getMSXPattern()
+
+        #options
+        self.solver = self.getMSXSolver()
+        self.areaunits = self.getMSXAreaUnits()
+        self.rateunits = self.getMSXRateUnits()
+        self.rtol = self.getMSXRtol()
+        self.atol = self.getMSXAtol()
+        self.timestep = self.getMSXTimeStep()
+        self.coupling = self.getMSXCoupling()
+        self.compiler = self.getMSXCompiler()
+
+    def setMSXOptions(self, *args):
+
+
+        for i in range(len(args) // 2):
+            argument = args[2 * i].lower()
+            if argument == 'areaunits':
+                self.areaunits = args[2 * i + 1]
+                self.changeMSXOptions("AREA_UNITS",args[2 * i + 1])
+            elif argument == 'rateunits':
+                self.rateunits = args[2 * i + 1]
+                self.changeMSXOptions("RATE_UNITS", args[2 * i + 1])
+            elif argument == 'solver':
+                self.solver = args[2 * i + 1]
+                self.changeMSXOptions("SOLVER", args[2 * i + 1])
+            elif argument == 'timestep':
+                self.timestep = args[2 * i + 1]
+                self.changeMSXOptions("TIMESTEP", args[2 * i + 1])
+            elif argument == 'atol':
+                self.atol = args[2 * i + 1]
+                self.changeMSXOptions("ATOL", args[2 * i + 1])
+            elif argument == 'rtol':
+                self.rtol = args[2 * i + 1]
+                self.changeMSXOptions("RTOL", args[2 * i + 1])
+            elif argument == 'coupling':
+                self.coupling = args[2 * i + 1]
+                self.changeMSXOptions("COUPLING", args[2 * i + 1])
+            elif argument == 'compiler':
+                self.compiler = args[2 * i + 1]
+                self.changeMSXOptions("COMPILER", args[2 * i + 1])
+            else:
+                print('Invalid property found.')
+                return
+
+    def changeMSXOptions(self, param, change):
+        msxname=self.msxname
+        f = open(msxname, 'r+')
+        lines = f.readlines()
+        for i, line in enumerate(lines):
+
+            if line.startswith(param):
+
+                lines[i] = param + "\t" + str(change) + "\n"
+
+        f.seek(0)
+        f.writelines(lines)
+        f.close()
+
+    def setMSXAreaUnitsCM2(self):
+        self.changeMSXOptions("AREA_UNITS","CM2")
+    def setMSXAreaUnitsFT2(self):
+        self.changeMSXOptions("AREA_UNITS", "FT2")
+
+    def setMSXAreaUnitsM2(self):
+        self.changeMSXOptions("AREA_UNITS", "M2")
+
+    def setMSXAtol(self, value):
+        self.changeMSXOptions("ATOL", value)
+
+    def setMSXRtol(self, value):
+        self.changeMSXOptions("RTOL", value)
+
+    def setMSXCompilerGC(self):
+        self.changeMSXOptions("COMPILER", "GC")
+
+    def setMSXCompilerVC(self):
+        self.changeMSXOptions("COMPILER", "VC")
+
+    def setMSXCompilerNONE(self):
+        self.changeMSXOptions("COMPILER", "NONE")
+
+    def setMSXCouplingFULL(self):
+        self.changeMSXOptions("COUPLING", "FULL")
+
+    def setMSXCouplingNONE(self):
+        self.changeMSXOptions("COUPLING", "NONE")
+
+    def setMSXRateUnitsDAY(self):
+        self.changeMSXOptions("RATE_UNITS", "DAY")
+
+    def setMSXRateUnitsHR(self):
+        self.changeMSXOptions("RATE_UNITS", "HR")
+
+    def setMSXRateUnitsMIN(self):
+        self.changeMSXOptions("RATE_UNITS", "MIN")
+
+    def setMSXRateUnitsSEC(self):
+        self.changeMSXOptions("RATE_UNITS", "SEC")
+
+    def setMSXSolverEUL(self):
+        self.changeMSXOptions("SOLVER", "EUL")
+
+    def setMSXSolverRK5(self):
+        self.changeMSXOptions("SOLVER", "RK5")
+
+    def setMSXSolverROS2(self):
+        self.changeMSXOptions("SOLVER", "ROS2")
+
+    def setMSXTimeStep(self, value):
+        self.changeMSXOptions("TIMESTEP", value)
+
+    def setMSXPatternValue(self, index, patternTimeStep, patternFactor):
+        self.msx.MSXsetpatternvalue(index, patternTimeStep, patternFactor)
+
+    def setMSXPattern(self, index, patternVector):
+        nfactors = len(patternVector)
+        self.msx.MSXsetpattern(index, patternVector, nfactors)
+
+    def setMSXParametersTanksValue(self, NodeTankIndex, paramindex, value):
+        self.msx.MSXsetparameter(0, NodeTankIndex, paramindex, value)
+
+    def setMSXParametersPipesValue(self, pipeIndex, value):
+        for i in range(len(value)):
+            self.msx.MSXsetparameter(1, pipeIndex, i+1, value[i])
+
+    def setMSXConstantsValue(self, value):
+        for i in range(len(value)):
+            self.msx.MSXsetconstant(i+1, value[i])
+
+    def addMSXpattern(self, *args):
+        index = -1
+        MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
+        if len(args) == 1:
+            self.msx.MSXaddpattern(args[0])
+            index = self.msx.MSXgetindex(MSX_PATTERN, args[0])
+        elif len(args) == 2:
+            self.msx.MSXaddpattern(args[0])
+            index = self.msx.MSXgetindex(MSX_PATTERN, args[0])
+            self.setMSXPattern(index, args[1])
+        return index
+
+    def getMSXComputedQualitySpecie(self, *args):
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+        if not args:
+            specie = self.getMSXspeciesNameID()
+        else:
+            specie = args[0]
+
+        link_indices = range(1, self.getLinkCount() + 1)
+        node_indices = range(1, self.getNodeCount() + 1)
+        speciename = self.getMSXSpeciesIndex(specie)
+
+        node_quality = np.empty((1, len(node_indices), len(speciename)))
+        link_quality = np.empty((1, len(node_indices), len(speciename)))
+
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+
+        k = 1
+        tleft = 1
+        t = 0
+        time = [0]
+        if node_indices[-1] < link_indices[-1]:
+            for i in range(len(speciename)):
+                for lnk in link_indices:
+                    print(lnk)
+                    link_quality[k, lnk - 1, i] = self.getMSXLinkInitqualValue([lnk])[(speciename)[1]]
+                    if lnk < node_indices[-1] + 1:
+                        node_quality[k, lnk - 1, i] = self.getMSXNodeInitqualValue([lnk])[speciename[i]]
+        else:
+            for i in range(len(speciename)):
+                for lnk in node_indices:
+                    node_quality[k, lnk - 1, i] = self.MSXNodeInitqualValue([lnk])[speciename[i]]
+                    if lnk < link_indices[-1] + 1:
+                        link_quality[k, lnk - 1, i]= self.getMSXLinkInitqualValue([lnk])[speciename[i]]
+        time_sim = self.getTimeSimulationDuration()
+        while tleft > 0 and time_sim != t:
+            k = k + 1
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            for i in range(len(speciename)):
+                if node_indices[-1] < link_indices[-1]:
+                    for lnk in link_indices:
+                        link_quality[k, lnk -1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
+                        if lnk < node_indices[-1] + 1:
+                            node_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(0, lnk, speciename[i])
+                else:
+                    for lnk in node_indices:
+                        node_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(0, lnk, speciename[i])
+                        if lnk < link_indices[-1] + 1:
+                            link_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
+            time.append(t)
+        return {'NodeQuality': node_quality, 'LinkQuality': link_quality, 'Time' : np.array(time)}
+
 
 class epanetapi:
     """
@@ -13965,21 +14785,38 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self):
+    def __init__(self, filename=None):
         ops = platform.system().lower()
         if ops in ["windows"]:
             dll_path1 = resource_filename("epyt", os.path.join("libraries", "win", 'epanet2_2', '64bit',
                                                                f"epanetmsx.dll"))
-        """
         elif ops in ["darwin"]:
             dll_path1 = resource_filename("epyt", os.path.join("libraries", "mac", 'epanet2_2', '64bit',
                                                                f"epanetmsx.dll"))
         else:
             dll_path1 = resource_filename("epyt", os.path.join("libraries", "glnx", 'epanet2_2', '64bit',
-                                                               f"epanetmsx.dll")) 
-        """
+                                                               f"epanetmsx.dll"))
 
         self.msx_lib = cdll.LoadLibrary(dll_path1)
+        # msx opens starts here
+        if filename is not None:
+            """  Open .msx file
+                msx.MSXopen(filename)
+                msx.MSXopen(Arsenite.msx)"""
+            """  filename example : Arsinite.msx or use full path   """
+            print("Opening MSX file:", filename)
+            if not os.path.exists(filename):
+                raise FileNotFoundError(f"File not found: {filename}")
+
+            filename = c_char_p(filename.encode('utf-8'))
+            err = self.msx_lib.MSXopen(filename)
+            if err != 0:
+                self.MSXerror(err)
+                if err == 503:
+                    print("Error 503 may indicate a problem with the MSX file or the MSX library.")
+            else:
+                print("MSX file opened successfully.")
+            # msx open ends here
 
         # Error ~ function
         self.msx_error = self.msx_lib.MSXgeterror
@@ -13987,8 +14824,8 @@ class epanetmsxapi:
 
     def MSXopen(self, filename):
         """  Open .msx file
-            msx.MSXopen(filename)
-            msx.MSXopen(Arsenite.msx)"""
+                    msx.MSXopen(filename)
+                    msx.MSXopen(Arsenite.msx)"""
         """  filename example : Arsinite.msx or use full path   """
         print("Opening MSX file:", filename)
         if not os.path.exists(filename):
@@ -14002,7 +14839,7 @@ class epanetmsxapi:
                 print("Error 503 may indicate a problem with the MSX file or the MSX library.")
         else:
             print("MSX file opened successfully.")
-        return err
+        # msx open ends here
 
     def MSXclose(self):
         """  Close .msx file
@@ -14019,11 +14856,26 @@ class epanetmsxapi:
         print(errmsg.value.decode())
 
     def MSXgetindex(self, obj_type, obj_id):
-        """      """
+        """ Retrieves the number of objects of a specific type
+          MSXgetcount(obj_type, obj_id)
+
+          Parameters:
+               obj_type: code type of object being sought and must be one of the following
+               pre-defined constants:
+               MSX_SPECIES (for a chemical species) the number 3
+               MSX_CONSTANT (for a reaction constant) the number 6
+               MSX_PARAMETER (for a reaction parameter) the number 5
+               MSX_PATTERN (for a time pattern) the number 7
+
+               obj_id: string containing the object's ID name
+          Returns:
+              The index number (starting from 1) of object of that type with that specific name."""
+        obj_type = c_int(obj_type)
+        # obj_id=c_char_p(obj_id)
         index = c_int()
-        err = self.msx_lib.MSXgetindex(obj_type, obj_id, byref(index))
+        err = self.msx_lib.MSXgetindex(obj_type, obj_id.encode("utf-8"), byref(index))
         if err != 0:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return index.value
 
     def MSXgetID(self, obj_type, index, id_len=80):
@@ -14051,7 +14903,7 @@ class epanetmsxapi:
         obj_id = create_string_buffer(id_len + 1)
         err = self.msx_lib.MSXgetID(obj_type, index, obj_id, id_len)
         if err != 0:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return obj_id.value.decode()
 
     def MSXgetIDlen(self, obj_type, index):
@@ -14076,7 +14928,7 @@ class epanetmsxapi:
         len = c_int()
         err = self.msx_lib.MSXgetIDlen(obj_type, index, byref(len))
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return len.value
 
     def MSXgetspecies(self, index):
@@ -14108,16 +14960,28 @@ class epanetmsxapi:
             type = 'WALL'
 
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return type, units.value.decode("utf-8"), atol.value, rtol.value
 
     def MSXgetcount(self, code):
-        """      """
+        """ Retrieves the number of objects of a specific type
+            MSXgetcount(code)
+
+            Parameters:
+                 code type of object being sought and must be one of the following
+                 pre-defined constants:
+                 MSX_SPECIES (for a chemical species) the number 3
+                 MSX_CONSTANT (for a reaction constant) the number 6
+                 MSX_PARAMETER (for a reaction parameter) the number 5
+                 MSX_PATTERN (for a time pattern) the number 7
+            Returns:
+                The count number of object of that type.
+         """
         count = c_int()
         err = self.msx_lib.MSXgetcount(code, byref(count))
         if err:
-            raise RuntimeError(self.MSXerror(err))
-        return err, count.value
+            Warning(self.MSXerror(err))
+        return count.value
 
     def MSXgetconstant(self, index):
         """ Retrieves the value of a particular rection constant  """
@@ -14132,7 +14996,7 @@ class epanetmsxapi:
         value = c_double()
         err = self.msx_lib.MSXgetconstant(index, byref(value))
         if err:
-            raise Warning(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return value.value
 
     def MSXgetparameter(self, obj_type, index, param):
@@ -14157,15 +15021,25 @@ class epanetmsxapi:
         value = c_double()
         err = self.msx_lib.MSXgetparameter(obj_type, index, param, byref(value))
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return value.value
 
     def MSXgetpatternlen(self, pattern_index):
-        """      """
+        """Retrieves the number of time periods within a source time pattern
+
+         MSXgetpatternlen(pattern_index)
+
+        Parameters:
+             pattern_index:  the internal sequence number (starting from 1)
+                             of the pattern as it appears in the MSX input file.
+
+        Returns:
+             len:   the number of time periods (and therefore number of multipliers)
+                   that appear in the pattern."""
         len = c_int()
         err = self.msx_lib.MSXgetpatternlen(pattern_index, byref(len))
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return len.value
 
     def MSXgetpatternvalue(self, pattern_index, period):
@@ -14182,7 +15056,7 @@ class epanetmsxapi:
         value = c_double()
         err = self.msx_lib.MSXgetpatternvalue(pattern_index, period, byref(value))
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return value.value
 
     def MSXgetinitqual(self, obj_type, index, species):
@@ -14210,7 +15084,7 @@ class epanetmsxapi:
         # index = c_int(index)
         err = self.msx_lib.MSXgetinitqual(obj_type, index, species, byref(value))
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return value.value
 
     def MSXgetsource(self, node_index, species_index):
@@ -14261,7 +15135,7 @@ class epanetmsxapi:
             type = 'FLOWPACED'
 
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
         return type, level.value, pattern.value
 
@@ -14275,7 +15149,7 @@ class epanetmsxapi:
                 filename: name of the permanent output results file"""
         err = self.msx_lib.MSXsaveoutfile(filename.encode())
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsavemsxfile(self, filename):
         """ Saves the data associated with the current MSX project into a new
@@ -14287,7 +15161,7 @@ class epanetmsxapi:
                 filename: name of the file to which data are saved"""
         err = self.msx_lib.MSXsavemsxfile(filename.encode())
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsetconstant(self, index, value):
         """ Assigns a new value to a specific reaction constant
@@ -14303,7 +15177,7 @@ class epanetmsxapi:
         value = c_double(value)
         err = self.msx_lib.MSXsetconstant(index, value)
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsetparameter(self, obj_type, index, param, value):
         """ Assigns a value to a particular reaction parameter for a given pipe
@@ -14326,7 +15200,7 @@ class epanetmsxapi:
         value = c_double(value)
         err = self.msx_lib.MSXsetparameter(obj_type, index, param, value)
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsetinitqual(self, obj_type, index, species, value):
         """  Assigns an initial concetration of a particular chemical species
@@ -14350,13 +15224,25 @@ class epanetmsxapi:
         value = c_double(value)
         err = self.msx_lib.MSXsetinitqual(obj_type, index, species, value)
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsetpattern(self, index, factors, nfactors):
-        """   """
-        err = self.msx_lib.MSXsetpattern(index, factors, nfactors)
+        """Assigns a new set of multipliers to a given MSX source time pattern
+            MSXsetpattern(index,factors,nfactors)
+
+            Parameters:
+                index: the internal sequence number (starting from 1)
+                       of the pattern as it appers in the MSX input file
+                factors: an array of multiplier values to replace those previously used by
+                         the pattern
+                nfactors: the number of entries in the multiplier array/ vector factors"""
+        index = c_int(index)
+        nfactors = c_int(nfactors)
+        DoubleArray = c_double * len(factors)
+        mult_array = DoubleArray(*factors)
+        err = self.msx_lib.MSXsetpattern(index, mult_array, nfactors)
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsetpatternvalue(self, pattern, period, value):
         """Assigns a new value to the multiplier for a specific time period
@@ -14372,7 +15258,7 @@ class epanetmsxapi:
         value = c_double(value)
         err = self.msx_lib.MSXsetpatternvalue(pattern, period, value)
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsolveQ(self):
         """ Solves for water quality over the entire simulation period
@@ -14380,7 +15266,7 @@ class epanetmsxapi:
             msx.MSXsolveQ()"""
         err = self.msx_lib.MSXsolveQ()
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXsolveH(self):
         """ Solves for system hydraulics over the entire simulation period
@@ -14388,36 +15274,55 @@ class epanetmsxapi:
             msx.MSXsolveH() """
         err = self.msx_lib.MSXsolveH()
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXaddpattern(self, pattern_id):
-        """             """
-        err = self.msx_lib.MSXaddpattern(pattern_id.encode())
+        """Adds a newm empty MSX source time pattern to an MSX project
+                MSXaddpattern(pattern_id)
+            Parameters:
+                pattern_id: the name of the new pattern """
+        err = self.msx_lib.MSXaddpattern(pattern_id.encode("utf-8"))
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXusehydfile(self, filename):
         """             """
         err = self.msx_lib.MSXusehydfile(filename.encode())
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXstep(self):
-        """     """
+        """Advances the water quality solution through a single water quality time
+           step when performing a step-wise simulation
+
+           t, tleft = MSXstep()
+           Returns:
+               t : current simulation time at the end of the step(in secconds)
+               tleft: time left in the simulation (in secconds)
+           """
         t = c_int()
         tleft = c_int()
         err = self.msx_lib.MSXstep(byref(t), byref(tleft))
 
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
         return t.value, tleft.value
 
     def MSXinit(self, flag):
-        """                 """
+        """Initialize the MSX system before solving for water quality results
+           in the step-wise fashion
+
+           MSXinit(flag)
+
+           Parameters:
+               flag:  Set the flag to 1 if the water quality results should be saved
+                      to a scratch binary file, or 0 if not
+
+           """
         err = self.msx_lib.MSXinit(flag)
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXreport(self):
         """ Writes water quality simulations results as instructed by
@@ -14425,15 +15330,34 @@ class epanetmsxapi:
             msx.MSXreport()"""
         err = self.msx_lib.MSXreport()
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXgetqual(self, type, index, species):
-        """         """
+        """Retrieves a chemical species concentration at a given node
+           or the average concentration along a link at the current sumulation
+           time step.
 
-        value = (0)
-        err = self.msx_lib.MSXgetqual(type, index, species, value)
+           MSXgetqual(type, index, species)
+
+           Parameters:
+               type: type of object being queried and must be either:
+                    MSX_NODE ( defined as 0) for a node,
+                    MSX_LINK (defined as 1) for a link
+               index: then internal sequence number (starting from 1)
+                      assigned to the node or link.
+               species is the sequence number of the species (starting from 1
+               as listed in the MSX input file)
+
+           Returns:
+               The value of the computed concentration of the species at the current
+               time period.
+                """
+
+        value = 0
+        value = c_double(value)
+        err = self.msx_lib.MSXgetqual(type, index, species, byref(value))
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
         return value.value
 
     def MSXsetsource(self, node, species, type, level, pat):
@@ -14465,7 +15389,7 @@ class epanetmsxapi:
         type = c_int(type)
         err = self.msx_lib.MSXsetsource(node, species, type, level, pat)
         if err:
-            raise RuntimeError(self.MSXerror(err))
+            Warning(self.MSXerror(err))
 
     def MSXgeterror(self, err):
         """Returns the text for an error message given its error code.
@@ -14480,6 +15404,6 @@ class epanetmsxapi:
         e = self.msx_lib.MSXgeterror(err, errmsg, 80)
 
         if e:
-            raise RuntimeError(errmsg.value.decode())
+            Warning(errmsg.value.decode())
 
         return errmsg.value.decode()
