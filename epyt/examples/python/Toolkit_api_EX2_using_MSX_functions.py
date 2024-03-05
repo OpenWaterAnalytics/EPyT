@@ -1,11 +1,14 @@
 from epyt.epanet import epanet, epanetmsxapi
+from epyt import networks
 import numpy as np
 import os
 
 # Create EPANET object using INP file and MSX object using MSX file
-inpname = os.path.join(os.getcwd(), 'epyt', 'networks', 'asce-tf-wdst', 'net2-cl2.inp')
+dirname = os.path.dirname(networks.__file__)
+inpname = os.path.join(dirname, 'msx-examples', 'net2-cl2.inp')
+msxname = os.path.join(dirname, 'msx-examples', 'net2-cl2.msx')
+
 d = epanet(inpname, msx=True)
-msxname = os.path.join(os.getcwd(), 'epyt', 'net2-cl2.msx')
 msx = epanetmsxapi(msxname)
 MSX_SPECIES = 3
 ss = list(range(1, d.LinkCount + 1))
