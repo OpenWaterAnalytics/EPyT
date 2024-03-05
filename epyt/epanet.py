@@ -11134,8 +11134,8 @@ class epanet:
     """MSX Funtions"""
 
     def loadMSXfile(self, msxname):
-        self.msx.MSXopen(msxname)
-        self.msxname = msxname
+        self.realmsx = msxname
+        self.MSXPythonSetup(msxname)
 
     def unloadMSX(self):
         self.msx.MSXclose()
@@ -11187,8 +11187,8 @@ class epanet:
     def getMSXError(self, code):
         self.msx.MSXgeterror(code)
 
-    def get_MSX_Options(self, param="", getall=False):
-        msxname = self.msxname
+    def getMSXOptions(self, param="", getall=False):
+        msxname=self.msxname
         options = {}
         options["AREA_UNITS"] = "FT2"
         options["RATE_UNITS"] = "HR"
@@ -11212,7 +11212,7 @@ class epanet:
                         if not line.strip():
                             continue
                         if line.startswith("["):
-                            continue
+                            return options
                         key, value = line.split(None, 1)
                         if key == param or not param:
                             if key == "TIMESTEP":
@@ -11243,28 +11243,28 @@ class epanet:
         return options
 
     def getMSXTimeStep(self):
-        return self.get_MSX_Options("TIMESTEP")
+        return self.getMSXOptions("TIMESTEP")
 
     def getMSXRateUnits(self):
-        return self.get_MSX_Options("RATE_UNITS")
+        return self.getMSXOptions("RATE_UNITS")
 
     def getMSXAreaUnits(self):
-        return self.get_MSX_Options("AREA_UNITS")
+        return self.getMSXOptions("AREA_UNITS")
 
     def getMSXCompiler(self):
-        return self.get_MSX_Options("COMPILER")
+        return self.getMSXOptions("COMPILER")
 
     def getMSXCoupling(self):
-        return self.get_MSX_Options("COUPLING")
+        return  self.getMSXOptions("COUPLING")
 
     def getMSXSolver(self):
-        return self.get_MSX_Options("SOLVER")
+        return self.getMSXOptions("SOLVER")
 
     def getMSXAtol(self):
-        return self.get_MSX_Options("ATOL")
+        return self.getMSXOptions("ATOL")
 
     def getMSXRtol(self):
-        return self.get_MSX_Options("RTOL")
+        return self.getMSXOptions("RTOL")
 
     def getMSXConstantsNameID(self, varagin=None):
         x = self.getMSXConstantsCount()
@@ -11430,15 +11430,18 @@ class epanet:
         return value
 
     def getMSXPattern(self):
+        z = self.getMSXPatternsCount()
+        if z == 0 :
+            return
         val = self.getMSXPatternsLengths()
         y = [value for value in val.values()]
         tmpmaxlen = max(y)
-        value = [[0] * tmpmaxlen for _ in range(self.getMSXPatternsCount())]
+        value = [[0]*tmpmaxlen for _ in range(self.getMSXPatternsCount())]
         for i in range(1, self.getMSXPatternsCount() + 1):
             z = self.getMSXPatternsLengths([i])
             tmplength = [value for value in z.values()]
-            for j in range(1, tmplength[0] + 1):
-                value[i - 1][j - 1] = self.msx.MSXgetpatternvalue(i, j)
+            for j in range(1, tmplength[0] +1):
+                value[i-1][j-1] = self.msx.MSXgetpatternvalue(i, j)
             if tmplength[0] < tmpmaxlen:
                 for j in range(tmplength + 1, tmpmaxlen + 1):
                     value[i - 1][j - 1] = value[i - 1][j - tmplength - 1]
