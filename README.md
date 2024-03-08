@@ -515,6 +515,49 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |useHydraulicFile|Uses the contents of the specified file as the current binary hydraulics file
 |writeLineInReportFile|Writes a line of text to the EPANET report file
 |writeReport|Writes a formatted text report on simulation results to the Report file
+|<b> MSX Functions </b>
+|loadMSXFile|Opens the EPANET-MSX toolkit system|
+|unloadMSX|Closes the EPANET-MSX toolkit system|
+|getMSXSourcePatternIndex|Retrieves the value of all node source pattern index|
+|getMSXLinkInitqualValue|Retrieves the initial concentration of chemical species assigned to links of the pipe network|
+|getMSXNodeInitqualValue|Retrieves the initial concentration of chemical species assigned to nodes|
+|getMSXSourceLevel|Retrieves the value of all nodes source level|
+|getMSXSourceType|Retrieves the value of all node source type|
+|getMSXSpeciesCount|Retrieves the number of species|
+|getMSXSpeciesNameID|Retrieves the species IDs|
+|getMSXSpeciesIndex|Retrieves the indices of species|
+|getMSXSpeciesType|Retrieves the type of all species (BULK/WALL)|
+|getMSXSpeciesUnits|Retrieves the species mass units|
+|getMSXSpeciesATOL|Retrieves the atol|
+|getMSXSpeciesRTOL|Retrieves the rtol|
+|getMSXConstantsCount|Retrieves the number of constants|
+|getMSXConstantsNameID|Retrieves the ID name of constants (given its internal index number)|
+|getMSXConstantsIndex|Retrieves the internal index number of constants (given its ID name)|
+|getMSXPattern|Retrieves the multiplier factor for all patterns and all times|
+|getMSXPatternsCount|Retrieves the number of patterns|
+|getMSXPatternsNameID|Retrieves the patterns IDs|
+|getMSXPatternsIndex|Retrieves the indices of patterns|
+|getMSXPatternsLengths|Retrieves the number of time periods in all or some patterns|
+|getMSXParametersCount|Retrieves the number of parameters|
+|getMSXParametersNameID|Retrieves the ID name of parameters|
+|getMSXParametersIndex|Retrieves the indices of parameters|
+|getMSXParametersPipesValue|Retrieves the value of reaction parameters for pipes|
+|getMSXParametersTanksValue|Retrieves the value of reaction parameters for tanks|
+|solveMSXCompleteHydraulics|Solves for system hydraulics over the entire simulation period saving results to an internal scratch file|
+|solveMSXCompleteQuality|Solves for water quality over the entire simulation period and saves the results to an internal scratch file|
+|getMSXError|Returns the text for an error message given its error code|
+|getMSXOptions|Retrieves all the msx option parameters|
+|getMSXTimeStep|Retrieves the time step|
+|getMSXRateUnits|Retrieves the rate/time units (SEC/MIN/HR/DAY)|
+|getMSXAreaUnits|Retrieves the area units (FT2/M2/CM2)|
+|getMSXCompiler|Retrieves the compiler (NONE/VC/GC)|
+|getMSXCoupling|Retrieves the coupling (FULL/NONE)|
+|getMSXAtol|Retrieves the absolute concentration tolerance|
+|getMSXRtol|Retrieves the relative concentration tolerance|
+|getMSXEquationsPipes|Retrieves the species dynamics in pipes|
+|getMSXEquationsTanks|Retrieves the species dynamics in tanks|
+|getMSXEquationsTerms|Retrieves the species dynamics in terms|
+
 
 ## List of EPANET 2.2 Functions 
 
