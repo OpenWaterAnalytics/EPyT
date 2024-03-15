@@ -9,12 +9,10 @@ class MSXtest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
-        inpname = os.path.join(os.getcwd(), 'epyt', 'networks', 'Net3-NH2CL.inp')
+        inpname = os.path.join(os.getcwd(), 'epyt', 'networks', 'msx-examples', 'Net3-NH2CL.inp')
         self.epanetClass = epanet(inpname, msx=True)
-        file_path = os.path.join(os.getcwd(), 'epyt', 'Net3-NH2CL.msx')
+        file_path = os.path.join(os.getcwd(), 'epyt', 'networks', 'msx-examples', 'Net3-NH2CL.msx')
         self.msxClass = epanetmsxapi(file_path)
-
-        #self.msxClass.MSXopen(file_path)
 
     def tearDown(self):
         """Call after every test case."""
@@ -258,9 +256,9 @@ class MSXtest(unittest.TestCase):
 
         self.msxClass.MSXclose()
         self.epanetClass.unload()
-        inpname = os.path.join(os.getcwd(), 'epyt', 'networks', 'asce-tf-wdst', 'net2-cl2.inp')
+        inpname = os.path.join(os.getcwd(), 'epyt', 'networks', 'msx-examples', 'net2-cl2.inp')
         self.epanetClass = epanet(inpname, msx=True)
-        file_path = os.path.join(os.getcwd(), 'epyt', 'net2-cl2.msx')
+        file_path = os.path.join(os.getcwd(), 'epyt', 'networks', 'msx-examples', 'net2-cl2.msx')
         self.msxClass = epanetmsxapi(file_path)
 
         self.msxClass.MSXsolveH()
