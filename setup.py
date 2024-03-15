@@ -43,6 +43,8 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python',
         'License :: OSI Approved :: European Union Public Licence 1.2 '
         '(EUPL 1.2)',
@@ -50,6 +52,6 @@ setup(
     ],
     python_requires=">=3.8",
     package_data={f'{module_name}': data},
-    install_requires=['numpy', 'matplotlib', 'pandas', 'xlsxwriter'],
+    install_requires=['numpy', 'matplotlib', 'pandas', 'xlsxwriter', 'setuptools'],
     include_package_data=True
 )
