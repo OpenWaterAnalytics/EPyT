@@ -10340,22 +10340,29 @@ class epanet:
 
         See also epanet, saveInputFile, closeNetwork().
         """
-        self.api.ENclose()
         try:
-            os.remove(self.TempInpFile)
-        except:
-            pass
+            self.api.ENclose()
+        finally:
+            try:
+                if os.path.exists(self.TempInpFile):
+                    os.remove(self.TempInpFile)
+            except:
+                pass
+            try:
+                if os.path.exists(self.TempInpFile):
+                    os.unlink(self.TempInpFile)
+            except:
+                pass
+            try:
+                os.remove(self.TempInpFile[0:-4] + '.txt')
+                os.remove(self.InputFile[0:-4] + '.txt')
+                os.remove(self.BinTempfile)
+            except:
+                pass
+            for file in Path(".").glob("@#*.txt"):
+                file.unlink()
 
-        try:
-            os.remove(self.TempInpFile[0:-4] + '.txt')
-            os.remove(self.InputFile[0:-4] + '.txt')
-            os.remove(self.BinTempfile)
-        except:
-            pass
-        for file in Path(".").glob("@#*.txt"):
-            file.unlink()
-
-        print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
+            print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
 
     def useHydraulicFile(self, hydname):
         """ Uses the contents of the specified file as the current binary hydraulics file.
