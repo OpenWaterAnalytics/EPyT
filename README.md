@@ -515,6 +515,78 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |useHydraulicFile|Uses the contents of the specified file as the current binary hydraulics file
 |writeLineInReportFile|Writes a line of text to the EPANET report file
 |writeReport|Writes a formatted text report on simulation results to the Report file
+|<b> MSX Functions </b>
+|loadMSXFile|Opens the EPANET-MSX toolkit system|
+|unloadMSX|Closes the EPANET-MSX toolkit system|
+|initializeMSXQualityAnalysis|Initializes the MSX system before solving for water quality results in step-wise fashion|
+|stepMSXQualityAnalysisTimeLeft|Advances the water quality solution through a single water quality time step when performing a step-wise simulation|
+|saveMSXFile|Saves the data associated with the current MSX project into a new MSX input file|
+|saveMSXQualityFile|Saves water quality results computed for each node, link and reporting time period to a named binary file|
+|getMSXSourcePatternIndex|Retrieves the value of all node source pattern index|
+|getMSXLinkInitqualValue|Retrieves the initial concentration of chemical species assigned to links of the pipe network|
+|getMSXNodeInitqualValue|Retrieves the initial concentration of chemical species assigned to nodes|
+|getMSXSourceLevel|Retrieves the value of all nodes source level|
+|getMSXSourceType|Retrieves the value of all node source type|
+|getMSXSourceNodeNameID|Retrieves the ID label of all nodes|
+|getMSXSpeciesCount|Retrieves the number of species|
+|getMSXSpeciesNameID|Retrieves the species IDs|
+|getMSXSpeciesIndex|Retrieves the indices of species|
+|getMSXSpeciesType|Retrieves the type of all species (BULK/WALL)|
+|getMSXSpeciesUnits|Retrieves the species mass units|
+|getMSXSpeciesATOL|Retrieves the atol|
+|getMSXSpeciesRTOL|Retrieves the rtol|
+|getMSXSpeciesConcentration|Retrieves the concentration of chemical species for nodes and links|
+|getMSXConstantsCount|Retrieves the number of constants|
+|getMSXConstantsNameID|Retrieves the ID name of constants (given its internal index number)|
+|getMSXConstantsIndex|Retrieves the internal index number of constants (given its ID name)|
+|getMSXPattern|Retrieves the multiplier factor for all patterns and all times|
+|getMSXPatternsCount|Retrieves the number of patterns|
+|getMSXPatternValue|Retrieves the multiplier at a specific time period for a given source time pattern|
+|getMSXPatternsNameID|Retrieves the patterns IDs|
+|getMSXPatternsIndex|Retrieves the indices of patterns|
+|getMSXPatternsLengths|Retrieves the number of time periods in all or some patterns|
+|getMSXParametersCount|Retrieves the number of parameters|
+|getMSXParametersNameID|Retrieves the ID name of parameters|
+|getMSXParametersIndex|Retrieves the indices of parameters|
+|getMSXParametersPipesValue|Retrieves the value of reaction parameters for pipes|
+|getMSXParametersTanksValue|Retrieves the value of reaction parameters for tanks|
+|solveMSXCompleteHydraulics|Solves for system hydraulics over the entire simulation period saving results to an internal scratch file|
+|solveMSXCompleteQuality|Solves for water quality over the entire simulation period and saves the results to an internal scratch file|
+|getMSXError|Returns the text for an error message given its error code|
+|getMSXOptions|Retrieves all the msx option parameters|
+|getMSXTimeStep|Retrieves the time step|
+|getMSXRateUnits|Retrieves the rate/time units (SEC/MIN/HR/DAY)|
+|getMSXAreaUnits|Retrieves the area units (FT2/M2/CM2)|
+|getMSXCompiler|Retrieves the compiler (NONE/VC/GC)|
+|getMSXCoupling|Retrieves the coupling (FULL/NONE)|
+|getMSXAtol|Retrieves the absolute concentration tolerance|
+|getMSXRtol|Retrieves the relative concentration tolerance|
+|getMSXEquationsPipes|Retrieves the species dynamics in pipes|
+|getMSXEquationsTanks|Retrieves the species dynamics in tanks|
+|getMSXEquationsTerms|Retrieves the species dynamics in terms|
+|setMSXAreaUnitsCM2|Sets area units to CM2|
+|setMSXAreaUnitsFT2|Sets area units to FT2|
+|setMSXAreaUnitsM2|Sets area units to M2|
+|setMSXAtol|Sets the value of Atol|
+|setMSXRtol|Sets the value of Rtol|
+|setMSXCompilerGC|Sets compilet to GC|
+|setMSXCompilerNONE|Sets compiler to None|
+|setMSXCompilerVC|Sets compiler to VC|
+|setMSXCouplingFULL|Sets coupling option to FULL|
+|setMSXCouplingNONE|Sets coupling option to NONE|
+|setMSXRateUnitsDAY|Sets rate units to DAY|
+|setMSXRateUnitsHR|Sets rate units to HR|
+|setMSXRateUnitsMIN|Sets rate units to MIN|
+|setMSXRateUnitsSEC|Sets rate units to SEC|
+|setMSXSolverEUL|Sets solver to EUL (standard Euler integrator)|
+|setMSXSolverRK5|Sets solver to RK5 (Runge-Kutta 5th order integrator)|
+|setMSXSolverROS2|Sets solver to ROS2 (2nd order Rosenbrock integrator)|
+|setMSXTimeStep|Sets time step|
+|setMSXPatternValue|Assigns a new value to the multiplier for a specific time period in a given MSX source time pattern|
+|setMSXPattern|Sets all of the multiplier factors for a specific time pattern|
+|setMSXConstantsValue|Assigns a new value to a specific reaction constant|
+|useMSXHydraulicFile|Uses a previously saved EPANET hydraulics file as the source of hydraulic information|
+
 
 ## List of EPANET 2.2 Functions 
 
