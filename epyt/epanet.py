@@ -11141,25 +11141,72 @@ class epanet:
     """MSX Funtions"""
 
     def loadMSXfile(self, msxname):
+        """Loads an msx file
+        Example:
+            d.loadMSXfile('net2-cl2.msx')
+            """
         self.realmsx = msxname
         self.MSXPythonSetup(msxname)
 
     def unloadMSX(self):
+        """Unload library and close the MSX Toolkit system.
+        Example:
+               d.unloadMSX()
+               """
         self.msx.MSXclose()
 
     def getMSXSpeciesCount(self):
+        """ Retrieves the number of species.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXSpeciesCount()
+
+             See also getMSXSpeciesIndex, getMSXSpeciesNameID, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesUnits, getMSXSpeciesATOL,
+                      getMSXSpeciesRTOL."""
         MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
         return self.msx.MSXgetcount(MSX_SPECIES)
 
     def getMSXConstantsCount(self):
+        """  Retrieves the number of constants.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXConstantsCount()
+
+             See also getMSXConstantsIndex, getMSXConstantsValue,
+                      getMSXConstantsNameID."""
         MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
         return self.msx.MSXgetcount(MSX_CONSTANT)
 
     def getMSXParametersCount(self):
+        """  Retrieves the number of parameters.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXParametersCount()
+
+             See also setMSXParametersTanksValue, setMSXParametersPipesValue,
+                      getMSXParametersIndex, getMSXParametersTanksValue,
+                      getMSXParametersPipesValue."""
         MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
         return self.msx.MSXgetcount(MSX_PARAMETER)
 
     def getMSXPatternsCount(self):
+        """ Retrieves the number of patterns.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
+               d.addMSXPattern('P2', [0.0, 0.0 2.0]);
+               d.getMSXPatternsCount()
+
+             See also setMSXPattern, setMSXPatternValue, addMSXPattern."""
         MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
         return self.msx.MSXgetcount(MSX_PATTERN)
 
@@ -11170,9 +11217,25 @@ class epanet:
         self.msx.MSXsaveoutfile(outfname)
 
     def solveMSXCompleteHydraulics(self):
+        """Solve complete hydraulic over the entire simulation period.
+            %
+            % Example:
+            %   d = epanet('net2-cl2.inp');
+            %   d.loadMSXFile('net2-cl2.msx');
+            %   d.solveMSXCompleteHydraulics()
+            %
+            % See also solveMSXCompleteQuality."""
         self.msx.MSXsolveH()
 
     def solveMSXCompleteQuality(self):
+        """Solve complete hydraulic over the entire simulation period.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.solveMSXCompleteQuality()
+
+            See also solveMSXCompleteHydraulics."""
         self.msx.MSXsolveQ()
 
     def writeMSXReport(self):
@@ -11192,9 +11255,19 @@ class epanet:
         return t, tleft
 
     def getMSXError(self, code):
+        """  Retrieves the MSX erorr message for specific erorr code.
+
+             Example:
+               d.getMSXError(510)"""
         self.msx.MSXgeterror(code)
 
     def getMSXOptions(self, param="", getall=False):
+        """ Retrieves all the options.
+
+             Example:
+               d=epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXOptions()"""
         msxname=self.msxname
         options = {}
         options["AREA_UNITS"] = "FT2"
@@ -11250,30 +11323,121 @@ class epanet:
         return options
 
     def getMSXTimeStep(self):
+        """ Retrieves the time step.
+
+             Example:
+               d=epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXTimeStep()
+
+             See also setMSXTimeStep."""
         return self.getMSXOptions("TIMESTEP")
 
     def getMSXRateUnits(self):
+        """ Retrieves  rate units.
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXRateUnits()
+
+             See also setMSXRateUnits."""
         return self.getMSXOptions("RATE_UNITS")
 
     def getMSXAreaUnits(self):
+        """ Retrieves  Are units.
+            Example:
+             d = epanet('net2-cl2.inp');
+             d.loadMSXFile('net2-cl2.msx');
+             d.getMSXAreaUnits()
+
+             See also setMSXAreaUnits."""
         return self.getMSXOptions("AREA_UNITS")
 
     def getMSXCompiler(self):
+        """  Retrieves the chemistry function compiler code.
+
+             Compiler Options:
+               NONE: no compiler (default option)
+               gc: MinGW or Gnu C++ compilers
+               vc: Visual C++ compiler
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXCompiler()
+
+             See also setMSXCompilerNONE, setMSXCompilerVC,
+                      setMSXCompilerGC."""
         return self.getMSXOptions("COMPILER")
 
     def getMSXCoupling(self):
+        """  Retrieves the degree of coupling for solving DAE's.
+
+             Coupling Options:
+               NONE: The solution to the algebraic equations is only updated
+                     at the end of each integration time step.
+               FULL: The updating is done whenever a new set of values for the
+                     rate-dependent variables in the reaction
+                     rate expressions is computed.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXCoupling()
+
+             See also setMSXCouplingFULL, setMSXCouplingNONE."""
         return  self.getMSXOptions("COUPLING")
 
     def getMSXSolver(self):
+        """ Retrieves the solver method.
+
+             Numerical integration methods:
+               EUL = standard Euler integrator
+               RK5 = Runge-Kutta 5th order integrator
+               ROS2 = 2nd order Rosenbrock integrator.
+
+             Example:
+               d=epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXSolver()
+
+             See also setMSXSolverEUL, setMSXSolverRK5, setMSXSolverROS2."""
         return self.getMSXOptions("SOLVER")
 
     def getMSXAtol(self):
+        """ Retrieves the absolute tolerance.
+
+              Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXAtol()
+
+             See also getMSXRtol."""
         return self.getMSXOptions("ATOL")
 
     def getMSXRtol(self):
+        """  Retrieves the relative accuracy level.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXRtol()
+
+             See also getMSXAtol."""
         return self.getMSXOptions("RTOL")
 
     def getMSXConstantsNameID(self, varagin=None):
+        """  Retrieves the constant's ID.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXConstantsNameID()        Retrieves the IDs of all the constants.
+               d.getMSXConstantsNameID({1})      Retrieves the ID of the first constant.
+               d.getMSXConstantsNameID{[1,2]}  Retrieves the IDs of the first two constants.
+
+             See also getMSXConstantsCount, getMSXConstantsValue,
+                      getMSXConstantsNameID."""
         x = self.getMSXConstantsCount()
         value = {}
         if varagin is None:
@@ -11285,9 +11449,21 @@ class epanet:
             for i in varagin:
                 len = self.msx.MSXgetIDlen(MSX_CONSTANT, i)
                 value[i] = self.msx.MSXgetID(MSX_CONSTANT, i, len)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXParametersNameID(self, varagin=None):
+        """  Retrieves the parameter's ID.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXParametersNameID()        % Retrieves the IDs of all the parameters.
+               d.getMSXParametersNameID(1)     % Retrieves the ID of the first parameter.
+               d.getMSXParametersNameID([1:3]) % Retrieves the IDs of the first three parameters.
+
+             See also getMSXParametersCount, getMSXParametersIndex,
+                      getMSXParametersTanksValue, getMSXParametersPipesValue."""
         x = self.getMSXParametersCount()
         value = {}
         if varagin is None:
@@ -11299,9 +11475,25 @@ class epanet:
             for i in varagin:
                 len = self.msx.MSXgetIDlen(MSX_PARAMETER, i)
                 value[i] = self.msx.MSXgetID(MSX_PARAMETER, i, len)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXPatternsNameID(self, varagin=None):
+        """ Retrieves the patterns ID.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
+               d.addMSXPattern('P2', [0.0, 0.0 2.0]);
+               d.addMSXPattern('P3', [0.0, 1.0 2.0]);
+               d.addMSXPattern('P4', [1.0, 1.0 2.0]);
+               d.getMSXPatternsNameID()         Retrieves the IDs of all the patterns.
+               d.getMSXPatternsNameID(1)      Retrieves the ID of the first pattern.
+               d.getMSXPatternsNameID(1:3)    Retrieves the IDs of the first three patterns.
+
+             See also getMSXPattern, getMSXPatternsIndex, getMSXPatternsLengths,
+                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
         x = self.getMSXPatternsCount()
         value = {}
         if varagin is None:
@@ -11313,9 +11505,22 @@ class epanet:
             for i in varagin:
                 len = self.msx.MSXgetIDlen(MSX_PATTERN, i)
                 value[i] = self.msx.MSXgetID(MSX_PATTERN, i, len)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXSpeciesNameID(self, varagin=None):
+        """Retrieves the species' ID.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXSpeciesNameID()        Retrieves the IDs of all the species.
+               d.getMSXSpeciesNameID(1)      Retrieves the IDs of the first specie.
+               d.getMSXSpeciesNameID([1:3])  Retrieves the IDs of the first three species.
+
+             See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesUnits, getMSXSpeciesATOL,
+                      getMSXSpeciesRTOL."""
         x = self.getMSXSpeciesCount()
         value = {}
         if varagin is None:
@@ -11327,69 +11532,134 @@ class epanet:
             for i in varagin:
                 len = self.msx.MSXgetIDlen(MSX_SPECIES, i)
                 value[i] = self.msx.MSXgetID(MSX_SPECIES, i, len)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXParametersIndex(self, varagin=None):
+        """ Retrieves the parameter's indices.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXParametersIndex()           Retrieves the indices of all the parameters.
+               d.getMSXParametersIndex(['k1'])     Retrieves the index of the first parameter.
+               d.getMSXParametersIndex(['k1', 'k3', 'kDOC1'])  Retrieves the indices of the
+                                                                parameters 'k1', 'k3' and 'kDOC1'.
+
+             See also getMSXParametersCount, getMSXParametersIndex,
+                      getMSXParametersTanksValue, getMSXParametersPipesValue."""
         x = self.getMSXParametersCount()
         value = {}
         if varagin is None:
             varagin = {}
             varagin = self.getMSXParametersNameID()
-            y = [value for value in varagin.values()]
+            y = varagin
         else:
             y = varagin
         MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
         if x > 0:
             for i in y:
                 value[i] = self.msx.MSXgetindex(MSX_PARAMETER, i)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXSpeciesIndex(self, varagin=None):
+        """ Retrieves the species' index.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXSpeciesIndex()           Retrieves the index of all the species.
+               d.getMSXSpeciesIndex(['Na'])     Retrieves the index of the Na.
+               d.getMSXSpeciesIndex(['CL2', 'Nb', 'Na'])  Retrieves the indices of CL2, Nb and Na.
+
+             See also getMSXSpeciesUnits, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesRTOL,
+                      getMSXSpeciesATOL."""
         x = self.getMSXSpeciesCount()
         value = {}
         if varagin is None:
             varagin = {}
             varagin = self.getMSXSpeciesNameID()
-            y = [value for value in varagin.values()]
+            y = varagin
         else:
             y = varagin
         MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
         if x > 0:
             for i in y:
                 value[i] = self.msx.MSXgetindex(MSX_SPECIES, i)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXPatternsIndex(self, varagin=None):
+        """ Retrieves the patterns index.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
+               d.addMSXPattern('P2', [0.0, 0.0 2.0]);
+               d.addMSXPattern('P3', [0.0, 1.0 2.0]);
+               d.addMSXPattern('P4', [1.0, 1.0 2.0]);
+               d.getMSXPatternsIndex()           Retrieves the indices of all the patterns.
+               d.getMSXPatternsIndex(['P1'])     Retrieves the index of the first pattern.
+               d.getMSXPatternsIndex(['P1', 'P2', 'P3'])  Retrieves the indices of the first three patterns.
+
+             See also getMSXPattern, getMSXPatternsNameID, getMSXPatternsLengths,
+                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
         x = self.getMSXSpeciesCount()
         value = {}
         if varagin is None:
             varagin = {}
             varagin = self.getMSXPatternsNameID()
-            y = [value for value in varagin.values()]
+            y = varagin
         else:
             y = varagin
         MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
         if x > 0:
             for i in y:
                 value[i] = self.msx.MSXgetindex(MSX_PATTERN, i)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXConstantsIndex(self, varagin=None):
+        """ Retrieves the constant's index.
+
+             Example:
+               d = epanet('Net3-NH2CL.inp');
+               d.loadMSXFile('Net3-NH2CL.msx');
+               d.getMSXConstantsIndex()         Retrieves the index of all the species.
+               d.getMSXConstantsIndex(['S1'])   Retrieves the index of S1.
+
+             See also getMSXConstantsCount, getMSXConstantsValue,
+                      getMSXConstantsNameID."""
         x = self.getMSXConstantsCount()
         value = {}
         if varagin is None:
             varagin = {}
             varagin = self.getMSXConstantsNameID()
-            y = [value for value in varagin.values()]
+            y = varagin
         else:
             y = varagin
         MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
         if x > 0:
             for i in y:
                 value[i] = self.msx.MSXgetindex(MSX_CONSTANT, i)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXConstantsValue(self, varagin=None):
+        """ Retrieves the constant's value.
+
+             Example:
+               d = epanet('net3-bio.inp');
+               d.loadMSXFile('net3-bio.msx');
+               d.getMSXConstantsValue         Retrieves the values of all the constants.
+               d.getMSXConstantsValue{1}      Retrieves the value of the first constant.
+               d.getMSXConstantsValue{[1,2]}  Retrieves the values of the first two constants.
+
+             See also setMSXConstantsValue, getMSXConstantsCount,
+                      getMSXConstantsIndex, getMSXConstantsNameID"""
         x = self.getMSXConstantsCount()
         value = {}
         if varagin is None:
@@ -11399,9 +11669,19 @@ class epanet:
         if x > 0:
             for i in varagin:
                 value[i] = self.msx.MSXgetconstant(i)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXParametersPipesValue(self):
+        """ Retrieves the parameters pipes value.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXParametersPipesValue()
+
+             See also setMSXParametersPipesValue, getMSXParametersTanksValue,
+                      getMSXParametersCount, getMSXParametersIndex."""
         x = self.getLinkPipeCount()
         y = self.getMSXParametersCount()
         value = []
@@ -11414,6 +11694,16 @@ class epanet:
         return value
 
     def getMSXParametersTanksValue(self):
+        """ Retrieves the parameters tanks value.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               tankIndex = d.getNodeTankIndex
+               d.getMSXParametersTanksValue{tankIndex}  Retrieves the value of the first tank.
+
+             See also setMSXParametersTanksValue, getMSXParametersCount,
+                      getMSXParametersIndex, getMSXParametersPipesValue."""
         x = self.getNodeTankIndex()
         y = self.getMSXParametersCount()
         value = {}
@@ -11422,9 +11712,23 @@ class epanet:
             for j in range(1, y + 1):
                 param = self.msx.MSXgetparameter(0, i, j)
                 value[i].append(param)
-        return value
-
+        output = list(value.values())
+        return output
     def getMSXPatternsLengths(self, varagin=None):
+        """ Retrieves the pattern lengths.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
+               d.addMSXPattern('P2', 1.0);
+               d.addMSXPattern('P3', [0.0, 1.0 2.0]);
+               d.addMSXPattern('P4', [1.0, 2.0]);
+               d.getMSXPatternsLengths()         Retrieves the lengths of all the patterns.
+               d.getMSXPatternsLengths([]1)      Retrieves the length of the first pattern.
+               x=d.getMSXPatternsLengths([1,2])  Retrieves the lengths of the first two patterns.
+             See also getMSXPattern, getMSXPatternsIndex, getMSXPatternsNameID,
+                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
         x = self.getMSXPatternsCount()
         value = {}
         if varagin is None:
@@ -11434,19 +11738,34 @@ class epanet:
             if x > 0:
                 for i in varagin:
                     value[i] = self.msx.MSXgetpatternlen(i)
-        return value
+        output = list(value.values())
+        return output
 
     def getMSXPattern(self):
+        """ Retrieves the time patterns.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.addMSXPattern('P1', [1.0 0.0 1.0]);
+               d.addMSXPattern('P2', [1.0 0.0 1.0]);
+               d.addMSXPattern('P3', [0.0 1.0 2.0]);
+               d.addMSXPattern('P4', [1.0 2.0 2.5]);
+               patterns = d.getMSXPattern()   Retrieves all the patterns.
+
+
+             See also setMSXPattern, setMSXPatternMatrix, setMSXPatternValue,
+                      getMSXPatternsIndex, getMSXPatternsNameID,."""
         z = self.getMSXPatternsCount()
         if z == 0 :
             return
         val = self.getMSXPatternsLengths()
-        y = [value for value in val.values()]
+        y = val
         tmpmaxlen = max(y)
         value = [[0]*tmpmaxlen for _ in range(self.getMSXPatternsCount())]
         for i in range(1, self.getMSXPatternsCount() + 1):
             z = self.getMSXPatternsLengths([i])
-            tmplength = [value for value in z.values()]
+            tmplength = z
             for j in range(1, tmplength[0] +1):
                 value[i-1][j-1] = self.msx.MSXgetpatternvalue(i, j)
             if tmplength[0] < tmpmaxlen:
@@ -11456,6 +11775,18 @@ class epanet:
         return value
 
     def getMSXSpeciesType(self, varagin=None):
+        """ Retrieves the species' type.
+
+             Example:
+               d = epanet('net3-bio.inp');
+               d.loadMSXFile('net3-bio.msx');
+               d.getMSXSpeciesType         Retrieves the type of all the species.
+               d.getMSXSpeciesType{1}      Retrieves the type of the first specie.
+               d.getMSXSpeciesType{[5,7]}  Retrieves the type of the 5th and 7th specie.
+
+            See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesnameID, getMSXSpeciesUnits, getMSXSpeciesATOL,
+                      getMSXSpeciesRTOL."""
 
         x = self.getMSXSpeciesCount()
         value = []
@@ -11472,6 +11803,19 @@ class epanet:
         return value
 
     def getMSXSpeciesUnits(self, varagin=None):
+        """ Retrieves the species' units.
+
+             Example:
+               d = epanet('net3-bio.inp');
+               d.loadMSXFile('net3-bio.msx');
+               d.getMSXSpeciesUnits           Retrieves the units of all the species.
+               d.getMSXSpeciesUnits{1}        Retrieves the units of the first specie.
+               d.getMSXSpeciesUnits{[1,16]}   Retrieves the units of the species with
+                                               indices 1 and 16.
+
+             See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesATOL,
+                      getMSXSpeciesRTOL."""
         x = self.getMSXSpeciesCount()
         value = []
 
@@ -11542,16 +11886,40 @@ class epanet:
             return Terms, Pipes, Tanks
 
     def getMSXEquationsTerms(self):
+        """ Retrieves equation terms.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXEquationsTerms()
+
+             See also getMSXEquationsPipes, getMSXEquationsTanks."""
         x, y, z = self.getEquations()
         x = list(x.values())
         return x
 
     def getMSXEquationsPipes(self):
+        """ Retrieves equation for pipes.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXEquationsPipes()
+
+             See also getMSXEquationsTerms, getMSXEquationsTanks."""
         x, y, z = self.getEquations()
         y = list(y.values())
         return y
 
     def getMSXEquationsTanks(self):
+        """ Retrieves equation for tanks.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXfile('net2-cl2.msx');
+               d.getMSXEquationsTanks()
+
+             See also getMSXEquationsTerms, getMSXEquationsPipes."""
         x, y, z = self.getEquations()
         z = list(z.values())
         return z
@@ -11567,6 +11935,17 @@ class epanet:
         return value
 
     def getMSXSourceType(self, varagin=None):
+        """ Retrieves the sources type.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXSourceType()           Retrieves all the source types.
+               d.getMSXSourceType{1}        Retrieves the first node source type.
+               d.getMSXSourceType{[1,2]}      Retrieves the source type of nodes 1 and 2
+
+             See also getMSXSources, getMSXSourceNodeNameID
+                      getMSXSourceLevel, getMSXSourcePatternIndex."""
         value = []
         if varagin == None:
             for i in range(1, self.getNodeCount() + 1):
@@ -11588,6 +11967,18 @@ class epanet:
         return source
 
     def getMSXSourceLevel(self, varagin=None):
+        """  Retrieves the sources level.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXSourceLevel()           Retrieves all the source level.
+               d.getMSXSourceLevel({1})        Retrieves the first node source level.
+               d.getMSXSourceLevel([1,5])      Retrieves the source level
+               of nodes 1 and 5.
+
+             See also getMSXSources, getMSXSourceNodeNameID
+                      getMSXSourceType, getMSXSourcePatternIndex."""
         value = []
         if varagin == None:
             for i in range(1, self.getNodeCount() + 1):
@@ -11609,6 +12000,17 @@ class epanet:
         return sourcelevel
 
     def getMSXSourcePatternIndex(self, varagin=None):
+        """ Retrieves the sources pattern index.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXSourcePatternIndex()          Retrieves all the source pattern index.
+               d.getMSXSourcePatternIndex({1} )      Retrieves the first node source pattern index.
+               d.getMSXSourcePatternIndex([1,5]])     Retrieves the source pattern index of nodes 1 and 5
+
+             See also getMSXSources, getMSXSourceNodeNameID
+                      getMSXSourceType, getMSXSourceLevel."""
         value = []
         if varagin == None:
             for i in range(1, self.getNodeCount() + 1):
@@ -11630,6 +12032,16 @@ class epanet:
         return sourcepatternindex
 
     def getMSXLinkInitqualValue(self, varagin=None):
+        """ Retrieves the links initial quality value.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXLinkInitqualValue()       Retrieves the initial quality of all links.
+               d.getMSXLinkInitqualValue({1})    Retrieves the initial quality of the first link.
+               d.getMSXLinkInitqualValue([1,3])  Retrieves the initial quality  of 1 and 3.
+
+             See also setMSXLinkInitqualValue."""
         value = []
         if varagin == None:
             for i in range(1, self.getLinkCount() + 1):
@@ -11648,6 +12060,16 @@ class epanet:
         return value
 
     def getMSXNodeInitqualValue(self, varagin=None):
+        """ Retrieves the nodes initial quality value.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXNodeInitqualValue()       Retrieves the initial quality of all nodes.
+               d.getMSXNodeInitqualValue({1})    Retrieves the initial quality of the first node.
+               d.getMSXNodeInitqualValue([1,3])  Retrieves the initial quality  of one and three.
+
+             See also setMSXNodeInitqualValue."""
         value = []
         if varagin == None:
             for i in range(1, self.getNodeCount() + 1):
@@ -11666,25 +12088,46 @@ class epanet:
         return value
 
     def getMSXSpeciesATOL(self):
+        """ Retrieves the species' absolute tolerance.
+
+             Example:
+               d = epanet('net3-bio.inp');
+               d.loadMSXFile('net3-bio.msx');
+               d.getMSXSpeciesATOL()
+
+             See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesUnits,
+                      getMSXSpeciesRTOL."""
         value = []
         for i in range(1, self.getMSXSpeciesCount()):
             Atol = []
             value.append(self.msx.MSXgetspecies(i))
             Atol.append([item[2] for item in value])
-        return Atol
+        return Atol[0]
 
     def getMSXSpeciesRTOL(self):
+        """ Retrieves the species' relative accuracy level.
+
+             Example:
+               d = epanet('net3-bio.inp');
+               d.loadMSXFile('net3-bio.msx');
+               d.getMSXSpeciesRTOL()
+
+             See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesUnits,
+                      getMSXSpeciesATOL."""
         value = []
         for i in range(1, self.getMSXSpeciesCount()):
             Rtol = []
             value.append(self.msx.MSXgetspecies(i))
             Rtol.append([item[3] for item in value])
-        return Rtol
+        return Rtol[0]
 
     def getMSXSpeciesConcentration(self, type, index, species):
         return self.msx.MSXgetqual(type, index, species)
 
     def getMSXSourceNodeNameID(self):
+        
         nodes = []
         for i in range(1, self.getNodeCount() + 1):
             source = []
