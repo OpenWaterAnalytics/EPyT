@@ -15242,13 +15242,11 @@ class epanetmsxapi:
         ops = platform.system().lower()
         if ops in ["windows"]:
             dll_path1 = resource_filename("epyt", os.path.join("libraries", "win", 'epanet2_2', '64bit',
-                                                               f"epanetmsx.dll"))
+                                                               "epanetmsx.dll"))
         elif ops in ["darwin"]:
-            dll_path1 = resource_filename("epyt", os.path.join("libraries", "mac", 'epanet2_2', '64bit',
-                                                               f"epanetmsx.dll"))
+            dll_path1 = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
         else:
-            dll_path1 = resource_filename("epyt", os.path.join("libraries", "glnx", 'epanet2_2', '64bit',
-                                                               f"epanetmsx.dll"))
+            dll_path1 = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
 
         self.msx_lib = cdll.LoadLibrary(dll_path1)
         # msx opens starts here
