@@ -1,4 +1,5 @@
 from epyt.epanet import epanet, epanetmsxapi
+from epyt import networks
 import numpy as np
 import unittest
 import os
@@ -9,9 +10,12 @@ class MSXtest(unittest.TestCase):
     def setUp(self):
         """Call before every test case."""
         # Create EPANET object using the INP file
-        inpname = os.path.join(os.getcwd(), 'epyt', 'networks', 'msx-examples', 'Net3-NH2CL.inp')
+        dirname = os.path.dirname(networks.__file__)
+        inpname = os.path.join(dirname, 'msx-examples', 'Net3-NH2CL.inp')
+        file_path = os.path.join(dirname, 'msx-examples', 'Net3-NH2CL.msx')
+
         self.epanetClass = epanet(inpname, msx=True)
-        file_path = os.path.join(os.getcwd(), 'epyt', 'networks', 'msx-examples', 'Net3-NH2CL.msx')
+
         self.msxClass = epanetmsxapi(file_path)
 
     def tearDown(self):
