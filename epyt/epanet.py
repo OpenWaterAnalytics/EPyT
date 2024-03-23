@@ -10340,6 +10340,7 @@ class epanet:
 
         See also epanet, saveInputFile, closeNetwork().
         """
+
         def safe_delete(file):
             try:
                 os.unlink(file)
@@ -11332,7 +11333,7 @@ class epanet:
                d=epanet('net2-cl2.inp')
                d.loadMSXFile('net2-cl2.msx')
                d.getMSXOptions()"""
-        msxname=self.msxname
+        msxname = self.msxname
         options = {}
         options["AREA_UNITS"] = "FT2"
         options["RATE_UNITS"] = "HR"
@@ -11450,7 +11451,7 @@ class epanet:
                d.getMSXCoupling()
 
              See also setMSXCouplingFULL, setMSXCouplingNONE."""
-        return  self.getMSXOptions("COUPLING")
+        return self.getMSXOptions("COUPLING")
 
     def getMSXSolver(self):
         """ Retrieves the solver method.
@@ -11774,10 +11775,11 @@ class epanet:
         for i in x:
             value[i - 1] = []
             for j in range(y):
-                param = self.msx.MSXgetparameter(0, i, j+1)
+                param = self.msx.MSXgetparameter(0, i, j + 1)
                 value[i - 1].append(param)
 
         return value
+
     def getMSXPatternsLengths(self, varagin=None):
         """ Retrieves the pattern lengths.
 
@@ -11821,17 +11823,17 @@ class epanet:
              See also setMSXPattern, setMSXPatternMatrix, setMSXPatternValue,
                       getMSXPatternsIndex, getMSXPatternsNameID,."""
         z = self.getMSXPatternsCount()
-        if z == 0 :
+        if z == 0:
             return
         val = self.getMSXPatternsLengths()
         y = val
         tmpmaxlen = max(y)
-        value = [[0]*tmpmaxlen for _ in range(self.getMSXPatternsCount())]
+        value = [[0] * tmpmaxlen for _ in range(self.getMSXPatternsCount())]
         for i in range(1, self.getMSXPatternsCount() + 1):
             z = self.getMSXPatternsLengths([i])
             tmplength = z
             for j in range(1, tmplength[0] + 1):
-                value[i-1][j-1] = self.msx.MSXgetpatternvalue(i, j)
+                value[i - 1][j - 1] = self.msx.MSXgetpatternvalue(i, j)
 
             if tmplength[0] < tmpmaxlen:
                 for j in range(tmplength[0] + 1, tmpmaxlen + 1):
@@ -12164,7 +12166,7 @@ class epanet:
                       getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesUnits,
                       getMSXSpeciesRTOL."""
         value = []
-        for i in range(1, self.getMSXSpeciesCount()+1):
+        for i in range(1, self.getMSXSpeciesCount() + 1):
             Atol = []
             value.append(self.msx.MSXgetspecies(i))
             Atol.append([item[2] for item in value])
@@ -12182,7 +12184,7 @@ class epanet:
                       getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesUnits,
                       getMSXSpeciesATOL."""
         value = []
-        for i in range(1, self.getMSXSpeciesCount()+1):
+        for i in range(1, self.getMSXSpeciesCount() + 1):
             Rtol = []
             value.append(self.msx.MSXgetspecies(i))
             Rtol.append([item[3] for item in value])
@@ -12235,7 +12237,7 @@ class epanet:
                 source.append([item[0] for item in k])
             for sublist in source:
                 for item in sublist:
-                    if item!='NOSOURCE':
+                    if item != 'NOSOURCE':
                         flag = 1
                         break
             if flag == 1:
@@ -12245,7 +12247,7 @@ class epanet:
     def MSXPythonSetup(self, msxname):
 
         self.msxname = msxname[:-4] + '_temp.msx'
-        copyfile(msxname,self.msxname)
+        copyfile(msxname, self.msxname)
 
         self.msx.MSXopen(self.msxname)
 
@@ -12281,7 +12283,7 @@ class epanet:
         self.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
         self.MSXPattern = self.getMSXPattern()
 
-        #options
+        # options
         self.solver = self.getMSXSolver()
         self.areaunits = self.getMSXAreaUnits()
         self.rateunits = self.getMSXRateUnits()
@@ -12293,12 +12295,11 @@ class epanet:
 
     def setMSXOptions(self, *args):
 
-
         for i in range(len(args) // 2):
             argument = args[2 * i].lower()
             if argument == 'areaunits':
                 self.areaunits = args[2 * i + 1]
-                self.changeMSXOptions("AREA_UNITS",args[2 * i + 1])
+                self.changeMSXOptions("AREA_UNITS", args[2 * i + 1])
             elif argument == 'rateunits':
                 self.rateunits = args[2 * i + 1]
                 self.changeMSXOptions("RATE_UNITS", args[2 * i + 1])
@@ -12325,7 +12326,7 @@ class epanet:
                 return
 
     def changeMSXOptions(self, param, change):
-        msxname=self.msxname
+        msxname = self.msxname
         f = open(msxname, 'r+')
         lines = f.readlines()
         flag = 0
@@ -12355,7 +12356,8 @@ class epanet:
               d.getMSXAreaUnits()
 
              See also setMSXAreaUnitsFT2, setMSXAreaUnitsM2."""
-        self.changeMSXOptions("AREA_UNITS","CM2")
+        self.changeMSXOptions("AREA_UNITS", "CM2")
+
     def setMSXAreaUnitsFT2(self):
         """ Sets the area units to square feet.
 
@@ -12684,7 +12686,7 @@ class epanet:
                       getMSXParametersTanksValue, getMSXParametersCount,
                       getMSXParametersIndex."""
         for i in range(len(value)):
-            self.msx.MSXsetparameter(1, pipeIndex, i+1, value[i])
+            self.msx.MSXsetparameter(1, pipeIndex, i + 1, value[i])
 
     def setMSXConstantsValue(self, value):
         """ Sets the values of constants.
@@ -12699,7 +12701,7 @@ class epanet:
              See also getMSXConstantsCount, getMSXConstantsIndex,
                       getMSXConstantsNameID."""
         for i in range(len(value)):
-            self.msx.MSXsetconstant(i+1, value[i])
+            self.msx.MSXsetconstant(i + 1, value[i])
 
     def addMSXPattern(self, *args):
         """ Adds new time pattern
@@ -12760,7 +12762,7 @@ class epanet:
                 for lnk in node_indices:
                     node_quality[k, lnk - 1, i] = self.MSXNodeInitqualValue([lnk])[speciename[i]]
                     if lnk < link_indices[-1] + 1:
-                        link_quality[k, lnk - 1, i]= self.getMSXLinkInitqualValue([lnk])[speciename[i]]
+                        link_quality[k, lnk - 1, i] = self.getMSXLinkInitqualValue([lnk])[speciename[i]]
         time_sim = self.getTimeSimulationDuration()
         while tleft > 0 and time_sim != t:
             k = k + 1
@@ -12768,7 +12770,7 @@ class epanet:
             for i in range(len(speciename)):
                 if node_indices[-1] < link_indices[-1]:
                     for lnk in link_indices:
-                        link_quality[k, lnk -1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
+                        link_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
                         if lnk < node_indices[-1] + 1:
                             node_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(0, lnk, speciename[i])
                 else:
@@ -12777,7 +12779,7 @@ class epanet:
                         if lnk < link_indices[-1] + 1:
                             link_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
             time.append(t)
-        return {'NodeQuality': node_quality, 'LinkQuality': link_quality, 'Time' : np.array(time)}
+        return {'NodeQuality': node_quality, 'LinkQuality': link_quality, 'Time': np.array(time)}
 
 
 class epanetapi:
@@ -15639,14 +15641,16 @@ class epanetmsxapi:
     def __init__(self, filename=None):
         ops = platform.system().lower()
         if ops in ["windows"]:
-            dll_path1 = resource_filename("epyt", os.path.join("libraries", "win", 'epanet2_2', '64bit',
-                                                               "epanetmsx.dll"))
+            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", 'epanet2_2', '64bit',
+                                                                       "epanetmsx.dll"))
         elif ops in ["darwin"]:
-            dll_path1 = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
+            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
         else:
-            dll_path1 = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
+            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
 
-        self.msx_lib = cdll.LoadLibrary(dll_path1)
+        self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
+        self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
+
         # msx opens starts here
         if filename is not None:
             """  Open .msx file
