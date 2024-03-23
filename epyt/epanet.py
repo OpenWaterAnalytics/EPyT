@@ -1685,8 +1685,8 @@ class epanet:
         for filename in os.listdir(net_dir):
             if 'temp' in filename:
                 try:
-                    os.remove(os.path.join(net_dir, filename))
-                finally:
+                    os.unlink(os.path.join(net_dir, filename))
+                except:
                     pass
 
     def deleteControls(self, *argv):
