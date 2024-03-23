@@ -12812,6 +12812,7 @@ class epanetapi:
             self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
         else:
             self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"glnx/lib{libname}.so"))
+            copyfile(os.path.dirname(self.LibEPANET), '/lib/x86_64-linux-gnu/libepanet.so')
 
         self._lib = cdll.LoadLibrary(self.LibEPANET)
         self.LibEPANETpath = os.path.dirname(self.LibEPANET)
