@@ -1685,8 +1685,8 @@ class epanet:
         for filename in os.listdir(net_dir):
             if 'temp' in filename:
                 try:
-                    os.remove(os.path.join(net_dir, filename))
-                finally:
+                    os.unlink(os.path.join(net_dir, filename))
+                except:
                     pass
 
     def deleteControls(self, *argv):
@@ -10340,29 +10340,24 @@ class epanet:
 
         See also epanet, saveInputFile, closeNetwork().
         """
+        def safe_delete(file):
+            try:
+                os.unlink(file)
+            except Exception as e:
+                print(f"Could not delete {file}: {e}")
+
         try:
             self.api.ENclose()
         finally:
-            try:
-                if os.path.exists(self.TempInpFile):
-                    os.remove(self.TempInpFile)
-            except:
-                pass
-            try:
-                if os.path.exists(self.TempInpFile):
-                    os.unlink(self.TempInpFile)
-            except:
-                pass
-            try:
-                os.remove(self.TempInpFile[0:-4] + '.txt')
-                os.remove(self.InputFile[0:-4] + '.txt')
-                os.remove(self.BinTempfile)
-            except:
-                pass
+            safe_delete(self.TempInpFile)
+            files_to_delete = [self.TempInpFile[0:-4] + '.txt', self.InputFile[0:-4] + '.txt', self.BinTempfile]
+            for file in files_to_delete:
+                safe_delete(file)
             for file in Path(".").glob("@#*.txt"):
-                file.unlink()
+                safe_delete(file)
+            safe_delete(self.TempInpFile)
 
-            print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
+        print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
 
     def useHydraulicFile(self, hydname):
         """ Uses the contents of the specified file as the current binary hydraulics file.
@@ -11159,8 +11154,8 @@ class epanet:
         """ Retrieves the number of species.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXSpeciesCount()
 
              See also getMSXSpeciesIndex, getMSXSpeciesNameID, getMSXSpeciesConcentration,
@@ -11173,8 +11168,8 @@ class epanet:
         """  Retrieves the number of constants.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXConstantsCount()
 
              See also getMSXConstantsIndex, getMSXConstantsValue,
@@ -11186,8 +11181,8 @@ class epanet:
         """  Retrieves the number of parameters.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXParametersCount()
 
              See also setMSXParametersTanksValue, setMSXParametersPipesValue,
@@ -11200,10 +11195,10 @@ class epanet:
         """ Retrieves the number of patterns.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
-               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
-               d.addMSXPattern('P2', [0.0, 0.0 2.0]);
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('P1', [1.0, 0.0 1.0])
+               d.addMSXPattern('P2', [0.0, 0.0 2.0])
                d.getMSXPatternsCount()
 
              See also setMSXPattern, setMSXPatternValue, addMSXPattern."""
@@ -11211,17 +11206,32 @@ class epanet:
         return self.msx.MSXgetcount(MSX_PATTERN)
 
     def saveMSXFile(self, msxname):
+        """ Saves the data associated with the current MSX project into a new MSX input file.
+
+             Example:
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.saveMSXFile('testMSX.msx')
+
+             See also writeMSXFile."""
         self.msx.MSXsavemsxfile(msxname)
 
     def saveMSXQualityFile(self, outfname):
+        """  Saves the quality as bin file.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXComputedQualitySpecie('CL2')
+              d.saveMSXQualityFile('testMSXQuality.bin')"""
         self.msx.MSXsaveoutfile(outfname)
 
     def solveMSXCompleteHydraulics(self):
         """Solve complete hydraulic over the entire simulation period.
             %
             % Example:
-            %   d = epanet('net2-cl2.inp');
-            %   d.loadMSXFile('net2-cl2.msx');
+            %   d = epanet('net2-cl2.inp')
+            %   d.loadMSXFile('net2-cl2.msx')
             %   d.solveMSXCompleteHydraulics()
             %
             % See also solveMSXCompleteQuality."""
@@ -11231,8 +11241,8 @@ class epanet:
         """Solve complete hydraulic over the entire simulation period.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.solveMSXCompleteQuality()
 
             See also solveMSXCompleteHydraulics."""
@@ -11242,15 +11252,69 @@ class epanet:
         self.msx.MSXreport()
 
     def useMSXHydraulicFile(self, hydname):
+        """% Uses a previously saved EPANET hydraulics file as the source
+            % of hydraulic information.
+            %
+            % Example:
+            %  d = epanet('net2-cl2.inp');
+            %  d.loadMSXFile('net2-cl2.msx');
+            %  d.saveHydraulicsOutputReportingFile
+            %  d.saveHydraulicFile('testMSXHydraulics.hyd')
+            %  d.useMSXHydraulicFile('testMSXHydraulics.hyd')
+            %
+            % See also saveHydraulicsOutputReportingFile, saveHydraulicFile."""
         self.msx.MSXusehydfile(hydname)
 
     def getMSXPatternValue(self, patternIndex, patternStep):
+        """  Retrieves the multiplier at a specific time period for a given source time pattern.
+
+             Example:
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('P1', [1.0 0.0 3.0])
+               d.getMSXPatternValue(1,3)   Retrieves the third multiplier of the first pattern.
+
+             See also setMSXPatternValue, setMSXPattern, setMSXPatternMatrix,
+                      getMSXPatternsIndex, getMSXPatternsNameID."""
         return self.msx.MSXgetpatternvalue(patternIndex, patternStep)
 
     def initializeMSXQualityAnalysis(self, flag):
+        """ Initializes the MSX system before solving for water quality results
+             in step-wise fashion.
+
+             flag options:
+                1: if water quality results should be saved to a scratch
+                   binary file or
+                0: if results are not saved to file.
+
+             Example:
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               tleft = 1
+               d.solveMSXCompleteHydraulics()
+               d.initializeMSXQualityAnalysis(0)
+               while(tleft>0):
+                   t,tleft = d.stepMSXQualityAnalysisTimeLeft
+
+
+             See also solveMSXCompleteHydraulics, stepMSXQualityAnalysisTimeLeft."""
         self.msx.MSXinit(flag)
 
     def stepMSXQualityAnalysisTimeLeft(self):
+        """ Advances the water quality solution through a single water quality time step when
+             performing a step-wise simulation.
+
+             Example:
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               tleft = 1
+               d.solveMSXCompleteHydraulics()
+               d.initializeMSXQualityAnalysis(0)
+               while(tleft>0):
+                   t,tleft = d.stepMSXQualityAnalysisTimeLeft()
+
+
+            % See also solveMSXCompleteHydraulics, initializeMSXQualityAnalysis."""
         t, tleft = self.msx.MSXstep()
         return t, tleft
 
@@ -11265,8 +11329,8 @@ class epanet:
         """ Retrieves all the options.
 
              Example:
-               d=epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d=epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXOptions()"""
         msxname=self.msxname
         options = {}
@@ -11326,8 +11390,8 @@ class epanet:
         """ Retrieves the time step.
 
              Example:
-               d=epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d=epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXTimeStep()
 
              See also setMSXTimeStep."""
@@ -11336,8 +11400,8 @@ class epanet:
     def getMSXRateUnits(self):
         """ Retrieves  rate units.
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXRateUnits()
 
              See also setMSXRateUnits."""
@@ -11346,8 +11410,8 @@ class epanet:
     def getMSXAreaUnits(self):
         """ Retrieves  Are units.
             Example:
-             d = epanet('net2-cl2.inp');
-             d.loadMSXFile('net2-cl2.msx');
+             d = epanet('net2-cl2.inp')
+             d.loadMSXFile('net2-cl2.msx')
              d.getMSXAreaUnits()
 
              See also setMSXAreaUnits."""
@@ -11362,8 +11426,8 @@ class epanet:
                vc: Visual C++ compiler
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXCompiler()
 
              See also setMSXCompilerNONE, setMSXCompilerVC,
@@ -11381,8 +11445,8 @@ class epanet:
                      rate expressions is computed.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXCoupling()
 
              See also setMSXCouplingFULL, setMSXCouplingNONE."""
@@ -11397,8 +11461,8 @@ class epanet:
                ROS2 = 2nd order Rosenbrock integrator.
 
              Example:
-               d=epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d=epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXSolver()
 
              See also setMSXSolverEUL, setMSXSolverRK5, setMSXSolverROS2."""
@@ -11408,8 +11472,8 @@ class epanet:
         """ Retrieves the absolute tolerance.
 
               Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXAtol()
 
              See also getMSXRtol."""
@@ -11419,8 +11483,8 @@ class epanet:
         """  Retrieves the relative accuracy level.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXRtol()
 
              See also getMSXAtol."""
@@ -11430,8 +11494,8 @@ class epanet:
         """  Retrieves the constant's ID.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXConstantsNameID()        Retrieves the IDs of all the constants.
                d.getMSXConstantsNameID({1})      Retrieves the ID of the first constant.
                d.getMSXConstantsNameID{[1,2]}  Retrieves the IDs of the first two constants.
@@ -11456,11 +11520,11 @@ class epanet:
         """  Retrieves the parameter's ID.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXParametersNameID()        % Retrieves the IDs of all the parameters.
                d.getMSXParametersNameID(1)     % Retrieves the ID of the first parameter.
-               d.getMSXParametersNameID([1:3]) % Retrieves the IDs of the first three parameters.
+               d.getMSXParametersNameID([1,3]) % Retrieves the IDs of the first and third parrameters.
 
              See also getMSXParametersCount, getMSXParametersIndex,
                       getMSXParametersTanksValue, getMSXParametersPipesValue."""
@@ -11482,15 +11546,15 @@ class epanet:
         """ Retrieves the patterns ID.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
-               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
-               d.addMSXPattern('P2', [0.0, 0.0 2.0]);
-               d.addMSXPattern('P3', [0.0, 1.0 2.0]);
-               d.addMSXPattern('P4', [1.0, 1.0 2.0]);
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('P1', [1.0, 0.0 1.0])
+               d.addMSXPattern('P2', [0.0, 0.0 2.0])
+               d.addMSXPattern('P3', [0.0, 1.0 2.0])
+               d.addMSXPattern('P4', [1.0, 1.0 2.0])
                d.getMSXPatternsNameID()         Retrieves the IDs of all the patterns.
                d.getMSXPatternsNameID(1)      Retrieves the ID of the first pattern.
-               d.getMSXPatternsNameID(1:3)    Retrieves the IDs of the first three patterns.
+               d.getMSXPatternsNameID([1,3])    Retrieves the IDs of the first and third patterns.
 
              See also getMSXPattern, getMSXPatternsIndex, getMSXPatternsLengths,
                       setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
@@ -11512,8 +11576,8 @@ class epanet:
         """Retrieves the species' ID.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXSpeciesNameID()        Retrieves the IDs of all the species.
                d.getMSXSpeciesNameID(1)      Retrieves the IDs of the first specie.
                d.getMSXSpeciesNameID([1:3])  Retrieves the IDs of the first three species.
@@ -11539,8 +11603,8 @@ class epanet:
         """ Retrieves the parameter's indices.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXParametersIndex()           Retrieves the indices of all the parameters.
                d.getMSXParametersIndex(['k1'])     Retrieves the index of the first parameter.
                d.getMSXParametersIndex(['k1', 'k3', 'kDOC1'])  Retrieves the indices of the
@@ -11567,8 +11631,8 @@ class epanet:
         """ Retrieves the species' index.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXSpeciesIndex()           Retrieves the index of all the species.
                d.getMSXSpeciesIndex(['Na'])     Retrieves the index of the Na.
                d.getMSXSpeciesIndex(['CL2', 'Nb', 'Na'])  Retrieves the indices of CL2, Nb and Na.
@@ -11595,12 +11659,12 @@ class epanet:
         """ Retrieves the patterns index.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
-               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
-               d.addMSXPattern('P2', [0.0, 0.0 2.0]);
-               d.addMSXPattern('P3', [0.0, 1.0 2.0]);
-               d.addMSXPattern('P4', [1.0, 1.0 2.0]);
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('P1', [1.0, 0.0 1.0])
+               d.addMSXPattern('P2', [0.0, 0.0 2.0])
+               d.addMSXPattern('P3', [0.0, 1.0 2.0])
+               d.addMSXPattern('P4', [1.0, 1.0 2.0])
                d.getMSXPatternsIndex()           Retrieves the indices of all the patterns.
                d.getMSXPatternsIndex(['P1'])     Retrieves the index of the first pattern.
                d.getMSXPatternsIndex(['P1', 'P2', 'P3'])  Retrieves the indices of the first three patterns.
@@ -11626,8 +11690,8 @@ class epanet:
         """ Retrieves the constant's index.
 
              Example:
-               d = epanet('Net3-NH2CL.inp');
-               d.loadMSXFile('Net3-NH2CL.msx');
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXConstantsIndex()         Retrieves the index of all the species.
                d.getMSXConstantsIndex(['S1'])   Retrieves the index of S1.
 
@@ -11652,9 +11716,9 @@ class epanet:
         """ Retrieves the constant's value.
 
              Example:
-               d = epanet('net3-bio.inp');
-               d.loadMSXFile('net3-bio.msx');
-               d.getMSXConstantsValue         Retrieves the values of all the constants.
+               d = epanet('net3-bio.inp')
+               d.loadMSXFile('net3-bio.msx')
+               d.getMSXConstantsValue()         Retrieves the values of all the constants.
                d.getMSXConstantsValue{1}      Retrieves the value of the first constant.
                d.getMSXConstantsValue{[1,2]}  Retrieves the values of the first two constants.
 
@@ -11676,8 +11740,8 @@ class epanet:
         """ Retrieves the parameters pipes value.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXParametersPipesValue()
 
              See also setMSXParametersPipesValue, getMSXParametersTanksValue,
@@ -11697,33 +11761,33 @@ class epanet:
         """ Retrieves the parameters tanks value.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
-               tankIndex = d.getNodeTankIndex
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               tankIndex = d.getNodeTankIndex()
                d.getMSXParametersTanksValue{tankIndex}  Retrieves the value of the first tank.
 
              See also setMSXParametersTanksValue, getMSXParametersCount,
                       getMSXParametersIndex, getMSXParametersPipesValue."""
         x = self.getNodeTankIndex()
         y = self.getMSXParametersCount()
-        value = {}
+        value = [None] * max(x)
         for i in x:
-            value[i] = []
-            for j in range(1, y + 1):
-                param = self.msx.MSXgetparameter(0, i, j)
-                value[i].append(param)
-        output = list(value.values())
-        return output
+            value[i - 1] = []
+            for j in range(y):
+                param = self.msx.MSXgetparameter(0, i, j+1)
+                value[i - 1].append(param)
+
+        return value
     def getMSXPatternsLengths(self, varagin=None):
         """ Retrieves the pattern lengths.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
-               d.addMSXPattern('P1', [1.0, 0.0 1.0]);
-               d.addMSXPattern('P2', 1.0);
-               d.addMSXPattern('P3', [0.0, 1.0 2.0]);
-               d.addMSXPattern('P4', [1.0, 2.0]);
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('P1', [1.0, 0.0 1.0])
+               d.addMSXPattern('P2', 1.0)
+               d.addMSXPattern('P3', [0.0, 1.0 2.0])
+               d.addMSXPattern('P4', [1.0, 2.0])
                d.getMSXPatternsLengths()         Retrieves the lengths of all the patterns.
                d.getMSXPatternsLengths([]1)      Retrieves the length of the first pattern.
                x=d.getMSXPatternsLengths([1,2])  Retrieves the lengths of the first two patterns.
@@ -11745,12 +11809,12 @@ class epanet:
         """ Retrieves the time patterns.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
-               d.addMSXPattern('P1', [1.0 0.0 1.0]);
-               d.addMSXPattern('P2', [1.0 0.0 1.0]);
-               d.addMSXPattern('P3', [0.0 1.0 2.0]);
-               d.addMSXPattern('P4', [1.0 2.0 2.5]);
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('P1', [1.0 0.0 1.0])
+               d.addMSXPattern('P2', [1.0 0.0 1.0])
+               d.addMSXPattern('P3', [0.0 1.0 2.0])
+               d.addMSXPattern('P4', [1.0 2.0 2.5])
                patterns = d.getMSXPattern()   Retrieves all the patterns.
 
 
@@ -11766,11 +11830,12 @@ class epanet:
         for i in range(1, self.getMSXPatternsCount() + 1):
             z = self.getMSXPatternsLengths([i])
             tmplength = z
-            for j in range(1, tmplength[0] +1):
+            for j in range(1, tmplength[0] + 1):
                 value[i-1][j-1] = self.msx.MSXgetpatternvalue(i, j)
+
             if tmplength[0] < tmpmaxlen:
-                for j in range(tmplength + 1, tmpmaxlen + 1):
-                    value[i - 1][j - 1] = value[i - 1][j - tmplength - 1]
+                for j in range(tmplength[0] + 1, tmpmaxlen + 1):
+                    value[i - 1][j - 1] = value[i - 1][j - tmplength[0] - 1]
 
         return value
 
@@ -11778,8 +11843,8 @@ class epanet:
         """ Retrieves the species' type.
 
              Example:
-               d = epanet('net3-bio.inp');
-               d.loadMSXFile('net3-bio.msx');
+               d = epanet('net3-bio.inp')
+               d.loadMSXFile('net3-bio.msx')
                d.getMSXSpeciesType         Retrieves the type of all the species.
                d.getMSXSpeciesType{1}      Retrieves the type of the first specie.
                d.getMSXSpeciesType{[5,7]}  Retrieves the type of the 5th and 7th specie.
@@ -11806,8 +11871,8 @@ class epanet:
         """ Retrieves the species' units.
 
              Example:
-               d = epanet('net3-bio.inp');
-               d.loadMSXFile('net3-bio.msx');
+               d = epanet('net3-bio.inp')
+               d.loadMSXFile('net3-bio.msx')
                d.getMSXSpeciesUnits           Retrieves the units of all the species.
                d.getMSXSpeciesUnits{1}        Retrieves the units of the first specie.
                d.getMSXSpeciesUnits{[1,16]}   Retrieves the units of the species with
@@ -11889,8 +11954,8 @@ class epanet:
         """ Retrieves equation terms.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXEquationsTerms()
 
              See also getMSXEquationsPipes, getMSXEquationsTanks."""
@@ -11902,8 +11967,8 @@ class epanet:
         """ Retrieves equation for pipes.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXEquationsPipes()
 
              See also getMSXEquationsTerms, getMSXEquationsTanks."""
@@ -11915,8 +11980,8 @@ class epanet:
         """ Retrieves equation for tanks.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXfile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXfile('net2-cl2.msx')
                d.getMSXEquationsTanks()
 
              See also getMSXEquationsTerms, getMSXEquationsPipes."""
@@ -11938,8 +12003,8 @@ class epanet:
         """ Retrieves the sources type.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXSourceType()           Retrieves all the source types.
                d.getMSXSourceType{1}        Retrieves the first node source type.
                d.getMSXSourceType{[1,2]}      Retrieves the source type of nodes 1 and 2
@@ -11970,8 +12035,8 @@ class epanet:
         """  Retrieves the sources level.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXSourceLevel()           Retrieves all the source level.
                d.getMSXSourceLevel({1})        Retrieves the first node source level.
                d.getMSXSourceLevel([1,5])      Retrieves the source level
@@ -12003,11 +12068,11 @@ class epanet:
         """ Retrieves the sources pattern index.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXSourcePatternIndex()          Retrieves all the source pattern index.
                d.getMSXSourcePatternIndex({1} )      Retrieves the first node source pattern index.
-               d.getMSXSourcePatternIndex([1,5]])     Retrieves the source pattern index of nodes 1 and 5
+               d.getMSXSourcePatternIndex([1,5])     Retrieves the source pattern index of nodes 1 and 5
 
              See also getMSXSources, getMSXSourceNodeNameID
                       getMSXSourceType, getMSXSourceLevel."""
@@ -12035,8 +12100,8 @@ class epanet:
         """ Retrieves the links initial quality value.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXLinkInitqualValue()       Retrieves the initial quality of all links.
                d.getMSXLinkInitqualValue({1})    Retrieves the initial quality of the first link.
                d.getMSXLinkInitqualValue([1,3])  Retrieves the initial quality  of 1 and 3.
@@ -12063,8 +12128,8 @@ class epanet:
         """ Retrieves the nodes initial quality value.
 
              Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXNodeInitqualValue()       Retrieves the initial quality of all nodes.
                d.getMSXNodeInitqualValue({1})    Retrieves the initial quality of the first node.
                d.getMSXNodeInitqualValue([1,3])  Retrieves the initial quality  of one and three.
@@ -12091,15 +12156,15 @@ class epanet:
         """ Retrieves the species' absolute tolerance.
 
              Example:
-               d = epanet('net3-bio.inp');
-               d.loadMSXFile('net3-bio.msx');
+               d = epanet('net3-bio.inp')
+               d.loadMSXFile('net3-bio.msx')
                d.getMSXSpeciesATOL()
 
              See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
                       getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesUnits,
                       getMSXSpeciesRTOL."""
         value = []
-        for i in range(1, self.getMSXSpeciesCount()):
+        for i in range(1, self.getMSXSpeciesCount()+1):
             Atol = []
             value.append(self.msx.MSXgetspecies(i))
             Atol.append([item[2] for item in value])
@@ -12109,25 +12174,53 @@ class epanet:
         """ Retrieves the species' relative accuracy level.
 
              Example:
-               d = epanet('net3-bio.inp');
-               d.loadMSXFile('net3-bio.msx');
+               d = epanet('net3-bio.inp')
+               d.loadMSXFile('net3-bio.msx')
                d.getMSXSpeciesRTOL()
 
              See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
                       getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesUnits,
                       getMSXSpeciesATOL."""
         value = []
-        for i in range(1, self.getMSXSpeciesCount()):
+        for i in range(1, self.getMSXSpeciesCount()+1):
             Rtol = []
             value.append(self.msx.MSXgetspecies(i))
             Rtol.append([item[3] for item in value])
         return Rtol[0]
 
     def getMSXSpeciesConcentration(self, type, index, species):
+        """ Returns the node/link concentration for specific specie.
+
+             type options:
+                    node = 0
+                    link = 1
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXComputedQualitySpecie('CL2')
+               speciesIndex = d.getMSXSpeciesIndex('CL2')
+               d.getMSXSpeciesConcentration(0, 1, spIndex)  Retrieves the CL2 concentration of the first node.
+               d.getMSXSpeciesConcentration(1, 1, spIndex)  Retrieves the CL2 concentration of the first link.
+
+             See also getMSXSpeciesIndex, getMSXSpeciesNameID,
+                      getMSXSpeciesCount, getMSXSpeciesType,
+                      getMSXSpeciesUnits, getMSXSpeciesATOL,
+                      getMSXSpeciesRTOL."""
         return self.msx.MSXgetqual(type, index, species)
 
     def getMSXSourceNodeNameID(self):
-        
+        """ Retrieves the sources node ID.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               d.getMSXSourceNodeNameID         Retrieves all the source node IDs.
+
+
+
+             See also getMSXSources, getMSXSourceType
+                      getMSXSourceLevel, getMSXSourcePatternIndex."""
         nodes = []
         for i in range(1, self.getNodeCount() + 1):
             source = []
@@ -12235,91 +12328,396 @@ class epanet:
         msxname=self.msxname
         f = open(msxname, 'r+')
         lines = f.readlines()
+        flag = 0
         for i, line in enumerate(lines):
-
+            if line.strip() == '[OPTIONS]':
+                options_index = i
             if line.startswith(param):
-
                 lines[i] = param + "\t" + str(change) + "\n"
-
+                flag = 1
+        if flag == 0:
+            lines = list(lines)
+            lines.insert(options_index + 1, param + "\t" + str(change) + "\n")
         f.seek(0)
         f.writelines(lines)
         f.close()
 
     def setMSXAreaUnitsCM2(self):
+        """  Sets the area units to square centimeters.
+
+             The default is FT2.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXAreaUnits()
+              d.setMSXAreaUnitsCM2()
+              d.getMSXAreaUnits()
+
+             See also setMSXAreaUnitsFT2, setMSXAreaUnitsM2."""
         self.changeMSXOptions("AREA_UNITS","CM2")
     def setMSXAreaUnitsFT2(self):
+        """ Sets the area units to square feet.
+
+             The default is FT2.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXAreaUnits()
+              d.setMSXAreaUnitsFT2()
+              d.getMSXAreaUnits()
+
+             See also setMSXAreaUnitsM2, setMSXAreaUnitsCM2."""
         self.changeMSXOptions("AREA_UNITS", "FT2")
 
     def setMSXAreaUnitsM2(self):
+        """ Sets the area units to square meters.
+
+             The default is FT2.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXAreaUnits()
+              d.setMSXAreaUnitsM2()
+              d.getMSXAreaUnits()
+
+             See also setMSXAreaUnitsFT2, setMSXAreaUnitsCM2."""
         self.changeMSXOptions("AREA_UNITS", "M2")
 
     def setMSXAtol(self, value):
+        """ Sets the absolute tolerance used to determine when two concentration levels of a
+             species are the same.
+
+             If no ATOL option is specified then it defaults to 0.01
+             (regardless of species concentration units).
+
+             Example:
+              d = epanet('net2-cl2.inp');
+              d.loadMSXFile('net2-cl2.msx');
+              d.getMSXAtol()
+              d.setMSXAtol(2e-3);
+              d.getMSXAtol()
+
+            % See also setMSXRtol."""
         self.changeMSXOptions("ATOL", value)
 
     def setMSXRtol(self, value):
+        """Sets the relative accuracy level on a species’ concentration
+             used to adjust time steps in the RK5 and ROS2 integration methods.
+
+             If no RTOL option is specified then it defaults to 0.001.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXRtol()
+              d.setMSXRtol(2e-3)
+              d.getMSXRtol()
+
+             See also setMSXAtol."""
         self.changeMSXOptions("RTOL", value)
 
     def setMSXCompilerGC(self):
+        """  Sets chemistry function compiler code to GC.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2-vc.msx')
+              d.getMSXCompiler()
+              d.setMSXCompilerGC()
+              d.getMSXCompiler()
+
+             See also setMSXCompilerNONE, setMSXCompilerVC."""
         self.changeMSXOptions("COMPILER", "GC")
 
     def setMSXCompilerVC(self):
+        """ Sets chemistry function compiler code to VC.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXCompiler()
+              d.setMSXCompilerVC()
+              d.getMSXCompiler()
+
+             See also setMSXCompilerNONE, setMSXCompilerGC."""
         self.changeMSXOptions("COMPILER", "VC")
 
     def setMSXCompilerNONE(self):
+        """ Sets chemistry function compiler code to NONE.
+
+             Example:
+              d = epanet('net2-cl2.inp');
+              d.loadMSXFile('net2-cl2.msx');
+              d.getMSXCompiler()
+              d.setMSXCompilerNONE()
+              d.getMSXCompiler()
+
+             See also setMSXCompilerVC, setMSXCompilerGC."""
         self.changeMSXOptions("COMPILER", "NONE")
 
     def setMSXCouplingFULL(self):
+        """  Sets coupling to FULL.
+
+             COUPLING determines to what degree the solution of any algebraic
+             equilibrium equations is coupled to the integration of the reaction
+             rate equations. With FULL coupling the updating is done whenever a
+             new set of values for the rate-dependent variables in the reaction
+             rate expressions is computed. The default is FULL coupling.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXCoupling()
+              d.setMSXCouplingFULL()
+              d.getMSXCoupling()
+
+             See also setMSXCouplingNONE."""
         self.changeMSXOptions("COUPLING", "FULL")
 
     def setMSXCouplingNONE(self):
+        """ Sets coupling to NONE.
+
+             COUPLING determines to what degree the solution of any algebraic
+             equilibrium equations is coupled to the integration of the reaction
+             rate equations. If coupling is NONE then the solution to the
+             algebraic equations is only updated at the end of each
+             integration time step. The default is FULL coupling.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXCoupling()
+              d.setMSXCouplingFULL()
+              d.getMSXCoupling()
+
+             See also setMSXCouplingFULL."""
         self.changeMSXOptions("COUPLING", "NONE")
 
     def setMSXRateUnitsDAY(self):
+        """  Sets the rate units to days.
+
+             The default units are hours (HR)
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXRateUnits()
+              d.setMSXRateUnitsDAY()
+              d.getMSXRateUnits()
+
+             See also setMSXRateUnitsSEC, setMSXRateUnitsMIN
+                      setMSXRateUnitsHR."""
         self.changeMSXOptions("RATE_UNITS", "DAY")
 
     def setMSXRateUnitsHR(self):
+        """  Sets the rate units to hours.
+
+             The default units are hours (HR)
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXRateUnits()
+              d.setMSXRateUnitsHR()
+              d.getMSXRateUnits()
+
+             See also setMSXRateUnitsSEC, setMSXRateUnitsMIN
+                      setMSXRateUnitsDAY."""
         self.changeMSXOptions("RATE_UNITS", "HR")
 
     def setMSXRateUnitsMIN(self):
+        """ Sets the rate units to minutes.
+
+             The default units are hours (HR)
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXRateUnits()
+              d.setMSXRateUnitsMIN()
+              d.getMSXRateUnits()
+
+             See also setMSXRateUnitsSEC, setMSXRateUnitsHR,
+                      setMSXRateUnitsDAY."""
         self.changeMSXOptions("RATE_UNITS", "MIN")
 
     def setMSXRateUnitsSEC(self):
+        """ Sets the rate units to seconds.
+
+             The default units are hours (HR)
+
+              Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXRateUnits()
+              d.setMSXRateUnitsSEC()
+              d.getMSXRateUnits()
+
+             See also setMSXRateUnitsMIN, setMSXRateUnitsHR,
+                      setMSXRateUnitsDAY."""
         self.changeMSXOptions("RATE_UNITS", "SEC")
 
     def setMSXSolverEUL(self):
+        """ Sets the numerical integration method to solve the reaction
+             system to standard Euler integrator (EUL).
+
+             The default solver is EUL.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXSolver()
+              d.setMSXSolverEUL()
+              d.getMSXSolver()
+
+             See also setMSXSolverRK5, setMSXSolverROS2."""
         self.changeMSXOptions("SOLVER", "EUL")
 
     def setMSXSolverRK5(self):
+        """ Sets the numerical integration method to solve the reaction
+             system to Runge-Kutta 5th order integrator (RK5).
+
+             The default solver is EUL.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXSolver()
+              d.setMSXSolverRK5()
+              d.getMSXSolver()
+
+            % See also setMSXSolverEUL, setMSXSolverROS2."""
         self.changeMSXOptions("SOLVER", "RK5")
 
     def setMSXSolverROS2(self):
+        """  Sets the numerical integration method to solve the reaction
+             system to 2nd order Rosenbrock integrator (ROS2).
+
+             The default solver is EUL.
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXSolver()
+              d.setMSXSolverROS2()
+              d.getMSXSolver()
+
+             See also setMSXSolverEUL, setMSXSolverRK5."""
         self.changeMSXOptions("SOLVER", "ROS2")
 
     def setMSXTimeStep(self, value):
+        """ Sets the time step.
+
+             The default timestep is 300 seconds (5 minutes).
+
+             Example:
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              d.getMSXTimeStep()
+              d.setMSXTimeStep(3600)
+              d.getMSXTimeStep()
+
+             See also getMSXTimeStep."""
         self.changeMSXOptions("TIMESTEP", value)
 
     def setMSXPatternValue(self, index, patternTimeStep, patternFactor):
+        """ Sets the pattern factor for an index for a specific time step.
+
+             Example:
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('P1', [2.0 2.0 2.0 2.0])
+               d.getMSXPatternValue(1,1)
+               d.setMSXPatternValue(1,1,3.0) Sets the first timestep of the first pattern to 3.0.
+               d.getMSXPatternValue(1,1)
+
+             See also getMSXPatternValue, getMSXPattern, addMSXPattern."""
         self.msx.MSXsetpatternvalue(index, patternTimeStep, patternFactor)
 
     def setMSXPattern(self, index, patternVector):
+        """ Sets the multiplier at a specific time period for a given pattern.
+
+             Example:
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.addMSXPattern('Pl', [1.0 2.0 1.5 1.0])
+               d.getMSXPattern()
+               d.setMSXPattern(1, [1.0 0.0 3.0]);
+               d.getMSXPattern()
+
+             See also getMSXPattern, addMSXPattern."""
         nfactors = len(patternVector)
         self.msx.MSXsetpattern(index, patternVector, nfactors)
 
     def setMSXParametersTanksValue(self, NodeTankIndex, paramindex, value):
+        """Assigns a value to a particular reaction parameter for a given tank within the pipe network.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               x=d.getMSXParametersTanksValue()
+               print(x[96])
+               d.setMSXParametersTanksValue(97,1,5)
+               x=d.getMSXParametersTanksValue()
+               print(x[96])
+             See also getMSXParametersTanksValue, setMSXParametersPipesValue,
+                      getMSXParametersPipesValue, getMSXParametersCount,
+                      getMSXParametersIndex."""
         self.msx.MSXsetparameter(0, NodeTankIndex, paramindex, value)
 
     def setMSXParametersPipesValue(self, pipeIndex, value):
+        """Assigns a value to a particular reaction parameter
+         for a given pipe within the pipe network.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               x=d.getMSXParametersPipesValue()
+               print(x[1])
+               d.setMSXParametersPipesValue(1,[1.5 , 2])
+               x=d.getMSXParametersPipesValue()
+               print(x[0])
+                See also getMSXParametersPipesValue, setMSXParametersTanksValue,
+                      getMSXParametersTanksValue, getMSXParametersCount,
+                      getMSXParametersIndex."""
         for i in range(len(value)):
             self.msx.MSXsetparameter(1, pipeIndex, i+1, value[i])
 
     def setMSXConstantsValue(self, value):
+        """ Sets the values of constants.
+
+             Example:
+               d = epanet('net3-bio.inp')
+               d.loadMSXFile('net3-bio.msx')
+               d.getMSXConstantsValue()
+               d.setMSXConstantsValue([1, 2, 3]) Set the values of the first three constants.
+               d.getMSXConstantsValue()
+
+             See also getMSXConstantsCount, getMSXConstantsIndex,
+                      getMSXConstantsNameID."""
         for i in range(len(value)):
             self.msx.MSXsetconstant(i+1, value[i])
 
-    def addMSXpattern(self, *args):
+    def addMSXPattern(self, *args):
+        """ Adds new time pattern
+
+            Example:
+            d = epanet('net2-cl2.inp');
+            d.loadMSXFile('net2-cl2.msx');
+            print(d.getMSXPatternsNameID())
+            mult = [0.5, 0.8, 1.2, 1.0, 0.7, 0.3]
+            d.addMSXPattern('Pattern1', mult)
+            print(d.getMSXPattern())
+            print(d.getMSXPatternsNameID())
+
+            See also getMSXPattern, setMSXPattern."""
         index = -1
         MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
         if len(args) == 1:
+
             self.msx.MSXaddpattern(args[0])
             index = self.msx.MSXgetindex(MSX_PATTERN, args[0])
         elif len(args) == 2:
@@ -12332,12 +12730,12 @@ class epanet:
         if self.getMSXSpeciesCount() == 0:
             return 0
         if not args:
-            specie = self.getMSXspeciesNameID()
+            specie = self.getMSXSpeciesNameID()
         else:
             specie = args[0]
 
-        link_indices = range(1, self.getLinkCount() + 1)
-        node_indices = range(1, self.getNodeCount() + 1)
+        link_indices = np.arange(1, self.getLinkCount() + 1)
+        node_indices = np.arange(1, self.get_node_count() + 1)
         speciename = self.getMSXSpeciesIndex(specie)
 
         node_quality = np.empty((1, len(node_indices), len(speciename)))
@@ -12354,7 +12752,7 @@ class epanet:
             for i in range(len(speciename)):
                 for lnk in link_indices:
                     print(lnk)
-                    link_quality[k, lnk - 1, i] = self.getMSXLinkInitqualValue([lnk])[(speciename)[1]]
+                    link_quality[k, lnk - 1, i] = self.getMSXNodeInitqualValue([lnk])[speciename[i]]
                     if lnk < node_indices[-1] + 1:
                         node_quality[k, lnk - 1, i] = self.getMSXNodeInitqualValue([lnk])[speciename[i]]
         else:
@@ -15242,13 +15640,11 @@ class epanetmsxapi:
         ops = platform.system().lower()
         if ops in ["windows"]:
             dll_path1 = resource_filename("epyt", os.path.join("libraries", "win", 'epanet2_2', '64bit',
-                                                               f"epanetmsx.dll"))
+                                                               "epanetmsx.dll"))
         elif ops in ["darwin"]:
-            dll_path1 = resource_filename("epyt", os.path.join("libraries", "mac", 'epanet2_2', '64bit',
-                                                               f"epanetmsx.dll"))
+            dll_path1 = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
         else:
-            dll_path1 = resource_filename("epyt", os.path.join("libraries", "glnx", 'epanet2_2', '64bit',
-                                                               f"epanetmsx.dll"))
+            dll_path1 = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
 
         self.msx_lib = cdll.LoadLibrary(dll_path1)
         # msx opens starts here

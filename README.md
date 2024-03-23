@@ -518,6 +518,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |<b> MSX Functions </b>
 |loadMSXFile|Opens the EPANET-MSX toolkit system|
 |unloadMSX|Closes the EPANET-MSX toolkit system|
+|addMSXPattern|Adds a new, empty MSX source time pattern to the project|
 |initializeMSXQualityAnalysis|Initializes the MSX system before solving for water quality results in step-wise fashion|
 |stepMSXQualityAnalysisTimeLeft|Advances the water quality solution through a single water quality time step when performing a step-wise simulation|
 |saveMSXFile|Saves the data associated with the current MSX project into a new MSX input file|
@@ -584,6 +585,8 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |setMSXTimeStep|Sets time step|
 |setMSXPatternValue|Assigns a new value to the multiplier for a specific time period in a given MSX source time pattern|
 |setMSXPattern|Sets all of the multiplier factors for a specific time pattern|
+|setMSXParametersPipesValue|Assigns a value to a particular reaction parameter for given pipes|
+|setMSXParametersTanksValue|Assigns a value to a particular reaction parameter for given tanks|
 |setMSXConstantsValue|Assigns a new value to a specific reaction constant|
 |useMSXHydraulicFile|Uses a previously saved EPANET hydraulics file as the source of hydraulic information|
 
