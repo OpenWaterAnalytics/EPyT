@@ -10340,39 +10340,22 @@ class epanet:
 
         See also epanet, saveInputFile, closeNetwork().
         """
+        def safe_delete(file):
+            try:
+                os.unlink(file)
+            except Exception as e:
+                print(f"Could not delete {file}: {e}")
 
         try:
-
             self.api.ENclose()
         finally:
-            try:
-                if os.path.exists(self.TempInpFile):
-                    os.remove(self.TempInpFile)
-            except:
-                pass
-            try:
-                if os.path.exists(self.TempInpFile):
-                    os.unlink(self.TempInpFile)
-            except:
-                pass
-            try:
-                os.remove(self.TempInpFile[0:-4] + '.txt')
-                os.remove(self.InputFile[0:-4] + '.txt')
-                os.remove(self.BinTempfile)
-            except:
-                pass
+            safe_delete(self.TempInpFile)
+            files_to_delete = [self.TempInpFile[0:-4] + '.txt', self.InputFile[0:-4] + '.txt', self.BinTempfile]
+            for file in files_to_delete:
+                safe_delete(file)
             for file in Path(".").glob("@#*.txt"):
-                file.unlink()
-            os.remove(self.TempInpFile)
-
-        try:
-            os.remove(self.TempInpFile[0:-4] + '.txt')
-            os.remove(self.InputFile[0:-4] + '.txt')
-            os.remove(self.BinTempfile)
-        except:
-            pass
-        for file in Path(".").glob("@#*.txt"):
-            file.unlink()
+                safe_delete(file)
+            safe_delete(self.TempInpFile)
 
         print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
 
