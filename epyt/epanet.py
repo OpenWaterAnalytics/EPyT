@@ -12807,7 +12807,7 @@ class epanetapi:
         libname = f"epanet2"
         ops = platform.system().lower()
         if ops in ["windows"]:
-            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", '64bit', f"{libname}2.dll"))
+            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", f"{libname}.dll"))
         elif ops in ["darwin"]:
             self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
         else:
@@ -15637,8 +15637,7 @@ class epanetmsxapi:
     def __init__(self, filename=None):
         ops = platform.system().lower()
         if ops in ["windows"]:
-            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", 'epanet2_2', '64bit',
-                                                                       "epanetmsx.dll"))
+            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
         elif ops in ["darwin"]:
             self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
         else:
@@ -15646,6 +15645,10 @@ class epanetmsxapi:
 
         self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
         self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
+
+        # Error ~ function
+        self.msx_error = self.msx_lib.MSXgeterror
+        self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
         # msx opens starts here
         if filename is not None:
@@ -15666,10 +15669,6 @@ class epanetmsxapi:
             else:
                 print("MSX file opened successfully.")
             # msx open ends here
-
-        # Error ~ function
-        self.msx_error = self.msx_lib.MSXgeterror
-        self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
     def MSXopen(self, filename):
         """  Open .msx file
