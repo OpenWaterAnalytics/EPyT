@@ -12804,7 +12804,7 @@ class epanetapi:
 
         # Check platform and Load epanet library
         # libname = f"epanet{str(version).replace('.', '_')}"
-        libname = f"epanet"
+        libname = f"epanet2"
         ops = platform.system().lower()
         if ops in ["windows"]:
             self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", '64bit', f"{libname}2.dll"))
