@@ -12807,12 +12807,7 @@ class epanetapi:
         libname = f"epanet"
         ops = platform.system().lower()
         if ops in ["windows"]:
-            if "32" in str(platform.architecture()):
-                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", '32bit',
-                                                                        f"{libname}2.dll"))
-            elif "64" in str(platform.architecture()):
-                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", '64bit',
-                                                                        f"{libname}2.dll"))
+            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", '64bit', f"{libname}2.dll"))
         elif ops in ["darwin"]:
             self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
         else:
