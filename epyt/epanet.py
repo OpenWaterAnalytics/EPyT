@@ -506,6 +506,7 @@ class epanet:
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
+        self.realmsx = ''
         self.DEMANDMODEL = ['DDA', 'PDA']
         # Link types
         self.TYPELINK = ['CVPIPE', 'PIPE', 'PUMP', 'PRV', 'PSV',
@@ -634,7 +635,6 @@ class epanet:
 
         if msx:
             self.msx = epanetmsxapi()
-            MSX_SPECIES = 3
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -10374,7 +10374,7 @@ class epanet:
             cwd = os.getcwd()
             tmp_files = list(filter(lambda f: os.path.isfile(os.path.join(cwd, f))
                                               and f.startswith("s") and 6 <= len(f) <= 8 and "." not in f and "_" in f,
-                                              os.listdir(cwd)))
+                                    os.listdir(cwd)))
             tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
             safe_delete(tmp_files_paths)
 
@@ -11154,7 +11154,7 @@ class epanet:
                     eval('self.api.' + fun + '(i, categ, param[j])')
                 j += 1
 
-    """MSX Funtions"""
+    """MSX Functions"""
 
     def loadMSXFile(self, msxname):
         """Loads an msx file
@@ -11162,6 +11162,7 @@ class epanet:
             d.loadMSXFile('net2-cl2.msx')
             """
         self.realmsx = msxname
+        self.msx = epanetmsxapi()
         self.MSXPythonSetup(msxname)
 
     def unloadMSX(self):
@@ -11185,8 +11186,7 @@ class epanet:
              See also getMSXSpeciesIndex, getMSXSpeciesNameID, getMSXSpeciesConcentration,
                       getMSXSpeciesType, getMSXSpeciesUnits, getMSXSpeciesATOL,
                       getMSXSpeciesRTOL."""
-        MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
-        return self.msx.MSXgetcount(MSX_SPECIES)
+        return self.msx.MSXgetcount(self.ToolkitConstants.MSX_SPECIES)
 
     def getMSXConstantsCount(self):
         """  Retrieves the number of constants.
@@ -11198,8 +11198,7 @@ class epanet:
 
              See also getMSXConstantsIndex, getMSXConstantsValue,
                       getMSXConstantsNameID."""
-        MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
-        return self.msx.MSXgetcount(MSX_CONSTANT)
+        return self.msx.MSXgetcount(self.ToolkitConstants.MSX_CONSTANT)
 
     def getMSXParametersCount(self):
         """  Retrieves the number of parameters.
@@ -11212,8 +11211,7 @@ class epanet:
              See also setMSXParametersTanksValue, setMSXParametersPipesValue,
                       getMSXParametersIndex, getMSXParametersTanksValue,
                       getMSXParametersPipesValue."""
-        MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
-        return self.msx.MSXgetcount(MSX_PARAMETER)
+        return self.msx.MSXgetcount(self.ToolkitConstants.MSX_PARAMETER)
 
     def getMSXPatternsCount(self):
         """ Retrieves the number of patterns.
@@ -11226,8 +11224,7 @@ class epanet:
                d.getMSXPatternsCount()
 
              See also setMSXPattern, setMSXPatternValue, addMSXPattern."""
-        MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
-        return self.msx.MSXgetcount(MSX_PATTERN)
+        return self.msx.MSXgetcount(self.ToolkitConstants.MSX_PATTERN)
 
     def saveMSXFile(self, msxname):
         """ Saves the data associated with the current MSX project into a new MSX input file.
