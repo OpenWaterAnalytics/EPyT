@@ -502,7 +502,7 @@ def isList(var):
 class epanet:
     """ EPyt main functions class """
 
-    def __init__(self, *argv, version=2.2, loadfile=False, msx=False):
+    def __init__(self, *argv, version=2.2, loadfile=False, msxfile=None):
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
@@ -563,6 +563,7 @@ class epanet:
 
         # Initial attributes
         self.classversion = __version__
+        msx = True if msxfile is not None else False
         self.api = epanetapi(version, msx=msx)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
@@ -633,8 +634,8 @@ class epanet:
         plt.rcParams['figure.constrained_layout.use'] = True
         plt.rcParams['figure.max_open_warning'] = 30
 
-        if msx:
-            self.msx = epanetmsxapi()
+        if msxfile is not None:
+            self.msx = epanetmsxapi(msxfile)
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -12836,10 +12837,8 @@ class epanetapi:
         self._lib = cdll.LoadLibrary(self.LibEPANET)
         self.LibEPANETpath = os.path.dirname(self.LibEPANET)
 
-        if float(version) >= 2.2 and '64' in str(platform.architecture()) and not msx:
+        if float(version) >= 2.2 and 'win' in str(platform.architecture()) and not msx:
             self._ph = c_uint64()
-        elif float(version) >= 2.2 and not msx:
-            self._ph = c_uint32()
         else:
             self._ph = None
 
@@ -15654,7 +15653,7 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, filename=''):
+    def __init__(self, msxfile=''):
         ops = platform.system().lower()
         if ops in ["windows"]:
             self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
@@ -15669,11 +15668,11 @@ class epanetmsxapi:
         self.msx_error = self.msx_lib.MSXgeterror
         self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
-        if not os.path.exists(filename):
-            raise FileNotFoundError(f"File not found: {filename}")
+        if not os.path.exists(msxfile):
+            raise FileNotFoundError(f"File not found: {msxfile}")
 
-        print("Opening MSX file:", filename)
-        filename = c_char_p(filename.encode('utf-8'))
+        print("Opening MSX file:", msxfile)
+        filename = c_char_p(msxfile.encode('utf-8'))
         err = self.msx_lib.MSXopen(filename)
         if err != 0:
             self.MSXerror(err)
@@ -15682,7 +15681,7 @@ class epanetmsxapi:
         else:
             print("MSX file opened successfully.")
 
-    def MSXopen(self, filename):
+    def MSXopen(self, msxfile):
         """
         Open MSX file
         filename - Arsenite.msx or use full path
@@ -15691,12 +15690,12 @@ class epanetmsxapi:
             msx.MSXopen(filename)
             msx.MSXopen(Arsenite.msx)
         """
-        print("Opening MSX file:", filename)
-        if not os.path.exists(filename):
-            raise FileNotFoundError(f"File not found: {filename}")
+        print("Opening MSX file:", msxfile)
+        if not os.path.exists(msxfile):
+            raise FileNotFoundError(f"File not found: {msxfile}")
 
-        filename = c_char_p(filename.encode('utf-8'))
-        err = self.msx_lib.MSXopen(filename)
+        msxfile = c_char_p(msxfile.encode('utf-8'))
+        err = self.msx_lib.MSXopen(msxfile)
         if err != 0:
             self.MSXerror(err)
             if err == 503:
