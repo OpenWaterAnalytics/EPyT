@@ -11156,10 +11156,10 @@ class epanet:
 
     """MSX Funtions"""
 
-    def loadMSXfile(self, msxname):
+    def loadMSXFile(self, msxname):
         """Loads an msx file
         Example:
-            d.loadMSXfile('net2-cl2.msx')
+            d.loadMSXFile('net2-cl2.msx')
             """
         self.realmsx = msxname
         self.MSXPythonSetup(msxname)
@@ -12006,7 +12006,7 @@ class epanet:
 
              Example:
                d = epanet('net2-cl2.inp')
-               d.loadMSXfile('net2-cl2.msx')
+               d.loadMSXFile('net2-cl2.msx')
                d.getMSXEquationsTanks()
 
              See also getMSXEquationsTerms, getMSXEquationsPipes."""
