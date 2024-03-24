@@ -15671,15 +15671,11 @@ class epanetmsxapi:
         self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
         # msx opens starts here
-        if filename is not None:
-            """  Open .msx file
-                msx.MSXopen(filename)
-                msx.MSXopen(Arsenite.msx)"""
-            """  filename example : Arsenite.msx or use full path   """
-            print("Opening MSX file:", filename)
-            if not os.path.exists(filename):
-                raise FileNotFoundError(f"File not found: {filename}")
+        if not os.path.exists(filename):
+            raise FileNotFoundError(f"File not found: {filename}")
 
+        if filename is not None:
+            print("Opening MSX file:", filename)
             filename = c_char_p(filename.encode('utf-8'))
             err = self.msx_lib.MSXopen(filename)
             if err != 0:
@@ -15691,10 +15687,14 @@ class epanetmsxapi:
             # msx open ends here
 
     def MSXopen(self, filename):
-        """  Open .msx file
-                    msx.MSXopen(filename)
-                    msx.MSXopen(Arsenite.msx)"""
-        """  filename example : Arsenite.msx or use full path   """
+        """
+        Open MSX file
+        filename - Arsenite.msx or use full path
+
+        Example:
+            msx.MSXopen(filename)
+            msx.MSXopen(Arsenite.msx)
+        """
         print("Opening MSX file:", filename)
         if not os.path.exists(filename):
             raise FileNotFoundError(f"File not found: {filename}")
