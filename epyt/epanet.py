@@ -15655,7 +15655,7 @@ class epanetmsxapi:
             """  Open .msx file
                 msx.MSXopen(filename)
                 msx.MSXopen(Arsenite.msx)"""
-            """  filename example : Arsinite.msx or use full path   """
+            """  filename example : Arsenite.msx or use full path   """
             print("Opening MSX file:", filename)
             if not os.path.exists(filename):
                 raise FileNotFoundError(f"File not found: {filename}")
@@ -15674,7 +15674,7 @@ class epanetmsxapi:
         """  Open .msx file
                     msx.MSXopen(filename)
                     msx.MSXopen(Arsenite.msx)"""
-        """  filename example : Arsinite.msx or use full path   """
+        """  filename example : Arsenite.msx or use full path   """
         print("Opening MSX file:", filename)
         if not os.path.exists(filename):
             raise FileNotFoundError(f"File not found: {filename}")
