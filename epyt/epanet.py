@@ -331,6 +331,26 @@ class ToolkitConstants:
     MSX_FLOWPACED = 3
 
 
+def safe_delete(file):
+    if isinstance(file, list):
+        for file_path in file:
+            try:
+                try:
+                    os.unlink(rf"{file_path}")
+                except:
+                    os.remove(rf"{file_path}")
+            except Exception as e:
+                print(f"Could not delete {file}: {e}")
+    else:
+        try:
+            try:
+                os.unlink(rf"{file_path}")
+            except:
+                os.remove(rf"{file_path}")
+        except Exception as e:
+            print(f"Could not delete {file}: {e}")
+
+
 class EpytValues:
 
     def __init__(self):
@@ -10340,13 +10360,6 @@ class epanet:
 
         See also epanet, saveInputFile, closeNetwork().
         """
-
-        def safe_delete(file):
-            try:
-                os.unlink(file)
-            except Exception as e:
-                print(f"Could not delete {file}: {e}")
-
         try:
             self.api.ENclose()
         finally:
@@ -10357,6 +10370,13 @@ class epanet:
             for file in Path(".").glob("@#*.txt"):
                 safe_delete(file)
             safe_delete(self.TempInpFile)
+
+            cwd = os.getcwd()
+            tmp_files = list(filter(lambda f: os.path.isfile(os.path.join(cwd, f))
+                                              and f.startswith("s") and 6 <= len(f) <= 8 and "." not in f and "_" in f,
+                                              os.listdir(cwd)))
+            tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
+            safe_delete(tmp_files_paths)
 
         print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
 
@@ -11150,6 +11170,9 @@ class epanet:
                d.unloadMSX()
                """
         self.msx.MSXclose()
+        msx_temp_files = list(filter(lambda f: os.path.isfile(os.path.join(os.getcwd(), f))
+                                               and f.startswith("msx") and "." not in f, os.listdir(os.getcwd())))
+        safe_delete(msx_temp_files)
 
     def getMSXSpeciesCount(self):
         """ Retrieves the number of species.
