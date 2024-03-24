@@ -15654,7 +15654,7 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=''):
         ops = platform.system().lower()
         if ops in ["windows"]:
             self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
@@ -15666,25 +15666,21 @@ class epanetmsxapi:
         self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
         self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
 
-        # Error ~ function
         self.msx_error = self.msx_lib.MSXgeterror
         self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
-        # msx opens starts here
         if not os.path.exists(filename):
             raise FileNotFoundError(f"File not found: {filename}")
 
-        if filename is not None:
-            print("Opening MSX file:", filename)
-            filename = c_char_p(filename.encode('utf-8'))
-            err = self.msx_lib.MSXopen(filename)
-            if err != 0:
-                self.MSXerror(err)
-                if err == 503:
-                    print("Error 503 may indicate a problem with the MSX file or the MSX library.")
-            else:
-                print("MSX file opened successfully.")
-            # msx open ends here
+        print("Opening MSX file:", filename)
+        filename = c_char_p(filename.encode('utf-8'))
+        err = self.msx_lib.MSXopen(filename)
+        if err != 0:
+            self.MSXerror(err)
+            if err == 503:
+                print("Error 503 may indicate a problem with the MSX file or the MSX library.")
+        else:
+            print("MSX file opened successfully.")
 
     def MSXopen(self, filename):
         """
