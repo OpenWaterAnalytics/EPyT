@@ -344,9 +344,9 @@ def safe_delete(file):
     else:
         try:
             try:
-                os.unlink(rf"{file_path}")
+                os.unlink(rf"{file}")
             except:
-                os.remove(rf"{file_path}")
+                os.remove(rf"{file}")
         except Exception as e:
             print(f"Could not delete {file}: {e}")
 
@@ -502,7 +502,7 @@ def isList(var):
 class epanet:
     """ EPyt main functions class """
 
-    def __init__(self, *argv, version=2.2, loadfile=False, msxfile=None):
+    def __init__(self, *argv, version=2.2, loadfile=False, msx=False):
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
@@ -563,7 +563,6 @@ class epanet:
 
         # Initial attributes
         self.classversion = __version__
-        msx = True if msxfile is not None else False
         self.api = epanetapi(version, msx=msx)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
@@ -634,8 +633,8 @@ class epanet:
         plt.rcParams['figure.constrained_layout.use'] = True
         plt.rcParams['figure.max_open_warning'] = 30
 
-        if msxfile is not None:
-            self.msx = epanetmsxapi(msxfile)
+        if msx:
+            self.msx = epanetmsxapi(ignore_msxfile=True)
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -2462,10 +2461,8 @@ class epanet:
         indices = self.__getControlIndices(*argv)
         value = {}
         self.ControlTypes = []
-        self.ControlTypesIndex, self.ControlLinkIndex, \
-            self.ControlSettings, self.ControlTypes, \
-            self.ControlNodeIndex, self.ControlLevelValues = \
-            [], [], [], [], [], []
+        self.ControlTypesIndex, self.ControlLinkIndex, self.ControlSettings, self.ControlTypes, \
+            self.ControlNodeIndex, self.ControlLevelValues = [], [], [], [], [], []
         if not isList(indices):
             indices = [indices]
         for i in indices:
@@ -11033,7 +11030,7 @@ class epanet:
         self.api.ENsetcontrol(controlRuleIndex, controlTypeIndex, linkIndex, controlSettingValue, nodeIndex,
                               controlLevel)
 
-    def __setEval(self, func, code_pStr, Type, value, *argv):
+    def __setEval(self, func, code_pstr, Type, value, *argv):
         if len(argv) == 1:
             index = value
             value = argv[0]
@@ -11043,27 +11040,27 @@ class epanet:
                     if np.isnan(value[j]):
                         continue
                     strFunc = 'self.api.' + func + '(' + str(
-                        i) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[j]) + ')'
+                        i) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value[j]) + ')'
                     eval(strFunc)
                     j += 1
             else:
                 strFunc = 'self.api.' + func + '(' + str(
-                    index) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
+                    index) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value) + ')'
                 eval(strFunc)
         else:
             count = 0
-            if (Type == 'LINK'):
+            if Type == 'LINK':
                 count = self.getLinkCount()
-            elif (Type == 'NODE'):
+            elif Type == 'NODE':
                 count = self.getNodeCount()
             for i in range(count):
                 if np.isnan(value[i]):
                     continue
                 strFunc = 'self.api.' + func + '(' + str(
-                    i + 1) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[i]) + ')'
+                    i + 1) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value[i]) + ')'
                 eval(strFunc)
 
-    def __setEvalLinkNode(self, func, code_pStr, Type, value, *argv):
+    def __setEvalLinkNode(self, func, code_pstr, Type, value, *argv):
         if len(argv) == 1:
             index = value
             value = argv[0]
@@ -11072,13 +11069,13 @@ class epanet:
                 if isinstance(value, list):
                     for i in index:
                         strFunc = 'self.api.' + func + '(' + str(
-                            i) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[j]) + ')'
+                            i) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value[j]) + ')'
                         eval(strFunc)
                         j += 1
                 else:
                     for i in index:
                         strFunc = 'self.api.' + func + '(' + str(
-                            i) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
+                            i) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value) + ')'
                         eval(strFunc)
                         j += 1
             else:
@@ -11094,7 +11091,7 @@ class epanet:
                     if isinstance(value, (list, np.ndarray)):
                         value = value[0]
                 strFunc = 'self.api.' + func + '(' + str(
-                    Index) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
+                    Index) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value) + ')'
                 eval(strFunc)
         else:
             count = 0
@@ -11108,12 +11105,12 @@ class epanet:
             if isinstance(value, (list, np.ndarray)):
                 for i in range(count):
                     strFunc = 'self.api.' + func + '(' + str(
-                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value[i]) + ')'
+                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value[i]) + ')'
                     eval(strFunc)
             else:
                 for i in range(count):
                     strFunc = 'self.api.' + func + '(' + str(
-                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + code_pStr + ',' + str(value) + ')'
+                        indices[i]) + ',' + 'self.ToolkitConstants.EN_' + code_pstr + ',' + str(value) + ')'
                     eval(strFunc)
 
     def __setFlowUnits(self, unitcode, *argv):
@@ -13423,13 +13420,14 @@ class epanetapi:
         """
         out_id = create_string_buffer(self.EN_MAXID)
         nPoints = c_int()
-        xValues = (c_double * self.ENgetcurvelen(index))()
-        yValues = (c_double * self.ENgetcurvelen(index))()
-
         if self._ph is not None:
+            xValues = (c_double * self.ENgetcurvelen(index))()
+            yValues = (c_double * self.ENgetcurvelen(index))()
             self.errcode = self._lib.EN_getcurve(self._ph, index, byref(out_id), byref(nPoints),
                                                  byref(xValues), byref(yValues))
         else:
+            xValues = (c_float * self.ENgetcurvelen(index))()
+            yValues = (c_float * self.ENgetcurvelen(index))()
             self.errcode = self._lib.ENgetcurve(index, byref(out_id), byref(nPoints),
                                                 byref(xValues), byref(yValues))
 
@@ -13548,12 +13546,13 @@ class epanetapi:
         x  the point's x-value.
         y  the point's y-value.
         """
-        x = c_double()
-        y = c_double()
-
         if self._ph is not None:
+            x = c_double()
+            y = c_double()
             self.errcode = self._lib.EN_getcurvevalue(self._ph, int(index), period, byref(x), byref(y))
         else:
+            x = c_float()
+            y = c_float()
             self.errcode = self._lib.ENgetcurvevalue(int(index), period, byref(x), byref(y))
 
         self.ENgeterror()
@@ -13851,11 +13850,12 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
         """
-        fValue = c_double()
 
         if self._ph is not None:
+            fValue = c_double()
             self.errcode = self._lib.EN_getlinkvalue(self._ph, int(index), paramcode, byref(fValue))
         else:
+            fValue = c_float()
             self.errcode = self._lib.ENgetlinkvalue(int(index), paramcode, byref(fValue))
 
         self.ENgeterror()
@@ -15125,7 +15125,7 @@ class epanetapi:
                                                      c_double(value))
         else:
             self.errcode = self._lib.ENsetlinkvalue(c_int(index), c_int(paramcode),
-                                                    c_double(value))
+                                                    c_float(value))
 
         self.ENgeterror()
         return
@@ -15653,7 +15653,7 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile=''):
+    def __init__(self, msxfile='', ignore_msxfile=False):
         ops = platform.system().lower()
         if ops in ["windows"]:
             self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
@@ -15668,8 +15668,9 @@ class epanetmsxapi:
         self.msx_error = self.msx_lib.MSXgeterror
         self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
-        if not os.path.exists(msxfile):
-            raise FileNotFoundError(f"File not found: {msxfile}")
+        if not ignore_msxfile:
+            if not os.path.exists(msxfile):
+                raise FileNotFoundError(f"File not found: {msxfile}")
 
         print("Opening MSX file:", msxfile)
         filename = c_char_p(msxfile.encode('utf-8'))

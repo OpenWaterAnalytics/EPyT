@@ -12,11 +12,9 @@ class MSXtest(unittest.TestCase):
         """Call before every test case."""
         # Create EPANET object using the INP file
         inpname = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.inp')
+        msxfile = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.msx')
         self.epanetClass = epanet(inpname, msx=True)
-        file_path = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.msx')
-        self.msxClass = epanetmsxapi(file_path)
-
-        # self.msxClass.MSXopen(file_path)
+        self.msxClass = epanetmsxapi(msxfile)
 
     def tearDown(self):
         """Call after every test case."""

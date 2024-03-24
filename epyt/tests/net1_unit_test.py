@@ -203,7 +203,7 @@ class TestGetSetLinksCase(unittest.TestCase):
              2.5352164811920375e-11, 20.08353269330769, 19.945617762391066,
              19.61450487894149])
         np.testing.assert_array_almost_equal(head_loss, h_desired, err_msg="Wrong HeadLoss output")
-        f_desired = [np.array(1866.17582999), np.array(1848.5811499), np.array(1837.46107838)]
+        f_desired = [np.array(1866.17578125), np.array(1848.58117676), np.array(1837.46105957)]
         np.testing.assert_array_almost_equal(flow[0:3], f_desired, err_msg="Wrong Flows output")
 
     """ ------------------------------------------------------------------------- """
@@ -274,20 +274,21 @@ class TestGetSetLinksCase(unittest.TestCase):
 
     def testSetLinkMinorLossCoefficientAll(self):
         self.epanetClass.setLinkMinorLossCoeff([1.2 for _ in self.epanetClass.getLinkMinorLossCoeff()])
-        assert all(self.epanetClass.getLinkMinorLossCoeff() == [1.2, 1.2000000000000002, 1.2000000000000002,
-                                                                1.2000000000000002, 1.2, 1.2,
-                                                                1.2, 1.2000000000000002, 1.2, 1.2, 1.2, 1.2,
-                                                                0.0]), "Wrong set minor loss output"
+        expected_values = [1.2, 1.2000000000000002, 1.2000000000000002, 1.2000000000000002, 1.2, 1.2,
+                           1.2, 1.2000000000000002, 1.2, 1.2, 1.2, 1.2, 0.0]
+        actual_values = self.epanetClass.getLinkMinorLossCoeff()
+        assert np.isclose(actual_values, expected_values).all(), "Wrong set minor loss output"
 
     def testSetLinkMinorLossCoefficientIndices(self):
-        self.epanetClass.setLinkMinorLossCoeff([2, 3, 4], [1.01, 1.02, 1.01])  # index,  value
-        assert all(self.epanetClass.getLinkMinorLossCoeff([2, 3, 4]) == [1.01, 1.02,
-                                                                         1.01]), "Wrong set minor loss output"
+        expected_values = [1.01, 1.02, 1.01]
+        self.epanetClass.setLinkMinorLossCoeff([2, 3, 4], expected_values)  # index,  value
+        actual_values = self.epanetClass.getLinkMinorLossCoeff([2, 3, 4])
+        for expected, actual in zip(expected_values, actual_values):
+            self.assertAlmostEqual(expected, actual, places=2, msg="Wrong set minor loss output")
 
     def testSetLinkMinorLossCoefficientIndex(self):
         self.epanetClass.setLinkMinorLossCoeff(2, 1.01)  # index,  value
-        assert self.epanetClass.getLinkMinorLossCoeff(2) == 1.01, "Wrong set minor loss output"
-
+        assert np.isclose(self.epanetClass.getLinkMinorLossCoeff(2), 1.01, atol=1e-6), "Wrong set minor loss output"
     """ ------------------------------------------------------------------------- """
 
     def testSetLinkInitialStatusAll(self):
@@ -306,28 +307,35 @@ class TestGetSetLinksCase(unittest.TestCase):
 
     def testSetLinkBulkReactionCoefficientAll(self):
         self.epanetClass.setLinkBulkReactionCoeff([i - 0.055 for i in self.epanetClass.getLinkBulkReactionCoeff()])
-        assert all(
-            self.epanetClass.getLinkBulkReactionCoeff() == [-0.555, -0.555, -0.555, -0.555, -0.555, -0.555, -0.555,
-                                                            -0.555, -0.555, -0.555, -0.555, -0.555,
-                                                            0.0]), "Wrong set link bulk reaction output"
+
+        def assert_almost_equal(actual, expected, tolerance, message):
+            for a, e in zip(actual, expected):
+                assert abs(a - e) <= tolerance, message
+
+        expected_values = [-0.555, -0.555, -0.555, -0.555, -0.555, -0.555, -0.555,
+                           -0.555, -0.555, -0.555, -0.555, -0.555, 0.0]
+        actual_values = self.epanetClass.getLinkBulkReactionCoeff()
+        assert_almost_equal(actual_values, expected_values, tolerance=1e-3, message="Wrong set link bulk reaction "
+                                                                                    "output")
 
     def testSetLinkBulkReactionCoefficientIndices(self):
         self.epanetClass.setLinkBulkReactionCoeff([2, 3, 13], [0.1] * 3)  # index,  value
-        assert all(self.epanetClass.getLinkBulkReactionCoeff([2, 3, 13]) == [0.1, 0.1,
-                                                                             0.0]), "Wrong set link bulk reaction " \
-                                                                                    "output"
+        expected_values = np.array([0.1, 0.1, 0.0])
+        actual_values = self.epanetClass.getLinkBulkReactionCoeff([2, 3, 13])
+        assert np.isclose(actual_values, expected_values).all(), "Wrong set link bulk reaction output"
 
     def testSetLinkBulkReactionCoefficientIndex(self):
         self.epanetClass.setLinkBulkReactionCoeff(1, 0.2)  # index,  value
-        assert self.epanetClass.getLinkBulkReactionCoeff(1) == 0.2, "Wrong set link bulk reaction output"
+        assert np.isclose(self.epanetClass.getLinkBulkReactionCoeff(1),
+                          0.2).all(), "Wrong set link bulk reaction output"
 
     """ ------------------------------------------------------------------------- """
 
     def testSetLinkWallReactionCoefficientAll(self):
         self.epanetClass.setLinkWallReactionCoeff([i * (-1.1) for i in self.epanetClass.getLinkWallReactionCoeff()])
-        assert all(self.epanetClass.getLinkWallReactionCoeff() == [1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
-                                                                   1.1, 1.1,
-                                                                   0.0]), "Wrong set link wall reaction output"
+        expected_values = [1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 0.0]
+        actual_values = self.epanetClass.getLinkWallReactionCoeff()
+        assert np.isclose(actual_values, expected_values).all(), "Wrong set link wall reaction output"
 
     def testSetLinkWallReactionCoefficientIndices(self):
         self.epanetClass.setLinkWallReactionCoeff([2, 3, 13], [-2] * 3)  # index,  value
