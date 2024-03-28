@@ -12753,13 +12753,17 @@ class epanet:
             specie = self.getMSXSpeciesNameID()
         else:
             specie = args[0]
-
-        link_indices = np.arange(1, self.getLinkCount() + 1)
-        node_indices = np.arange(1, self.get_node_count() + 1)
+        msx_time_step = self.getMSXTimeStep()
+        link_indices = range(1, self.getLinkCount() + 1)
+        node_indices = range(1, self.getNodeCount() + 1)
         speciename = self.getMSXSpeciesIndex(specie)
+        time_steps = int(self.getTimeSimulationDuration() / msx_time_step)
+        link_count = self.getLinkCount()
+        node_count = self.getNodeCount()
+        value = {}
 
-        node_quality = np.empty((1, len(node_indices), len(speciename)))
-        link_quality = np.empty((1, len(node_indices), len(speciename)))
+        value["NodeQuality"] = [np.zeros((node_count, 1)) for _ in range(time_steps + 1)]
+        value["LinkQuality"] = [np.zeros((link_count, 1)) for _ in range(time_steps + 1)]
 
         self.solveMSXCompleteHydraulics()
         self.initializeMSXQualityAnalysis(0)
@@ -12767,37 +12771,49 @@ class epanet:
         k = 1
         tleft = 1
         t = 0
-        time = [0]
+        value["Time"] = [[0]]
         if node_indices[-1] < link_indices[-1]:
             for i in range(len(speciename)):
                 for lnk in link_indices:
-                    print(lnk)
-                    link_quality[k, lnk - 1, i] = self.getMSXNodeInitqualValue([lnk])[speciename[i]]
+                    link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
+                    value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
                     if lnk < node_indices[-1] + 1:
-                        node_quality[k, lnk - 1, i] = self.getMSXNodeInitqualValue([lnk])[speciename[i]]
+                        node_init_qual_value = self.getMSXNodeInitqualValue([lnk])
+                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
+
         else:
             for i in range(len(speciename)):
                 for lnk in node_indices:
-                    node_quality[k, lnk - 1, i] = self.MSXNodeInitqualValue([lnk])[speciename[i]]
+                    node_init_qual_value = self.getMSXNodeInitqualValue(lnk)
+                    value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
                     if lnk < link_indices[-1] + 1:
-                        link_quality[k, lnk - 1, i] = self.getMSXLinkInitqualValue([lnk])[speciename[i]]
-        time_sim = self.getTimeSimulationDuration()
-        while tleft > 0 and time_sim != t:
+                        link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
+                        value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
+
+        time_smle = self.getTimeSimulationDuration()
+        while tleft > 0 and time_smle != t:
             k = k + 1
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            for i in range(len(speciename)):
-                if node_indices[-1] < link_indices[-1]:
+            if node_indices[-1] < link_indices[-1]:
+                for i in range(len(speciename)):
                     for lnk in link_indices:
-                        link_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
+                        value["LinkQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(1, lnk,
+                                                                                                      speciename[i])
                         if lnk < node_indices[-1] + 1:
-                            node_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(0, lnk, speciename[i])
-                else:
+                            value["NodeQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(0, lnk,
+                                                                                                          speciename[i])
+
+            else:
+                for i in range(len(speciename)):
                     for lnk in node_indices:
-                        node_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(0, lnk, speciename[i])
+                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(0, lnk,
+                                                                                                      speciename[i])
                         if lnk < link_indices[-1] + 1:
-                            link_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
-            time.append(t)
-        return {'NodeQuality': node_quality, 'LinkQuality': link_quality, 'Time': np.array(time)}
+                            value["LinkQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(1, lnk,
+                                                                                                          speciename[i])
+            value["Time"].append([t])
+
+        return value
 
 
 class epanetapi:
