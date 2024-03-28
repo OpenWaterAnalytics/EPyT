@@ -334,21 +334,23 @@ class ToolkitConstants:
 def safe_delete(file):
     if isinstance(file, list):
         for file_path in file:
+            if os.path.exists(file_path):
+                try:
+                    try:
+                        os.unlink(rf"{file_path}")
+                    except:
+                        os.remove(rf"{file_path}")
+                except Exception as e:
+                    print(f"Could not delete {file}: {e}")
+    else:
+        if os.path.exists(file_path):
             try:
                 try:
-                    os.unlink(rf"{file_path}")
+                    os.unlink(rf"{file}")
                 except:
-                    os.remove(rf"{file_path}")
+                    os.remove(rf"{file}")
             except Exception as e:
                 print(f"Could not delete {file}: {e}")
-    else:
-        try:
-            try:
-                os.unlink(rf"{file}")
-            except:
-                os.remove(rf"{file}")
-        except Exception as e:
-            print(f"Could not delete {file}: {e}")
 
 
 class EpytValues:
@@ -15672,15 +15674,15 @@ class epanetmsxapi:
             if not os.path.exists(msxfile):
                 raise FileNotFoundError(f"File not found: {msxfile}")
 
-        print("Opening MSX file:", msxfile)
-        filename = c_char_p(msxfile.encode('utf-8'))
-        err = self.msx_lib.MSXopen(filename)
-        if err != 0:
-            self.MSXerror(err)
-            if err == 503:
-                print("Error 503 may indicate a problem with the MSX file or the MSX library.")
-        else:
-            print("MSX file opened successfully.")
+            print("Opening MSX file:", msxfile)
+            filename = c_char_p(msxfile.encode('utf-8'))
+            err = self.msx_lib.MSXopen(filename)
+            if err != 0:
+                self.MSXerror(err)
+                if err == 503:
+                    print("Error 503 may indicate a problem with the MSX file or the MSX library.")
+            else:
+                print("MSX file opened successfully.")
 
     def MSXopen(self, msxfile):
         """
