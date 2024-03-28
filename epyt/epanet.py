@@ -14089,11 +14089,11 @@ class epanetapi:
         Returns:
         value   the pattern factor for the given time period.
         """
-        value = c_double()
-
         if self._ph is not None:
+            value = c_double()
             self.errcode = self._lib.EN_getpatternvalue(self._ph, int(index), period, byref(value))
         else:
+            value = c_float()
             self.errcode = self._lib.ENgetpatternvalue(int(index), period, byref(value))
 
         self.ENgeterror()
@@ -15222,7 +15222,7 @@ class epanetapi:
         if self._ph is not None:
             self.errcode = self._lib.EN_setpattern(self._ph, int(index), (c_double * nfactors)(*factors), nfactors)
         else:
-            self.errcode = self._lib.ENsetpattern(int(index), (c_double * nfactors)(*factors),
+            self.errcode = self._lib.ENsetpattern(int(index), (c_float * nfactors)(*factors),
                                                   nfactors)
 
         self.ENgeterror()
