@@ -12890,8 +12890,8 @@ class epanetapi:
             self.errcode = self._lib.EN_addcontrol(self._ph, conttype, int(lindex), c_double(setting), nindex,
                                                    c_double(level), byref(index))
         else:
-            self.errcode = self._lib.ENaddcontrol(conttype, int(lindex), c_double(setting), nindex,
-                                                  c_double(level), byref(index))
+            self.errcode = self._lib.ENaddcontrol(conttype, int(lindex), c_float(setting), nindex,
+                                                  c_float(level), byref(index))
         self.ENgeterror()
         return index.value
 
@@ -13362,14 +13362,17 @@ class epanetapi:
         """
         ctype = c_int()
         lindex = c_int()
-        setting = c_double()
         nindex = c_int()
-        level = c_double()
+
 
         if self._ph is not None:
+            setting = c_double()
+            level = c_double()
             self.errcode = self._lib.EN_getcontrol(self._ph, int(cindex), byref(ctype), byref(lindex),
                                                    byref(setting), byref(nindex), byref(level))
         else:
+            setting = c_float()
+            level = c_float()
             self.errcode = self._lib.ENgetcontrol(int(cindex), byref(ctype), byref(lindex),
                                                   byref(setting), byref(nindex), byref(level))
 
