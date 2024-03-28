@@ -504,7 +504,7 @@ def isList(var):
 class epanet:
     """ EPyt main functions class """
 
-    def __init__(self, *argv, version=2.2, loadfile=False, msx=False):
+    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False):
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
@@ -626,7 +626,8 @@ class epanet:
             self.LibEPANETpath = self.api.LibEPANETpath
             self.LibEPANET = self.api.LibEPANET
             print(f'Input File {self.netName} loaded successfully.\n')
-        else:
+
+        if ph:
             self.createProject()
 
         # Global plot settings
@@ -12836,7 +12837,7 @@ class epanetapi:
         self._lib = cdll.LoadLibrary(self.LibEPANET)
         self.LibEPANETpath = os.path.dirname(self.LibEPANET)
 
-        if float(version) >= 2.2 and 'win' in str(platform.architecture()) and not msx:
+        if float(version) >= 2.2 and not msx:
             self._ph = c_uint64()
         else:
             self._ph = None
