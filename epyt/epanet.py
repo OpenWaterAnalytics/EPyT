@@ -343,7 +343,7 @@ def safe_delete(file):
                 except Exception as e:
                     print(f"Could not delete {file}: {e}")
     else:
-        if os.path.exists(file_path):
+        if os.path.exists(file):
             try:
                 try:
                     os.unlink(rf"{file}")
