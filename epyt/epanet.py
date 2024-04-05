@@ -14570,8 +14570,6 @@ class epanetapi:
 
         if self._ph is not None:
             self._lib.EN_createproject(byref(self._ph))
-
-        if self._ph is not None:
             self.errcode = self._lib.EN_open(self._ph, self.inpfile, self.rptfile, self.binfile)
         else:
             self.errcode = self._lib.ENopen(self.inpfile, self.rptfile, self.binfile)
@@ -15676,14 +15674,7 @@ class epanetmsxapi:
                 raise FileNotFoundError(f"File not found: {msxfile}")
 
             print("Opening MSX file:", msxfile)
-            filename = c_char_p(msxfile.encode('utf-8'))
-            err = self.msx_lib.MSXopen(filename)
-            if err != 0:
-                self.MSXerror(err)
-                if err == 503:
-                    print("Error 503 may indicate a problem with the MSX file or the MSX library.")
-            else:
-                print("MSX file opened successfully.")
+            self.MSXopen(msxfile)
 
     def MSXopen(self, msxfile):
         """
