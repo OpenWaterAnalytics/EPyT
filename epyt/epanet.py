@@ -11164,11 +11164,11 @@ class epanet:
             """
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
-        self.msx = epanetmsxapi(self.msxname, ignore_msxfile=True)
+        self.msx = epanetmsxapi(self.msxname)
 
         if ignore_properties:
-            self.MSXEquationsTerms = self.getMSXEquationsTerms()
-            self.MSXEquationsPipes = self.getMSXEquationsPipes()
+            self.msx.MSXEquationsTerms = self.getMSXEquationsTerms()
+            self.msx.MSXEquationsPipes = self.getMSXEquationsPipes()
             self.MSXEquationsTanks = self.getMSXEquationsTanks()
             self.MSXSpeciesCount = self.getMSXSpeciesCount()
             self.MSXConstantsCount = self.getMSXConstantsCount()
@@ -11208,6 +11208,8 @@ class epanet:
             self.timestep = self.getMSXTimeStep()
             self.coupling = self.getMSXCoupling()
             self.compiler = self.getMSXCompiler()
+
+        return self.msx
 
     def unloadMSX(self):
         """Unload library and close the MSX Toolkit system.
@@ -15663,14 +15665,10 @@ class epanetmsxapi:
 
             self.msx_error = self.msx_lib.MSXgeterror
             self.msx_error.argtypes = [c_int, c_char_p, c_int]
-
-        if  not ignore_msxfile:
-            if not os.path.exists(msxfile):
-                raise FileNotFoundError(f"File not found: {msxfile}")
-
-            print("Opening MSX file:", msxfile)
+        
+        if not ignore_msxfile:
             self.MSXopen(msxfile)
-
+            
     def MSXopen(self, msxfile):
         """
         Open MSX file
@@ -15680,10 +15678,10 @@ class epanetmsxapi:
             msx.MSXopen(filename)
             msx.MSXopen(Arsenite.msx)
         """
-        print("Opening MSX file:", msxfile)
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
-        
+
+        print("Opening MSX file:", msxfile)
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(msxfile.encode('utf-8'))
         if err != 0:
