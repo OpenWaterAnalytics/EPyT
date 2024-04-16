@@ -14,7 +14,7 @@ class MSXtest(unittest.TestCase):
         inpname = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.inp')
         msxfile = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.msx')
         self.epanetClass = epanet(inpname, msx=True)
-        self.msxClass = epanetmsxapi(msxfile)
+        self.msxClass = self.epanetClass.loadMSXFile(msxfile)
 
     def tearDown(self):
         """Call after every test case."""
@@ -281,4 +281,4 @@ class MSXtest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()  # run all tests
+    unittest.main()
