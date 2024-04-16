@@ -15655,21 +15655,22 @@ class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
     def __init__(self, msxfile='', ignore_msxfile=False):
-        ops = platform.system().lower()
-        if ops in ["windows"]:
-            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
-        elif ops in ["darwin"]:
-            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
-        else:
-            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
-
-        self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
-        self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
-
-        self.msx_error = self.msx_lib.MSXgeterror
-        self.msx_error.argtypes = [c_int, c_char_p, c_int]
-
         if not ignore_msxfile:
+
+            ops = platform.system().lower()
+            if ops in ["windows"]:
+                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
+            elif ops in ["darwin"]:
+                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
+            else:
+                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
+
+            self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
+            self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
+
+            self.msx_error = self.msx_lib.MSXgeterror
+            self.msx_error.argtypes = [c_int, c_char_p, c_int]
+
             if not os.path.exists(msxfile):
                 raise FileNotFoundError(f"File not found: {msxfile}")
 
