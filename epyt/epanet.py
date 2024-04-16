@@ -11170,35 +11170,35 @@ class epanet:
         if ignore_properties:
             self.msx.MSXEquationsTerms = self.getMSXEquationsTerms()
             self.msx.MSXEquationsPipes = self.getMSXEquationsPipes()
-            self.MSXEquationsTanks = self.getMSXEquationsTanks()
-            self.MSXSpeciesCount = self.getMSXSpeciesCount()
-            self.MSXConstantsCount = self.getMSXConstantsCount()
-            self.MSXParametersCount = self.getMSXParametersCount()
-            self.MSXPatternsCount = self.getMSXPatternsCount()
-            self.MSXSpeciesIndex = self.getMSXSpeciesIndex()
-            self.MSXSpeciesNameID = self.getMSXSpeciesNameID()
+            self.msx.MSXEquationsTanks = self.getMSXEquationsTanks()
+            self.msx.MSXSpeciesCount = self.getMSXSpeciesCount()
+            self.msx.MSXConstantsCount = self.getMSXConstantsCount()
+            self.msx.MSXParametersCount = self.getMSXParametersCount()
+            self.msx.MSXPatternsCount = self.getMSXPatternsCount()
+            self.msx.MSXSpeciesIndex = self.getMSXSpeciesIndex()
+            self.msx.MSXSpeciesNameID = self.getMSXSpeciesNameID()
             self.MSXSpeciesType = self.getMSXSpeciesType()
-            self.MSXSpeciesUnits = self.getMSXSpeciesUnits()
-            self.MSXSpeciesATOL = self.getMSXSpeciesATOL()
-            self.MSXSpeciesRTOL = self.getMSXSpeciesRTOL()
-            self.MSXConstantsNameID = self.getMSXConstantsNameID()
-            self.MSXConstantsValue = self.getMSXConstantsValue()
-            self.MSXConstantsIndex = self.getMSXConstantsIndex()
-            self.MSXParametersNameID = self.getMSXParametersNameID()
-            self.MSXParametersIndex = self.getMSXParametersIndex()
-            self.MSXParametersTanksValue = self.getMSXParametersTanksValue()
-            self.MSXParametersPipesValue = self.getMSXParametersPipesValue()
-            self.MSXPatternsNameID = self.getMSXPatternsNameID()
-            self.MSXPatternsIndex = self.getMSXPatternsIndex()
-            self.MSXPatternsLengths = self.getMSXPatternsLengths()
-            self.MSXNodeInitqualValue = self.getMSXNodeInitqualValue()
-            self.MSXLinkInitqualValue = self.getMSXLinkInitqualValue()
-            self.MSXSources = self.getMSXSources()
-            self.MSXSourceType = self.getMSXSourceType()
-            self.MSXSourceLevel = self.getMSXSourceLevel()
-            self.MSXSourcePatternIndex = self.getMSXSourcePatternIndex()
-            self.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
-            self.MSXPattern = self.getMSXPattern()
+            self.msx.MSXSpeciesUnits = self.getMSXSpeciesUnits()
+            self.msx.MSXSpeciesATOL = self.getMSXSpeciesATOL()
+            self.msx.MSXSpeciesRTOL = self.getMSXSpeciesRTOL()
+            self.msx.MSXConstantsNameID = self.getMSXConstantsNameID()
+            self.msx.MSXConstantsValue = self.getMSXConstantsValue()
+            self.msx.MSXConstantsIndex = self.getMSXConstantsIndex()
+            self.msx.MSXParametersNameID = self.getMSXParametersNameID()
+            self.msx.MSXParametersIndex = self.getMSXParametersIndex()
+            self.msx.MSXParametersTanksValue = self.getMSXParametersTanksValue()
+            self.msx.MSXParametersPipesValue = self.getMSXParametersPipesValue()
+            self.msx.MSXPatternsNameID = self.getMSXPatternsNameID()
+            self.msx.MSXPatternsIndex = self.getMSXPatternsIndex()
+            self.msx.MSXPatternsLengths = self.getMSXPatternsLengths()
+            self.msx.MSXNodeInitqualValue = self.getMSXNodeInitqualValue()
+            self.msx.MSXLinkInitqualValue = self.getMSXLinkInitqualValue()
+            self.msx.MSXSources = self.getMSXSources()
+            self.msx.MSXSourceType = self.getMSXSourceType()
+            self.msx.MSXSourceLevel = self.getMSXSourceLevel()
+            self.msx.MSXSourcePatternIndex = self.getMSXSourcePatternIndex()
+            self.msx.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
+            self.msx.MSXPattern = self.getMSXPattern()
 
             # options
             self.solver = self.getMSXSolver()
@@ -15666,10 +15666,10 @@ class epanetmsxapi:
 
             self.msx_error = self.msx_lib.MSXgeterror
             self.msx_error.argtypes = [c_int, c_char_p, c_int]
-        
+
         if not ignore_msxfile:
             self.MSXopen(msxfile)
-            
+
     def MSXopen(self, msxfile):
         """
         Open MSX file
