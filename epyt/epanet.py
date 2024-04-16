@@ -15683,7 +15683,7 @@ class epanetmsxapi:
 
         print("Opening MSX file:", msxfile)
         msxbasename = os.path.basename(msxfile)
-        err = self.msx_lib.MSXopen(msxfile.encode('utf-8'))
+        err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
         if err != 0:
             self.MSXerror(err)
             if err == 503:
