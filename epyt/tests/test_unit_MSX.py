@@ -1,5 +1,4 @@
-from epyt.epanet import epanet, epanetmsxapi
-from epyt import networks
+from epyt import epanet, networks
 import unittest
 import os
 
@@ -14,7 +13,7 @@ class MSXtest(unittest.TestCase):
         inpname = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.inp')
         msxfile = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.msx')
         self.epanetClass = epanet(inpname, msx=True)
-        self.msxClass = epanetmsxapi(msxfile)
+        self.msxClass = self.epanetClass.loadMSXFile(msxfile)
 
     def tearDown(self):
         """Call after every test case."""
@@ -256,7 +255,7 @@ class MSXtest(unittest.TestCase):
         inpname = os.path.join(DIRNAME, 'msx-examples', 'net2-cl2.inp')
         self.epanetClass = epanet(inpname, msx=True)
         file_path = os.path.join(DIRNAME, 'msx-examples', 'net2-cl2.msx')
-        self.msxClass = epanetmsxapi(file_path)
+        self.msxClass = self.epanetClass.loadMSXFile(file_path)
 
         self.msxClass.MSXsolveH()
         self.msxClass.MSXsolveQ()
@@ -268,7 +267,7 @@ class MSXtest(unittest.TestCase):
             t, tleft = self.msxClass.MSXstep()
             c = c + 1
             if c == 1:
-                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.8000000188349043,
+                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.8,
                                  'Wrong get qual comment output')
             if c == 85:
                 self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.7991662288393907,
@@ -281,4 +280,4 @@ class MSXtest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()  # run all tests
+    unittest.main()

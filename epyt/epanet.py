@@ -64,7 +64,7 @@ from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void
     c_char_p
 import matplotlib.pyplot as plt
 from datetime import datetime
-from epyt import __version__
+from epyt import __version__, __msxversion__
 from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
@@ -508,7 +508,7 @@ class epanet:
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
-        self.realmsx = ''
+        self.msxname = None
         self.DEMANDMODEL = ['DDA', 'PDA']
         # Link types
         self.TYPELINK = ['CVPIPE', 'PIPE', 'PUMP', 'PRV', 'PSV',
@@ -11157,14 +11157,60 @@ class epanet:
 
     """MSX Functions"""
 
-    def loadMSXFile(self, msxname):
+    def loadMSXFile(self, msxname, ignore_properties=False):
         """Loads an msx file
         Example:
             d.loadMSXFile('net2-cl2.msx')
             """
-        self.realmsx = msxname
-        self.msx = epanetmsxapi()
-        self.MSXPythonSetup(msxname)
+        self.msxname = msxname[:-4] + '_temp.msx'
+        copyfile(msxname, self.msxname)
+        self.msx = epanetmsxapi(self.msxname)
+        print(f'MSX version {__msxversion__}.')
+
+        if ignore_properties:
+            self.msx.MSXEquationsTerms = self.getMSXEquationsTerms()
+            self.msx.MSXEquationsPipes = self.getMSXEquationsPipes()
+            self.msx.MSXEquationsTanks = self.getMSXEquationsTanks()
+            self.msx.MSXSpeciesCount = self.getMSXSpeciesCount()
+            self.msx.MSXConstantsCount = self.getMSXConstantsCount()
+            self.msx.MSXParametersCount = self.getMSXParametersCount()
+            self.msx.MSXPatternsCount = self.getMSXPatternsCount()
+            self.msx.MSXSpeciesIndex = self.getMSXSpeciesIndex()
+            self.msx.MSXSpeciesNameID = self.getMSXSpeciesNameID()
+            self.MSXSpeciesType = self.getMSXSpeciesType()
+            self.msx.MSXSpeciesUnits = self.getMSXSpeciesUnits()
+            self.msx.MSXSpeciesATOL = self.getMSXSpeciesATOL()
+            self.msx.MSXSpeciesRTOL = self.getMSXSpeciesRTOL()
+            self.msx.MSXConstantsNameID = self.getMSXConstantsNameID()
+            self.msx.MSXConstantsValue = self.getMSXConstantsValue()
+            self.msx.MSXConstantsIndex = self.getMSXConstantsIndex()
+            self.msx.MSXParametersNameID = self.getMSXParametersNameID()
+            self.msx.MSXParametersIndex = self.getMSXParametersIndex()
+            self.msx.MSXParametersTanksValue = self.getMSXParametersTanksValue()
+            self.msx.MSXParametersPipesValue = self.getMSXParametersPipesValue()
+            self.msx.MSXPatternsNameID = self.getMSXPatternsNameID()
+            self.msx.MSXPatternsIndex = self.getMSXPatternsIndex()
+            self.msx.MSXPatternsLengths = self.getMSXPatternsLengths()
+            self.msx.MSXNodeInitqualValue = self.getMSXNodeInitqualValue()
+            self.msx.MSXLinkInitqualValue = self.getMSXLinkInitqualValue()
+            self.msx.MSXSources = self.getMSXSources()
+            self.msx.MSXSourceType = self.getMSXSourceType()
+            self.msx.MSXSourceLevel = self.getMSXSourceLevel()
+            self.msx.MSXSourcePatternIndex = self.getMSXSourcePatternIndex()
+            self.msx.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
+            self.msx.MSXPattern = self.getMSXPattern()
+
+            # options
+            self.solver = self.getMSXSolver()
+            self.areaunits = self.getMSXAreaUnits()
+            self.rateunits = self.getMSXRateUnits()
+            self.rtol = self.getMSXRtol()
+            self.atol = self.getMSXAtol()
+            self.timestep = self.getMSXTimeStep()
+            self.coupling = self.getMSXCoupling()
+            self.compiler = self.getMSXCompiler()
+
+        return self.msx
 
     def unloadMSX(self):
         """Unload library and close the MSX Toolkit system.
@@ -12264,55 +12310,6 @@ class epanet:
             if flag == 1:
                 nodes.append(i)
         return nodes
-
-    def MSXPythonSetup(self, msxname):
-
-        self.msxname = msxname[:-4] + '_temp.msx'
-        copyfile(msxname, self.msxname)
-
-        self.msx.MSXopen(self.msxname)
-
-        self.MSXEquationsTerms = self.getMSXEquationsTerms()
-        self.MSXEquationsPipes = self.getMSXEquationsPipes()
-        self.MSXEquationsTanks = self.getMSXEquationsTanks()
-        self.MSXSpeciesCount = self.getMSXSpeciesCount()
-        self.MSXConstantsCount = self.getMSXConstantsCount()
-        self.MSXParametersCount = self.getMSXParametersCount()
-        self.MSXPatternsCount = self.getMSXPatternsCount()
-        self.MSXSpeciesIndex = self.getMSXSpeciesIndex()
-        self.MSXSpeciesNameID = self.getMSXSpeciesNameID()
-        self.MSXSpeciesType = self.getMSXSpeciesType()
-        self.MSXSpeciesUnits = self.getMSXSpeciesUnits()
-        self.MSXSpeciesATOL = self.getMSXSpeciesATOL()
-        self.MSXSpeciesRTOL = self.getMSXSpeciesRTOL()
-        self.MSXConstantsNameID = self.getMSXConstantsNameID()
-        self.MSXConstantsValue = self.getMSXConstantsValue()
-        self.MSXConstantsIndex = self.getMSXConstantsIndex()
-        self.MSXParametersNameID = self.getMSXParametersNameID()
-        self.MSXParametersIndex = self.getMSXParametersIndex()
-        self.MSXParametersTanksValue = self.getMSXParametersTanksValue()
-        self.MSXParametersPipesValue = self.getMSXParametersPipesValue()
-        self.MSXPatternsNameID = self.getMSXPatternsNameID()
-        self.MSXPatternsIndex = self.getMSXPatternsIndex()
-        self.MSXPatternsLengths = self.getMSXPatternsLengths()
-        self.MSXNodeInitqualValue = self.getMSXNodeInitqualValue()
-        self.MSXLinkInitqualValue = self.getMSXLinkInitqualValue()
-        self.MSXSources = self.getMSXSources()
-        self.MSXSourceType = self.getMSXSourceType()
-        self.MSXSourceLevel = self.getMSXSourceLevel()
-        self.MSXSourcePatternIndex = self.getMSXSourcePatternIndex()
-        self.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
-        self.MSXPattern = self.getMSXPattern()
-
-        # options
-        self.solver = self.getMSXSolver()
-        self.areaunits = self.getMSXAreaUnits()
-        self.rateunits = self.getMSXRateUnits()
-        self.rtol = self.getMSXRtol()
-        self.atol = self.getMSXAtol()
-        self.timestep = self.getMSXTimeStep()
-        self.coupling = self.getMSXCoupling()
-        self.compiler = self.getMSXCompiler()
 
     def setMSXOptions(self, *args):
 
@@ -14589,8 +14586,6 @@ class epanetapi:
 
         if self._ph is not None:
             self._lib.EN_createproject(byref(self._ph))
-
-        if self._ph is not None:
             self.errcode = self._lib.EN_open(self._ph, self.inpfile, self.rptfile, self.binfile)
         else:
             self.errcode = self._lib.ENopen(self.inpfile, self.rptfile, self.binfile)
@@ -15675,34 +15670,24 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='', ignore_msxfile=False):
-        ops = platform.system().lower()
-        if ops in ["windows"]:
-            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
-        elif ops in ["darwin"]:
-            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
-        else:
-            self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
+    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False):
+        if loadlib:
+            ops = platform.system().lower()
+            if ops in ["windows"]:
+                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
+            elif ops in ["darwin"]:
+                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
+            else:
+                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
 
-        self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
-        self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
+            self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
+            self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
 
-        self.msx_error = self.msx_lib.MSXgeterror
-        self.msx_error.argtypes = [c_int, c_char_p, c_int]
+            self.msx_error = self.msx_lib.MSXgeterror
+            self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
         if not ignore_msxfile:
-            if not os.path.exists(msxfile):
-                raise FileNotFoundError(f"File not found: {msxfile}")
-
-            print("Opening MSX file:", msxfile)
-            filename = c_char_p(msxfile.encode('utf-8'))
-            err = self.msx_lib.MSXopen(filename)
-            if err != 0:
-                self.MSXerror(err)
-                if err == 503:
-                    print("Error 503 may indicate a problem with the MSX file or the MSX library.")
-            else:
-                print("MSX file opened successfully.")
+            self.MSXopen(msxfile)
 
     def MSXopen(self, msxfile):
         """
@@ -15713,19 +15698,18 @@ class epanetmsxapi:
             msx.MSXopen(filename)
             msx.MSXopen(Arsenite.msx)
         """
-        print("Opening MSX file:", msxfile)
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
 
-        msxfile = c_char_p(msxfile.encode('utf-8'))
-        err = self.msx_lib.MSXopen(msxfile)
+        print("Opening MSX file:", msxfile)
+        msxbasename = os.path.basename(msxfile)
+        err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
         if err != 0:
             self.MSXerror(err)
             if err == 503:
                 print("Error 503 may indicate a problem with the MSX file or the MSX library.")
         else:
-            print("MSX file opened successfully.")
-        # msx open ends here
+            print(f"MSX file {msxbasename} loaded successfully.")
 
     def MSXclose(self):
         """  Close .msx file

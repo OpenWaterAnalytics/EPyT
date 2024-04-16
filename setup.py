@@ -1,6 +1,7 @@
 from setuptools import setup
 import os
 
+
 # python setup.py bdist_wheel
 # python setup.py sdist
 # twine upload dist/* --config-file .pypirc
@@ -17,6 +18,7 @@ def read_version_from_init(file_path="epyt/__init__.py"):
         return version_str
     else:
         raise RuntimeError("Unable to find version string.")
+
 
 __version__ = read_version_from_init()
 module_name = 'epyt'

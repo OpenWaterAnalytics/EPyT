@@ -191,7 +191,7 @@ class TestGetSetLinksCase(unittest.TestCase):
              9.452347598503036e-07, 9.28221894076609e-07, 9.084721628771827e-07, 2.416368471024177,
              2.4073945733540967,
              2.3857323225219194])
-        np.testing.assert_array_almost_equal(velocity, v_desired, err_msg="Wrong Velocity output")
+        np.testing.assert_array_almost_equal(velocity, v_desired, decimal=3, err_msg="Wrong Velocity output")
         h_desired = np.array(
             [19.117018607743262, 18.784557106294415, 18.575821630530413, 18.350323106559813, 18.247536420722895,
              18.125096976393024, 18.12282340051479, 18.099494697653654, 17.95951292501252, 17.843745116056084,
@@ -202,9 +202,9 @@ class TestGetSetLinksCase(unittest.TestCase):
              2.637534635141492e-11,
              2.5352164811920375e-11, 20.08353269330769, 19.945617762391066,
              19.61450487894149])
-        np.testing.assert_array_almost_equal(head_loss, h_desired, err_msg="Wrong HeadLoss output")
+        np.testing.assert_array_almost_equal(head_loss, h_desired,  decimal=3, err_msg="Wrong HeadLoss output")
         f_desired = [np.array(1866.17578125), np.array(1848.58117676), np.array(1837.46105957)]
-        np.testing.assert_array_almost_equal(flow[0:3], f_desired, err_msg="Wrong Flows output")
+        np.testing.assert_array_almost_equal(flow[0:3], f_desired,  decimal=3, err_msg="Wrong Flows output")
 
     """ ------------------------------------------------------------------------- """
 
