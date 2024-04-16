@@ -64,7 +64,7 @@ from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void
     c_char_p
 import matplotlib.pyplot as plt
 from datetime import datetime
-from epyt import __version__
+from epyt import __version__, __msxversion__
 from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
@@ -11165,6 +11165,7 @@ class epanet:
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
         self.msx = epanetmsxapi(self.msxname)
+        print(f'MSX version {__msxversion__}.')
 
         if ignore_properties:
             self.msx.MSXEquationsTerms = self.getMSXEquationsTerms()
