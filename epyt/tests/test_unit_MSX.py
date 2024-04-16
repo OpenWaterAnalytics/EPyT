@@ -1,5 +1,4 @@
-from epyt.epanet import epanet, epanetmsxapi
-from epyt import networks
+from epyt import epanet, networks
 import unittest
 import os
 
@@ -256,7 +255,7 @@ class MSXtest(unittest.TestCase):
         inpname = os.path.join(DIRNAME, 'msx-examples', 'net2-cl2.inp')
         self.epanetClass = epanet(inpname, msx=True)
         file_path = os.path.join(DIRNAME, 'msx-examples', 'net2-cl2.msx')
-        self.msxClass = epanetmsxapi(file_path)
+        self.msxClass = self.epanetClass.loadMSXFile(file_path)
 
         self.msxClass.MSXsolveH()
         self.msxClass.MSXsolveQ()
