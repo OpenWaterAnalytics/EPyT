@@ -11163,7 +11163,7 @@ class epanet:
             d.loadMSXFile('net2-cl2.msx')
             """
         self.realmsx = msxname
-        self.msx = epanetmsxapi()
+        self.msx = epanetmsxapi(ignore_msxfile=True)
         self.MSXPythonSetup(msxname)
 
     def unloadMSX(self):
@@ -15654,9 +15654,8 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='', ignore_msxfile=False):
-        if not ignore_msxfile:
-
+    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False):
+        if loadlib:
             ops = platform.system().lower()
             if ops in ["windows"]:
                 self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
@@ -15671,6 +15670,7 @@ class epanetmsxapi:
             self.msx_error = self.msx_lib.MSXgeterror
             self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
+        if  not ignore_msxfile:
             if not os.path.exists(msxfile):
                 raise FileNotFoundError(f"File not found: {msxfile}")
 
@@ -15690,7 +15690,7 @@ class epanetmsxapi:
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
 
-        msxfile = c_char_p(msxfile.encode('utf-8'))
+        msxfile = bytes(msxfile, 'utf-8')
         err = self.msx_lib.MSXopen(msxfile)
         if err != 0:
             self.MSXerror(err)
