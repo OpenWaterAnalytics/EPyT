@@ -1,5 +1,5 @@
-numpy
-matplotlib
-pandas
-xlsxwriter
+numpy>=1.24.4
+matplotlib>=3.7.5
+pandas>=2.0.3
+XlsxWriter>=3.2.0
 setuptools
