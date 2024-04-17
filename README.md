@@ -85,7 +85,7 @@ year = {2023}
 ```python
 >>> from epyt import epanet
 >>>
->>>epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','customlib.dll')
+>>>epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanet2.dll')
 >>>msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','custommsxlib.dll')
 >>>d = epanet(inpname, msx=True,customlib=epanetlib)
 >>>d.loadMSXFile(msxname,customMSXlib=msxlib)
