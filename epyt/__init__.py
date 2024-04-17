@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = """Marios S. Kyriakou"""
 __email__ = "kiriakou.marios@ucy.ac.cy"
-__version__ = "1.0.9-beta.4"
+__version__ = "1.0.9-beta.6"
 __msxversion__ = "2.0.0"
 __copyright__ = """Copyright 2022, KIOS Research and Innovation Center of Excellence (KIOS CoE), 
 University of Cyprus (www.kios.org.cy)."""

@@ -502,9 +502,14 @@ def isList(var):
 
 
 class epanet:
-    """ EPyt main functions class """
+    """ EPyt main functions class
 
-    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False):
+    Example with custom library
+            epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanet2.dll')
+            d = epanet(inpname, msx=True,customlib=epanetlib)
+     """
+
+    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False, customlib=None):
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
@@ -565,7 +570,7 @@ class epanet:
 
         # Initial attributes
         self.classversion = __version__
-        self.api = epanetapi(version, msx=msx)
+        self.api = epanetapi(version, msx=msx, customlib=customlib)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
 
@@ -10373,9 +10378,14 @@ class epanet:
             safe_delete(self.TempInpFile)
 
             cwd = os.getcwd()
-            tmp_files = list(filter(lambda f: os.path.isfile(os.path.join(cwd, f))
-                                              and f.startswith("s") and 6 <= len(f) <= 8 and "." not in f and "_" in f,
-                                    os.listdir(cwd)))
+            files = os.listdir(cwd)
+            tmp_files = [
+                f for f in files
+                if os.path.isfile(os.path.join(cwd, f)) and
+                   (f.startswith('s') or f.startswith('en')) and
+                   6 <= len(f) <= 8 and
+                   "." not in f
+            ]
             tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
             safe_delete(tmp_files_paths)
 
@@ -11157,14 +11167,20 @@ class epanet:
 
     """MSX Functions"""
 
-    def loadMSXFile(self, msxname, ignore_properties=False):
+    def loadMSXFile(self, msxname, customMSXlib=None, ignore_properties=False):
         """Loads an msx file
         Example:
             d.loadMSXFile('net2-cl2.msx')
-            """
+
+        Example using custom msx library :
+        msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanetmsx.dll')
+
+        d = epanet(inpname, msx=True,customlib=epanetlib)
+        d.loadMSXFile(msxname,customMSXlib=msxlib)"""
+
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
-        self.msx = epanetmsxapi(self.msxname)
+        self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
         print(f'MSX version {__msxversion__}.')
 
         if ignore_properties:
@@ -11199,16 +11215,6 @@ class epanet:
             self.msx.MSXSourcePatternIndex = self.getMSXSourcePatternIndex()
             self.msx.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
             self.msx.MSXPattern = self.getMSXPattern()
-
-            # options
-            self.solver = self.getMSXSolver()
-            self.areaunits = self.getMSXAreaUnits()
-            self.rateunits = self.getMSXRateUnits()
-            self.rtol = self.getMSXRtol()
-            self.atol = self.getMSXAtol()
-            self.timestep = self.getMSXTimeStep()
-            self.coupling = self.getMSXCoupling()
-            self.compiler = self.getMSXCompiler()
 
         return self.msx
 
@@ -12753,13 +12759,17 @@ class epanet:
             specie = self.getMSXSpeciesNameID()
         else:
             specie = args[0]
-
-        link_indices = np.arange(1, self.getLinkCount() + 1)
-        node_indices = np.arange(1, self.get_node_count() + 1)
+        msx_time_step = self.getMSXTimeStep()
+        link_indices = range(1, self.getLinkCount() + 1)
+        node_indices = range(1, self.getNodeCount() + 1)
         speciename = self.getMSXSpeciesIndex(specie)
+        time_steps = int(self.getTimeSimulationDuration() / msx_time_step)
+        link_count = self.getLinkCount()
+        node_count = self.getNodeCount()
+        value = {}
 
-        node_quality = np.empty((1, len(node_indices), len(speciename)))
-        link_quality = np.empty((1, len(node_indices), len(speciename)))
+        value["NodeQuality"] = [np.zeros((node_count, 1)) for _ in range(time_steps + 1)]
+        value["LinkQuality"] = [np.zeros((link_count, 1)) for _ in range(time_steps + 1)]
 
         self.solveMSXCompleteHydraulics()
         self.initializeMSXQualityAnalysis(0)
@@ -12767,37 +12777,49 @@ class epanet:
         k = 1
         tleft = 1
         t = 0
-        time = [0]
+        value["Time"] = [[0]]
         if node_indices[-1] < link_indices[-1]:
             for i in range(len(speciename)):
                 for lnk in link_indices:
-                    print(lnk)
-                    link_quality[k, lnk - 1, i] = self.getMSXNodeInitqualValue([lnk])[speciename[i]]
+                    link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
+                    value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
                     if lnk < node_indices[-1] + 1:
-                        node_quality[k, lnk - 1, i] = self.getMSXNodeInitqualValue([lnk])[speciename[i]]
+                        node_init_qual_value = self.getMSXNodeInitqualValue([lnk])
+                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
+
         else:
             for i in range(len(speciename)):
                 for lnk in node_indices:
-                    node_quality[k, lnk - 1, i] = self.MSXNodeInitqualValue([lnk])[speciename[i]]
+                    node_init_qual_value = self.getMSXNodeInitqualValue(lnk)
+                    value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
                     if lnk < link_indices[-1] + 1:
-                        link_quality[k, lnk - 1, i] = self.getMSXLinkInitqualValue([lnk])[speciename[i]]
-        time_sim = self.getTimeSimulationDuration()
-        while tleft > 0 and time_sim != t:
+                        link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
+                        value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
+
+        time_smle = self.getTimeSimulationDuration()
+        while tleft > 0 and time_smle != t:
             k = k + 1
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            for i in range(len(speciename)):
-                if node_indices[-1] < link_indices[-1]:
+            if node_indices[-1] < link_indices[-1]:
+                for i in range(len(speciename)):
                     for lnk in link_indices:
-                        link_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
+                        value["LinkQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(1, lnk,
+                                                                                                      speciename[i])
                         if lnk < node_indices[-1] + 1:
-                            node_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(0, lnk, speciename[i])
-                else:
+                            value["NodeQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(0, lnk,
+                                                                                                          speciename[i])
+
+            else:
+                for i in range(len(speciename)):
                     for lnk in node_indices:
-                        node_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(0, lnk, speciename[i])
+                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(0, lnk,
+                                                                                                      speciename[i])
                         if lnk < link_indices[-1] + 1:
-                            link_quality[k, lnk - 1, i] = self.getMSXSpeciesConcentration(1, lnk, speciename[i])
-            time.append(t)
-        return {'NodeQuality': node_quality, 'LinkQuality': link_quality, 'Time': np.array(time)}
+                            value["LinkQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(1, lnk,
+                                                                                                          speciename[i])
+            value["Time"].append([t])
+
+        return value
 
 
 class epanetapi:
@@ -12807,7 +12829,7 @@ class epanetapi:
 
     EN_MAXID = 32  # toolkit constant
 
-    def __init__(self, version=2.2, msx=False):
+    def __init__(self, version=2.2, msx=False, loadlib=True, customlib=None):
         """Load the EPANET library.
 
         Parameters:
@@ -12822,17 +12844,27 @@ class epanetapi:
 
         # Check platform and Load epanet library
         # libname = f"epanet{str(version).replace('.', '_')}"
-        libname = f"epanet2"
-        ops = platform.system().lower()
-        if ops in ["windows"]:
-            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", f"{libname}.dll"))
-        elif ops in ["darwin"]:
-            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
-        else:
-            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"glnx/lib{libname}.so"))
+        if customlib is not None:
+            if not os.path.isabs(customlib):
+                self.LibEPANET = os.path.join(os.getcwd(), customlib)
+            else:
+                self.LibEPANET = customlib
+            loadlib = False
+            self._lib = cdll.LoadLibrary(self.LibEPANET)
+            self.LibEPANETpath = os.path.dirname(self.LibEPANET)
 
-        self._lib = cdll.LoadLibrary(self.LibEPANET)
-        self.LibEPANETpath = os.path.dirname(self.LibEPANET)
+        if loadlib:
+            libname = f"epanet2"
+            ops = platform.system().lower()
+            if ops in ["windows"]:
+                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", f"{libname}.dll"))
+            elif ops in ["darwin"]:
+                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
+            else:
+                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"glnx/lib{libname}.so"))
+
+            self._lib = cdll.LoadLibrary(self.LibEPANET)
+            self.LibEPANETpath = os.path.dirname(self.LibEPANET)
 
         if float(version) >= 2.2 and not msx:
             self._ph = c_uint64()
@@ -12872,8 +12904,8 @@ class epanetapi:
             self.errcode = self._lib.EN_addcontrol(self._ph, conttype, int(lindex), c_double(setting), nindex,
                                                    c_double(level), byref(index))
         else:
-            self.errcode = self._lib.ENaddcontrol(conttype, int(lindex), c_double(setting), nindex,
-                                                  c_double(level), byref(index))
+            self.errcode = self._lib.ENaddcontrol(conttype, int(lindex), c_float(setting), nindex,
+                                                  c_float(level), byref(index))
         self.ENgeterror()
         return index.value
 
@@ -13344,14 +13376,16 @@ class epanetapi:
         """
         ctype = c_int()
         lindex = c_int()
-        setting = c_double()
         nindex = c_int()
-        level = c_double()
 
         if self._ph is not None:
+            setting = c_double()
+            level = c_double()
             self.errcode = self._lib.EN_getcontrol(self._ph, int(cindex), byref(ctype), byref(lindex),
                                                    byref(setting), byref(nindex), byref(level))
         else:
+            setting = c_float()
+            level = c_float()
             self.errcode = self._lib.ENgetcontrol(int(cindex), byref(ctype), byref(lindex),
                                                   byref(setting), byref(nindex), byref(level))
 
@@ -15651,7 +15685,15 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False):
+    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None):
+        if customMSXlib is not None:
+            self.MSXLibEPANET = customMSXlib
+            loadlib = False
+
+            self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
+            self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
+            self.msx_error = self.msx_lib.MSXgeterror
+            self.msx_error.argtypes = [c_int, c_char_p, c_int]
         if loadlib:
             ops = platform.system().lower()
             if ops in ["windows"]:

@@ -59,6 +59,8 @@ year = {2023}
 * Windows, OSX or Linux
 * [EPANET 2.2](https://github.com/OpenWaterAnalytics/epanet)
 
+Linux: `sudo cp libepanet2.so /lib/x86_64-linux-gnu/libepanet.so`
+
 &uparrow; [Back to top](#table-of-contents)
 
 ## How to install
@@ -79,6 +81,16 @@ year = {2023}
 >>> d = epanet('Net1.inp')
 >>> d.getNodeCount()
 >>> d.getNodeElevations()
+``` 
+
+**Minumun Example using custom Library:**
+```python
+>>> from epyt import epanet
+>>>
+>>>epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanet2.dll')
+>>>msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanetmsx.dll')
+>>>d = epanet(inpname, customlib=epanetlib, msx=True)
+>>>d.loadMSXFile(msxname, customMSXlib=msxlib)
 ``` 
 
 **More examples:** 
