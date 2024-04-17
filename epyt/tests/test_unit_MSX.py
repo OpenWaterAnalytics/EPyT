@@ -216,13 +216,13 @@ class MSXtest(unittest.TestCase):
     def test_MSXaddpattern(self):
 
         y = self.msxClass.MSXgetcount(7)
-        self.msxClass.MSXaddpattern("Johnnys")
+        self.msxClass.MSXaddpattern("pat-test-2")
         self.assertEqual(self.msxClass.MSXgetcount(7), y + 1,
                          'Wrong error add patter output')
 
     def test_MSXsetpatter(self):
-        self.msxClass.MSXaddpattern("JohnLegend")
-        x = self.msxClass.MSXgetindex(7, "JohnLegend")
+        self.msxClass.MSXaddpattern("pat-test-1")
+        x = self.msxClass.MSXgetindex(7, "pat-test-1")
         mult = [0.5, 0.8, 1.2, 1.0, 0.7, 0.3]
         self.msxClass.MSXsetpattern(x, mult, 6)
 
@@ -240,7 +240,7 @@ class MSXtest(unittest.TestCase):
                          'Wrong set/get patternvalue comment output')
 
     def test_MSXsavesmsxfile(self):
-        filename = "JohntheLegend.msx"
+        filename = "net-test-1.msx"
         self.msxClass.MSXsavemsxfile(filename)
         full_path = os.path.join(os.getcwd(), filename)
         if os.path.exists(full_path):
