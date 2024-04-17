@@ -17,7 +17,7 @@ class MSXtest(unittest.TestCase):
 
     def tearDown(self):
         """Call after every test case."""
-        self.msxClass.MSXclose()
+        self.epanetClass.unloadMSX()
         self.epanetClass.unload()
 
     """ ------------------------------------------------------------------------- """
