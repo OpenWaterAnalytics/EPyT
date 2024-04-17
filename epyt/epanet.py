@@ -502,7 +502,14 @@ def isList(var):
 
 
 class epanet:
-    """ EPyt main functions class """
+    """ EPyt main functions class
+
+    Example with custom library
+            epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanetcustom.dll')
+            d = epanet(inpname, msx=True,customlib=epanetlib)
+     """
+
+
 
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False, customlib=None):
         # Constants
@@ -11161,7 +11168,13 @@ class epanet:
         """Loads an msx file
         Example:
             d.loadMSXFile('net2-cl2.msx')
-            """
+
+        Example using custom msx library :
+        msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','custommsxlib.dll')
+
+        d = epanet(inpname, msx=True,customlib=epanetlib)
+        d.loadMSXFile(msxname,customMSXlib=msxlib)"""
+
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
         self.msx = epanetmsxapi(self.msxname,customMSXlib=customMSXlib)

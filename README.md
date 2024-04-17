@@ -56,7 +56,7 @@ year = {2023}
 ## Requirements
 
 * Python >=3.8
-* Windows, OSX or Linux
+* Windows, OSX or Linux Ubuntu LTS >=22.04
 * [EPANET 2.2](https://github.com/OpenWaterAnalytics/epanet)
 
 &uparrow; [Back to top](#table-of-contents)
@@ -79,6 +79,16 @@ year = {2023}
 >>> d = epanet('Net1.inp')
 >>> d.getNodeCount()
 >>> d.getNodeElevations()
+``` 
+
+**Minumun Example using custom Library:**
+```python
+>>> from epyt import epanet
+>>>
+>>>epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','customlib.dll')
+>>>msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','custommsxlib.dll')
+>>>d = epanet(inpname, msx=True,customlib=epanetlib)
+>>>d.loadMSXFile(msxname,customMSXlib=msxlib)
 ``` 
 
 **More examples:** 
