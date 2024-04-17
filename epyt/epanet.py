@@ -12845,10 +12845,14 @@ class epanetapi:
         # Check platform and Load epanet library
         # libname = f"epanet{str(version).replace('.', '_')}"
         if customlib is not None:
-            self.LibEPANET = customlib
+            if not os.path.isabs(customlib):
+                self.LibEPANET = os.path.join(os.getcwd(), customlib)
+            else:
+                self.LibEPANET = customlib
             loadlib = False
             self._lib = cdll.LoadLibrary(self.LibEPANET)
             self.LibEPANETpath = os.path.dirname(self.LibEPANET)
+
         if loadlib:
             libname = f"epanet2"
             ops = platform.system().lower()
