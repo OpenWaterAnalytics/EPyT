@@ -11164,7 +11164,7 @@ class epanet:
             """
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
-        self.msx = epanetmsxapi(self.msxname,customMSXlib)
+        self.msx = epanetmsxapi(self.msxname,customMSXlib=customMSXlib)
         print(f'MSX version {__msxversion__}.')
 
         if ignore_properties:
@@ -15674,6 +15674,12 @@ class epanetmsxapi:
         if customMSXlib is not None:
             self.MSXLibEPANET = customMSXlib
             loadlib = False
+
+            self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
+            self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
+
+            self.msx_error = self.msx_lib.MSXgeterror
+            self.msx_error.argtypes = [c_int, c_char_p, c_int]
         if loadlib:
             ops = platform.system().lower()
             if ops in ["windows"]:
