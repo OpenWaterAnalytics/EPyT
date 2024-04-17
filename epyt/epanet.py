@@ -10379,8 +10379,7 @@ class epanet:
 
             cwd = os.getcwd()
             tmp_files = list(filter(lambda f: os.path.isfile(os.path.join(cwd, f))
-                                      and (f.startswith("s") or f.startswith("en")) and 6 <= len(f) <= 8 and "." not in f and "_"
-                                      in f, os.listdir(cwd)))
+                                      and (f.startswith("s") or f.startswith("en")) and 6 <= len(f) <= 8 and "." not in f))
             tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
             safe_delete(tmp_files_paths)
 
