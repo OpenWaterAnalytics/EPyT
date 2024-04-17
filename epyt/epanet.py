@@ -509,8 +509,6 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
-
-
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False, customlib=None):
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
@@ -572,7 +570,7 @@ class epanet:
 
         # Initial attributes
         self.classversion = __version__
-        self.api = epanetapi(version, msx=msx,customlib=customlib)
+        self.api = epanetapi(version, msx=msx, customlib=customlib)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
 
@@ -11177,7 +11175,7 @@ class epanet:
 
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
-        self.msx = epanetmsxapi(self.msxname,customMSXlib=customMSXlib)
+        self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
         print(f'MSX version {__msxversion__}.')
 
         if ignore_properties:
@@ -11212,16 +11210,6 @@ class epanet:
             self.msx.MSXSourcePatternIndex = self.getMSXSourcePatternIndex()
             self.msx.MSXSourceNodeNameID = self.getMSXSourceNodeNameID()
             self.msx.MSXPattern = self.getMSXPattern()
-
-            # options
-            self.solver = self.getMSXSolver()
-            self.areaunits = self.getMSXAreaUnits()
-            self.rateunits = self.getMSXRateUnits()
-            self.rtol = self.getMSXRtol()
-            self.atol = self.getMSXAtol()
-            self.timestep = self.getMSXTimeStep()
-            self.coupling = self.getMSXCoupling()
-            self.compiler = self.getMSXCompiler()
 
         return self.msx
 
@@ -13380,7 +13368,6 @@ class epanetapi:
         ctype = c_int()
         lindex = c_int()
         nindex = c_int()
-
 
         if self._ph is not None:
             setting = c_double()
@@ -15689,7 +15676,7 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='' , loadlib=True, ignore_msxfile=False,customMSXlib=None):
+    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None):
         if customMSXlib is not None:
             self.MSXLibEPANET = customMSXlib
             loadlib = False
