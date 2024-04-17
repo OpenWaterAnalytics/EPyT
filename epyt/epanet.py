@@ -11157,14 +11157,14 @@ class epanet:
 
     """MSX Functions"""
 
-    def loadMSXFile(self, msxname, ignore_properties=False):
+    def loadMSXFile(self, msxname, customMSXlib=None, ignore_properties=False):
         """Loads an msx file
         Example:
             d.loadMSXFile('net2-cl2.msx')
             """
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
-        self.msx = epanetmsxapi(self.msxname)
+        self.msx = epanetmsxapi(self.msxname,customMSXlib)
         print(f'MSX version {__msxversion__}.')
 
         if ignore_properties:
@@ -15670,7 +15670,10 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False):
+    def __init__(self, msxfile='' , loadlib=True, ignore_msxfile=False,customMSXlib=None):
+        if customMSXlib is not None:
+            self.MSXLibEPANET = customMSXlib
+            loadlib = False
         if loadlib:
             ops = platform.system().lower()
             if ops in ["windows"]:
