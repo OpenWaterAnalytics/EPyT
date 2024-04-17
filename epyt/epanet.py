@@ -504,7 +504,7 @@ def isList(var):
 class epanet:
     """ EPyt main functions class """
 
-    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False):
+    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False, customlib=None):
         # Constants
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
@@ -565,7 +565,7 @@ class epanet:
 
         # Initial attributes
         self.classversion = __version__
-        self.api = epanetapi(version, msx=msx)
+        self.api = epanetapi(version, msx=msx,customlib=customlib)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
 
@@ -12823,7 +12823,7 @@ class epanetapi:
 
     EN_MAXID = 32  # toolkit constant
 
-    def __init__(self, version=2.2, msx=False):
+    def __init__(self, version=2.2, msx=False, loadlib=True, customlib=None):
         """Load the EPANET library.
 
         Parameters:
@@ -12838,17 +12838,23 @@ class epanetapi:
 
         # Check platform and Load epanet library
         # libname = f"epanet{str(version).replace('.', '_')}"
-        libname = f"epanet2"
-        ops = platform.system().lower()
-        if ops in ["windows"]:
-            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", f"{libname}.dll"))
-        elif ops in ["darwin"]:
-            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
-        else:
-            self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"glnx/lib{libname}.so"))
+        if customlib is not None:
+            self.LibEPANET = customlib
+            loadlib = False
+            self._lib = cdll.LoadLibrary(self.LibEPANET)
+            self.LibEPANETpath = os.path.dirname(self.LibEPANET)
+        if loadlib:
+            libname = f"epanet2"
+            ops = platform.system().lower()
+            if ops in ["windows"]:
+                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", f"{libname}.dll"))
+            elif ops in ["darwin"]:
+                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
+            else:
+                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"glnx/lib{libname}.so"))
 
-        self._lib = cdll.LoadLibrary(self.LibEPANET)
-        self.LibEPANETpath = os.path.dirname(self.LibEPANET)
+            self._lib = cdll.LoadLibrary(self.LibEPANET)
+            self.LibEPANETpath = os.path.dirname(self.LibEPANET)
 
         if float(version) >= 2.2 and not msx:
             self._ph = c_uint64()
@@ -15677,7 +15683,6 @@ class epanetmsxapi:
 
             self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
             self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
-
             self.msx_error = self.msx_lib.MSXgeterror
             self.msx_error.argtypes = [c_int, c_char_p, c_int]
         if loadlib:
