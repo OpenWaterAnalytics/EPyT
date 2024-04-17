@@ -505,7 +505,7 @@ class epanet:
     """ EPyt main functions class
 
     Example with custom library
-            epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanetcustom.dll')
+            epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanet2.dll')
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
@@ -11170,7 +11170,7 @@ class epanet:
             d.loadMSXFile('net2-cl2.msx')
 
         Example using custom msx library :
-        msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','custommsxlib.dll')
+        msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanetmsx.dll')
 
         d = epanet(inpname, msx=True,customlib=epanetlib)
         d.loadMSXFile(msxname,customMSXlib=msxlib)"""
