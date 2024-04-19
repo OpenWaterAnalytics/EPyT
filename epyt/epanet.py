@@ -10395,7 +10395,7 @@ class epanet:
                     f for f in files
                     if os.path.isfile(os.path.join(cwd, f)) and
                        (f.startswith('s') or f.startswith('en')) and
-                       6 <= len(f) <= 8 and
+                       5 <= len(f) <= 8 and
                        "." not in f
                 ]
                 tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
