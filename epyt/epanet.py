@@ -12776,73 +12776,63 @@ class epanet:
             self.setMSXPattern(index, args[1])
         return index
 
-    def getMSXComputedQualitySpecie(self, *args):
+    def getMSXComputedQualitySpecie(self, species=None):
         if self.getMSXSpeciesCount() == 0:
-            return 0
-        if not args:
-            specie = self.getMSXSpeciesNameID()
+            return -1
+        if species is None:
+            species_index_name = self.getMSXSpeciesIndex()
         else:
-            specie = args[0]
-        msx_time_step = self.getMSXTimeStep()
-        link_indices = range(1, self.getLinkCount() + 1)
-        node_indices = range(1, self.getNodeCount() + 1)
-        speciename = self.getMSXSpeciesIndex(specie)
-        time_steps = int(self.getTimeSimulationDuration() / msx_time_step)
-        link_count = self.getLinkCount()
+            species_index_name = self.getMSXSpeciesNameID(species)
+
         node_count = self.getNodeCount()
-        value = {}
+        link_count = self.getNodeCount()
+        node_indices = list(range(1, node_count + 1))
+        link_indices = list(range(1, link_count + 1))
+        # Initialized quality and time
+        msx_time_step = self.getMSXTimeStep()
+        time_steps = int(self.getTimeSimulationDuration() / msx_time_step) + 1
+        quality = [np.zeros((time_steps, 1)) for _ in range(node_count)]
+        lquality = [np.zeros((time_steps, 1)) for _ in range(link_count)]
+        data = {
+            'NodeQuality': quality,
+            'LinkQuality': lquality,
+        }
+        time_smle = self.getTimeSimulationDuration()
 
-        value["NodeQuality"] = [np.zeros((node_count, 1)) for _ in range(time_steps + 1)]
-        value["LinkQuality"] = [np.zeros((link_count, 1)) for _ in range(time_steps + 1)]
-
+        # Obtain a hydraulic solution
         self.solveMSXCompleteHydraulics()
+
+        # Run a step-wise water quality analysis without saving results to file
         self.initializeMSXQualityAnalysis(0)
 
+        # Retrieve species concentration at node
+        k = 0
+        for j_idx, j in enumerate(species_index_name, start=1):
+            for i, nl in enumerate(node_indices, start=1):
+                data['NodeQuality'][i - 1][k, j_idx - 1] = self.getMSXNodeInitqualValue()[i - 1][j - 1]
+            for i, nl in enumerate(link_indices, start=1):
+                data['LinkQuality'][i - 1][k, j_idx - 1] = self.getMSXLinkInitqualValue()[i - 1][j - 1]
+
         k = 1
-        tleft = 1
         t = 0
-        value["Time"] = [[0]]
-        if node_indices[-1] < link_indices[-1]:
-            for i in range(len(speciename)):
-                for lnk in link_indices:
-                    link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
-                    value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
-                    if lnk < node_indices[-1] + 1:
-                        node_init_qual_value = self.getMSXNodeInitqualValue([lnk])
-                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
-
-        else:
-            for i in range(len(speciename)):
-                for lnk in node_indices:
-                    node_init_qual_value = self.getMSXNodeInitqualValue(lnk)
-                    value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
-                    if lnk < link_indices[-1] + 1:
-                        link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
-                        value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
-
-        time_smle = self.getTimeSimulationDuration()
+        tleft = 1
+        # Initialized data time with 0
         while tleft > 0 and time_smle != t:
-            k = k + 1
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            if node_indices[-1] < link_indices[-1]:
-                for i in range(len(speciename)):
-                    for lnk in link_indices:
-                        value["LinkQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(1, lnk,
-                                                                                                      speciename[i])
-                        if lnk < node_indices[-1] + 1:
-                            value["NodeQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(0, lnk,
-                                                                                                          speciename[i])
+            if t >= msx_time_step:
+                for g, j in enumerate(species_index_name, start=1):
+                    for i, nl in enumerate(node_indices, start=1):
+                        data['NodeQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+                    for i, nl in enumerate(link_indices, start=1):
+                        data['LinkQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+            k += 1
 
-            else:
-                for i in range(len(speciename)):
-                    for lnk in node_indices:
-                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(0, lnk,
-                                                                                                      speciename[i])
-                        if lnk < link_indices[-1] + 1:
-                            value["LinkQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(1, lnk,
-                                                                                                          speciename[i])
-            value["Time"].append([t])
-
+        value = EpytValues()
+        value.NodeQuality, value.LinkQuality = {}, {}
+        value.NodeQuality = data['NodeQuality']
+        value.LinkQuality = data['LinkQuality']
+        value.Time = [int(i * msx_time_step) for i in
+                      range(int(self.getTimeSimulationDuration() / msx_time_step) + 1)]
         return value
 
 
@@ -16231,7 +16221,6 @@ class epanetmsxapi:
            Parameters:
                flag:  Set the flag to 1 if the water quality results should be saved
                       to a scratch binary file, or 0 if not
-
            """
         err = self.msx_lib.MSXinit(flag)
         if err:
