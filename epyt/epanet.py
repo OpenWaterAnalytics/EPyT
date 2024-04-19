@@ -11199,7 +11199,6 @@ class epanet:
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
         self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
-        print(f'MSX version {__msxversion__}.')
 
         #message to user if he uses ph with msx
         if self.api._ph is not None:
