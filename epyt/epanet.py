@@ -2415,6 +2415,7 @@ class epanet:
             else:
                 exec(f"value_final.{i} = val_dict[i]")
         value_final.Status = value_final.Status.astype(int)
+        self.loadEPANETFile(self.TempInpFile)
         return value_final
 
     def getAdjacencyMatrix(self):
@@ -12860,7 +12861,6 @@ class epanetapi:
         """
         self._lib = None
         self.errcode = 0
-        self.isloaded = False
         self.inpfile = None
         self.rptfile = None
         self.binfile = None
@@ -13093,8 +13093,6 @@ class epanetapi:
             self.errcode = self._lib.ENclose()
 
         self.ENgeterror()
-        if self.errcode < 100:
-            self.isloaded = False
 
     def ENcloseH(self):
         """ Closes the hydraulic solver freeing all of its allocated memory.
@@ -14624,11 +14622,6 @@ class epanetapi:
         self.rptfile = bytes(repname, 'utf-8')
         self.binfile = bytes(binname, 'utf-8')
 
-        if self.isloaded:
-            self.ENclose()
-        if self.isloaded:
-            raise RuntimeError("File is loaded and cannot be closed.")
-
         if self._ph is not None:
             self._lib.EN_createproject(byref(self._ph))
             self.errcode = self._lib.EN_open(self._ph, self.inpfile, self.rptfile, self.binfile)
@@ -14636,8 +14629,6 @@ class epanetapi:
             self.errcode = self._lib.ENopen(self.inpfile, self.rptfile, self.binfile)
 
         self.ENgeterror()
-        if self.errcode < 100:
-            self.isloaded = True
         return
 
     def ENopenH(self):
