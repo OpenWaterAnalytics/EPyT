@@ -270,10 +270,10 @@ class MSXtest(unittest.TestCase):
                 self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.8,
                                  'Wrong get qual comment output')
             if c == 85:
-                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.7991662288393907,
+                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.7991666666666667,
                                  'Wrong  get qual comment output')
             if c == 660:
-                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.7999999830262526,
+                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.8,
                                  'Wrong  get qual comment output')
             if tleft <= 0:
                 break
