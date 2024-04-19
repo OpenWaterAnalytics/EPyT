@@ -16202,8 +16202,12 @@ class epanetmsxapi:
                t : current simulation time at the end of the step(in secconds)
                tleft: time left in the simulation (in secconds)
            """
-        t = c_long()
-        tleft = c_long()
+        if platform.system().lower() in ["windows"]:
+            t = c_double()
+            tleft = c_double()
+        else:
+            t = c_double()
+            tleft = c_long()
         err = self.msx_lib.MSXstep(byref(t), byref(tleft))
 
         if err:
