@@ -8,7 +8,7 @@ dirname = os.path.dirname(networks.__file__)
 inpname = os.path.join(dirname, 'msx-examples', 'net2-cl2.inp')
 msxname = os.path.join(dirname, 'msx-examples', 'net2-cl2.msx')
 
-d = epanet(inpname, msx=True)
+d = epanet(inpname)
 msx = epanetmsxapi(msxname)
 MSX_SPECIES = 3
 ss = list(range(1, d.LinkCount + 1))
