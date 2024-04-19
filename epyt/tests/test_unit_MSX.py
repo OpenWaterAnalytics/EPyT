@@ -12,7 +12,7 @@ class MSXtest(unittest.TestCase):
         # Create EPANET object using the INP file
         inpname = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.inp')
         msxfile = os.path.join(DIRNAME, 'msx-examples', 'Net3-NH2CL.msx')
-        self.epanetClass = epanet(inpname, msx=True)
+        self.epanetClass = epanet(inpname)
         self.msxClass = self.epanetClass.loadMSXFile(msxfile)
 
     def tearDown(self):
@@ -253,7 +253,7 @@ class MSXtest(unittest.TestCase):
         self.msxClass.MSXclose()
         self.epanetClass.unload()
         inpname = os.path.join(DIRNAME, 'msx-examples', 'net2-cl2.inp')
-        self.epanetClass = epanet(inpname, msx=True)
+        self.epanetClass = epanet(inpname)
         file_path = os.path.join(DIRNAME, 'msx-examples', 'net2-cl2.msx')
         self.msxClass = self.epanetClass.loadMSXFile(file_path)
 
