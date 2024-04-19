@@ -3763,7 +3763,6 @@ class AnalysisTest(unittest.TestCase):
     def test_getComputedTimeSeries():
         d = epanet('Net1.inp', ph=False)
         comp_vals = d.getComputedTimeSeries()
-        d.unload()
         err_msg = 'Error in getComputedTimeSeries output'
 
         # Test LinkQuality
