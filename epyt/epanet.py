@@ -9373,7 +9373,12 @@ class epanet:
             value = -1
             status = eval('self.ToolkitConstants.EN_R_IS_' + premise_new[m])
         else:
-            value = float(premise_new[m])
+            try:
+                value = float(premise_new[m])
+            except:
+                time_str = premise_new[m]
+                hours, minutes = map(int, time_str.split(':'))
+                value = hours + minutes / 60
             status = 0
         if object_ == self.ToolkitConstants.EN_R_SYSTEM:
             if premise_new[5] == 'AM':
@@ -13735,13 +13740,14 @@ class epanetapi:
         """
         linkIndex = c_int()
         status = c_int()
-        setting = c_double()
 
         if self._ph is not None:
+            setting = c_double()
             self.errcode = self._lib.EN_getelseaction(self._ph, int(ruleIndex), int(actionIndex),
                                                       byref(linkIndex),
                                                       byref(status), byref(setting))
         else:
+            setting = c_float()
             self.errcode = self._lib.ENgetelseaction(int(ruleIndex), int(actionIndex),
                                                      byref(linkIndex),
                                                      byref(status), byref(setting))
@@ -15603,8 +15609,8 @@ class epanetapi:
                                                     (c_double * vertex)(*y), vertex)
 
         else:
-            self.errcode = self._lib.ENsetvertices(int(index), (c_float * vertex)(*x),
-                                                    (c_float * vertex)(*y), vertex)
+            self.errcode = self._lib.ENsetvertices(int(index), (c_double * vertex)(*x),
+                                                    (c_double * vertex)(*y), vertex)
 
         self.ENgeterror()
 
