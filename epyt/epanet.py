@@ -14458,13 +14458,11 @@ class epanetapi:
         x  the vertex's X-coordinate value.
         y  the vertex's Y-coordinate value.
         """
+        x = c_double() # need double for EN_ or EN functions.
+        y = c_double()
         if self._ph is not None:
-            x = c_double()
-            y = c_double()
             self.errcode = self._lib.EN_getvertex(self._ph, int(index), vertex, byref(x), byref(y))
         else:
-            x = c_float()
-            y = c_float()
             self.errcode = self._lib.ENgetvertex(int(index), vertex, byref(x), byref(y))
 
         self.ENgeterror()
