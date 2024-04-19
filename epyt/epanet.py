@@ -12782,7 +12782,7 @@ class epanet:
         if species is None:
             species_index_name = self.getMSXSpeciesIndex()
         else:
-            species_index_name = self.getMSXSpeciesNameID(species)
+            species_index_name = self.getMSXSpeciesIndex(species)
 
         node_count = self.getNodeCount()
         link_count = self.getNodeCount()
