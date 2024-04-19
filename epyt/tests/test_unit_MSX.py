@@ -267,7 +267,7 @@ class MSXtest(unittest.TestCase):
             t, tleft = self.msxClass.MSXstep()
             c = c + 1
             if c == 1:
-                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.8000000188349043,
+                self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.8,
                                  'Wrong get qual comment output')
             if c == 85:
                 self.assertEqual(self.msxClass.MSXgetqual(0, 1, 1), 0.7991662288393907,
