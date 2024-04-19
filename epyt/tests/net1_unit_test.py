@@ -8,7 +8,7 @@ class TestGetSetLinksCase(unittest.TestCase):
         """Call before every test case."""
         # Create EPANET object using the INP file
         inp_name = 'Net1.inp'
-        self.epanetClass = epanet(inp_name)
+        self.epanetClass = epanet(inp_name, ph=False)
 
     def tearDown(self):
         """Call after every test case."""
