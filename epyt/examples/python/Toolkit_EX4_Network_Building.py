@@ -15,7 +15,7 @@ from epyt import epanet
 
 # Create an empty INP file
 testinp = 'TESTING.inp'
-d = epanet(testinp, 'CREATE')
+d = epanet(testinp, 'CREATE', ph=True)
 
 # Initialize epanet flow units 
 d.initializeEPANET(d.ToolkitConstants.EN_GPM, d.ToolkitConstants.EN_HW)
@@ -69,7 +69,7 @@ d.setLinkPumpHCurve(index, 1)
 
 # Save the project for future use
 d.saveInputFile(testinp)
-d = epanet(testinp)
+d = epanet(testinp, ph=True)
 d.plot()
 d.plot_show()
 d.deleteProject()
