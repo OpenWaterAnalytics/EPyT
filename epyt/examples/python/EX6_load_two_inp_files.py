@@ -9,8 +9,8 @@
 from epyt import epanet
 
 # Load networks
-d1 = epanet('Net1.inp')
-d2 = epanet('Net2.inp')
+d1 = epanet('Net1.inp', ph=True)
+d2 = epanet('Net2.inp', ph=True)
 
 # Close any open figures
 d1.plot_close()

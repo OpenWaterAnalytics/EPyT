@@ -509,8 +509,9 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
-    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, msx=False, customlib=None):
+    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None):
         # Constants
+        warnings.simplefilter('always')
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
         self.msxname = None
@@ -570,7 +571,7 @@ class epanet:
 
         # Initial attributes
         self.classversion = __version__
-        self.api = epanetapi(version, msx=msx, customlib=customlib)
+        self.api = epanetapi(version, ph=ph, customlib=customlib)
         print(f'EPANET version {self.getVersion()} '
               f'loaded (EPyT version {self.classversion}).')
 
@@ -632,17 +633,11 @@ class epanet:
             self.LibEPANET = self.api.LibEPANET
             print(f'Input File {self.netName} loaded successfully.\n')
 
-        if ph:
-            self.createProject()
-
         # Global plot settings
         plt.rcParams["figure.figsize"] = [3, 2]
         plt.rcParams['figure.dpi'] = 300
         plt.rcParams['figure.constrained_layout.use'] = True
         plt.rcParams['figure.max_open_warning'] = 30
-
-        if msx:
-            self.msx = epanetmsxapi(ignore_msxfile=True)
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -2362,6 +2357,12 @@ class epanet:
             value_final = self.getComputedTimeSeries_ENepanet()
             return value_final
         value = self.__readEpanetBin(fid, binfile, 0)
+        value.WarnFlag = False
+        if self.errcode:
+            value.WarnFlag = True
+            value.ErrCode = self.errcode
+            self.api.ENgeterror(self.errcode)
+
         value.StatusStr = {}
         for i in range(1, len(value.Status) + 1):
             value.StatusStr[i] = []
@@ -2393,6 +2394,10 @@ class epanet:
         self.api.ENepanet(self.TempInpFile, rptfile, binfile)
         fid = open(binfile, "rb")
         value = self.__readEpanetBin(fid, binfile, 0)
+        value.WarnFlag = False
+        if self.errcode:
+            value.ErrCode = self.errcode
+            value.WarnFlag = True
         value.StatusStr = {}
         for i in range(1, len(value.Status) + 1):
             value.StatusStr[i] = []
@@ -2410,6 +2415,7 @@ class epanet:
             else:
                 exec(f"value_final.{i} = val_dict[i]")
         value_final.Status = value_final.Status.astype(int)
+        self.loadEPANETFile(self.TempInpFile)
         return value_final
 
     def getAdjacencyMatrix(self):
@@ -3690,7 +3696,7 @@ class epanet:
                 continue
             x_mat = []
             y_mat = []
-            for j in range(1, self.getLinkVerticesCount(i) + 1):
+            for j in range(1, self.getLinkVerticesCount(i) +1):
                 xy = self.api.ENgetvertex(i, j)
                 x_mat.append(xy[0])
                 y_mat.append(xy[1])
@@ -9368,7 +9374,12 @@ class epanet:
             value = -1
             status = eval('self.ToolkitConstants.EN_R_IS_' + premise_new[m])
         else:
-            value = float(premise_new[m])
+            try:
+                value = float(premise_new[m])
+            except:
+                time_str = premise_new[m]
+                hours, minutes = map(int, time_str.split(':'))
+                value = hours + minutes / 60
             status = 0
         if object_ == self.ToolkitConstants.EN_R_SYSTEM:
             if premise_new[5] == 'AM':
@@ -10369,26 +10380,28 @@ class epanet:
         try:
             self.api.ENclose()
         finally:
-            safe_delete(self.TempInpFile)
-            files_to_delete = [self.TempInpFile[0:-4] + '.txt', self.InputFile[0:-4] + '.txt', self.BinTempfile]
-            for file in files_to_delete:
-                safe_delete(file)
-            for file in Path(".").glob("@#*.txt"):
-                safe_delete(file)
-            safe_delete(self.TempInpFile)
+            try:
+                safe_delete(self.TempInpFile)
+                files_to_delete = [self.TempInpFile[0:-4] + '.txt', self.InputFile[0:-4] + '.txt', self.BinTempfile]
+                for file in files_to_delete:
+                    safe_delete(file)
+                for file in Path(".").glob("@#*.txt"):
+                    safe_delete(file)
+                safe_delete(self.TempInpFile)
 
-            cwd = os.getcwd()
-            files = os.listdir(cwd)
-            tmp_files = [
-                f for f in files
-                if os.path.isfile(os.path.join(cwd, f)) and
-                   (f.startswith('s') or f.startswith('en')) and
-                   6 <= len(f) <= 8 and
-                   "." not in f
-            ]
-            tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
-            safe_delete(tmp_files_paths)
-
+                cwd = os.getcwd()
+                files = os.listdir(cwd)
+                tmp_files = [
+                    f for f in files
+                    if os.path.isfile(os.path.join(cwd, f)) and
+                       (f.startswith('s') or f.startswith('en')) and
+                       5 <= len(f) <= 8 and
+                       "." not in f
+                ]
+                tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
+                safe_delete(tmp_files_paths)
+            except:
+                pass
         print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
 
     def useHydraulicFile(self, hydname):
@@ -10923,7 +10936,7 @@ class epanet:
             value.IDLabelEachLink = []
             for i in range(value.NumberLinks):
                 value.IDLabelEachLink.append(f.read(32).replace(b'\x00', b'').decode())
-            while (True):
+            while True:
                 binval = list(f.read(1))[0]
                 if binval != 0:
                     break
@@ -11001,8 +11014,13 @@ class epanet:
             value.AverageTankReactionRate = struct.unpack('f', f.read(4))
             value.AverageSourceInflowRate = struct.unpack('f', f.read(4))
             value.NumberReportingPeriods2 = list(f.read(1))[0]
+            f.read(1)
+            f.read(1)
+            f.read(1)
             value.WarningFlag = list(f.read(1))[0]
-            value.MagicNumber = f.read(10)
+            self.errcode = value.WarningFlag
+            # check here - error
+            value.MagicNumber = struct.unpack('b', f.read(1))
 
         if len(argv) > 0:
             v = EpytValues()
@@ -11181,8 +11199,13 @@ class epanet:
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
         self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
-        print(f'MSX version {__msxversion__}.')
 
+        #message to user if he uses ph with msx
+        if self.api._ph is not None:
+            print("In order for LoadMSX to work remove from epanet the ph")
+            print("Example: change this line ")
+            print("from this:   <<<d = epanet(inpname,ph=True,  customlib=epanetlib)")
+            print("To this:     <<<d = epanet(inpname, customlib=epanetlib)")
         if ignore_properties:
             self.msx.MSXEquationsTerms = self.getMSXEquationsTerms()
             self.msx.MSXEquationsPipes = self.getMSXEquationsPipes()
@@ -12752,73 +12775,63 @@ class epanet:
             self.setMSXPattern(index, args[1])
         return index
 
-    def getMSXComputedQualitySpecie(self, *args):
+    def getMSXComputedQualitySpecie(self, species=None):
         if self.getMSXSpeciesCount() == 0:
-            return 0
-        if not args:
-            specie = self.getMSXSpeciesNameID()
+            return -1
+        if species is None:
+            species_index_name = self.getMSXSpeciesIndex()
         else:
-            specie = args[0]
-        msx_time_step = self.getMSXTimeStep()
-        link_indices = range(1, self.getLinkCount() + 1)
-        node_indices = range(1, self.getNodeCount() + 1)
-        speciename = self.getMSXSpeciesIndex(specie)
-        time_steps = int(self.getTimeSimulationDuration() / msx_time_step)
-        link_count = self.getLinkCount()
+            species_index_name = self.getMSXSpeciesIndex(species)
+
         node_count = self.getNodeCount()
-        value = {}
+        link_count = self.getNodeCount()
+        node_indices = list(range(1, node_count + 1))
+        link_indices = list(range(1, link_count + 1))
+        # Initialized quality and time
+        msx_time_step = self.getMSXTimeStep()
+        time_steps = int(self.getTimeSimulationDuration() / msx_time_step) + 1
+        quality = [np.zeros((time_steps, 1)) for _ in range(node_count)]
+        lquality = [np.zeros((time_steps, 1)) for _ in range(link_count)]
+        data = {
+            'NodeQuality': quality,
+            'LinkQuality': lquality,
+        }
+        time_smle = self.getTimeSimulationDuration()
 
-        value["NodeQuality"] = [np.zeros((node_count, 1)) for _ in range(time_steps + 1)]
-        value["LinkQuality"] = [np.zeros((link_count, 1)) for _ in range(time_steps + 1)]
-
+        # Obtain a hydraulic solution
         self.solveMSXCompleteHydraulics()
+
+        # Run a step-wise water quality analysis without saving results to file
         self.initializeMSXQualityAnalysis(0)
 
+        # Retrieve species concentration at node
+        k = 0
+        for j_idx, j in enumerate(species_index_name, start=1):
+            for i, nl in enumerate(node_indices, start=1):
+                data['NodeQuality'][i - 1][k, j_idx - 1] = self.getMSXNodeInitqualValue()[i - 1][j - 1]
+            for i, nl in enumerate(link_indices, start=1):
+                data['LinkQuality'][i - 1][k, j_idx - 1] = self.getMSXLinkInitqualValue()[i - 1][j - 1]
+
         k = 1
-        tleft = 1
         t = 0
-        value["Time"] = [[0]]
-        if node_indices[-1] < link_indices[-1]:
-            for i in range(len(speciename)):
-                for lnk in link_indices:
-                    link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
-                    value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
-                    if lnk < node_indices[-1] + 1:
-                        node_init_qual_value = self.getMSXNodeInitqualValue([lnk])
-                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
-
-        else:
-            for i in range(len(speciename)):
-                for lnk in node_indices:
-                    node_init_qual_value = self.getMSXNodeInitqualValue(lnk)
-                    value["NodeQuality"][k - 1][lnk - 1][i - 1] = node_init_qual_value[0][0]
-                    if lnk < link_indices[-1] + 1:
-                        link_init_qual_value = self.getMSXLinkInitqualValue([lnk])
-                        value["LinkQuality"][k - 1][lnk - 1][i - 1] = link_init_qual_value[0][0]
-
-        time_smle = self.getTimeSimulationDuration()
+        tleft = 1
+        # Initialized data time with 0
         while tleft > 0 and time_smle != t:
-            k = k + 1
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            if node_indices[-1] < link_indices[-1]:
-                for i in range(len(speciename)):
-                    for lnk in link_indices:
-                        value["LinkQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(1, lnk,
-                                                                                                      speciename[i])
-                        if lnk < node_indices[-1] + 1:
-                            value["NodeQuality"][k - 1][lnk - 1, i - 1] = self.getMSXSpeciesConcentration(0, lnk,
-                                                                                                          speciename[i])
+            if t >= msx_time_step:
+                for g, j in enumerate(species_index_name, start=1):
+                    for i, nl in enumerate(node_indices, start=1):
+                        data['NodeQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+                    for i, nl in enumerate(link_indices, start=1):
+                        data['LinkQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+            k += 1
 
-            else:
-                for i in range(len(speciename)):
-                    for lnk in node_indices:
-                        value["NodeQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(0, lnk,
-                                                                                                      speciename[i])
-                        if lnk < link_indices[-1] + 1:
-                            value["LinkQuality"][k - 1][lnk - 1][i - 1] = self.getMSXSpeciesConcentration(1, lnk,
-                                                                                                          speciename[i])
-            value["Time"].append([t])
-
+        value = EpytValues()
+        value.NodeQuality, value.LinkQuality = {}, {}
+        value.NodeQuality = data['NodeQuality']
+        value.LinkQuality = data['LinkQuality']
+        value.Time = [int(i * msx_time_step) for i in
+                      range(int(self.getTimeSimulationDuration() / msx_time_step) + 1)]
         return value
 
 
@@ -12829,7 +12842,7 @@ class epanetapi:
 
     EN_MAXID = 32  # toolkit constant
 
-    def __init__(self, version=2.2, msx=False, loadlib=True, customlib=None):
+    def __init__(self, version=2.2, ph=False, loadlib=True, customlib=None):
         """Load the EPANET library.
 
         Parameters:
@@ -12837,7 +12850,6 @@ class epanetapi:
         """
         self._lib = None
         self.errcode = 0
-        self.isloaded = False
         self.inpfile = None
         self.rptfile = None
         self.binfile = None
@@ -12866,7 +12878,7 @@ class epanetapi:
             self._lib = cdll.LoadLibrary(self.LibEPANET)
             self.LibEPANETpath = os.path.dirname(self.LibEPANET)
 
-        if float(version) >= 2.2 and not msx:
+        if float(version) >= 2.2 and ph:
             self._ph = c_uint64()
         else:
             self._ph = None
@@ -12947,7 +12959,7 @@ class epanetapi:
                                                   demandPattern.encode("utf-8"),
                                                   demandName.encode("utf-8"))
         else:
-            self.errcode = self._lib.ENadddemand(int(nodeIndex), c_double(baseDemand),
+            self.errcode = self._lib.ENadddemand(int(nodeIndex), c_float(baseDemand),
                                                  demandPattern.encode("utf-8"),
                                                  demandName.encode("utf-8"))
 
@@ -13063,7 +13075,6 @@ class epanetapi:
 
         See also ENopen
         """
-
         if self._ph is not None:
             self.errcode = self._lib.EN_close(self._ph)
             self._ph = c_uint64()
@@ -13071,9 +13082,6 @@ class epanetapi:
             self.errcode = self._lib.ENclose()
 
         self.ENgeterror()
-        if self.errcode < 100:
-            self.isloaded = False
-        return
 
     def ENcloseH(self):
         """ Closes the hydraulic solver freeing all of its allocated memory.
@@ -13137,8 +13145,6 @@ class epanetapi:
 
         if self._ph is not None:
             self.errcode = self._lib.EN_createproject(byref(self._ph))
-        else:
-            self.errcode = self._lib.ENcreateproject(byref())
 
         self.ENgeterror()
         return
@@ -13302,11 +13308,13 @@ class epanetapi:
         Returns:
         value The average of all of the time pattern's factors.
         """
-        value = c_double()
+
 
         if self._ph is not None:
+            value = c_double()
             self.errcode = self._lib.EN_getaveragepatternvalue(self._ph, int(index), byref(value))
         else:
+            value = c_float()
             self.errcode = self._lib.ENgetaveragepatternvalue(int(index), byref(value))
 
         self.ENgeterror()
@@ -13325,11 +13333,12 @@ class epanetapi:
         Returns:
         value  the category's base demand.
         """
-        bDem = c_double()
 
         if self._ph is not None:
+            bDem = c_double()
             self.errcode = self._lib.EN_getbasedemand(self._ph, int(index), numdemands, byref(bDem))
         else:
+            bDem = c_float()
             self.errcode = self._lib.ENgetbasedemand(int(index), numdemands, byref(bDem))
 
         self.ENgeterror()
@@ -13632,14 +13641,16 @@ class epanetapi:
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
         Type = c_int()
-        pmin = c_double()
-        preq = c_double()
-        pexp = c_double()
-
         if self._ph is not None:
+            pmin = c_double()
+            preq = c_double()
+            pexp = c_double()
             self.errcode = self._lib.EN_getdemandmodel(self._ph, byref(Type), byref(pmin),
                                                        byref(preq), byref(pexp))
         else:
+            pmin = c_float()
+            preq = c_float()
+            pexp = c_float()
             self.errcode = self._lib.ENgetdemandmodel(byref(Type), byref(pmin),
                                                       byref(preq), byref(pexp))
 
@@ -13661,12 +13672,14 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-        demand_name = create_string_buffer(100)
+
 
         if self._ph is not None:
+            demand_name = create_string_buffer(100)
             self.errcode = self._lib.EN_getdemandname(self._ph, int(node_index), int(demand_index),
                                                       byref(demand_name))
         else:
+            demand_name = create_string_buffer(80)
             self.errcode = self._lib.ENgetdemandname(int(node_index), int(demand_index),
                                                      byref(demand_name))
 
@@ -13714,13 +13727,14 @@ class epanetapi:
         """
         linkIndex = c_int()
         status = c_int()
-        setting = c_double()
 
         if self._ph is not None:
+            setting = c_double()
             self.errcode = self._lib.EN_getelseaction(self._ph, int(ruleIndex), int(actionIndex),
                                                       byref(linkIndex),
                                                       byref(status), byref(setting))
         else:
+            setting = c_float()
             self.errcode = self._lib.ENgetelseaction(int(ruleIndex), int(actionIndex),
                                                      byref(linkIndex),
                                                      byref(status), byref(setting))
@@ -13728,13 +13742,15 @@ class epanetapi:
         self.ENgeterror()
         return [linkIndex.value, status.value, setting.value]
 
-    def ENgeterror(self):
+    def ENgeterror(self, errcode=0):
         """ Returns the text of an error message generated by an error code, as warning.
 
         ENgeterror()
 
         """
-        if self.errcode:
+        if self.errcode or errcode:
+            if errcode:
+                self.errcode = errcode
             errmssg = create_string_buffer(150)
             self._lib.ENgeterror(self.errcode, byref(errmssg), 150)
             warnings.warn(errmssg.value.decode())
@@ -14020,11 +14036,11 @@ class epanetapi:
         Returns:
         value the current value of the option.
         """
-        value = c_double()
-
         if self._ph is not None:
+            value = c_double()
             self.errcode = self._lib.EN_getoption(self._ph, optioncode, byref(value))
         else:
+            value = c_float()
             self.errcode = self._lib.ENgetoption(optioncode, byref(value))
 
         self.ENgeterror()
@@ -14142,14 +14158,15 @@ class epanetapi:
         variable = c_int()
         relop = c_int()
         status = c_int()
-        value = c_double()
 
         if self._ph is not None:
+            value = c_double()
             self.errcode = self._lib.EN_getpremise(self._ph, int(ruleIndex), int(premiseIndex), byref(logop),
                                                    byref(object_), byref(objIndex),
                                                    byref(variable), byref(relop), byref(status),
                                                    byref(value))
         else:
+            value = c_float()
             self.errcode = self._lib.ENgetpremise(int(ruleIndex), int(premiseIndex), byref(logop),
                                                   byref(object_), byref(objIndex),
                                                   byref(variable), byref(relop), byref(status),
@@ -14267,13 +14284,14 @@ class epanetapi:
         nPremises = c_int()
         nThenActions = c_int()
         nElseActions = c_int()
-        priority = c_double()
 
         if self._ph is not None:
+            priority = c_double()
             self.errcode = self._lib.EN_getrule(self._ph, int(index), byref(nPremises),
                                                 byref(nThenActions),
                                                 byref(nElseActions), byref(priority))
         else:
+            priority = c_float()
             self.errcode = self._lib.ENgetrule(int(index), byref(nPremises),
                                                byref(nThenActions),
                                                byref(nElseActions), byref(priority))
@@ -14319,11 +14337,11 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
         """
-        value = c_double()
-
         if self._ph is not None:
+            value = c_double()
             self.errcode = self._lib.EN_getstatistic(self._ph, int(code), byref(value))
         else:
+            value = c_float()
             self.errcode = self._lib.ENgetstatistic(int(code), byref(value))
 
         self.ENgeterror()
@@ -14346,13 +14364,13 @@ class epanetapi:
         """
         linkIndex = c_int()
         status = c_int()
-        setting = c_double()
-
         if self._ph is not None:
+            setting = c_double()
             self.errcode = self._lib.EN_getthenaction(self._ph, int(ruleIndex), int(actionIndex),
                                                       byref(linkIndex),
                                                       byref(status), byref(setting))
         else:
+            setting = c_float()
             self.errcode = self._lib.ENgetthenaction(int(ruleIndex), int(actionIndex),
                                                      byref(linkIndex),
                                                      byref(status), byref(setting))
@@ -14433,9 +14451,8 @@ class epanetapi:
         x  the vertex's X-coordinate value.
         y  the vertex's Y-coordinate value.
         """
-        x = c_double()
+        x = c_double() # need double for EN_ or EN functions.
         y = c_double()
-
         if self._ph is not None:
             self.errcode = self._lib.EN_getvertex(self._ph, int(index), vertex, byref(x), byref(y))
         else:
@@ -14594,11 +14611,6 @@ class epanetapi:
         self.rptfile = bytes(repname, 'utf-8')
         self.binfile = bytes(binname, 'utf-8')
 
-        if self.isloaded:
-            self.ENclose()
-        if self.isloaded:
-            raise RuntimeError("File is loaded and cannot be closed.")
-
         if self._ph is not None:
             self._lib.EN_createproject(byref(self._ph))
             self.errcode = self._lib.EN_open(self._ph, self.inpfile, self.rptfile, self.binfile)
@@ -14606,8 +14618,6 @@ class epanetapi:
             self.errcode = self._lib.ENopen(self.inpfile, self.rptfile, self.binfile)
 
         self.ENgeterror()
-        if self.errcode < 100:
-            self.isloaded = True
         return
 
     def ENopenH(self):
@@ -14777,7 +14787,7 @@ class epanetapi:
         if self._ph is not None:
             self.errcode = self._lib.EN_setbasedemand(self._ph, int(index), demandIdx, c_double(value))
         else:
-            self.errcode = self._lib.ENsetbasedemand(int(index), demandIdx, c_double(value))
+            self.errcode = self._lib.ENsetbasedemand(int(index), demandIdx, c_float(value))
 
         self.ENgeterror()
 
@@ -14819,12 +14829,10 @@ class epanetapi:
 
         if self._ph is not None:
             self.errcode = self._lib.EN_setcontrol(self._ph, int(cindex), ctype, lindex, c_double(setting),
-                                                   nindex,
-                                                   c_double(level))
+                                                   nindex, c_double(level))
         else:
-            self.errcode = self._lib.ENsetcontrol(int(cindex), ctype, lindex, c_double(setting),
-                                                  nindex,
-                                                  c_double(level))
+            self.errcode = self._lib.ENsetcontrol(int(cindex), ctype, lindex, c_float(setting),
+                                                  nindex, c_float(level))
 
         self.ENgeterror()
 
@@ -14869,8 +14877,8 @@ class epanetapi:
                 self.errcode = self._lib.EN_setcurve(self._ph, int(index), (c_double * 1)(x),
                                                      (c_double * 1)(y), nfactors)
             else:
-                self.errcode = self._lib.ENsetcurve(int(index), (c_double * 1)(x),
-                                                    (c_double * 1)(y), nfactors)
+                self.errcode = self._lib.ENsetcurve(int(index), (c_float * 1)(x),
+                                                    (c_float * 1)(y), nfactors)
 
 
         else:
@@ -14879,8 +14887,8 @@ class epanetapi:
                 self.errcode = self._lib.EN_setcurve(self._ph, int(index), (c_double * nfactors)(*x),
                                                      (c_double * nfactors)(*y), nfactors)
             else:
-                self.errcode = self._lib.ENsetcurve(int(index), (c_double * nfactors)(*x),
-                                                    (c_double * nfactors)(*y), nfactors)
+                self.errcode = self._lib.ENsetcurve(int(index), (c_float * nfactors)(*x),
+                                                    (c_float * nfactors)(*y), nfactors)
 
         self.ENgeterror()
 
@@ -14923,7 +14931,7 @@ class epanetapi:
                                                       c_double(x), c_double(y))
         else:
             self.errcode = self._lib.ENsetcurvevalue(int(index), pnt,
-                                                     c_double(x), c_double(y))
+                                                     c_float(x), c_float(y))
 
         self.ENgeterror()
 
@@ -14946,8 +14954,8 @@ class epanetapi:
             self.errcode = self._lib.EN_setdemandmodel(self._ph, Type, c_double(pmin),
                                                        c_double(preq), c_double(pexp))
         else:
-            self.errcode = self._lib.ENsetdemandmodel(Type, c_double(pmin),
-                                                      c_double(preq), c_double(pexp))
+            self.errcode = self._lib.ENsetdemandmodel(Type, c_float(pmin),
+                                                      c_float(preq), c_float(pexp))
 
         self.ENgeterror()
 
@@ -15014,7 +15022,7 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENsetelseaction(int(ruleIndex), int(actionIndex), int(linkIndex),
                                                      status,
-                                                     c_double(setting))
+                                                     c_float(setting))
 
         self.ENgeterror()
 
@@ -15072,7 +15080,7 @@ class epanetapi:
             self.errcode = self._lib.EN_setjuncdata(self._ph, int(index), c_double(elev), c_double(dmnd),
                                                     dmndpat.encode("utf-8"))
         else:
-            self.errcode = self._lib.ENsetjuncdata(int(index), c_double(elev), c_double(dmnd),
+            self.errcode = self._lib.ENsetjuncdata(int(index), c_float(elev), c_float(dmnd),
                                                    dmndpat.encode("utf-8"))
 
         self.ENgeterror()
@@ -15200,8 +15208,7 @@ class epanetapi:
                                                      c_double(value))
         else:
             self.errcode = self._lib.ENsetnodevalue(c_int(index), c_int(paramcode),
-                                                    c_double(value))
-
+                                                    c_float(value))
         self.ENgeterror()
         return
 
@@ -15218,8 +15225,7 @@ class epanetapi:
         if self._ph is not None:
             self.errcode = self._lib.EN_setoption(self._ph, optioncode, c_double(value))
         else:
-            self.errcode = self._lib.ENsetoption(optioncode, c_double(value))
-
+            self.errcode = self._lib.ENsetoption(optioncode, c_float(value))
         self.ENgeterror()
 
     def ENsetpattern(self, index, factors, nfactors):
@@ -15240,7 +15246,6 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENsetpattern(int(index), (c_float * nfactors)(*factors),
                                                   nfactors)
-
         self.ENgeterror()
 
     def ENsetpatternid(self, index, Id):
@@ -15260,7 +15265,6 @@ class epanetapi:
             self.errcode = self._lib.EN_setpatternid(self._ph, int(index), Id.encode('utf-8'))
         else:
             self.errcode = self._lib.ENsetpatternid(int(index), Id.encode('utf-8'))
-
         self.ENgeterror()
 
     def ENsetpatternvalue(self, index, period, value):
@@ -15277,8 +15281,7 @@ class epanetapi:
         if self._ph is not None:
             self.errcode = self._lib.EN_setpatternvalue(self._ph, int(index), period, c_double(value))
         else:
-            self.errcode = self._lib.ENsetpatternvalue(int(index), period, c_double(value))
-
+            self.errcode = self._lib.ENsetpatternvalue(int(index), period, c_float(value))
         self.ENgeterror()
 
     def ENsetpipedata(self, index, length, diam, rough, mloss):
@@ -15302,9 +15305,9 @@ class epanetapi:
                                                     c_double(diam), c_double(rough),
                                                     c_double(mloss))
         else:
-            self.errcode = self._lib.ENsetpipedata(int(index), c_double(length),
-                                                   c_double(diam), c_double(rough),
-                                                   c_double(mloss))
+            self.errcode = self._lib.ENsetpipedata(int(index), c_float(length),
+                                                   c_float(diam), c_float(rough),
+                                                   c_float(mloss))
 
         self.ENgeterror()
 
@@ -15333,7 +15336,7 @@ class epanetapi:
                                                    objIndex, variable, relop, status, c_double(value))
         else:
             self.errcode = self._lib.ENsetpremise(int(ruleIndex), int(premiseIndex), logop, object_,
-                                                  objIndex, variable, relop, status, c_double(value))
+                                                  objIndex, variable, relop, status, c_float(value))
 
         self.ENgeterror()
 
@@ -15390,7 +15393,7 @@ class epanetapi:
         if self._ph is not None:
             self.errcode = self._lib.EN_setpremisevalue(self._ph, int(ruleIndex), premiseIndex, c_double(value))
         else:
-            self.errcode = self._lib.ENsetpremisevalue(int(ruleIndex), premiseIndex, c_double(value))
+            self.errcode = self._lib.ENsetpremisevalue(int(ruleIndex), premiseIndex, c_float(value))
 
         self.ENgeterror()
 
@@ -15450,7 +15453,7 @@ class epanetapi:
         if self._ph is not None:
             self.errcode = self._lib.EN_setrulepriority(self._ph, int(ruleIndex), c_double(priority))
         else:
-            self.errcode = self._lib.ENsetrulepriority(int(ruleIndex), c_double(priority))
+            self.errcode = self._lib.ENsetrulepriority(int(ruleIndex), c_float(priority))
 
         self.ENgeterror()
 
@@ -15491,9 +15494,15 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        self.errcode = self._lib.EN_settankdata(
-            self._ph, index, c_double(elev), c_double(initlvl), c_double(minlvl),
-            c_double(maxlvl), c_double(diam), c_double(minvol), volcurve.encode('utf-8'))
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_settankdata(
+                self._ph, index, c_double(elev), c_double(initlvl), c_double(minlvl),
+                c_double(maxlvl), c_double(diam), c_double(minvol), volcurve.encode('utf-8'))
+        else:
+            self.errcode = self._lib.ENsettankdata(index, c_float(elev), c_float(initlvl), c_float(minlvl),
+                c_float(maxlvl), c_float(diam), c_float(minvol), volcurve.encode('utf-8'))
+
         self.ENgeterror()
 
     def ENsetthenaction(self, ruleIndex, actionIndex, linkIndex, status, setting):
@@ -15518,7 +15527,7 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENsetthenaction(int(ruleIndex), int(actionIndex), int(linkIndex),
                                                      status,
-                                                     c_double(setting))
+                                                     c_float(setting))
 
         self.ENgeterror()
 
@@ -15581,7 +15590,7 @@ class epanetapi:
 
         else:
             self.errcode = self._lib.ENsetvertices(int(index), (c_double * vertex)(*x),
-                                                   (c_double * vertex)(*y), vertex)
+                                                    (c_double * vertex)(*y), vertex)
 
         self.ENgeterror()
 
@@ -16193,8 +16202,8 @@ class epanetmsxapi:
                t : current simulation time at the end of the step(in secconds)
                tleft: time left in the simulation (in secconds)
            """
-        t = c_int()
-        tleft = c_int()
+        t = c_long()
+        tleft = c_long()
         err = self.msx_lib.MSXstep(byref(t), byref(tleft))
 
         if err:
@@ -16211,7 +16220,6 @@ class epanetmsxapi:
            Parameters:
                flag:  Set the flag to 1 if the water quality results should be saved
                       to a scratch binary file, or 0 if not
-
            """
         err = self.msx_lib.MSXinit(flag)
         if err:

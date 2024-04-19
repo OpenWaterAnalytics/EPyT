@@ -41,10 +41,10 @@ comp_values.to_json("to_json_values_example")
 """ -------------------  excel ---------------------------- """
 # Create a .xlsx excel file and save all the values of each attribute
 # in seperate sheet
-comp_values.to_excel("to_excel_seperate_values_example")
+# comp_values.to_excel("to_excel_seperate_values_example")
 
 # Create a .xlsx excel file and save all the values in a sheet
-comp_values.to_excel("to_excel_all_values_example", allValues=True)
+# comp_values.to_excel("to_excel_all_values_example", allValues=True)
 
 # Create a .xlsx excel file and select multiple attributes to be 
 # displayed in seperate sheets
