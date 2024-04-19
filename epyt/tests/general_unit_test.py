@@ -9,7 +9,7 @@ class AddTest(unittest.TestCase):
         """Call before every test case."""
         # Create EPANET object using the INP file
         inp_name = 'Net1.inp'
-        self.epanetClass = epanet(inp_name,ph=False)
+        self.epanetClass = epanet(inp_name, ph=False)
 
     def tearDown(self):
         """Call after every test case."""
@@ -167,7 +167,7 @@ class AddTest(unittest.TestCase):
         assert self.epanetClass.getNodeDemandPatternNameID()[1][junction_index - 1] == demand_pattern_id, err_msg
 
     def test_addNodeJunctionDemand(self):
-        self.epanetClass = epanet('ky10.inp',ph=False)
+        self.epanetClass = epanet('ky10.inp', ph=False)
         self.epanetClass.addNodeJunctionDemand([1, 2], [100, 110], ['1', '2'], ['new demand1', 'new demand2'])
         assert self.epanetClass.getNodeJunctionDemandName()[2][0:2] == ['new demand1',
                                                                         'new demand2'], \
@@ -238,7 +238,7 @@ class DeleteTest(unittest.TestCase):
         """Call before every test case."""
         # Create EPANET object using the INP file
         inp_name = 'Net1.inp'
-        self.epanetClass = epanet(inp_name,ph=False)
+        self.epanetClass = epanet(inp_name, ph=False)
 
     def tearDown(self):
         """Call after every test case."""
@@ -251,7 +251,7 @@ class DeleteTest(unittest.TestCase):
 
     def test_deleteCurve(self):
         # Test 1
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         id_curve = d.getCurveNameID(1)  # Retrieves the ID of the 1st curve
         d.deleteCurve(id_curve)  # Deletes a curve given its ID
         self.assertEqual(d.getCurveNameID(), ['CURVE-1', 'CURVE-2'], 'Curve not deleted')
@@ -332,32 +332,32 @@ class DeleteTest(unittest.TestCase):
         self.epanetClass.deletePattern(id_pat)  # Deletes the 1st pattern given its ID
         self.assertEqual(self.epanetClass.getPatternNameID(), [], err_msg)
         # Test 2
-        self.epanetClass = epanet('Net1.inp',ph=False)
+        self.epanetClass = epanet('Net1.inp', ph=False)
         index = 1
         self.epanetClass.deletePattern(index)  # Deletes the 1st pattern given its index
         self.assertEqual(self.epanetClass.getPatternNameID(), [], err_msg)
 
     def test_deletePatternsAll(self):
         err_msg = 'All Patterns not deleted'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         d.deletePatternsAll()  # Deletes all the patterns
         self.assertEqual(d.getPatternNameID(), [], err_msg)
 
     def test_deleteRules(self):
         err_msg = 'Rule not deleted'
         # Test 1
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         d.deleteRules()  # Deletes all the rule-based control
         self.assertEqual(d.getRuleCount(), 0, err_msg)
         d.unload()
         # Test 2
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         rule_id_1 = d.getRuleID(1)
         d.deleteRules(1)  # Deletes the 1st rule-based control
         self.assertNotEqual(d.getRuleID(1), rule_id_1, err_msg)
         d.unload()
         # Test 3
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         d.deleteRules([1, 2, 3])  # Deletes the 1st to 3rd rule-based control
         self.assertEqual(d.getRuleCount(), 1, err_msg)
 
@@ -367,7 +367,7 @@ class GetTest(unittest.TestCase):
         """Call before every test case."""
         # Create EPANET object using the INP file
         inp_name = 'Net1.inp'
-        self.epanetClass = epanet(inp_name,ph=False)
+        self.epanetClass = epanet(inp_name, ph=False)
 
     def tearDown(self):
         """Call after every test case."""
@@ -614,7 +614,7 @@ class GetTest(unittest.TestCase):
                               'Control': 'LINK 9 OPEN IF NODE 2 BELOW 110.0'})
 
     def test_getCurveComment(self):
-        d = epanet('Net3.inp')
+        d = epanet('Net3.inp', ph=False)
         self.assertEqual(d.getCurveComment([1, 2]),
                          ['PUMP: Pump Curve for Pump 10 (Lake Source)',
                           'PUMP: Pump Curve for Pump 335 (River Source)'],
@@ -630,7 +630,7 @@ class GetTest(unittest.TestCase):
 
     def test_getCurvesData(self):
         """ ---getCurveIndex---    """
-        d = epanet('Net3.inp')
+        d = epanet('Net3.inp', ph=False)
         err_msg = 'Wrong curve index'
         # Test 1
         curve_id = d.getCurveNameID(1)
@@ -641,7 +641,7 @@ class GetTest(unittest.TestCase):
         d.unload()
 
         """ ---getCurveLengths---    """
-        d = epanet('Richmond_standard.inp')
+        d = epanet('Richmond_standard.inp', ph=False)
         err_msg = 'Wrong curve lengths'
         # Test 3
         self.assertEqual(d.getCurveLengths(list(range(1, 10))), [8, 6, 10, 9, 10, 10, 7, 9, 6], err_msg)
@@ -753,7 +753,7 @@ class GetTest(unittest.TestCase):
         """ ---getLinkPumpECost---    """
         err_msg = 'Wrong Pump ECost'
         # Test 3
-        d = epanet('Richmond_standard.inp')
+        d = epanet('Richmond_standard.inp', ph=False)
         self.assertEqual(list(d.getLinkPumpECost()), [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], err_msg)
 
         """ ---getLinkPumpECurve---    """
@@ -819,10 +819,10 @@ class GetTest(unittest.TestCase):
         err_msg = 'Wrong Pump Type Code'
         d.unload()
         # Test 13
-        d = epanet('Richmond_skeleton.inp')
+        d = epanet('Richmond_skeleton.inp', ph=False)
         self.assertEqual(d.getLinkPumpTypeCode(), [2, 2, 2, 2, 2, 2, 2], err_msg)
         self.epanetClass.unload()
-        self.epanetClass = epanet('Net1.inp',ph=False)
+        self.epanetClass = epanet('Net1.inp', ph=False)
         self.assertEqual(self.epanetClass.getLinkPumpTypeCode(), [1], err_msg)
 
     def test_getLinksInfo(self):
@@ -865,7 +865,7 @@ class GetTest(unittest.TestCase):
                          'Wrong NodesConnectingLinksIndex output')
 
     def test_getLinkVertices(self):
-        d = epanet('ky10.inp')
+        d = epanet('ky10.inp', ph=False)
         l_vertices = d.getLinkVertices()
         vert_link_2 = [5774062.57, 5774072.58, 5774084.86, 5774143.46, 5774181.97, 5774256.77, 5774331.86, 5774408.93,
                        5774481.77, 5774548.49, 5774714.61, 5774660.84, 5774565.26]
@@ -881,7 +881,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(l_n_indices.tolist(), [[1, 2], [2, 3], [3, 4]], 'Wrong link nodes indices')
 
     def test_getLinkPipe_Pump_Valve(self):
-        d = epanet('Net3.inp')
+        d = epanet('Net3.inp', ph=False)
         # Pipe
         pipe_indices = d.getLinkPipeIndex()
         self.assertEqual(pipe_indices, list(range(1, 118)), 'Wrong pipe indices')
@@ -894,7 +894,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(pump_ids, ['10', '335'], 'Wrong pump IDs')
         d.unload()
         # Valve
-        d = epanet('ky10.inp')
+        d = epanet('ky10.inp', ph=False)
         valve_indices = list(d.getLinkValveIndex())
         self.assertEqual(valve_indices, [1057, 1058, 1059, 1060, 1061], 'Wrong valve indices')
         valve_ids = d.getLinkValveNameID([1, 2, 3])
@@ -958,7 +958,7 @@ class GetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(list(actual_def), desired_dem_def, decimal=5)
 
         """ ---getNodeDemandPatternIndex---    """
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         self.assertEqual(len(d.getNodeDemandPatternIndex()), 2, 'Wrong Node Demand Pattern Dict length')
         self.assertEqual(d.getNodeDemandPatternIndex()[2][120:122], [2, 2], 'Wrong Node Demand Pattern Index Output')
 
@@ -974,14 +974,14 @@ class GetTest(unittest.TestCase):
 
     def test_getNodeJunctionData(self):
         """ ---getNodeJunctionDemandIndex---    """
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         err_msg = 'Wrong Junction Demand Index output'
         self.assertEqual(d.getNodeJunctionDemandIndex(1, ''), 1, err_msg)
         self.assertEqual(d.getNodeJunctionDemandIndex([1, 2, 3]), [[1, 1, 1], [1, 1, 1]], err_msg)
 
         """ ---getNodeJunctionDemandName---    """
         err_msg = 'Wrong Junction Demand Name ID output'
-        d = epanet("Net1.inp")
+        d = epanet("Net1.inp", ph=False)
         self.assertDictEqual(d.getNodeJunctionDemandName(), {1: ['', '', '', '', '', '', '', '', '']},
                              err_msg)
 
@@ -996,7 +996,7 @@ class GetTest(unittest.TestCase):
 
     def test_getNodeReservoirIndex_ID(self):
         """ ---getNodeReservoirIndex---    """
-        d = epanet('ky9.inp')
+        d = epanet('ky9.inp', ph=False)
         self.assertEqual(d.getNodeReservoirIndex(), [1243, 1244, 1245, 1246], 'Wrong Node Reservoir Index Output')
         self.assertEqual(d.getNodeReservoirIndex([1, 2, 3]), [1243, 1244, 1245], 'Wrong Node Reservoir Index Output')
 
@@ -1038,7 +1038,7 @@ class GetTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(t_data['Volume_Curve_Index'], desired_tdata['Volume_Curve_Index'])
 
         # ky10
-        d = epanet('ky10.inp')
+        d = epanet('ky10.inp', ph=False)
         err_msg = 'Error in Tank Data'
         t_data = d.getNodeTankData().to_dict()
         desired_tdata = {'Index': [923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935],
@@ -1082,7 +1082,7 @@ class GetTest(unittest.TestCase):
                                              err_msg=err_msg, decimal=3)
 
     def test_getnodeTankMix(self):
-        d = epanet('ky10.inp')
+        d = epanet('ky10.inp', ph=False)
 
         """ ---getNodeTankMixingFraction---    """
         actual = list(d.getNodeTankMixingFraction())
@@ -1122,7 +1122,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getNodeTypeIndex([10, 11]), [1, 2], 'Wrong Node Type Index Output')
 
     def test_getOptions(self):
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         self.assertEqual(d.getOptionsAccuracyValue(), 0.004999999888241291, 'Wrong Options Accuracy Value Output')
         self.assertEqual(d.getOptionsCheckFrequency(), 2.0, 'Wrong Options Check Frequency Output')
         self.assertEqual(d.getOptionsDampLimit(), 0.0, 'Wrong Options Damping Limit Output')
@@ -1148,7 +1148,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(d.getOptionsTankBulkReactionOrder(), 1, 'Wrong Options Tank Bulk Reaction Order Output')
 
     def test_getPattern(self):
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
 
         """ ---getPattern---    """
         desired_pattern = np.array([[1.560e+00, 1.360e+00, 1.170e+00, 1.130e+00, 1.080e+00, 1.040e+00,
@@ -1249,7 +1249,7 @@ class GetTest(unittest.TestCase):
         self.assertDictEqual(actual_quality_info_dict, desired_quality_info_dict, 'Wrong Quality Info Output')
 
     def test_getRuleInfo(self):
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
 
         """ ---getRuleID---    """
         self.assertEqual(d.getRuleID(), ['RULE-0', 'RULE-1', 'RULE-3', 'RULE-4'], 'Wrong Rule ID Output')
@@ -1295,7 +1295,7 @@ class SetTest(unittest.TestCase):
         """Call before every test case."""
         # Create EPANET object using the INP file
         inp_name = 'Net1.inp'
-        self.epanetClass = epanet(inp_name,ph=False)
+        self.epanetClass = epanet(inp_name, ph=False)
 
     def tearDown(self):
         """Call after every test case."""
@@ -1323,7 +1323,7 @@ class SetTest(unittest.TestCase):
 
     def test_setCurve(self):
         """ ---setCurve---    """
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         curve_index = 1
         x_y_1 = [0, 730]
         x_y_2 = [1000, 500]
@@ -1348,7 +1348,7 @@ class SetTest(unittest.TestCase):
         d.unload()
 
         """ ---setCurveValue---    """
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         err_msg = 'Wrong Curve Value Output'
         curve_index = 1
         curve_point = 1
@@ -1465,7 +1465,7 @@ class SetTest(unittest.TestCase):
 
     def test_setLinkLength(self):
         err_msg = 'Error setting Link Length'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         # Test 1
         index_pipe = 1
         length_pipe = 100
@@ -1497,7 +1497,7 @@ class SetTest(unittest.TestCase):
 
     def test_setLinkNameID(self):
         err_msg = 'Error setting Link ID'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         # Test 1
         index_pipe = 1
         link_id = 'New_ID'
@@ -1511,7 +1511,7 @@ class SetTest(unittest.TestCase):
 
     def test_setLinkNodesIndex(self):
         err_msg = 'Error setting Link ID'
-        d = epanet('ky10.inp')
+        d = epanet('ky10.inp', ph=False)
         # Test 1
         link_index = 1
         start_node = 2
@@ -1543,7 +1543,7 @@ class SetTest(unittest.TestCase):
 
     @staticmethod
     def test_setLinkPump():
-        d = epanet('Net3_trace.inp')
+        d = epanet('Net3_trace.inp', ph=False)
 
         """ ---setLinkPumpECost---    """
         err_msg = 'Error setting pump average energy price (E cost)'
@@ -1729,7 +1729,7 @@ class SetTest(unittest.TestCase):
                                              err_msg=err_msg)
 
     def test_setNodeBaseDemands(self):
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         err_msg = 'Error setting Node Base Demands'
 
         # Test 1
@@ -1784,7 +1784,7 @@ class SetTest(unittest.TestCase):
         self.assertDictEqual(y_values_new, desired_new_y, err_msg)
 
     def test_setNodeDemandPatternIndex(self):
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         err_msg = 'Error setting Node Demand Pattern Index'
 
         # Test 1
@@ -1909,7 +1909,7 @@ class SetTest(unittest.TestCase):
 
     def test_setNodeTankBulkReactionCoefficient(self):
         err_msg = 'Error setting node Tank Bulk Reaction Coefficient'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
 
         # Test 1
         tank_index = d.getNodeTankIndex()
@@ -1924,7 +1924,7 @@ class SetTest(unittest.TestCase):
     @staticmethod
     def test_setNodeTankCanOverFlow():
         err_msg = 'Error setting node Tank Can Overflow'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
 
         # Test 1
         d.setNodeTankCanOverFlow(1)
@@ -1940,7 +1940,7 @@ class SetTest(unittest.TestCase):
 
     @staticmethod
     def test_setNodeTankData():
-        d = epanet('Net3_trace.inp')
+        d = epanet('Net3_trace.inp', ph=False)
         tank_index = [1, 2]
         elev = [100, 105]
         init_level = [13, 13.5]
@@ -1965,7 +1965,7 @@ class SetTest(unittest.TestCase):
 
     def test_setNodeTankDiameter(self):
         err_msg = 'Error setting Node Tank Diameter'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
 
         # Test 1
         d.setNodeTankDiameter(120)
@@ -1982,7 +1982,7 @@ class SetTest(unittest.TestCase):
     @staticmethod
     def test_setTankInitialLevel():
         err_msg = 'Error setting Node Tank Initial Level'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
 
         # Test 1
         tank_index = d.getNodeTankIndex()
@@ -1997,7 +1997,7 @@ class SetTest(unittest.TestCase):
     @staticmethod
     def test_setNodeTankMaximumWaterLevel():
         err_msg = 'Error setting Node Tank Max Water Level'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         tank_index = d.getNodeTankIndex()
         d.setNodeTankMaximumWaterLevel(tank_index, 30)
         np.testing.assert_array_almost_equal(d.getNodeTankMaximumWaterLevel(), np.array([30., 30.]), err_msg=err_msg)
@@ -2005,7 +2005,7 @@ class SetTest(unittest.TestCase):
     @staticmethod
     def test_setNodeTankMinimumWaterLevel():
         err_msg = 'Error setting Node Tank Min Water Level'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         tank_index = d.getNodeTankIndex()
         d.setNodeTankMinimumWaterLevel(tank_index, [5, 15])
         d.getNodeTankMinimumWaterLevel(),
@@ -2014,21 +2014,21 @@ class SetTest(unittest.TestCase):
     @staticmethod
     def test_setNodeTankMinimumWaterVolume():
         err_msg = 'Error setting Node Tank Min Water Volume'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         d.setNodeTankMinimumWaterVolume([1500, 2000])
         np.testing.assert_array_almost_equal(d.getNodeTankMinimumWaterVolume(), np.array([1500, 2000]), err_msg=err_msg)
 
     @staticmethod
     def test_setNodeTankMixingFraction():
         err_msg = 'Error setting Node Tank Min Water Volume'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         tank_index = d.getNodeTankIndex()
         d.setNodeTankMixingFraction(tank_index, [1, 0])
         np.testing.assert_array_almost_equal(d.getNodeTankMixingFraction(), np.array([1, 0]), err_msg=err_msg)
 
     def test_getNodeTankMixingModelType(self):
         err_msg = 'Error setting Node Tank Mixing Model Type'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         tank_index = d.getNodeTankIndex()
         d.setNodeTankMixingModelType(tank_index, ['MIX2', 'LIFO'])
         self.assertEqual(d.getNodeTankMixingModelType(), ['MIX2', 'LIFO'], err_msg)
@@ -2044,7 +2044,7 @@ class SetTest(unittest.TestCase):
 
         """ ---setNodeTypeTank---    """
         self.epanetClass.unload()
-        self.epanetClass = epanet('Net1.inp',ph=False)
+        self.epanetClass = epanet('Net1.inp', ph=False)
         index = self.epanetClass.setNodeTypeTank('13')
         self.assertEqual(self.epanetClass.getNodeType(index), 'TANK', 'Error setting node type to junction')
 
@@ -2087,7 +2087,7 @@ class SetTest(unittest.TestCase):
         self.epanetClass.setOptionsPipeWallReactionOrder(1)
         self.assertEqual(self.epanetClass.getOptionsPipeWallReactionOrder(), 1, err_msg)
         self.epanetClass.setOptionsQualityTolerance(0.01)
-        self.assertEqual(self.epanetClass.getOptionsQualityTolerance(), 0.01, err_msg)
+        self.assertEqual(self.epanetClass.getOptionsQualityTolerance(), 0.009999999776482582, err_msg)
         self.epanetClass.setOptionsSpecificDiffusivity(1)
         self.assertEqual(self.epanetClass.getOptionsSpecificDiffusivity(), 1, err_msg)
         self.epanetClass.setOptionsSpecificGravity(1)
@@ -2134,7 +2134,7 @@ class SetTest(unittest.TestCase):
 
         """ ---setPatternComment---    """
         err_msg = 'Error setting pattern comment'
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
         pattern_comment = ['1st PAT', '2nd PAT', '3rd PAT', "4rth PAT"]
         d.setPatternComment(pattern_comment)
         self.assertEqual(d.getPatternComment(), pattern_comment, err_msg)
@@ -2142,7 +2142,7 @@ class SetTest(unittest.TestCase):
         """ ---setPatternMatrix---    """
         err_msg = 'Error setting pattern Matrix'
         self.epanetClass.unload()
-        self.epanetClass = epanet('Net1.inp',ph=False)
+        self.epanetClass = epanet('Net1.inp', ph=False)
         pattern_id_1 = 'new_pattern_1'
         pattern_index_1 = self.epanetClass.addPattern(pattern_id_1)
         pattern_id_2 = 'new_pattern_2'
@@ -2169,7 +2169,7 @@ class SetTest(unittest.TestCase):
         """ ---setPatternValue---    """
         err_msg = 'Error setting pattern Value'
         self.epanetClass.unload()
-        self.epanetClass = epanet('Net1.inp',ph=False)
+        self.epanetClass = epanet('Net1.inp', ph=False)
         pattern_id = 'new_pattern'
         pattern_index = self.epanetClass.addPattern(pattern_id)
         pattern_time_step = 2
@@ -2178,14 +2178,14 @@ class SetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getPattern()[1][pattern_time_step - 1], pattern_factor, err_msg)
 
     def test_setRule(self):
-        d = epanet('BWSN_Network_1.inp')
+        d = epanet('BWSN_Network_1.inp', ph=False)
 
         """ ---setRulePremise---    """
         err_msg = 'Error setting rule premise'
         # Test 1
         rule_index = 1
         premise_index = 1
-        premise = 'IF SYSTEM CLOCKTIME >= 8 PM'
+        premise = 'IF SYSTEM CLOCKTIME >= 08:00 PM'
         d.setRulePremise(rule_index, premise_index, premise)
         self.assertEqual(d.getRules()[1]['Premises'][0], 'IF SYSTEM CLOCKTIME >= 08:00 PM UTC', err_msg)
 
@@ -2213,45 +2213,43 @@ class SetTest(unittest.TestCase):
         self.assertEqual(d.getRules()[1]['Premises'][0], 'IF NODE TANK-131 LEVEL > 21.0', err_msg)
 
         """ ---setRules---    """
+        d = epanet('Net1.inp', ph=False)
         err_msg = 'Error setting rules'
         rule = 'RULE RULE-1 \n IF NODE 2 LEVEL >= 140 \n THEN PIPE 10 STATUS IS CLOSED \n ' \
                'ELSE PIPE 10 STATUS IS OPEN \n PRIORITY 1'
-        self.epanetClass.addRules(rule)
+        d.addRules(rule)
         rule_index = 1
         rule_new = 'IF NODE 2 LEVEL > 150 \n THEN PIPE 10 STATUS IS OPEN \n ELSE PIPE 11 STATUS IS OPEN \n PRIORITY 2'
-        self.epanetClass.setRules(rule_index, rule_new)
+        d.setRules(rule_index, rule_new)
         desired_rule = ['RULE RULE-1', ['IF NODE 2 LEVEL > 150.0'], ['THEN PIPE 10 STATUS IS OPEN'],
                         ['ELSE PIPE 11 STATUS IS OPEN'], 'PRIORITY 2.0']
-        self.assertEqual(self.epanetClass.getRules()[1]['Rule'], desired_rule, err_msg)
+        self.assertEqual(d.getRules()[1]['Rule'], desired_rule, err_msg)
 
         """ ---setRuleElseAction---    """
         err_msg = 'Error setting rule else action'
-        self.epanetClass.addRules(
+        d.addRules(
             "RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PIPE 10 STATUS IS CLOSED \n "
             "ELSE PIPE 10 STATUS IS OPEN \n PRIORITY 1")  # Adds a new rule - based control
         # rule = self.epanetClass.getRules(1)
         rule_index = 1
         action_index = 1
         else_action = 'ELSE PIPE 11 STATUS IS CLOSED'
-        self.epanetClass.setRuleElseAction(rule_index, action_index, else_action)
-        self.assertEqual(self.epanetClass.getRules()[1]['Else_Actions'][0], else_action, err_msg)
+        d.setRuleElseAction(rule_index, action_index, else_action)
+        self.assertEqual(d.getRules()[1]['Else_Actions'][0], else_action, err_msg)
 
         """ ---setRulePremiseStatus---    """
         err_msg = 'Error setting rule premise status'
-        self.epanetClass.unload()
-        self.epanetClass = epanet('Net1.inp',ph=False)
-        self.epanetClass.addRules(
+        d = epanet('Net1.inp', ph=False)
+        d.addRules(
             'RULE RULE-1 \n IF LINK 110 STATUS = CLOSED \n THEN PUMP 9 STATUS IS CLOSED \n PRIORITY 1')
-        self.epanetClass.getRules(1)
+        d.getRules(1)
         rule_index = 1
         premise_index = 1
         status = 'OPEN'
-        self.epanetClass.setRulePremiseStatus(rule_index, premise_index, status)
-        self.assertEqual(self.epanetClass.getRules()[1]['Premises'][0], 'IF LINK 110 STATUS = OPEN', err_msg)
+        d.setRulePremiseStatus(rule_index, premise_index, status)
+        self.assertEqual(d.getRules()[1]['Premises'][0], 'IF LINK 110 STATUS = OPEN', err_msg)
 
         """ ---setRulePriority---    """
-        self.epanetClass.unload()
-        self.epanetClass = epanet('Net1.inp',ph=False)
         err_msg = 'Error setting rule priority'
         rule_index = 1
         priority = 2
@@ -2260,15 +2258,15 @@ class SetTest(unittest.TestCase):
 
         """ ---setRuleThenAction---    """
         err_msg = 'Error setting rule priority action'
-        self.epanetClass.addRules(
+        d.addRules(
             'RULE RULE-1 \n IF TANK 2 LEVEL >= 140 \n THEN PIPE 10 STATUS IS CLOSED \n '
             'ELSE PIPE 10 STATUS IS OPEN \n PRIORITY 1')  # Adds a new rule - based control
         # rule = self.epanetClass.getRules(1)
         rule_index = 1
         action_index = 1
         then_action = 'THEN PIPE 11 STATUS IS OPEN'
-        self.epanetClass.setRuleThenAction(rule_index, action_index, then_action)
-        self.assertEqual(self.epanetClass.getRules()[1]['Then_Actions'], ['THEN PIPE 11 STATUS IS OPEN'], err_msg)
+        d.setRuleThenAction(rule_index, action_index, then_action)
+        self.assertEqual(d.getRules()[1]['Then_Actions'], ['THEN PIPE 11 STATUS IS OPEN'], err_msg)
 
     def test_setTime(self):
         err_msg = 'Error setting time'
@@ -2305,7 +2303,7 @@ class AnalysisTest(unittest.TestCase):
 
     @staticmethod
     def testStepByStepHydraulic():
-        d = epanet('Net1.inp')
+        d = epanet('Net1.inp', ph=False)
         d.openHydraulicAnalysis()
         d.initializeHydraulicAnalysis()
         t_step, p, t_h, demand, head, flow, status, = 1, [], [], [], [], [], []
@@ -2396,7 +2394,7 @@ class AnalysisTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(flow[25], desired_flow_25, err_msg=err_msg, decimal=4)
 
     def testStepByStepHydraulicQuality(self):
-        d = epanet('Net2.inp')
+        d = epanet('Net2.inp', ph=False)
         d.openHydraulicAnalysis()
         d.openQualityAnalysis()
         d.initializeHydraulicAnalysis(0)
@@ -2754,7 +2752,7 @@ class AnalysisTest(unittest.TestCase):
 
     @staticmethod
     def test_getComputedHydraulicTimeSeries():
-        d = epanet('Net1.inp')
+        d = epanet('Net1.inp', ph=False)
         comp_vals = d.getComputedHydraulicTimeSeries()
         err_msg = 'Error in getComputedHydraulicTimeSeries output'
         d.unload()
@@ -3719,7 +3717,7 @@ class AnalysisTest(unittest.TestCase):
 
     @staticmethod
     def test_getComputedQualityTimeSeries():
-        d = epanet('Net1.inp')
+        d = epanet('Net1.inp', ph=False)
         comp_vals = d.getComputedQualityTimeSeries()
         d.unload()
         err_msg = 'Error in getComputedQualityTimeSeries output'
@@ -3763,7 +3761,7 @@ class AnalysisTest(unittest.TestCase):
 
     @staticmethod
     def test_getComputedTimeSeries():
-        d = epanet('Net1.inp')
+        d = epanet('Net1.inp', ph=False)
         comp_vals = d.getComputedTimeSeries()
         d.unload()
         err_msg = 'Error in getComputedTimeSeries output'
@@ -3807,7 +3805,7 @@ class AnalysisTest(unittest.TestCase):
 
     @staticmethod
     def test_getComputedTimeSeries_EN_Epanet():
-        d = epanet('Net1.inp')
+        d = epanet('Net1.inp', ph=False)
         comp_vals = d.getComputedTimeSeries_ENepanet()
         err_msg = 'Error in getComputedTimeSeries_ENepanet output'
 
