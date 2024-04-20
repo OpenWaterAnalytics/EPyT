@@ -89,7 +89,7 @@ Linux: `sudo cp libepanet2.so /lib/x86_64-linux-gnu/libepanet.so`
 >>>
 >>>epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanet2.dll')
 >>>msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanetmsx.dll')
->>>d = epanet(inpname, customlib=epanetlib, msx=True)
+>>>d = epanet(inpname, customlib=epanetlib)
 >>>d.loadMSXFile(msxname, customMSXlib=msxlib)
 ``` 
 
