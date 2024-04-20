@@ -574,6 +574,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |getMSXCoupling|Retrieves the coupling (FULL/NONE)|
 |getMSXAtol|Retrieves the absolute concentration tolerance|
 |getMSXRtol|Retrieves the relative concentration tolerance|
+|getMSXComputedQualitySpecie|Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie(['CL2']))|
 |getMSXEquationsPipes|Retrieves the species dynamics in pipes|
 |getMSXEquationsTanks|Retrieves the species dynamics in tanks|
 |getMSXEquationsTerms|Retrieves the species dynamics in terms|
