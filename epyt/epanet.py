@@ -62,6 +62,7 @@ from pkg_resources import resource_filename
 from inspect import getmembers, isfunction, currentframe, getframeinfo
 from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void_p, c_int, c_double, c_float, c_long, \
     c_char_p
+from types import SimpleNamespace
 import matplotlib.pyplot as plt
 from datetime import datetime
 from epyt import __version__, __msxversion__
@@ -11196,6 +11197,17 @@ class epanet:
         d = epanet(inpname, msx=True,customlib=epanetlib)
         d.loadMSXFile(msxname,customMSXlib=msxlib)"""
 
+        if not os.path.exists(msxname):
+            for root, dirs, files in os.walk(resource_filename("epyt", "")):
+                for name in files:
+                    if name.lower().endswith(".msx"):
+                        if name == msxname:
+                            msxname = os.path.join(root, msxname)
+                            break
+                else:
+                    continue
+                break
+
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
         self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
@@ -11422,66 +11434,58 @@ class epanet:
                d.getMSXError(510)"""
         self.msx.MSXgeterror(code)
 
-    def getMSXOptions(self, param="", getall=False):
+    def getMSXOptions(self):
         """ Retrieves all the options.
 
              Example:
                d=epanet('net2-cl2.inp')
                d.loadMSXFile('net2-cl2.msx')
                d.getMSXOptions()"""
-        msxname = self.msxname
-        options = {}
-        options["AREA_UNITS"] = "FT2"
-        options["RATE_UNITS"] = "HR"
-        options["SOLVER"] = "EUL"
-        options["TIMESTEP"] = 300
-        options["ATOL"] = 0.01
-        options["RTOL"] = 0.001
-        options["COUPLING"] = "NONE"
-        options["COMPILER"] = "NONE"
 
+        # AREA_UNITS FT2/M2/CM2
+        # RATE_UNITS SEC/MIN/HR/DAY
+        # SOLVER EUL/RK5/ROS2
+        # COUPLING FULL/NONE
+        # TIMESTEP seconds
+        # ATOL value
+        # RTOL value
+        # COMPILER NONE/VC/GC
+        # SEGMENTS value
+        # PECLET value
         try:
-            with open(msxname, 'r') as f:
-                sect = 0
-                for line in f:
-                    if line.startswith("[OPTIONS]"):
-                        sect = 1
-                        continue
-                    elif line.startswith("[END") or line.startswith("[REPORTS]"):
-                        break
-                    elif sect == 1:
-                        if not line.strip():
-                            continue
-                        if line.startswith("["):
-                            return options
-                        key, value = line.split(None, 1)
-                        if key == param or not param:
-                            if key == "TIMESTEP":
-                                options["TIMESTEP"] = float(value)
-                            elif key == "AREA_UNITS":
-                                options["AREA_UNITS"] = value.strip()
-                            elif key == "RATE_UNITS":
-                                options["RATE_UNITS"] = value.strip()
-                            elif key == "SOLVER":
-                                options["SOLVER"] = value.strip()
-                            elif key == "RTOL":
-                                options["RTOL"] = float(value)
-                            elif key == "ATOL":
-                                options["ATOL"] = float(value)
-                            elif key == "COUPLING":
-                                options["COUPLING"] = value.strip()
-                            elif key == "COMPILER":
-                                options["COMPILER"] = value.strip()
+            # Key-value pairs to search for
+            keys = ["AREA_UNITS", "RATE_UNITS", "SOLVER", "COUPLING", "TIMESTEP", "ATOL", "RTOL", "COMPILER", "SEGMENTS", \
+                "PECLET"]
+            float_values = ["TIMESTEP", "ATOL", "RTOL", "SEGMENTS", "PECLET"]
+            values = {key: None for key in keys}
+
+            # Flag to determine if we're in the [OPTIONS] section
+            in_options = False
+
+            # Open and read the file
+            with open(self.msxname, 'r') as file:
+                for line in file:
+                    # Check for [OPTIONS] section
+                    if "[OPTIONS]" in line:
+                        in_options = True
+                    elif "[" in line and "]" in line:
+                        in_options = False  # We've reached a new section
+
+                    if in_options:
+                        # Pattern to match the keys and extract values, ignoring comments and whitespace
+                        pattern = re.compile(r'^\s*(' + '|'.join(keys) + r')\s+(.*?)\s*(?:;.*)?$')
+                        match = pattern.search(line)
+                        if match:
+                            key, value = match.groups()
+                            if key in float_values:
+                                values[key] = float(value)
                             else:
-                                options[key] = value
+                                values[key] = value
 
-                            if not getall and param:
-                                return options[param]
-
+            return SimpleNamespace(**values)
         except FileNotFoundError:
             warnings.warn("Please load MSX File.")
             return {}
-        return options
 
     def getMSXTimeStep(self):
         """ Retrieves the time step.
@@ -11492,7 +11496,7 @@ class epanet:
                d.getMSXTimeStep()
 
              See also setMSXTimeStep."""
-        return self.getMSXOptions("TIMESTEP")
+        return self.getMSXOptions().TIMESTEP
 
     def getMSXRateUnits(self):
         """ Retrieves  rate units.
@@ -11502,7 +11506,7 @@ class epanet:
                d.getMSXRateUnits()
 
              See also setMSXRateUnits."""
-        return self.getMSXOptions("RATE_UNITS")
+        return self.getMSXOptions().RATE_UNITS
 
     def getMSXAreaUnits(self):
         """ Retrieves  Are units.
@@ -11512,7 +11516,7 @@ class epanet:
              d.getMSXAreaUnits()
 
              See also setMSXAreaUnits."""
-        return self.getMSXOptions("AREA_UNITS")
+        return self.getMSXOptions().AREA_UNITS
 
     def getMSXCompiler(self):
         """  Retrieves the chemistry function compiler code.
@@ -11529,7 +11533,7 @@ class epanet:
 
              See also setMSXCompilerNONE, setMSXCompilerVC,
                       setMSXCompilerGC."""
-        return self.getMSXOptions("COMPILER")
+        return self.getMSXOptions().COMPILER
 
     def getMSXCoupling(self):
         """  Retrieves the degree of coupling for solving DAE's.
@@ -11547,7 +11551,7 @@ class epanet:
                d.getMSXCoupling()
 
              See also setMSXCouplingFULL, setMSXCouplingNONE."""
-        return self.getMSXOptions("COUPLING")
+        return self.getMSXOptions().COUPLING
 
     def getMSXSolver(self):
         """ Retrieves the solver method.
@@ -11563,7 +11567,7 @@ class epanet:
                d.getMSXSolver()
 
              See also setMSXSolverEUL, setMSXSolverRK5, setMSXSolverROS2."""
-        return self.getMSXOptions("SOLVER")
+        return self.getMSXOptions().SOLVER
 
     def getMSXAtol(self):
         """ Retrieves the absolute tolerance.
@@ -11574,7 +11578,7 @@ class epanet:
                d.getMSXAtol()
 
              See also getMSXRtol."""
-        return self.getMSXOptions("ATOL")
+        return self.getMSXOptions().ATOL
 
     def getMSXRtol(self):
         """  Retrieves the relative accuracy level.
@@ -11585,7 +11589,7 @@ class epanet:
                d.getMSXRtol()
 
              See also getMSXAtol."""
-        return self.getMSXOptions("RTOL")
+        return self.getMSXOptions().RTOL
 
     def getMSXConstantsNameID(self, varagin=None):
         """  Retrieves the constant's ID.
@@ -12340,55 +12344,22 @@ class epanet:
                 nodes.append(i)
         return nodes
 
-    def setMSXOptions(self, *args):
-
-        for i in range(len(args) // 2):
-            argument = args[2 * i].lower()
-            if argument == 'areaunits':
-                self.areaunits = args[2 * i + 1]
-                self.changeMSXOptions("AREA_UNITS", args[2 * i + 1])
-            elif argument == 'rateunits':
-                self.rateunits = args[2 * i + 1]
-                self.changeMSXOptions("RATE_UNITS", args[2 * i + 1])
-            elif argument == 'solver':
-                self.solver = args[2 * i + 1]
-                self.changeMSXOptions("SOLVER", args[2 * i + 1])
-            elif argument == 'timestep':
-                self.timestep = args[2 * i + 1]
-                self.changeMSXOptions("TIMESTEP", args[2 * i + 1])
-            elif argument == 'atol':
-                self.atol = args[2 * i + 1]
-                self.changeMSXOptions("ATOL", args[2 * i + 1])
-            elif argument == 'rtol':
-                self.rtol = args[2 * i + 1]
-                self.changeMSXOptions("RTOL", args[2 * i + 1])
-            elif argument == 'coupling':
-                self.coupling = args[2 * i + 1]
-                self.changeMSXOptions("COUPLING", args[2 * i + 1])
-            elif argument == 'compiler':
-                self.compiler = args[2 * i + 1]
-                self.changeMSXOptions("COMPILER", args[2 * i + 1])
-            else:
-                print('Invalid property found.')
-                return
-
     def changeMSXOptions(self, param, change):
-        msxname = self.msxname
-        f = open(msxname, 'r+')
-        lines = f.readlines()
-        flag = 0
-        for i, line in enumerate(lines):
-            if line.strip() == '[OPTIONS]':
-                options_index = i
-            if line.startswith(param):
-                lines[i] = param + "\t" + str(change) + "\n"
-                flag = 1
-        if flag == 0:
-            lines = list(lines)
-            lines.insert(options_index + 1, param + "\t" + str(change) + "\n")
-        f.seek(0)
-        f.writelines(lines)
-        f.close()
+        with open(self.msxname, 'r+') as f:
+            lines = f.readlines()
+            options_index = -1  # Default to -1 in case the [OPTIONS] section does not exist
+            flag = 0
+            for i, line in enumerate(lines):
+                if line.strip() == '[OPTIONS]':
+                    options_index = i
+                elif line.strip().startswith(param):
+                    lines[i] = param + "\t" + str(change) + "\n"
+                    flag = 1
+            if flag == 0 and options_index != -1:
+                lines.insert(options_index + 1, param + "\t" + str(change) + "\n")
+            f.seek(0)
+            f.writelines(lines)
+            f.truncate()
 
     def setMSXAreaUnitsCM2(self):
         """  Sets the area units to square centimeters.
@@ -12784,7 +12755,7 @@ class epanet:
             species_index_name = self.getMSXSpeciesIndex(species)
 
         node_count = self.getNodeCount()
-        link_count = self.getNodeCount()
+        link_count = self.getLinkCount()
         node_indices = list(range(1, node_count + 1))
         link_indices = list(range(1, link_count + 1))
         # Initialized quality and time
@@ -13988,8 +13959,6 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
         """
-        fValue = None
-
         if self._ph is not None:
             fValue = c_double()
             self.errcode = self._lib.EN_getnodevalue(self._ph, int(index), code_p, byref(fValue))
@@ -15980,10 +15949,10 @@ class epanetmsxapi:
                  Returns:
                         value: the initial concetration of the species at the node or
                                link of interest."""
-        # obj_type = c_int(obj_type)
         value = c_double()
-        # species = c_int(species)
-        # index = c_int(index)
+        obj_type = c_int(obj_type)
+        species = c_int(species)
+        index = c_int(index)
         err = self.msx_lib.MSXgetinitqual(obj_type, index, species, byref(value))
         if err:
             Warning(self.MSXerror(err))
