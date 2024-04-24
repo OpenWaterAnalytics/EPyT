@@ -12747,6 +12747,18 @@ class epanet:
         return index
 
     def getMSXComputedQualitySpecie(self, species=None):
+        """  Returns the node/link quality for specific specie.
+
+             Example :
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               MSX_comp = d.getMSXComputedQualitySpecie(['CL2'])
+               MSX_comp.NodeQuality  row: time, col: node index
+               MSX_comp.LinkQuality  row: time, col: link index
+               MSX_comp.Time
+
+                See also getMSXComputedQualityNode, getMSXComputedQualityLink.
+            """
         if self.getMSXSpeciesCount() == 0:
             return -1
         if species is None:
@@ -12805,7 +12817,53 @@ class epanet:
                       range(int(self.getTimeSimulationDuration() / msx_time_step) + 1)]
         return value
 
+    def getMSXComputedNodeQualitySpecie(self, node_indices, species_id):
+        """  Returns the node quality for specific specie.
 
+                     Example :
+                       d = epanet('net2-cl2.inp')
+                       d.loadMSXFile('net2-cl2.msx')
+                       node_indices = [1,2,3]
+                       MSX_comp = d.getMSXComputedNodeQualitySpecie(node_indices, 'CL2')
+                       MSX_comp.NodeQuality  row: time, col: node index
+                       MSX_comp.Time
+
+                     See also getMSXComputedQualitySpecie, getMSXComputedLinkQualitySpecie."""
+        merged = []
+        MSX_comp = self.getMSXComputedQualitySpecie([species_id])
+        MSX_comp_node = MSX_comp.NodeQuality
+        for i in node_indices:
+            column = MSX_comp_node[i]
+            merged.append(column)
+        value = EpytValues()
+        value.NodeQuality, value.Time = {}, {}
+        value.NodeQuality = merged
+        value.Time = MSX_comp.Time
+        return value
+
+    def getMSXComputedLinkQualitySpecie(self, node_indices, species_id):
+        """ Returns the link quality for specific specie.
+
+            Example :
+              d = epanet('net2-cl2.inp')
+              d.loadMSXFile('net2-cl2.msx')
+              node_indices = [1,2,3,4]
+              MSX_comp = d.getMSXComputedLinkQualitySpecie(node_indices, 'CL2')
+              MSX_comp.LinkQuality  row: time, col: node index
+              MSX_comp.Time
+
+            See also getMSXComputedQualitySpecie, getMSXComputedNodeQualitySpecie."""
+        merged = []
+        MSX_comp = self.getMSXComputedQualitySpecie([species_id])
+        MSX_comp_Link = MSX_comp.LinkQuality
+        for i in node_indices:
+            column = MSX_comp_Link[i]
+            merged.append(column)
+        value = EpytValues()
+        value.LinkQuality, value.Time = {}, {}
+        value.LinkQuality = merged
+        value.Time = MSX_comp.Time
+        return value
 class epanetapi:
     """
     EPANET Toolkit functions - API
