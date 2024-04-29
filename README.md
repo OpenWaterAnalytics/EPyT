@@ -532,6 +532,9 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |unloadMSX|Closes the EPANET-MSX toolkit system|
 |addMSXPattern|Adds a new, empty MSX source time pattern to the project|
 |initializeMSXQualityAnalysis|Initializes the MSX system before solving for water quality results in step-wise fashion|
+|getMSXComputedQualitySpecie|Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie('CL2'))|
+|getMSXComputedLinkQualitySpecie|Returns the link quality for specific specie|
+|getMSXComputedNodeQualitySpecie|Returns the node quality for specific specie|
 |stepMSXQualityAnalysisTimeLeft|Advances the water quality solution through a single water quality time step when performing a step-wise simulation|
 |saveMSXFile|Saves the data associated with the current MSX project into a new MSX input file|
 |saveMSXQualityFile|Saves water quality results computed for each node, link and reporting time period to a named binary file|
@@ -601,6 +604,8 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |setMSXParametersPipesValue|Assigns a value to a particular reaction parameter for given pipes|
 |setMSXParametersTanksValue|Assigns a value to a particular reaction parameter for given tanks|
 |setMSXConstantsValue|Assigns a new value to a specific reaction constant|
+|setMSXLinkInitqualValue|Assigns an initial concentration of chemical species to links|
+|setMSXNodeInitqualValue|Assigns an initial concentration of chemical species to nodes|
 |useMSXHydraulicFile|Uses a previously saved EPANET hydraulics file as the source of hydraulic information|
 
 

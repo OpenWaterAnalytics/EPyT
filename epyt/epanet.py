@@ -12864,6 +12864,52 @@ class epanet:
         value.LinkQuality = merged
         value.Time = MSX_comp.Time
         return value
+
+    def setMSXLinkInitqualValue(self, value):
+        """"
+        Sets all links initial quality value.
+
+            Example:
+                linkIndex=0
+                speciesIndex=0
+                values = [[0] * linkIndex for _ in range(speciesIndex)]
+                values=d.getMSXLinkInitqualValue()
+                values[linkIndex][speciesIndex]=1500
+                d.setMSXLinkInitqualValue(values)
+                x=d.getMSXLinkInitqualValue()
+
+        See also getMSXLinkInitqualValue, setMSXNodeInitqualValue.
+        """
+        for i in range(len(value)):
+            for j in range(len(value[0])):
+                self.msx.MSXsetinitqual(1, i+1, j+1, value[i][j])
+
+    def setMSXSources(self, nodeID, speciesID, sourcetype, concentration, patID ):
+        MSXTYPESOURCE = {'NOSOURCE', 'CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED'}
+        node = self.getNodeIndex(nodeID)
+        species = self.getMSXSpeciesIndex(speciesID)
+        type = (list(MSXTYPESOURCE).index(sourcetype.upper()) if sourcetype.upper() in MSXTYPESOURCE else -1) - 2
+        pat = self.getMSXPatternsIndex(patID)
+        self.msx.MSXsetsource(node, species, type, concentration, pat)
+
+    def setMSXNodeInitqualValue(self, value):
+        """
+        Sets all nodes initial quality value.
+
+            Example:
+                linkIndex=0
+                speciesIndex=0
+                values = [[0] * linkIndex for _ in range(speciesIndex)]
+                values=d.getMSXNodeInitqualValue()
+                values[linkIndex][speciesIndex]=1500
+                d.setMSXNodeInitqualValue(values)
+                x=d.getMSXNodeInitqualValue()
+         See also getMSXNodeInitqualValue, setMSXLinkInitqualValue.
+         """
+        for i in range(len(value)):
+            for j in range(len(value[0])):
+                self.msx.MSXsetinitqual(0, i+1, j+1, value[i][j])
+
 class epanetapi:
     """
     EPANET Toolkit functions - API
