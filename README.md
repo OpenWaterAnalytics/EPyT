@@ -606,6 +606,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |setMSXConstantsValue|Assigns a new value to a specific reaction constant|
 |setMSXLinkInitqualValue|Assigns an initial concentration of chemical species to links|
 |setMSXNodeInitqualValue|Assigns an initial concentration of chemical species to nodes|
+|setMSXSources|Sets the attributes of an external source of a particular chemical species to a specific node of the pipe network|
 |useMSXHydraulicFile|Uses a previously saved EPANET hydraulics file as the source of hydraulic information|
 
 
