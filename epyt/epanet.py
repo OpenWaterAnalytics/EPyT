@@ -11774,22 +11774,16 @@ class epanet:
                       setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
         x = self.getMSXSpeciesCount()
         value = {}
-        flag = 0
         if varagin is None:
             varagin = {}
             varagin = self.getMSXPatternsNameID()
             y = varagin
         else:
-            if isinstance(varagin, str):
-                flag = 1
             y = varagin
         MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
         if x > 0:
-            if flag == 1:
-                value[0] = self.msx.MSXgetindex(MSX_PATTERN, y)
-            else:
-                for i in y:
-                    value[i] = self.msx.MSXgetindex(MSX_PATTERN, i)
+            for i in y:
+                value[i] = self.msx.MSXgetindex(MSX_PATTERN, i)
         output = list(value.values())
         return output
 
@@ -12894,20 +12888,8 @@ class epanet:
         MSXTYPESOURCE = {'NOSOURCE', 'CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED'}
         node = self.getNodeIndex(nodeID)
         species = self.getMSXSpeciesIndex(speciesID)
-        species=species[0]
+        type = (list(MSXTYPESOURCE).index(sourcetype.upper()) if sourcetype.upper() in MSXTYPESOURCE else -1) - 2
         pat = self.getMSXPatternsIndex(patID)
-        pat = pat[0]
-        if sourcetype == 'NOSOURCE' or sourcetype == 'nosource':
-            type = -1
-        elif sourcetype == 'CONCEN' or sourcetype == 'concern':
-            type = 0
-        elif sourcetype == 'MASS' or sourcetype == 'mass':
-            type = 1
-        elif sourcetype == 'SETPOINT' or sourcetype == 'setpoint':
-            type = 2
-        elif sourcetype == 'FLOWPACED' or  sourcetype == 'flowpaced':
-            type = 3
-
         self.msx.MSXsetsource(node, species, type, concentration, pat)
 
     def setMSXNodeInitqualValue(self, value):
@@ -16381,7 +16363,6 @@ class epanetmsxapi:
                 pat: the index of the time pattern used to add variability to the
                      source's baseline level ( use 0 if the source has a constant strength)     """
         level = c_double(level)
-
         pat = c_int(pat)
         type = c_int(type)
         err = self.msx_lib.MSXsetsource(node, species, type, level, pat)
