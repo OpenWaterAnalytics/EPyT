@@ -10379,28 +10379,19 @@ class epanet:
         See also epanet, saveInputFile, closeNetwork().
         """
         try:
-            self.api.ENclose()
+            if self.api._ph is not None:
+                self.api.ENdeleteproject()
+            else:
+                self.api.ENclose()
         finally:
             try:
                 safe_delete(self.TempInpFile)
+
                 files_to_delete = [self.TempInpFile[0:-4] + '.txt', self.InputFile[0:-4] + '.txt', self.BinTempfile]
                 for file in files_to_delete:
                     safe_delete(file)
                 for file in Path(".").glob("@#*.txt"):
                     safe_delete(file)
-                safe_delete(self.TempInpFile)
-
-                cwd = os.getcwd()
-                files = os.listdir(cwd)
-                tmp_files = [
-                    f for f in files
-                    if os.path.isfile(os.path.join(cwd, f)) and
-                       (f.startswith('s') or f.startswith('en')) and
-                       5 <= len(f) <= 8 and
-                       "." not in f
-                ]
-                tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
-                safe_delete(tmp_files_paths)
             except:
                 pass
         print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
@@ -11259,9 +11250,6 @@ class epanet:
                d.unloadMSX()
                """
         self.msx.MSXclose()
-        msx_temp_files = list(filter(lambda f: os.path.isfile(os.path.join(os.getcwd(), f))
-                                               and f.startswith("msx") and "." not in f, os.listdir(os.getcwd())))
-        safe_delete(msx_temp_files)
 
     def getMSXSpeciesCount(self):
         """ Retrieves the number of species.
@@ -13365,8 +13353,6 @@ class epanetapi:
 
         if self._ph is not None:
             self.errcode = self._lib.EN_deleteproject(self._ph)
-        else:
-            self.errcode = self._lib.ENdeleteproject()
 
         self.ENgeterror()
         return
