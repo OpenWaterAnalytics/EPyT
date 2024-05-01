@@ -20,10 +20,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest
-          if [ ${{ runner.os }} = "macOS" ]; then
-            brew install libomp
-          fi
           pip install -r requirements.txt
+        
+      - name: Install libomp on macOS
+        if: runner.os == 'macOS'
+        run: brew install libomp
 
       - name: Lint with flake8
         run: |
