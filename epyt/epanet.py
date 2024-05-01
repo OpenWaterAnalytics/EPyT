@@ -12879,6 +12879,20 @@ class epanet:
                 self.msx.MSXsetinitqual(1, i+1, j+1, value[i][j])
 
     def setMSXSources(self, nodeID, speciesID, sourcetype, concentration, patID ):
+        """ Sets the attributes of an external source of a particular chemical species
+             to a specific node of the pipe network.
+
+             Example:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx')
+               srcs = d.getMSXSources()
+               d.addMSXPattern('PatAsIII',[2, .3, .4, 6, 5, 2, 4])
+               d.setMSXSources(d.NodeNameID{2}, d.MSXSpeciesNameID{1}, Setpoint', 0.5, 'PatAsIII') % Sets the second node as setpoint.
+               d.setMSXSources(d.getNodeNameID(2), d.getMSXSpeciesNameID([1]),'FLOWPACED', 0.5, 'PatAsIII')
+               srcs = d.getMSXSources()
+
+             See also getMSXSources, getMSXSourceNodeNameID, getMSXSourceType
+                      getMSXSourceLevel, getMSXSourcePatternIndex."""
         MSXTYPESOURCE = {'NOSOURCE', 'CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED'}
         node = self.getNodeIndex(nodeID)
         species = self.getMSXSpeciesIndex(speciesID)
