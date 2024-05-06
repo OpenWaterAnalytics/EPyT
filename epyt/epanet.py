@@ -11203,6 +11203,10 @@ class epanet:
         copyfile(msxname, self.msxname)
         self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
 
+
+
+
+
         #message to user if he uses ph with msx
         if self.api._ph is not None:
             print("In order for LoadMSX to work remove from epanet the ph")
@@ -12929,6 +12933,104 @@ class epanet:
         for i in range(len(value)):
             for j in range(len(value[0])):
                 self.msx.MSXsetinitqual(0, i+1, j+1, value[i][j])
+    def setMSXWrite(self):
+        value = EpytValues()
+        value.FILENAME = ""
+        value.TITLE = ""
+        value.AREA_UNITS = ""
+        value.RATE_UNITS = ""
+        value.SOLVER = ""
+        value.TIMESTEP = {}
+        value.COMPILER = ""
+        value.COUPLING = ""
+        value.RTOL = {}
+        value.ATOL = {}
+
+        value.SPECIES = {}
+        value.COEFFICIENTS = {}
+        value.TERMS = {}
+        value.PIPES = {}
+        value.TANKS = {}
+        value.SOURCES = {}
+        value.GLOBAL = {}
+        value.QUALITY = {}
+        value.PARAMETERS = {}
+        value.PATERNS = {}
+
+
+        return value
+    def writeMSXFile(self, msx):
+        filename = msx.FILENAME
+        with open(filename, 'w')as f:
+            f.write("[TITLE]\n")
+            f.write(msx.TITLE)
+            #OPTIONS
+            f.write("\n\n[OPTIONS]")
+            ans = msx.AREA_UNITS
+            f.write("\nAREA_UNITS\t{}".format(ans))
+            ans = msx.RATE_UNITS
+            f.write("\nRATE_UNITS\t{}".format(ans))
+            ans = msx.SOLVER
+            f.write("\nSOLVER\t\t{}".format(ans))
+            ans = msx.TIMESTEP
+            f.write("\nTIMESTEP\t{}".format(ans))
+            ans = msx.COMPILER
+            f.write("\nCOMPILER\t{}".format(ans))
+            ans = msx.COUPLING
+            f.write("\nCOUPLING\t{}".format(ans))
+            ans = msx.RTOL
+            f.write("\nRTOL\t\t{}".format(ans))
+            ans = msx.ATOL
+            f.write("\nATOL\t\t{}".format(ans))
+
+
+            f.write("\n\n[SPECIES]\n")
+            ans = list(msx.SPECIES)
+            for item in ans:
+                f.write("{}\n".format(item))
+
+            f.write("\n\n[COEFFICIENTS]\n")
+            ans = list(msx.COEFFICIENTS)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[TERMS]\n")
+            ans = list(msx.TERMS)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[PIPES]\n")
+            ans = list(msx.PIPES)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[TANKS]\n")
+            ans = list(msx.TANKS)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[SOURCES]\n")
+            ans = list(msx.SOURCES)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[QUALITY]\n")
+            ans = list(msx.QUALITY)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[GLOBAL]\n")
+            ans = list(msx.GLOBAL)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[PARAMETERS]\n")
+            ans = list(msx.PARAMETERS)
+            for item in ans:
+                f.write("{}\n".format(item))
+            f.write("\n\n[PATTERNS]\n")
+            ans = list(msx.PATERNS)
+            for item in ans:
+                f.write("{}\n".format(item))
+
+
+            f.write('\n[REPORT]\n')
+            f.write('NODES ALL\n')
+            f.write('LINKS ALL\n')
+
 
 class epanetapi:
     """
