@@ -531,6 +531,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |loadMSXFile|Opens the EPANET-MSX toolkit system|
 |unloadMSX|Closes the EPANET-MSX toolkit system|
 |addMSXPattern|Adds a new, empty MSX source time pattern to the project|
+|writeMSXFile|Write a new MSX file|
 |initializeMSXQualityAnalysis|Initializes the MSX system before solving for water quality results in step-wise fashion|
 |getMSXComputedQualitySpecie|Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie('CL2'))|
 |getMSXComputedLinkQualitySpecie|Returns the link quality for specific specie|
