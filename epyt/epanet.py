@@ -11207,7 +11207,7 @@ class epanet:
 
         self.msxname = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.msxname)
-        self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
+        self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib, display_msg=self.display_msg)
 
         # Message to user if he uses ph with msx
         if self.api._ph is not None:
@@ -15885,7 +15885,8 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None):
+    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None, display_msg=True):
+        self.display_msg = display_msg
         if customMSXlib is not None:
             self.MSXLibEPANET = customMSXlib
             loadlib = False
@@ -15924,7 +15925,8 @@ class epanetmsxapi:
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
 
-        print("Opening MSX file:", msxfile)
+        if display_msg:
+            print("Opening MSX file:", msxfile)
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
         if err != 0:
@@ -15932,7 +15934,8 @@ class epanetmsxapi:
             if err == 503:
                 print("Error 503 may indicate a problem with the MSX file or the MSX library.")
         else:
-            print(f"MSX file {msxbasename} loaded successfully.")
+            if display_msg:
+                print(f"MSX file {msxbasename} loaded successfully.")
 
     def MSXclose(self):
         """  Close .msx file
