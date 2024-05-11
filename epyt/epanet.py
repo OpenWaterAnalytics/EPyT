@@ -11210,7 +11210,7 @@ class epanet:
         self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
 
         # Message to user if he uses ph with msx
-        if self.api.ph is not None:
+        if self.api._ph is not None:
             warnings.warn('Please set ph=False when using MSX.')
 
         if ignore_properties:
@@ -13050,6 +13050,7 @@ class epanetapi:
         self.inpfile = None
         self.rptfile = None
         self.binfile = None
+        self._ph = None
 
         # Check platform and Load epanet library
         # libname = f"epanet{str(version).replace('.', '_')}"
@@ -13077,8 +13078,6 @@ class epanetapi:
 
         if float(version) >= 2.2 and ph:
             self._ph = c_uint64()
-        else:
-            self._ph = None
 
     def ENepanet(self, inpfile="", rptfile="", binfile=""):
         """ Runs a complete EPANET simulation
