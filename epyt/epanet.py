@@ -510,8 +510,9 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
-    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None):
+    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True):
         # Constants
+        self.msx = None
         warnings.simplefilter('always')
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
@@ -573,8 +574,10 @@ class epanet:
         # Initial attributes
         self.classversion = __version__
         self.api = epanetapi(version, ph=ph, customlib=customlib)
-        print(f'EPANET version {self.getVersion()} '
-              f'loaded (EPyT version {self.classversion}).')
+        self.display_msg = display_msg
+        if self.display_msg:
+            print(f'EPANET version {self.getVersion()} '
+                  f'loaded (EPyT version {self.classversion}).')
 
         # ToolkitConstants: Contains all parameters from epanet2_2.h
         self.ToolkitConstants = ToolkitConstants()
@@ -632,7 +635,8 @@ class epanet:
             self.netName = os.path.basename(self.InputFile)
             self.LibEPANETpath = self.api.LibEPANETpath
             self.LibEPANET = self.api.LibEPANET
-            print(f'Input File {self.netName} loaded successfully.\n')
+            if self.display_msg:
+                print(f'Input File {self.netName} loaded successfully.\n')
 
         # Global plot settings
         plt.rcParams["figure.figsize"] = [3, 2]
@@ -3697,7 +3701,7 @@ class epanet:
                 continue
             x_mat = []
             y_mat = []
-            for j in range(1, self.getLinkVerticesCount(i) +1):
+            for j in range(1, self.getLinkVerticesCount(i) + 1):
                 xy = self.api.ENgetvertex(i, j)
                 x_mat.append(xy[0])
                 y_mat.append(xy[1])
@@ -10394,7 +10398,9 @@ class epanet:
                     safe_delete(file)
             except:
                 pass
-        print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is unloaded.\n')
+        if self.display_msg:
+            print(f'Close toolkit for the input file "{self.netName[0:-4]}". EPANET Toolkit is '
+                  f'unloaded.\n')
 
     def useHydraulicFile(self, hydname):
         """ Uses the contents of the specified file as the current binary hydraulics file.
@@ -11185,8 +11191,8 @@ class epanet:
         Example using custom msx library :
         msxlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanetmsx.dll')
 
-        d = epanet(inpname, msx=True,customlib=epanetlib)
-        d.loadMSXFile(msxname,customMSXlib=msxlib)"""
+        d = epanet(inpname, msx=True, customlib=epanetlib)
+        d.loadMSXFile(msxname, customMSXlib=msxlib)"""
 
         if not os.path.exists(msxname):
             for root, dirs, files in os.walk(resource_filename("epyt", "")):
@@ -11203,16 +11209,10 @@ class epanet:
         copyfile(msxname, self.msxname)
         self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib)
 
+        # Message to user if he uses ph with msx
+        if self.api.ph is not None:
+            warnings.warn('Please set ph=False when using MSX.')
 
-
-
-
-        #message to user if he uses ph with msx
-        if self.api._ph is not None:
-            print("In order for LoadMSX to work remove from epanet the ph")
-            print("Example: change this line ")
-            print("from this:   <<<d = epanet(inpname,ph=True,  customlib=epanetlib)")
-            print("To this:     <<<d = epanet(inpname, customlib=epanetlib)")
         if ignore_properties:
             self.msx.MSXEquationsTerms = self.getMSXEquationsTerms()
             self.msx.MSXEquationsPipes = self.getMSXEquationsPipes()
@@ -11223,7 +11223,7 @@ class epanet:
             self.msx.MSXPatternsCount = self.getMSXPatternsCount()
             self.msx.MSXSpeciesIndex = self.getMSXSpeciesIndex()
             self.msx.MSXSpeciesNameID = self.getMSXSpeciesNameID()
-            self.MSXSpeciesType = self.getMSXSpeciesType()
+            self.msx.MSXSpeciesType = self.getMSXSpeciesType()
             self.msx.MSXSpeciesUnits = self.getMSXSpeciesUnits()
             self.msx.MSXSpeciesATOL = self.getMSXSpeciesATOL()
             self.msx.MSXSpeciesRTOL = self.getMSXSpeciesRTOL()
@@ -11446,8 +11446,9 @@ class epanet:
         # PECLET value
         try:
             # Key-value pairs to search for
-            keys = ["AREA_UNITS", "RATE_UNITS", "SOLVER", "COUPLING", "TIMESTEP", "ATOL", "RTOL", "COMPILER", "SEGMENTS", \
-                "PECLET"]
+            keys = ["AREA_UNITS", "RATE_UNITS", "SOLVER", "COUPLING", "TIMESTEP", "ATOL", "RTOL", "COMPILER",
+                    "SEGMENTS", \
+                    "PECLET"]
             float_values = ["TIMESTEP", "ATOL", "RTOL", "SEGMENTS", "PECLET"]
             values = {key: None for key in keys}
 
@@ -12880,9 +12881,9 @@ class epanet:
         """
         for i in range(len(value)):
             for j in range(len(value[0])):
-                self.msx.MSXsetinitqual(1, i+1, j+1, value[i][j])
+                self.msx.MSXsetinitqual(1, i + 1, j + 1, value[i][j])
 
-    def setMSXSources(self, nodeID, speciesID, sourcetype, concentration, patID ):
+    def setMSXSources(self, nodeID, speciesID, sourcetype, concentration, patID):
         """ Sets the attributes of an external source of a particular chemical species
              to a specific node of the pipe network.
 
@@ -12900,7 +12901,7 @@ class epanet:
         MSXTYPESOURCE = {'NOSOURCE', 'CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED'}
         node = self.getNodeIndex(nodeID)
         species = self.getMSXSpeciesIndex(speciesID)
-        species=species[0]
+        species = species[0]
         pat = self.getMSXPatternsIndex(patID)
         pat = pat[0]
         if sourcetype == 'NOSOURCE' or sourcetype == 'nosource':
@@ -12911,7 +12912,7 @@ class epanet:
             type = 1
         elif sourcetype == 'SETPOINT' or sourcetype == 'setpoint':
             type = 2
-        elif sourcetype == 'FLOWPACED' or  sourcetype == 'flowpaced':
+        elif sourcetype == 'FLOWPACED' or sourcetype == 'flowpaced':
             type = 3
 
         self.msx.MSXsetsource(node, species, type, concentration, pat)
@@ -12932,7 +12933,8 @@ class epanet:
          """
         for i in range(len(value)):
             for j in range(len(value[0])):
-                self.msx.MSXsetinitqual(0, i+1, j+1, value[i][j])
+                self.msx.MSXsetinitqual(0, i + 1, j + 1, value[i][j])
+
     def setMSXWrite(self):
         value = EpytValues()
         value.FILENAME = ""
@@ -12957,14 +12959,14 @@ class epanet:
         value.PARAMETERS = {}
         value.PATERNS = {}
 
-
         return value
+
     def writeMSXFile(self, msx):
         filename = msx.FILENAME
-        with open(filename, 'w')as f:
+        with open(filename, 'w') as f:
             f.write("[TITLE]\n")
             f.write(msx.TITLE)
-            #OPTIONS
+            # OPTIONS
             f.write("\n\n[OPTIONS]")
             ans = msx.AREA_UNITS
             f.write("\nAREA_UNITS\t{}".format(ans))
@@ -12982,7 +12984,6 @@ class epanet:
             f.write("\nRTOL\t\t{}".format(ans))
             ans = msx.ATOL
             f.write("\nATOL\t\t{}".format(ans))
-
 
             f.write("\n\n[SPECIES]\n")
             ans = list(msx.SPECIES)
@@ -13025,7 +13026,6 @@ class epanet:
             ans = list(msx.PATERNS)
             for item in ans:
                 f.write("{}\n".format(item))
-
 
             f.write('\n[REPORT]\n')
             f.write('NODES ALL\n')
@@ -13504,7 +13504,6 @@ class epanetapi:
         value The average of all of the time pattern's factors.
         """
 
-
         if self._ph is not None:
             value = c_double()
             self.errcode = self._lib.EN_getaveragepatternvalue(self._ph, int(index), byref(value))
@@ -13867,7 +13866,6 @@ class epanetapi:
 
         OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
         """
-
 
         if self._ph is not None:
             demand_name = create_string_buffer(100)
@@ -14644,7 +14642,7 @@ class epanetapi:
         x  the vertex's X-coordinate value.
         y  the vertex's Y-coordinate value.
         """
-        x = c_double() # need double for EN_ or EN functions.
+        x = c_double()  # need double for EN_ or EN functions.
         y = c_double()
         if self._ph is not None:
             self.errcode = self._lib.EN_getvertex(self._ph, int(index), vertex, byref(x), byref(y))
@@ -15694,7 +15692,8 @@ class epanetapi:
                 c_double(maxlvl), c_double(diam), c_double(minvol), volcurve.encode('utf-8'))
         else:
             self.errcode = self._lib.ENsettankdata(index, c_float(elev), c_float(initlvl), c_float(minlvl),
-                c_float(maxlvl), c_float(diam), c_float(minvol), volcurve.encode('utf-8'))
+                                                   c_float(maxlvl), c_float(diam), c_float(minvol),
+                                                   volcurve.encode('utf-8'))
 
         self.ENgeterror()
 
@@ -15783,7 +15782,7 @@ class epanetapi:
 
         else:
             self.errcode = self._lib.ENsetvertices(int(index), (c_double * vertex)(*x),
-                                                    (c_double * vertex)(*y), vertex)
+                                                   (c_double * vertex)(*y), vertex)
 
         self.ENgeterror()
 
