@@ -18,14 +18,9 @@ jobs:
       
       - name: Install dependencies
         run: |
-          if [ "${{ runner.os }}" = "macOS" ]; then
-            python${{ matrix.python-version }} -m pip install --upgrade pip
-            python${{ matrix.python-version }} -m pip install flake8 pytest
-            python${{ matrix.python-version }} -m pip install -r requirements.txt
-          else
-            python -m pip install --upgrade pip
-            python -m pip install flake8 pytest
-            python -m pip install -r requirements.txt
+          python${{ matrix.python-version }} -m pip install --upgrade pip
+          python${{ matrix.python-version }} -m pip install flake8 pytest
+          python${{ matrix.python-version }} -m pip install -r requirements.txt
         
       - name: Install libomp on macOS
         if: runner.os == 'macOS'
