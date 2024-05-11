@@ -15925,7 +15925,7 @@ class epanetmsxapi:
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
 
-        if display_msg:
+        if self.display_msg:
             print("Opening MSX file:", msxfile)
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
@@ -15934,7 +15934,7 @@ class epanetmsxapi:
             if err == 503:
                 print("Error 503 may indicate a problem with the MSX file or the MSX library.")
         else:
-            if display_msg:
+            if self.display_msg:
                 print(f"MSX file {msxbasename} loaded successfully.")
 
     def MSXclose(self):
