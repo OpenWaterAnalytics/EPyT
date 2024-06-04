@@ -12842,8 +12842,11 @@ class epanet:
 
                 See also getMSXComputedQualityNode, getMSXComputedQualityLink.
             """
+
         if self.getMSXSpeciesCount() == 0:
             return -1
+        if not isinstance(species, list):
+            species = [species]
         if species is None:
             species_index_name = self.getMSXSpeciesIndex()
         else:
