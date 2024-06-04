@@ -12745,7 +12745,7 @@ class epanet:
             self.setMSXPattern(index, args[1])
         return index
 
-    def getMSXComputedQualitySpecie(self, species=None):
+    def getMSXComputedQualitySpecie(self, species=None, nodes=1, links=1):
         """  Returns the node/link quality for specific specie.
 
              Example :
@@ -12772,8 +12772,13 @@ class epanet:
         # Initialized quality and time
         msx_time_step = self.getMSXTimeStep()
         time_steps = int(self.getTimeSimulationDuration() / msx_time_step) + 1
-        quality = [np.zeros((time_steps, 1)) for _ in range(node_count)]
-        lquality = [np.zeros((time_steps, 1)) for _ in range(link_count)]
+        quality = 0
+        lquality = 0
+        if nodes is not None:
+            quality = [np.zeros((time_steps, 1)) for _ in range(node_count)]
+        if links is not None:
+            lquality = [np.zeros((time_steps, 1)) for _ in range(link_count)]
+
         data = {
             'NodeQuality': quality,
             'LinkQuality': lquality,
@@ -12789,10 +12794,12 @@ class epanet:
         # Retrieve species concentration at node
         k = 0
         for j_idx, j in enumerate(species_index_name, start=1):
-            for i, nl in enumerate(node_indices, start=1):
-                data['NodeQuality'][i - 1][k, j_idx - 1] = self.getMSXNodeInitqualValue()[i - 1][j - 1]
-            for i, nl in enumerate(link_indices, start=1):
-                data['LinkQuality'][i - 1][k, j_idx - 1] = self.getMSXLinkInitqualValue()[i - 1][j - 1]
+            if nodes is not None:
+                for i, nl in enumerate(node_indices, start=1):
+                    data['NodeQuality'][i - 1][k, j_idx - 1] = self.getMSXNodeInitqualValue()[i - 1][j - 1]
+            if links is not None:
+                for i, nl in enumerate(link_indices, start=1):
+                    data['LinkQuality'][i - 1][k, j_idx - 1] = self.getMSXLinkInitqualValue()[i - 1][j - 1]
 
         k = 1
         t = 0
@@ -12802,10 +12809,12 @@ class epanet:
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
             if t >= msx_time_step:
                 for g, j in enumerate(species_index_name, start=1):
-                    for i, nl in enumerate(node_indices, start=1):
-                        data['NodeQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(0, nl, j)
-                    for i, nl in enumerate(link_indices, start=1):
-                        data['LinkQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+                    if nodes is not None:
+                        for i, nl in enumerate(node_indices, start=1):
+                            data['NodeQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+                    if links is not None:
+                        for i, nl in enumerate(link_indices, start=1):
+                            data['LinkQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(1, nl, j)
             k += 1
 
         value = EpytValues()
@@ -12829,7 +12838,7 @@ class epanet:
 
                      See also getMSXComputedQualitySpecie, getMSXComputedLinkQualitySpecie."""
         merged = []
-        MSX_comp = self.getMSXComputedQualitySpecie([species_id])
+        MSX_comp = self.getMSXComputedQualitySpecie([species_id],nodes = 1, links = None)
         MSX_comp_node = MSX_comp.NodeQuality
         for i in node_indices:
             column = MSX_comp_node[i]
@@ -12853,7 +12862,7 @@ class epanet:
 
             See also getMSXComputedQualitySpecie, getMSXComputedNodeQualitySpecie."""
         merged = []
-        MSX_comp = self.getMSXComputedQualitySpecie([species_id])
+        MSX_comp = self.getMSXComputedQualitySpecie([species_id], nodes = None, links = 1)
         MSX_comp_Link = MSX_comp.LinkQuality
         for i in node_indices:
             column = MSX_comp_Link[i]
@@ -12935,102 +12944,72 @@ class epanet:
             for j in range(len(value[0])):
                 self.msx.MSXsetinitqual(0, i + 1, j + 1, value[i][j])
 
-    def setMSXWrite(self):
+    def initializeMSXWrite(self):
         value = EpytValues()
-        value.FILENAME = ""
-        value.TITLE = ""
-        value.AREA_UNITS = ""
-        value.RATE_UNITS = ""
-        value.SOLVER = ""
-        value.TIMESTEP = {}
-        value.COMPILER = ""
-        value.COUPLING = ""
-        value.RTOL = {}
-        value.ATOL = {}
 
-        value.SPECIES = {}
-        value.COEFFICIENTS = {}
-        value.TERMS = {}
-        value.PIPES = {}
-        value.TANKS = {}
-        value.SOURCES = {}
-        value.GLOBAL = {}
-        value.QUALITY = {}
-        value.PARAMETERS = {}
-        value.PATERNS = {}
+        # Initialize strs
+        string_attrs = [
+            "FILENAME", "TITLE", "AREA_UNITS", "RATE_UNITS",
+            "SOLVER", "COMPILER", "COUPLING"
+        ]
+
+        for attr in string_attrs:
+            setattr(value, attr, "")
+
+        # Initialize dicts
+        dict_attrs = [
+            "TIMESTEP", "RTOL", "ATOL", "SPECIES", "COEFFICIENTS",
+            "TERMS", "PIPES", "TANKS", "SOURCES", "GLOBAL",
+            "QUALITY", "PARAMETERS", "PATERNS"
+        ]
+
+        for attr in dict_attrs:
+            setattr(value, attr, {})
 
         return value
-
     def writeMSXFile(self, msx):
         filename = msx.FILENAME
         with open(filename, 'w') as f:
+            # Writing the TITLE section
             f.write("[TITLE]\n")
             f.write(msx.TITLE)
-            # OPTIONS
+
+            # Writing the OPTIONS section
+            options = {
+                "AREA_UNITS": msx.AREA_UNITS,
+                "RATE_UNITS": msx.RATE_UNITS,
+                "SOLVER": msx.SOLVER,
+                "TIMESTEP": msx.TIMESTEP,
+                "COMPILER": msx.COMPILER,
+                "COUPLING": msx.COUPLING,
+                "RTOL": msx.RTOL,
+                "ATOL": msx.ATOL
+            }
             f.write("\n\n[OPTIONS]")
-            ans = msx.AREA_UNITS
-            f.write("\nAREA_UNITS\t{}".format(ans))
-            ans = msx.RATE_UNITS
-            f.write("\nRATE_UNITS\t{}".format(ans))
-            ans = msx.SOLVER
-            f.write("\nSOLVER\t\t{}".format(ans))
-            ans = msx.TIMESTEP
-            f.write("\nTIMESTEP\t{}".format(ans))
-            ans = msx.COMPILER
-            f.write("\nCOMPILER\t{}".format(ans))
-            ans = msx.COUPLING
-            f.write("\nCOUPLING\t{}".format(ans))
-            ans = msx.RTOL
-            f.write("\nRTOL\t\t{}".format(ans))
-            ans = msx.ATOL
-            f.write("\nATOL\t\t{}".format(ans))
+            for key, value in options.items():
+                f.write("\n{}\t{}".format(key, value))
+            # Sections with list data
+            sections = {
+                "[SPECIES]": msx.SPECIES,
+                "[COEFFICIENTS]": msx.COEFFICIENTS,
+                "[TERMS]": msx.TERMS,
+                "[PIPES]": msx.PIPES,
+                "[TANKS]": msx.TANKS,
+                "[SOURCES]": msx.SOURCES,
+                "[QUALITY]": msx.QUALITY,
+                "[GLOBAL]": msx.GLOBAL,
+                "[PARAMETERS]": msx.PARAMETERS,
+                "[PATTERNS]": msx.PATERNS
+            }
+            for section, items in sections.items():
+                f.write("\n\n{}".format(section))
+                for item in items:
+                    f.write("\n{}".format(item))
 
-            f.write("\n\n[SPECIES]\n")
-            ans = list(msx.SPECIES)
-            for item in ans:
-                f.write("{}\n".format(item))
-
-            f.write("\n\n[COEFFICIENTS]\n")
-            ans = list(msx.COEFFICIENTS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[TERMS]\n")
-            ans = list(msx.TERMS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[PIPES]\n")
-            ans = list(msx.PIPES)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[TANKS]\n")
-            ans = list(msx.TANKS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[SOURCES]\n")
-            ans = list(msx.SOURCES)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[QUALITY]\n")
-            ans = list(msx.QUALITY)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[GLOBAL]\n")
-            ans = list(msx.GLOBAL)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[PARAMETERS]\n")
-            ans = list(msx.PARAMETERS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[PATTERNS]\n")
-            ans = list(msx.PATERNS)
-            for item in ans:
-                f.write("{}\n".format(item))
-
-            f.write('\n[REPORT]\n')
+            # Writing the REPORT section
+            f.write('\n\n[REPORT]\n')
             f.write('NODES ALL\n')
             f.write('LINKS ALL\n')
-
 
 class epanetapi:
     """
