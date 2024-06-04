@@ -6437,6 +6437,90 @@ class epanet:
             value.QualityWaterAgeUnits = 'hours'
         self.units = value
         return value
+    def NodePressureUnits(self):
+        x = self.getUnits()
+        return x.NodePressureUnits
+
+    def PatternDemandsUnits(self):
+        x = self.getUnits()
+        return x.PatternDemandsUnits
+
+    def LinkPipeDiameterUnits(self):
+        x = self.getUnits()
+        return x.LinkPipeDiameterUnits
+
+    def NodeTankDiameterUnits(self):
+        x = self.getUnits()
+        return x.NodeTankDiameterUnits
+
+    def EnergyEfficiencyUnits(self):
+        x = self.getUnits()
+        return x.EnergyEfficiencyUnits
+
+    def NodeElevationUnits(self):
+        x = self.getUnits()
+        return x.NodeElevationUnits
+
+    def NodeDemandUnits(self):
+        x = self.getUnits()
+        return x.NodeDemandUnits
+
+    def NodeEmitterCoefficientUnits(self):
+        x = self.getUnits()
+        return x.NodeEmitterCoefficientUnits
+
+    def EnergyUnits(self):
+        x = self.getUnits()
+        return x.EnergyUnits
+
+    def LinkFrictionFactorUnits(self):
+        x = self.getUnits()
+        return x.LinkFrictionFactorUnits
+
+    def NodeHeadUnits(self):
+        x = self.getUnits()
+        return x.NodeHeadUnits
+
+    def LinkLengthsUnits(self):
+        x = self.getUnits()
+        return x.LinkLengthsUnits
+
+    def LinkMinorLossCoeffUnits(self):
+        x = self.getUnits()
+        return x.LinkMinorLossCoeffUnits
+
+    def LinkPumpPowerUnits(self):
+        x = self.getUnits()
+        return x.LinkPumpPowerUnits
+
+    def QualityReactionCoeffBulkUnits(self):
+        x = self.getUnits()
+        return x.QualityReactionCoeffBulkUnits
+
+    def QualityReactionCoeffWallUnits(self):
+        x = self.getUnits()
+        return x.QualityReactionCoeffWallUnits
+
+    def LinkPipeRoughnessCoeffUnits(self):
+        x = self.getUnits()
+        return x.LinkPipeRoughnessCoeffUnits
+
+    def QualitySourceMassInjectionUnits(self):
+        x = self.getUnits()
+        return x.QualitySourceMassInjectionUnits
+
+    def LinkVelocityUnits(self):
+        x = self.getUnits()
+        return x.LinkVelocityUnits
+
+    def NodeTankVolumeUnits(self):
+        x = self.getUnits()
+        return x.NodeTankVolumeUnits
+
+    def QualityWaterAgeUnits(self):
+        x = self.getUnits()
+        return x.QualityWaterAgeUnits
+
 
     def getVersion(self):
         """ Retrieves the current EPANET version of DLL.
