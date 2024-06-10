@@ -12923,18 +12923,30 @@ class epanet:
                        MSX_comp.NodeQuality  row: time, col: node index
                        MSX_comp.Time
 
+                    Example wtih 2 species:
+                        msx=d.getMSXComputedNodeQualitySpecie(x,['CL2',"H"])
+                        print(msx["CL2"].NodeQuality)
                      See also getMSXComputedQualitySpecie, getMSXComputedLinkQualitySpecie."""
-        merged = []
-        MSX_comp = self.getMSXComputedQualitySpecie([species_id],nodes = 1, links = None)
-        MSX_comp_node = MSX_comp.NodeQuality
-        for i in node_indices:
-            column = MSX_comp_node[i]
-            merged.append(column)
-        value = EpytValues()
-        value.NodeQuality, value.Time = {}, {}
-        value.NodeQuality = merged
-        value.Time = MSX_comp.Time
-        return value
+        value = {}  # Use a dictionary instead of a list
+        counter = 0
+        for specie in species_id:
+            MSX_comp = self.getMSXComputedQualitySpecie(specie, nodes=1, links=None)
+            MSX_comp_Node = MSX_comp.NodeQuality
+            merged = []  # Reset merged list for each specie
+            for i in node_indices:
+                column = MSX_comp_Node[i]
+                merged.append(column)
+            # Create a new EpytValues object and populate its attributes
+            new_value = EpytValues()
+            new_value.NodeQuality = merged
+            new_value.Time = MSX_comp.Time
+            # Store the new EpytValues object in the dictionary with the specie number as the key
+            value[specie] = new_value
+            counter += 1
+        if len(species_id) == 1:
+            return value[species_id[0]]
+        else:
+            return value
 
     def getMSXComputedLinkQualitySpecie(self, node_indices, species_id):
         """ Returns the link quality for specific specie.
@@ -12947,18 +12959,32 @@ class epanet:
               MSX_comp.LinkQuality  row: time, col: node index
               MSX_comp.Time
 
+            Example wtih 2 species:
+                    msx=d.getMSXComputedLinkQualitySpecie(x,['CL2',"H"])
+                    print(msx.LinkQuality)
             See also getMSXComputedQualitySpecie, getMSXComputedNodeQualitySpecie."""
-        merged = []
-        MSX_comp = self.getMSXComputedQualitySpecie([species_id], nodes = None, links = 1)
-        MSX_comp_Link = MSX_comp.LinkQuality
-        for i in node_indices:
-            column = MSX_comp_Link[i]
-            merged.append(column)
-        value = EpytValues()
-        value.LinkQuality, value.Time = {}, {}
-        value.LinkQuality = merged
-        value.Time = MSX_comp.Time
-        return value
+        value = {}  # Use a dictionary instead of a list
+        counter = 0
+
+        for specie in species_id:
+            MSX_comp = self.getMSXComputedQualitySpecie(specie, nodes=None, links=1)
+            MSX_comp_Link = MSX_comp.LinkQuality
+            merged = []  # Reset merged list for each specie
+            for i in node_indices:
+                column = MSX_comp_Link[i]
+                merged.append(column)
+            # Create a new EpytValues object and populate its attributes
+            new_value = EpytValues()
+            new_value.LinkQuality = merged
+            new_value.Time = MSX_comp.Time
+            # Store the new EpytValues object in the dictionary with the specie number as the key
+            value[specie] = new_value
+            counter += 1
+
+        if len(species_id) == 1:
+            return value[species_id[0]]
+        else:
+            return value
 
     def setMSXLinkInitqualValue(self, value):
         """"
@@ -13055,6 +13081,38 @@ class epanet:
 
         return value
     def writeMSXFile(self, msx):
+        """
+        Write a new MSX file
+                Example for wirteMSXFile:
+                    msx = d.initializeMSXWrite()
+
+                    msx.FILENAME="cl34.msx"
+                    msx.TITLE = "CL2 Full msx"
+                    msx.AREA_UNITS = 'FT2'
+                    msx.RATE_UNITS = 'DAY'
+                    msx.SOLVER = 'EUL'
+                    msx.COUPLING = 'NONE'
+                    msx.COMPILER = 'NONE'
+                    msx.TIMESTEP = 300
+                    msx.ATOL = 0.001
+                    msx.RTOL = 0.001
+
+                    msx.SPECIES={'BULK CL2 MG 0.01 0.001'}
+                    msx.COEFFICIENTS = {'PARAMETER Kb 0.3', 'PARAMETER Kw 1'}
+                    msx.TERMS = {'Kf 1.5826e-4 * RE^0.88 / D'}
+                    msx.PIPES = {'RATE CL2 -Kb*CL2-(4/D)*Kw*Kf/(Kw+Kf)*CL2'}
+                    msx.TANKS = {'RATE CL2 -Kb*CL2'}
+                    msx.SOURCES = {'CONC 1 CL2 0.8 '}
+                    msx.GLOBAL = {'Global CL2 0.5'}
+                    msx.QUALITY = {'NODE 26 CL2 0.1'}
+                    msx.PARAMETERS = {''}
+                    msx.PATERNS = {''}
+                    d.writeMSXFile(msx)
+                    d.unloadMSX()
+                    d.loadMSXFile(msx.FILENAME)
+                    d.unloadMSX()
+                    d.unload()
+                 """
         filename = msx.FILENAME
         with open(filename, 'w') as f:
             # Writing the TITLE section
@@ -13097,6 +13155,197 @@ class epanet:
             f.write('\n\n[REPORT]\n')
             f.write('NODES ALL\n')
             f.write('LINKS ALL\n')
+
+    def setMSXPatternMatrix(self, pattern_matrix):
+        """Sets all of the multiplier factors for all patterns
+
+            Example:
+                inpname = os.path.join(os.getcwd(), 'epyt', 'networks','msx-examples', 'net2-cl2.inp')
+                msxname = os.path.join(os.getcwd(), 'epyt', 'networks','msx-examples', 'net2-cl2.msx')
+                d = epanet(inpname)
+                d.loadMSXFile(msxname)
+                d.addMSXPattern('1',[])
+                d.setMSXPatternMatrix([.1,.2,.5,.2,1,.9])
+                print(d.getMSXPattern())
+        """
+        if not all(isinstance(i, list) for i in pattern_matrix):
+            pattern_matrix = [pattern_matrix]
+
+            # Ensure the input matrix is a list of lists with float values
+        pattern_matrix = [[float(value) for value in row] for row in pattern_matrix]
+        nfactors = len(pattern_matrix[0])
+        for i, pattern in enumerate(pattern_matrix):
+            self.msx.MSXsetpattern(i+1, pattern, nfactors)
+            
+    def getMSXComputedTimeSeries(self, *args):
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+        return_nodes = False
+        return_links = False
+        uu =[]
+        ssn = []
+        ssl =[]
+        value = {'NodeQuality': [], 'LinkQuality': []}
+
+        if args:
+            i = 0
+            while i < len(args):
+                argument = args[i].lower()
+                if argument == 'species':
+                    uu = [args[i + 1]]
+                elif argument =='nodes':
+                    ssn = args[i + 1]
+                    return_nodes = True
+                    value = {'NodeQuality': []}
+                elif argument == 'links':
+                    ssl = args[i + 1]
+                    return_links = True
+                    value = {'LinkQuality': []}
+                else:
+                    raise ValueError("Invalid property found")
+                i = i +2
+            if not return_nodes and not return_links:
+                ssn = list(range(1, self.getNodeCount() + 1))
+                ssl = list(range(1, self.getLinkCount() + 1))
+                return_nodes = True
+                return_links = True
+
+        else:
+            ssl = list(range(1, self.getLinkCount() + 1))
+            ssn = list(range(1, self.getNodeCount() +1))
+            uu = list(range(1, self.getMSXSpeciesCount() + 1))
+            return_nodes = True
+            return_links = True
+
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+
+        k = 1
+        tleft = 1
+        t = 0
+        tmp_link_quality = {}
+        tmp_node_quality = {}
+
+
+        if return_nodes:
+            for j in uu:
+                g = 1
+                i = 1
+                for nl in ssn:
+                    try:
+
+                        #tmp_node_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXNodeInitqualValue(nl)[j])
+                        tmp_node_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXNodeInitqualValue([nl]))
+
+                    except:
+                        raise ValueError('Wrong species index. Please check  functions getMSXSpeciesNameID, getMSXSpeciesCount')
+                    i = i +1
+                g = g +1
+
+        if return_links:
+            for j in uu:
+                g = 1
+                i = 1
+                for nl in ssl:
+                    try:
+                        #tmp_link_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXLinkInitqualValue(nl)[j])
+                        tmp_link_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXLinkInitqualValue([nl]))
+
+                    except:
+                        raise ValueError(
+                            'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+                    i = i + 1
+                g = g + 1
+
+        time_smle = self.getTimeSimulationDuration()
+        while tleft>0 and time_smle != t:
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            k = k + 1
+            if return_links:
+                g = 1
+                for j in uu:
+                    i = 1
+                    for nl in ssl:
+                        tmp_link_quality[g][i].append(self.getMSXSpeciesConcentration(1, nl, j))
+                        i = i + 1
+                    g = g + 1
+                if return_nodes:
+                    g =  1
+                    for j in uu:
+                        i = 1
+                        for nl in ssn:
+                            tmp_node_quality[g][i].append(self.getMSXSpeciesConcentration(0, nl, j))
+                            i += 1
+                        g = g + 1
+                value.setdefault('Time', []).append(t)
+
+        for j in range(1, len(uu) + 1):
+            if return_nodes:
+                value['NodeQuality'].append([tmp_node_quality[j][i] for i in tmp_node_quality[j]])
+            if return_links:
+                value['LinkQuality'].append([tmp_link_quality[j][i] for i in tmp_link_quality[j]])
+
+        time_data = value.pop('Time', [])
+        link_quality_data = value.pop('LinkQuality', [])
+        node_quality_data = value.pop('NodeQuality', [])
+        out = EpytValues()
+        out.NodeQuality, out.Time, out.LinkQuality = {}, {}, {}
+        out.NodeQuality = node_quality_data
+        out.Time = time_data
+        out.LinkQuality = link_quality_data
+
+        return out
+
+    def getMSXComputedQualityNode(self, *args):
+
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+
+        if args:
+            if len(args) ==1:
+                ss = args[0]
+                uu = list(range(1, self.getMSXSpeciesCount() + 1))
+            elif len(args) == 2:
+                ss = args[0]
+                uu = args[1]
+        else:
+            ss = list(range(1, self.getNodeCount() + 1))
+            uu = list(range(1, self.getMSXSpeciesCount() +1))
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+        out = EpytValues()
+        out.Quality, out.Time = {}, {}
+        value = {'Quality': [],'Time': []}
+
+        k = 1
+        tleft = 1
+        t = 0
+        for nl in ss:
+            node_quality = []
+            for j in uu:
+                try:
+                    #node_quality.append(self.getMSXNodeInitqualValue(nl)[j])
+                    x = self.getMSXNodeInitqualValue([nl])
+                    node_quality.append(self.getMSXNodeInitqualValue([nl]))
+                except:
+                    raise ValueError(
+                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+        value['Quality'].append(node_quality)
+        time_simulation_duration = self.getTimeSimulationDuration()
+        while tleft > 0 and  time_simulation_duration != t:
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            node_quality = []
+            for nl in ss:
+                for j in uu:
+                    node_quality.append(self.getMSXSpeciesConcentration(0, nl, j))  # node code0
+            value['Quality'].append(node_quality)
+            value['Time'].append(t)
+        time_data = value.pop('Time', [])
+        quality_data = value.pop('Quality', [])
+        out.Quality = quality_data
+        out.Time = time_data
+        return out
+
 
 class epanetapi:
     """
