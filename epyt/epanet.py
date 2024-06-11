@@ -13245,6 +13245,68 @@ class epanet:
 
         return out
 
+    def getMSXComputedQualityLink(self, *args):
+        """
+        Returns the computed quality for links.
+        Example:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+
+            MSX_comp = d.getMSXComputedQualityLink()
+            x = MSX_comp.Quality
+            y = MSX_comp.Time
+        """
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+
+        if args:
+            if len(args) == 1:
+                ss = args[0]
+                uu = list(range(1, self.getMSXSpeciesCount() + 1))
+            elif len(args) == 2:
+                ss = args[0]
+                uu = args[1]
+        else:
+            ss = list(range(1, self.getLinkCount() + 1))
+            uu = list(range(1, self.getMSXSpeciesCount() + 1))
+
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+
+        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
+        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
+        time_data = []
+
+        k = 0
+        t = 0
+        tleft = 1
+        i = 1
+        # Initialize Quality Data for each node and species
+        for nl in ss:
+            for idx, j in enumerate(uu, start=1):
+                try:
+                    quality_data[nl][k, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+                except IndexError:
+                    raise ValueError(
+                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+
+        # Run simulation steps and collect quality data
+        while tleft > 0 and t != self.getTimeSimulationDuration():
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            time_data.append(t)
+
+            for nl in ss:
+                for idx, j in enumerate(uu, start=1):
+                    quality_data[nl][k + 1, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+
+            k += 1
+
+        out = EpytValues()
+        out.Quality = quality_data
+        out.Time = time_data
+
+        return out
+
 
 class epanetapi:
     """
