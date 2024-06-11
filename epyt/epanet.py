@@ -12329,6 +12329,8 @@ class epanet:
                     value_row.append(y)
                 value.append(value_row)
         else:
+            if isinstance(varagin, int):
+                varagin = [varagin]  # Transform single integer input into a list
             for i in varagin:
                 value_row = []
                 for j in range(1, self.getMSXSpeciesCount() + 1):
@@ -13151,7 +13153,7 @@ class epanet:
                 for item in items:
                     f.write("\n{}".format(item))
 
-            # Writing the REPORT section
+
             f.write('\n\n[REPORT]\n')
             f.write('NODES ALL\n')
             f.write('LINKS ALL\n')
@@ -13177,132 +13179,24 @@ class epanet:
         for i, pattern in enumerate(pattern_matrix):
             self.msx.MSXsetpattern(i+1, pattern, nfactors)
             
-    def getMSXComputedTimeSeries(self, *args):
-        if self.getMSXSpeciesCount() == 0:
-            return 0
-        return_nodes = False
-        return_links = False
-        uu =[]
-        ssn = []
-        ssl =[]
-        value = {'NodeQuality': [], 'LinkQuality': []}
 
-        if args:
-            i = 0
-            while i < len(args):
-                argument = args[i].lower()
-                if argument == 'species':
-                    uu = [args[i + 1]]
-                elif argument =='nodes':
-                    ssn = args[i + 1]
-                    return_nodes = True
-                    value = {'NodeQuality': []}
-                elif argument == 'links':
-                    ssl = args[i + 1]
-                    return_links = True
-                    value = {'LinkQuality': []}
-                else:
-                    raise ValueError("Invalid property found")
-                i = i +2
-            if not return_nodes and not return_links:
-                ssn = list(range(1, self.getNodeCount() + 1))
-                ssl = list(range(1, self.getLinkCount() + 1))
-                return_nodes = True
-                return_links = True
-
-        else:
-            ssl = list(range(1, self.getLinkCount() + 1))
-            ssn = list(range(1, self.getNodeCount() +1))
-            uu = list(range(1, self.getMSXSpeciesCount() + 1))
-            return_nodes = True
-            return_links = True
-
-        self.solveMSXCompleteHydraulics()
-        self.initializeMSXQualityAnalysis(0)
-
-        k = 1
-        tleft = 1
-        t = 0
-        tmp_link_quality = {}
-        tmp_node_quality = {}
-
-
-        if return_nodes:
-            for j in uu:
-                g = 1
-                i = 1
-                for nl in ssn:
-                    try:
-
-                        #tmp_node_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXNodeInitqualValue(nl)[j])
-                        tmp_node_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXNodeInitqualValue([nl]))
-
-                    except:
-                        raise ValueError('Wrong species index. Please check  functions getMSXSpeciesNameID, getMSXSpeciesCount')
-                    i = i +1
-                g = g +1
-
-        if return_links:
-            for j in uu:
-                g = 1
-                i = 1
-                for nl in ssl:
-                    try:
-                        #tmp_link_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXLinkInitqualValue(nl)[j])
-                        tmp_link_quality.setdefault(g, {}).setdefault(i, []).append(self.getMSXLinkInitqualValue([nl]))
-
-                    except:
-                        raise ValueError(
-                            'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
-                    i = i + 1
-                g = g + 1
-
-        time_smle = self.getTimeSimulationDuration()
-        while tleft>0 and time_smle != t:
-            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            k = k + 1
-            if return_links:
-                g = 1
-                for j in uu:
-                    i = 1
-                    for nl in ssl:
-                        tmp_link_quality[g][i].append(self.getMSXSpeciesConcentration(1, nl, j))
-                        i = i + 1
-                    g = g + 1
-                if return_nodes:
-                    g =  1
-                    for j in uu:
-                        i = 1
-                        for nl in ssn:
-                            tmp_node_quality[g][i].append(self.getMSXSpeciesConcentration(0, nl, j))
-                            i += 1
-                        g = g + 1
-                value.setdefault('Time', []).append(t)
-
-        for j in range(1, len(uu) + 1):
-            if return_nodes:
-                value['NodeQuality'].append([tmp_node_quality[j][i] for i in tmp_node_quality[j]])
-            if return_links:
-                value['LinkQuality'].append([tmp_link_quality[j][i] for i in tmp_link_quality[j]])
-
-        time_data = value.pop('Time', [])
-        link_quality_data = value.pop('LinkQuality', [])
-        node_quality_data = value.pop('NodeQuality', [])
-        out = EpytValues()
-        out.NodeQuality, out.Time, out.LinkQuality = {}, {}, {}
-        out.NodeQuality = node_quality_data
-        out.Time = time_data
-        out.LinkQuality = link_quality_data
-
-        return out
 
     def getMSXComputedQualityNode(self, *args):
+        """
+        Returns the computed quality for nodes.
+        Example:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
 
+            MSX_comp = d.getMSXComputedQualityNode()
+            x = MSX_comp.Quality
+            y = MSX_comp.Time
+        """
         if self.getMSXSpeciesCount() == 0:
             return 0
 
         if args:
-            if len(args) ==1:
+            if len(args) == 1:
                 ss = args[0]
                 uu = list(range(1, self.getMSXSpeciesCount() + 1))
             elif len(args) == 2:
@@ -13310,40 +13204,45 @@ class epanet:
                 uu = args[1]
         else:
             ss = list(range(1, self.getNodeCount() + 1))
-            uu = list(range(1, self.getMSXSpeciesCount() +1))
+            uu = list(range(1, self.getMSXSpeciesCount() + 1))
+
         self.solveMSXCompleteHydraulics()
         self.initializeMSXQualityAnalysis(0)
-        out = EpytValues()
-        out.Quality, out.Time = {}, {}
-        value = {'Quality': [],'Time': []}
 
-        k = 1
-        tleft = 1
+        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
+        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
+        time_data = []
+
+        k = 0
         t = 0
+        tleft = 1
+        i = 1
+        # Initialize Quality Data for each node and species
         for nl in ss:
-            node_quality = []
-            for j in uu:
+            for idx, j in enumerate(uu, start=1):
                 try:
-                    #node_quality.append(self.getMSXNodeInitqualValue(nl)[j])
-                    x = self.getMSXNodeInitqualValue([nl])
-                    node_quality.append(self.getMSXNodeInitqualValue([nl]))
-                except:
+                    quality_data[nl][k , idx - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+                except IndexError:
                     raise ValueError(
                         'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
-        value['Quality'].append(node_quality)
-        time_simulation_duration = self.getTimeSimulationDuration()
-        while tleft > 0 and  time_simulation_duration != t:
+
+        # Run simulation steps and collect quality data
+        while tleft > 0 and t != self.getTimeSimulationDuration():
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            node_quality = []
+            time_data.append(t)
+
             for nl in ss:
-                for j in uu:
-                    node_quality.append(self.getMSXSpeciesConcentration(0, nl, j))  # node code0
-            value['Quality'].append(node_quality)
-            value['Time'].append(t)
-        time_data = value.pop('Time', [])
-        quality_data = value.pop('Quality', [])
+                for idx, j in enumerate(uu, start=1):
+                    quality_data[nl][k + 1, idx - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+
+
+            k += 1
+
+
+        out = EpytValues()
         out.Quality = quality_data
         out.Time = time_data
+
         return out
 
 

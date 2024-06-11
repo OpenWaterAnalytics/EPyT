@@ -536,6 +536,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |getMSXComputedQualitySpecie|Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie('CL2'))|
 |getMSXComputedLinkQualitySpecie|Returns the link quality for specific specie|
 |getMSXComputedNodeQualitySpecie|Returns the node quality for specific specie|
+|getMSXComputedQualityNode|Retrieves the concentration of a chemical species at a specific node of the network at the current simulation time step.|
 |stepMSXQualityAnalysisTimeLeft|Advances the water quality solution through a single water quality time step when performing a step-wise simulation|
 |saveMSXFile|Saves the data associated with the current MSX project into a new MSX input file|
 |saveMSXQualityFile|Saves water quality results computed for each node, link and reporting time period to a named binary file|
