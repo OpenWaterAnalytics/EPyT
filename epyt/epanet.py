@@ -10480,6 +10480,20 @@ class epanet:
                     safe_delete(file)
                 for file in Path(".").glob("@#*.txt"):
                     safe_delete(file)
+
+                arch = sys.platform
+                if arch == 'win64' or arch == 'win32':
+                    cwd = os.getcwd()
+                    files = os.listdir(cwd)
+                    tmp_files = [
+                        f for f in files
+                        if os.path.isfile(os.path.join(cwd, f)) and
+                           (f.startswith('s') or f.startswith('en')) and
+                           5 <= len(f) <= 8 and
+                           "." not in f
+                    ]
+                    tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
+                    safe_delete(tmp_files_paths)
             except:
                 pass
         if self.display_msg:
@@ -11338,6 +11352,11 @@ class epanet:
                d.unloadMSX()
                """
         self.msx.MSXclose()
+        arch = sys.platform
+        if arch == 'win64' or arch == 'win32':
+            msx_temp_files = list(filter(lambda f: os.path.isfile(os.path.join(os.getcwd(), f))
+                                                   and f.startswith("msx") and "." not in f, os.listdir(os.getcwd())))
+            safe_delete(msx_temp_files)
 
     def getMSXSpeciesCount(self):
         """ Retrieves the number of species.
