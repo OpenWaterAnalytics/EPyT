@@ -12769,10 +12769,13 @@ class epanet:
                d.loadMSXFile('net2-cl2.msx')
                d.addMSXPattern('Pl', [1.0 2.0 1.5 1.0])
                d.getMSXPattern()
-               d.setMSXPattern(1, [1.0 0.0 3.0]);
+               d.setMSXPattern(1, [1.0 0.0 3.0])
                d.getMSXPattern()
 
              See also getMSXPattern, addMSXPattern."""
+        if not isinstance(index, int):
+            index = self.getMSXPatternsIndex(index)
+            index = index[0]
         nfactors = len(patternVector)
         self.msx.MSXsetpattern(index, patternVector, nfactors)
 
@@ -13042,6 +13045,9 @@ class epanet:
              See also getMSXSources, getMSXSourceNodeNameID, getMSXSourceType
                       getMSXSourceLevel, getMSXSourcePatternIndex."""
         MSXTYPESOURCE = {'NOSOURCE', 'CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED'}
+
+        if not isinstance(speciesID, list):
+            speciesID = [speciesID]
         node = self.getNodeIndex(nodeID)
         species = self.getMSXSpeciesIndex(speciesID)
         species = species[0]
@@ -13325,6 +13331,7 @@ class epanet:
         out.Time = time_data
 
         return out
+
 
 
 class epanetapi:
@@ -16627,7 +16634,8 @@ class epanetmsxapi:
                 factors: an array of multiplier values to replace those previously used by
                          the pattern
                 nfactors: the number of entries in the multiplier array/ vector factors"""
-        index = c_int(index)
+        if isinstance(index, int):
+            index =  c_int(index)
         nfactors = c_int(nfactors)
         DoubleArray = c_double * len(factors)
         mult_array = DoubleArray(*factors)
@@ -16745,7 +16753,7 @@ class epanetmsxapi:
            Returns:
                The value of the computed concentration of the species at the current
                time period.
-                """
+        """
 
         value = 0
         value = c_double(value)
