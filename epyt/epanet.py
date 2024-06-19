@@ -6437,6 +6437,7 @@ class epanet:
             value.QualityWaterAgeUnits = 'hours'
         self.units = value
         return value
+
     def NodePressureUnits(self):
         x = self.getUnits()
         return x.NodePressureUnits
@@ -13192,15 +13193,16 @@ class epanet:
         species = species[0]
         pat = self.getMSXPatternsIndex(patID)
         pat = pat[0]
-        if sourcetype == 'NOSOURCE' or sourcetype == 'nosource':
+        sourcetype = sourcetype.upper()
+        if sourcetype == 'NOSOURCE':
             type = -1
-        elif sourcetype == 'CONCEN' or sourcetype == 'concern':
+        elif sourcetype == 'CONCEN':
             type = 0
-        elif sourcetype == 'MASS' or sourcetype == 'mass':
+        elif sourcetype == 'MASS':
             type = 1
-        elif sourcetype == 'SETPOINT' or sourcetype == 'setpoint':
+        elif sourcetype == 'SETPOINT':
             type = 2
-        elif sourcetype == 'FLOWPACED' or sourcetype == 'flowpaced':
+        elif sourcetype == 'FLOWPACED':
             type = 3
 
         self.msx.MSXsetsource(node, species, type, concentration, pat)
@@ -13337,7 +13339,6 @@ class epanet:
         if not all(isinstance(i, list) for i in pattern_matrix):
             pattern_matrix = [pattern_matrix]
 
-            # Ensure the input matrix is a list of lists with float values
         pattern_matrix = [[float(value) for value in row] for row in pattern_matrix]
         nfactors = len(pattern_matrix[0])
         for i, pattern in enumerate(pattern_matrix):
