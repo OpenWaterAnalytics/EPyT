@@ -25,10 +25,7 @@ jobs:
 
       - name: Install libomp on macOS
         if: runner.os == 'macOS'
-        run: |
-          brew install libomp
-          brew install gcc
-          brew upgrade
+        run: brew install libomp
 
       - name: Lint with flake8
         run: |
@@ -38,5 +35,4 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Test with pytest
-        run: |
-          pytest -v
+        run: pytest -v
