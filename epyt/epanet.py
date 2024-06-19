@@ -12464,6 +12464,8 @@ class epanet:
             f.seek(0)
             f.writelines(lines)
             f.truncate()
+        self.msx.MSXclose()
+        self.msx.MSXopen(self.msxname, reload = True)
 
     def setMSXAreaUnitsCM2(self):
         """  Sets the area units to square centimeters.
@@ -16216,7 +16218,7 @@ class epanetmsxapi:
         if not ignore_msxfile:
             self.MSXopen(msxfile)
 
-    def MSXopen(self, msxfile):
+    def MSXopen(self, msxfile, reload = False):
         """
         Open MSX file
         filename - Arsenite.msx or use full path
@@ -16228,7 +16230,7 @@ class epanetmsxapi:
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
 
-        if self.display_msg:
+        if self.display_msg and not reload:
             print("Opening MSX file:", msxfile)
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
