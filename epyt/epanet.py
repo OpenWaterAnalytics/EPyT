@@ -13013,6 +13013,142 @@ class epanet:
         else:
             return value
 
+    def getMSXComputedQualityNode(self, *args):
+        """
+        Returns the computed quality for nodes.
+        Example:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+
+            MSX_comp = d.getMSXComputedQualityNode()
+            x = MSX_comp.Quality
+            y = MSX_comp.Time
+        """
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+
+        if args:
+            if len(args) == 1:
+                ss = args[0]
+                uu = list(range(1, self.getMSXSpeciesCount() + 1))
+            elif len(args) == 2:
+                ss = args[0]
+                uu = args[1]
+        else:
+            ss = list(range(1, self.getNodeCount() + 1))
+            uu = list(range(1, self.getMSXSpeciesCount() + 1))
+
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+
+        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
+
+        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
+        time_data = []
+
+        k = 0
+        t = 0
+        tleft = 1
+        # Initialize Quality Data for each node and species
+        for nl in ss:
+            for idx, j in enumerate(uu, start=1):
+                try:
+                    quality_data[nl][k, idx - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+                except IndexError:
+                    raise ValueError(
+                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+        k += 1
+
+        # Run simulation steps and collect quality data
+        simulation_duration = self.getTimeSimulationDuration()
+        while tleft > 0 and t != simulation_duration:
+            print(k)
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            time_data.append(t)
+            for nl in ss:
+                for idx, j in enumerate(uu, start=1):
+
+                    try:
+                        concentration = self.getMSXSpeciesConcentration(0, nl, j)
+                        # Ensure quality_data has enough rows for k + 1
+                        if k + 1 < time_steps:
+                            quality_data[nl][k , idx-1] = concentration
+                        else:
+                            raise IndexError("k + 1 exceeds time_steps")
+                    except IndexError as e:
+                        print(f"Error at node {nl}, species index {idx}: {e}")
+                    except Exception as e:
+                        print(f"Error: {e}")
+            k += 1
+
+
+        out = EpytValues()
+        out.Quality = quality_data
+        out.Time = time_data
+        return out
+
+    def getMSXComputedQualityLink(self, *args):
+        """
+        Returns the computed quality for links.
+        Example:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+
+            MSX_comp = d.getMSXComputedQualityLink()
+            x = MSX_comp.Quality
+            y = MSX_comp.Time
+        """
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+
+        if args:
+            if len(args) == 1:
+                ss = args[0]
+                uu = list(range(1, self.getMSXSpeciesCount() + 1))
+            elif len(args) == 2:
+                ss = args[0]
+                uu = args[1]
+        else:
+            ss = list(range(1, self.getLinkCount() + 1))
+            uu = list(range(1, self.getMSXSpeciesCount() + 1))
+
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+
+        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
+        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
+        time_data = []
+
+        k = 0
+        t = 0
+        tleft = 1
+        i = 1
+        # Initialize Quality Data for each node and species
+        for nl in ss:
+            for idx, j in enumerate(uu, start=1):
+                try:
+                    quality_data[nl][k, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+                except IndexError:
+                    raise ValueError(
+                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+
+        # Run simulation steps and collect quality data
+        while tleft > 0 and t != self.getTimeSimulationDuration():
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            time_data.append(t)
+
+            for nl in ss:
+                for idx, j in enumerate(uu, start=1):
+                    quality_data[nl][k + 1, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+
+            k += 1
+
+        out = EpytValues()
+        out.Quality = quality_data
+        out.Time = time_data
+
+        return out
+
     def setMSXLinkInitqualValue(self, value):
         """"
         Sets all links initial quality value.
@@ -13206,134 +13342,6 @@ class epanet:
         nfactors = len(pattern_matrix[0])
         for i, pattern in enumerate(pattern_matrix):
             self.msx.MSXsetpattern(i+1, pattern, nfactors)
-            
-
-
-    def getMSXComputedQualityNode(self, *args):
-        """
-        Returns the computed quality for nodes.
-        Example:
-            d = epanet('net2-cl2.inp')
-            d.loadMSXFile('net2-cl2.msx')
-
-            MSX_comp = d.getMSXComputedQualityNode()
-            x = MSX_comp.Quality
-            y = MSX_comp.Time
-        """
-        if self.getMSXSpeciesCount() == 0:
-            return 0
-
-        if args:
-            if len(args) == 1:
-                ss = args[0]
-                uu = list(range(1, self.getMSXSpeciesCount() + 1))
-            elif len(args) == 2:
-                ss = args[0]
-                uu = args[1]
-        else:
-            ss = list(range(1, self.getNodeCount() + 1))
-            uu = list(range(1, self.getMSXSpeciesCount() + 1))
-
-        self.solveMSXCompleteHydraulics()
-        self.initializeMSXQualityAnalysis(0)
-
-        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
-        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
-        time_data = []
-
-        k = 0
-        t = 0
-        tleft = 1
-        i = 1
-        # Initialize Quality Data for each node and species
-        for nl in ss:
-            for idx, j in enumerate(uu, start=1):
-                try:
-                    quality_data[nl][k , idx - 1] = self.getMSXSpeciesConcentration(0, nl, j)
-                except IndexError:
-                    raise ValueError(
-                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
-
-        # Run simulation steps and collect quality data
-        while tleft > 0 and t != self.getTimeSimulationDuration():
-            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            time_data.append(t)
-
-            for nl in ss:
-                for idx, j in enumerate(uu, start=1):
-                    quality_data[nl][k + 1, idx - 1] = self.getMSXSpeciesConcentration(0, nl, j)
-
-
-            k += 1
-
-
-        out = EpytValues()
-        out.Quality = quality_data
-        out.Time = time_data
-
-        return out
-
-    def getMSXComputedQualityLink(self, *args):
-        """
-        Returns the computed quality for links.
-        Example:
-            d = epanet('net2-cl2.inp')
-            d.loadMSXFile('net2-cl2.msx')
-
-            MSX_comp = d.getMSXComputedQualityLink()
-            x = MSX_comp.Quality
-            y = MSX_comp.Time
-        """
-        if self.getMSXSpeciesCount() == 0:
-            return 0
-
-        if args:
-            if len(args) == 1:
-                ss = args[0]
-                uu = list(range(1, self.getMSXSpeciesCount() + 1))
-            elif len(args) == 2:
-                ss = args[0]
-                uu = args[1]
-        else:
-            ss = list(range(1, self.getLinkCount() + 1))
-            uu = list(range(1, self.getMSXSpeciesCount() + 1))
-
-        self.solveMSXCompleteHydraulics()
-        self.initializeMSXQualityAnalysis(0)
-
-        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
-        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
-        time_data = []
-
-        k = 0
-        t = 0
-        tleft = 1
-        i = 1
-        # Initialize Quality Data for each node and species
-        for nl in ss:
-            for idx, j in enumerate(uu, start=1):
-                try:
-                    quality_data[nl][k, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
-                except IndexError:
-                    raise ValueError(
-                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
-
-        # Run simulation steps and collect quality data
-        while tleft > 0 and t != self.getTimeSimulationDuration():
-            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
-            time_data.append(t)
-
-            for nl in ss:
-                for idx, j in enumerate(uu, start=1):
-                    quality_data[nl][k + 1, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
-
-            k += 1
-
-        out = EpytValues()
-        out.Quality = quality_data
-        out.Time = time_data
-
-        return out
 
 
 
