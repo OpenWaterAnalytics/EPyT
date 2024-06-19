@@ -12878,6 +12878,7 @@ class epanet:
 
         node_count = self.getNodeCount()
         link_count = self.getLinkCount()
+        specie_count = len(species)
         node_indices = list(range(1, node_count + 1))
         link_indices = list(range(1, link_count + 1))
         # Initialized quality and time
@@ -12886,9 +12887,9 @@ class epanet:
         quality = 0
         lquality = 0
         if nodes is not None:
-            quality = [np.zeros((time_steps, 1)) for _ in range(node_count)]
+            quality = [np.zeros((time_steps, specie_count)) for _ in range(node_count)]
         if links is not None:
-            lquality = [np.zeros((time_steps, 1)) for _ in range(link_count)]
+            lquality = [np.zeros((time_steps, specie_count)) for _ in range(link_count)]
 
         data = {
             'NodeQuality': quality,
