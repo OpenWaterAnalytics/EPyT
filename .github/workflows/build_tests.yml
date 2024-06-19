@@ -25,6 +25,8 @@ jobs:
       - name: Install libomp on macOS
         if: runner.os == 'macOS'
         run: brew install libomp
+	     brew install gcc
+	     brew upgrade
 
       - name: Lint with flake8
         run: |
