@@ -16,16 +16,20 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest
           pip install -r requirements.txt
 
-      - name: Install libomp on macOS
+      - name: Install dependencies on macOS
         if: runner.os == 'macOS'
-        run: brew install libomp
+        run: |
+          brew update
+          brew install libomp
+          brew install gcc
+          brew upgrade
 
       - name: Lint with flake8
         run: |
