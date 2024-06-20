@@ -13019,23 +13019,13 @@ class epanet:
         # Run simulation steps and collect quality data
         simulation_duration = self.getTimeSimulationDuration()
         while tleft > 0 and t != simulation_duration:
-            print(k)
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
             time_data.append(t)
             for nl in ss:
                 for idx, j in enumerate(uu, start=1):
 
-                    try:
                         concentration = self.getMSXSpeciesConcentration(0, nl, j)
-                        # Ensure quality_data has enough rows for k + 1
-                        if k + 1 < time_steps:
-                            quality_data[nl][k , idx-1] = concentration
-                        else:
-                            raise IndexError("k + 1 exceeds time_steps")
-                    except IndexError as e:
-                        print(f"Error at node {nl}, species index {idx}: {e}")
-                    except Exception as e:
-                        print(f"Error: {e}")
+                        quality_data[nl][k , idx-1] = concentration
             k += 1
 
 
