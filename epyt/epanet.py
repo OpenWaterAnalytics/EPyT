@@ -13297,6 +13297,8 @@ class epanet:
             """
         attributes = []
         def recurse_attrs(obj):
+            for k, v in obj.__dict__.items():
+                attributes.append((k, v))
                 if hasattr(v, '__dict__'):
                     recurse_attrs(v)
 
