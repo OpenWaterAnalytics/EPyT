@@ -13300,7 +13300,30 @@ class epanet:
         for i, pattern in enumerate(pattern_matrix):
             self.msx.MSXsetpattern(i+1, pattern, nfactors)
 
+    def getallAtr(self, obj):
+        """Prints all attributes of a given Python object
+            example:
+            filename = 'Net1.inp' #you can also try 'net2-cl2.inp', 'Net3.inp', etc.
+            d = epanet(filename)
+            Q = d.getComputedQualityTimeSeries()
+            d.getallAtr(Q) #Will print Time, LinkQuality , NodeQuality and MassFlowRate
+            """
+        for k, v in obj.__dict__.items():
+            print(k, v)
+            if hasattr(v, '__dict__'):
+                getallAtr(v)
 
+    def getmethods(self):
+        """Returns all methods of epanet
+            example:
+            filename = 'L-TOWN.inp'
+            d=epanet(filename)
+            methods = G.getmethods()
+            print(methods)
+        """
+        methods_dir = [method for method in dir(self) if
+                       callable(getattr(self, method)) and not method.startswith('__') and not method.startswith('_')]
+        return methods_dir
 
 class epanetapi:
     """
