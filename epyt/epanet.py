@@ -6435,6 +6435,7 @@ class epanet:
             value.LinkVelocityUnits = 'meters/sec'
             value.NodeTankVolumeUnits = 'cubic meters'
             value.QualityWaterAgeUnits = 'hours'
+
         self.units = value
         return value
 
@@ -10396,6 +10397,20 @@ class epanet:
                     safe_delete(file)
                 for file in Path(".").glob("@#*.txt"):
                     safe_delete(file)
+
+                arch = sys.platform
+                if arch == 'win64' or arch == 'win32':
+                    cwd = os.getcwd()
+                    files = os.listdir(cwd)
+                    tmp_files = [
+                        f for f in files
+                        if os.path.isfile(os.path.join(cwd, f)) and
+                           (f.startswith('s') or f.startswith('en')) and
+                           5 <= len(f) <= 8 and
+                           "." not in f
+                    ]
+                    tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
+                    safe_delete(tmp_files_paths)
             except:
                 pass
         if self.display_msg:
@@ -10762,10 +10777,33 @@ class epanet:
         self.RelativeError = n.RelativeError  # Relative error - hydraulic simulation statistic
         self.Iterations = n.Iterations  # Iterations to reach solution
 
-        self.getUnits()  # Get all units of the network parameters
+        units = self.getUnits()  # Get all units of the network parameters
         self.NodeCoordinates = self.getNodeCoordinates()  # Coordinates for each node
         # (long/lat & intermediate pipe coordinates)
         self.Version = self.getVersion()
+
+        # UNITS
+        self.NodePressureUnits = units.NodePressureUnits
+        self.PatternDemandsUnits = units.PatternDemandsUnits
+        self.LinkPipeDiameterUnits = units.LinkPipeDiameterUnits
+        self.NodeTankDiameterUnits = units.NodeTankDiameterUnits
+        self.EnergyEfficiencyUnits = units.EnergyEfficiencyUnits
+        self.NodeElevationUnits = units.NodeElevationUnits
+        self.NodeDemandUnits = units.NodeDemandUnits
+        self.NodeEmitterCoefficientUnits = units.NodeEmitterCoefficientUnits
+        self.EnergyUnits = units.EnergyUnits
+        self.LinkFrictionFactorUnits = units.LinkFrictionFactorUnits
+        self.NodeHeadUnits = units.NodeHeadUnits
+        self.LinkLengthsUnits = units.LinkLengthsUnits
+        self.LinkMinorLossCoeffUnits = units.LinkMinorLossCoeffUnits
+        self.LinkPumpPowerUnits = units.LinkPumpPowerUnits
+        self.QualityReactionCoeffBulkUnits = units.QualityReactionCoeffBulkUnits
+        self.QualityReactionCoeffWallUnits = units.QualityReactionCoeffWallUnits
+        self.LinkPipeRoughnessCoeffUnits = units.LinkPipeRoughnessCoeffUnits
+        self.QualitySourceMassInjectionUnits = units.QualitySourceMassInjectionUnits
+        self.LinkVelocityUnits = units.LinkVelocityUnits
+        self.NodeTankVolumeUnits = units.NodeTankVolumeUnits
+        self.QualityWaterAgeUnits = units.QualityWaterAgeUnits
 
     def __getLinkIndices(self, *argv):
         if len(argv) > 0:
@@ -11254,6 +11292,11 @@ class epanet:
                d.unloadMSX()
                """
         self.msx.MSXclose()
+        arch = sys.platform
+        if arch == 'win64' or arch == 'win32':
+            msx_temp_files = list(filter(lambda f: os.path.isfile(os.path.join(os.getcwd(), f))
+                                                   and f.startswith("msx") and "." not in f, os.listdir(os.getcwd())))
+            safe_delete(msx_temp_files)
 
     def getMSXSpeciesCount(self):
         """ Retrieves the number of species.
@@ -12245,6 +12288,8 @@ class epanet:
                     value_row.append(y)
                 value.append(value_row)
         else:
+            if isinstance(varagin, int):
+                varagin = [varagin]  # Transform single integer input into a list
             for i in varagin:
                 value_row = []
                 for j in range(1, self.getMSXSpeciesCount() + 1):
@@ -12359,6 +12404,8 @@ class epanet:
             f.seek(0)
             f.writelines(lines)
             f.truncate()
+        self.msx.MSXclose()
+        self.msx.MSXopen(self.msxname, reload = True)
 
     def setMSXAreaUnitsCM2(self):
         """  Sets the area units to square centimeters.
@@ -12664,10 +12711,13 @@ class epanet:
                d.loadMSXFile('net2-cl2.msx')
                d.addMSXPattern('Pl', [1.0 2.0 1.5 1.0])
                d.getMSXPattern()
-               d.setMSXPattern(1, [1.0 0.0 3.0]);
+               d.setMSXPattern(1, [1.0 0.0 3.0])
                d.getMSXPattern()
 
              See also getMSXPattern, addMSXPattern."""
+        if not isinstance(index, int):
+            index = self.getMSXPatternsIndex(index)
+            index = index[0]
         nfactors = len(patternVector)
         self.msx.MSXsetpattern(index, patternVector, nfactors)
 
@@ -12745,7 +12795,7 @@ class epanet:
             self.setMSXPattern(index, args[1])
         return index
 
-    def getMSXComputedQualitySpecie(self, species=None):
+    def getMSXComputedQualitySpecie(self, species=None, nodes=1, links=1):
         """  Returns the node/link quality for specific specie.
 
              Example :
@@ -12758,8 +12808,11 @@ class epanet:
 
                 See also getMSXComputedQualityNode, getMSXComputedQualityLink.
             """
+
         if self.getMSXSpeciesCount() == 0:
             return -1
+        if not isinstance(species, list):
+            species = [species]
         if species is None:
             species_index_name = self.getMSXSpeciesIndex()
         else:
@@ -12767,13 +12820,19 @@ class epanet:
 
         node_count = self.getNodeCount()
         link_count = self.getLinkCount()
+        specie_count = len(species)
         node_indices = list(range(1, node_count + 1))
         link_indices = list(range(1, link_count + 1))
         # Initialized quality and time
         msx_time_step = self.getMSXTimeStep()
         time_steps = int(self.getTimeSimulationDuration() / msx_time_step) + 1
-        quality = [np.zeros((time_steps, 1)) for _ in range(node_count)]
-        lquality = [np.zeros((time_steps, 1)) for _ in range(link_count)]
+        quality = 0
+        lquality = 0
+        if nodes is not None:
+            quality = [np.zeros((time_steps, specie_count)) for _ in range(node_count)]
+        if links is not None:
+            lquality = [np.zeros((time_steps, specie_count)) for _ in range(link_count)]
+
         data = {
             'NodeQuality': quality,
             'LinkQuality': lquality,
@@ -12789,10 +12848,12 @@ class epanet:
         # Retrieve species concentration at node
         k = 0
         for j_idx, j in enumerate(species_index_name, start=1):
-            for i, nl in enumerate(node_indices, start=1):
-                data['NodeQuality'][i - 1][k, j_idx - 1] = self.getMSXNodeInitqualValue()[i - 1][j - 1]
-            for i, nl in enumerate(link_indices, start=1):
-                data['LinkQuality'][i - 1][k, j_idx - 1] = self.getMSXLinkInitqualValue()[i - 1][j - 1]
+            if nodes is not None:
+                for i, nl in enumerate(node_indices, start=1):
+                    data['NodeQuality'][i - 1][k, j_idx - 1] = self.getMSXNodeInitqualValue()[i - 1][j - 1]
+            if links is not None:
+                for i, nl in enumerate(link_indices, start=1):
+                    data['LinkQuality'][i - 1][k, j_idx - 1] = self.getMSXLinkInitqualValue()[i - 1][j - 1]
 
         k = 1
         t = 0
@@ -12802,10 +12863,12 @@ class epanet:
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
             if t >= msx_time_step:
                 for g, j in enumerate(species_index_name, start=1):
-                    for i, nl in enumerate(node_indices, start=1):
-                        data['NodeQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(0, nl, j)
-                    for i, nl in enumerate(link_indices, start=1):
-                        data['LinkQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+                    if nodes is not None:
+                        for i, nl in enumerate(node_indices, start=1):
+                            data['NodeQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+                    if links is not None:
+                        for i, nl in enumerate(link_indices, start=1):
+                            data['LinkQuality'][i - 1][k, g - 1] = self.getMSXSpeciesConcentration(1, nl, j)
             k += 1
 
         value = EpytValues()
@@ -12827,18 +12890,30 @@ class epanet:
                        MSX_comp.NodeQuality  row: time, col: node index
                        MSX_comp.Time
 
+                    Example wtih 2 species:
+                        msx=d.getMSXComputedNodeQualitySpecie(x,['CL2',"H"])
+                        print(msx["CL2"].NodeQuality)
                      See also getMSXComputedQualitySpecie, getMSXComputedLinkQualitySpecie."""
-        merged = []
-        MSX_comp = self.getMSXComputedQualitySpecie([species_id])
-        MSX_comp_node = MSX_comp.NodeQuality
-        for i in node_indices:
-            column = MSX_comp_node[i]
-            merged.append(column)
-        value = EpytValues()
-        value.NodeQuality, value.Time = {}, {}
-        value.NodeQuality = merged
-        value.Time = MSX_comp.Time
-        return value
+        value = {}  # Use a dictionary instead of a list
+        counter = 0
+        for specie in species_id:
+            MSX_comp = self.getMSXComputedQualitySpecie(specie, nodes=1, links=None)
+            MSX_comp_Node = MSX_comp.NodeQuality
+            merged = []  # Reset merged list for each specie
+            for i in node_indices:
+                column = MSX_comp_Node[i]
+                merged.append(column)
+            # Create a new EpytValues object and populate its attributes
+            new_value = EpytValues()
+            new_value.NodeQuality = merged
+            new_value.Time = MSX_comp.Time
+            # Store the new EpytValues object in the dictionary with the specie number as the key
+            value[specie] = new_value
+            counter += 1
+        if len(species_id) == 1:
+            return value[species_id[0]]
+        else:
+            return value
 
     def getMSXComputedLinkQualitySpecie(self, node_indices, species_id):
         """ Returns the link quality for specific specie.
@@ -12851,18 +12926,168 @@ class epanet:
               MSX_comp.LinkQuality  row: time, col: node index
               MSX_comp.Time
 
+            Example wtih 2 species:
+                    msx=d.getMSXComputedLinkQualitySpecie(x,['CL2',"H"])
+                    print(msx.LinkQuality)
             See also getMSXComputedQualitySpecie, getMSXComputedNodeQualitySpecie."""
-        merged = []
-        MSX_comp = self.getMSXComputedQualitySpecie([species_id])
-        MSX_comp_Link = MSX_comp.LinkQuality
-        for i in node_indices:
-            column = MSX_comp_Link[i]
-            merged.append(column)
-        value = EpytValues()
-        value.LinkQuality, value.Time = {}, {}
-        value.LinkQuality = merged
-        value.Time = MSX_comp.Time
-        return value
+        value = {}  # Use a dictionary instead of a list
+        counter = 0
+
+        for specie in species_id:
+            MSX_comp = self.getMSXComputedQualitySpecie(specie, nodes=None, links=1)
+            MSX_comp_Link = MSX_comp.LinkQuality
+            merged = []  # Reset merged list for each specie
+            for i in node_indices:
+                column = MSX_comp_Link[i]
+                merged.append(column)
+            # Create a new EpytValues object and populate its attributes
+            new_value = EpytValues()
+            new_value.LinkQuality = merged
+            new_value.Time = MSX_comp.Time
+            # Store the new EpytValues object in the dictionary with the specie number as the key
+            value[specie] = new_value
+            counter += 1
+
+        if len(species_id) == 1:
+            return value[species_id[0]]
+        else:
+            return value
+
+    def getMSXComputedQualityNode(self, *args):
+        """
+        Returns the computed quality for nodes.
+        Example:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+
+            MSX_comp = d.getMSXComputedQualityNode()
+            x = MSX_comp.Quality
+            y = MSX_comp.Time
+        """
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+
+        if args:
+            if len(args) == 1:
+                ss = args[0]
+                uu = list(range(1, self.getMSXSpeciesCount() + 1))
+            elif len(args) == 2:
+                ss = args[0]
+                uu = args[1]
+        else:
+            ss = list(range(1, self.getNodeCount() + 1))
+            uu = list(range(1, self.getMSXSpeciesCount() + 1))
+
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+
+        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
+
+        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
+        time_data = []
+
+        k = 0
+        t = 0
+        tleft = 1
+        # Initialize Quality Data for each node and species
+        for nl in ss:
+            for idx, j in enumerate(uu, start=1):
+                try:
+                    quality_data[nl][k, idx - 1] = self.getMSXSpeciesConcentration(0, nl, j)
+                except IndexError:
+                    raise ValueError(
+                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+        k += 1
+
+        # Run simulation steps and collect quality data
+        simulation_duration = self.getTimeSimulationDuration()
+        while tleft > 0 and t != simulation_duration:
+            print(k)
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            time_data.append(t)
+            for nl in ss:
+                for idx, j in enumerate(uu, start=1):
+
+                    try:
+                        concentration = self.getMSXSpeciesConcentration(0, nl, j)
+                        # Ensure quality_data has enough rows for k + 1
+                        if k + 1 < time_steps:
+                            quality_data[nl][k , idx-1] = concentration
+                        else:
+                            raise IndexError("k + 1 exceeds time_steps")
+                    except IndexError as e:
+                        print(f"Error at node {nl}, species index {idx}: {e}")
+                    except Exception as e:
+                        print(f"Error: {e}")
+            k += 1
+
+
+        out = EpytValues()
+        out.Quality = quality_data
+        out.Time = time_data
+        return out
+
+    def getMSXComputedQualityLink(self, *args):
+        """
+        Returns the computed quality for links.
+        Example:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+
+            MSX_comp = d.getMSXComputedQualityLink()
+            x = MSX_comp.Quality
+            y = MSX_comp.Time
+        """
+        if self.getMSXSpeciesCount() == 0:
+            return 0
+
+        if args:
+            if len(args) == 1:
+                ss = args[0]
+                uu = list(range(1, self.getMSXSpeciesCount() + 1))
+            elif len(args) == 2:
+                ss = args[0]
+                uu = args[1]
+        else:
+            ss = list(range(1, self.getLinkCount() + 1))
+            uu = list(range(1, self.getMSXSpeciesCount() + 1))
+
+        self.solveMSXCompleteHydraulics()
+        self.initializeMSXQualityAnalysis(0)
+
+        time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
+        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
+        time_data = []
+
+        k = 0
+        t = 0
+        tleft = 1
+        i = 1
+        # Initialize Quality Data for each node and species
+        for nl in ss:
+            for idx, j in enumerate(uu, start=1):
+                try:
+                    quality_data[nl][k, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+                except IndexError:
+                    raise ValueError(
+                        'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+
+        # Run simulation steps and collect quality data
+        while tleft > 0 and t != self.getTimeSimulationDuration():
+            t, tleft = self.stepMSXQualityAnalysisTimeLeft()
+            time_data.append(t)
+
+            for nl in ss:
+                for idx, j in enumerate(uu, start=1):
+                    quality_data[nl][k + 1, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
+
+            k += 1
+
+        out = EpytValues()
+        out.Quality = quality_data
+        out.Time = time_data
+
+        return out
 
     def setMSXLinkInitqualValue(self, value):
         """"
@@ -12899,20 +13124,24 @@ class epanet:
              See also getMSXSources, getMSXSourceNodeNameID, getMSXSourceType
                       getMSXSourceLevel, getMSXSourcePatternIndex."""
         MSXTYPESOURCE = {'NOSOURCE', 'CONCEN', 'MASS', 'SETPOINT', 'FLOWPACED'}
+
+        if not isinstance(speciesID, list):
+            speciesID = [speciesID]
         node = self.getNodeIndex(nodeID)
         species = self.getMSXSpeciesIndex(speciesID)
         species = species[0]
         pat = self.getMSXPatternsIndex(patID)
         pat = pat[0]
-        if sourcetype == 'NOSOURCE' or sourcetype == 'nosource':
+        sourcetype = sourcetype.upper()
+        if sourcetype == 'NOSOURCE':
             type = -1
-        elif sourcetype == 'CONCEN' or sourcetype == 'concern':
+        elif sourcetype == 'CONCEN':
             type = 0
-        elif sourcetype == 'MASS' or sourcetype == 'mass':
+        elif sourcetype == 'MASS':
             type = 1
-        elif sourcetype == 'SETPOINT' or sourcetype == 'setpoint':
+        elif sourcetype == 'SETPOINT':
             type = 2
-        elif sourcetype == 'FLOWPACED' or sourcetype == 'flowpaced':
+        elif sourcetype == 'FLOWPACED':
             type = 3
 
         self.msx.MSXsetsource(node, species, type, concentration, pat)
@@ -12935,101 +13164,125 @@ class epanet:
             for j in range(len(value[0])):
                 self.msx.MSXsetinitqual(0, i + 1, j + 1, value[i][j])
 
-    def setMSXWrite(self):
+    def initializeMSXWrite(self):
         value = EpytValues()
-        value.FILENAME = ""
-        value.TITLE = ""
-        value.AREA_UNITS = ""
-        value.RATE_UNITS = ""
-        value.SOLVER = ""
-        value.TIMESTEP = {}
-        value.COMPILER = ""
-        value.COUPLING = ""
-        value.RTOL = {}
-        value.ATOL = {}
 
-        value.SPECIES = {}
-        value.COEFFICIENTS = {}
-        value.TERMS = {}
-        value.PIPES = {}
-        value.TANKS = {}
-        value.SOURCES = {}
-        value.GLOBAL = {}
-        value.QUALITY = {}
-        value.PARAMETERS = {}
-        value.PATERNS = {}
+        # Initialize strs
+        string_attrs = [
+            "FILENAME", "TITLE", "AREA_UNITS", "RATE_UNITS",
+            "SOLVER", "COMPILER", "COUPLING"
+        ]
+
+        for attr in string_attrs:
+            setattr(value, attr, "")
+
+        # Initialize dicts
+        dict_attrs = [
+            "TIMESTEP", "RTOL", "ATOL", "SPECIES", "COEFFICIENTS",
+            "TERMS", "PIPES", "TANKS", "SOURCES", "GLOBAL",
+            "QUALITY", "PARAMETERS", "PATERNS"
+        ]
+
+        for attr in dict_attrs:
+            setattr(value, attr, {})
 
         return value
-
     def writeMSXFile(self, msx):
+        """
+        Write a new MSX file
+                Example for wirteMSXFile:
+                    msx = d.initializeMSXWrite()
+
+                    msx.FILENAME="cl34.msx"
+                    msx.TITLE = "CL2 Full msx"
+                    msx.AREA_UNITS = 'FT2'
+                    msx.RATE_UNITS = 'DAY'
+                    msx.SOLVER = 'EUL'
+                    msx.COUPLING = 'NONE'
+                    msx.COMPILER = 'NONE'
+                    msx.TIMESTEP = 300
+                    msx.ATOL = 0.001
+                    msx.RTOL = 0.001
+
+                    msx.SPECIES={'BULK CL2 MG 0.01 0.001'}
+                    msx.COEFFICIENTS = {'PARAMETER Kb 0.3', 'PARAMETER Kw 1'}
+                    msx.TERMS = {'Kf 1.5826e-4 * RE^0.88 / D'}
+                    msx.PIPES = {'RATE CL2 -Kb*CL2-(4/D)*Kw*Kf/(Kw+Kf)*CL2'}
+                    msx.TANKS = {'RATE CL2 -Kb*CL2'}
+                    msx.SOURCES = {'CONC 1 CL2 0.8 '}
+                    msx.GLOBAL = {'Global CL2 0.5'}
+                    msx.QUALITY = {'NODE 26 CL2 0.1'}
+                    msx.PARAMETERS = {''}
+                    msx.PATERNS = {''}
+                    d.writeMSXFile(msx)
+                    d.unloadMSX()
+                    d.loadMSXFile(msx.FILENAME)
+                    d.unloadMSX()
+                    d.unload()
+                 """
         filename = msx.FILENAME
         with open(filename, 'w') as f:
+            # Writing the TITLE section
             f.write("[TITLE]\n")
             f.write(msx.TITLE)
-            # OPTIONS
+
+            # Writing the OPTIONS section
+            options = {
+                "AREA_UNITS": msx.AREA_UNITS,
+                "RATE_UNITS": msx.RATE_UNITS,
+                "SOLVER": msx.SOLVER,
+                "TIMESTEP": msx.TIMESTEP,
+                "COMPILER": msx.COMPILER,
+                "COUPLING": msx.COUPLING,
+                "RTOL": msx.RTOL,
+                "ATOL": msx.ATOL
+            }
             f.write("\n\n[OPTIONS]")
-            ans = msx.AREA_UNITS
-            f.write("\nAREA_UNITS\t{}".format(ans))
-            ans = msx.RATE_UNITS
-            f.write("\nRATE_UNITS\t{}".format(ans))
-            ans = msx.SOLVER
-            f.write("\nSOLVER\t\t{}".format(ans))
-            ans = msx.TIMESTEP
-            f.write("\nTIMESTEP\t{}".format(ans))
-            ans = msx.COMPILER
-            f.write("\nCOMPILER\t{}".format(ans))
-            ans = msx.COUPLING
-            f.write("\nCOUPLING\t{}".format(ans))
-            ans = msx.RTOL
-            f.write("\nRTOL\t\t{}".format(ans))
-            ans = msx.ATOL
-            f.write("\nATOL\t\t{}".format(ans))
+            for key, value in options.items():
+                f.write("\n{}\t{}".format(key, value))
+            # Sections with list data
+            sections = {
+                "[SPECIES]": msx.SPECIES,
+                "[COEFFICIENTS]": msx.COEFFICIENTS,
+                "[TERMS]": msx.TERMS,
+                "[PIPES]": msx.PIPES,
+                "[TANKS]": msx.TANKS,
+                "[SOURCES]": msx.SOURCES,
+                "[QUALITY]": msx.QUALITY,
+                "[GLOBAL]": msx.GLOBAL,
+                "[PARAMETERS]": msx.PARAMETERS,
+                "[PATTERNS]": msx.PATERNS
+            }
+            for section, items in sections.items():
+                f.write("\n\n{}".format(section))
+                for item in items:
+                    f.write("\n{}".format(item))
 
-            f.write("\n\n[SPECIES]\n")
-            ans = list(msx.SPECIES)
-            for item in ans:
-                f.write("{}\n".format(item))
 
-            f.write("\n\n[COEFFICIENTS]\n")
-            ans = list(msx.COEFFICIENTS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[TERMS]\n")
-            ans = list(msx.TERMS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[PIPES]\n")
-            ans = list(msx.PIPES)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[TANKS]\n")
-            ans = list(msx.TANKS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[SOURCES]\n")
-            ans = list(msx.SOURCES)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[QUALITY]\n")
-            ans = list(msx.QUALITY)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[GLOBAL]\n")
-            ans = list(msx.GLOBAL)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[PARAMETERS]\n")
-            ans = list(msx.PARAMETERS)
-            for item in ans:
-                f.write("{}\n".format(item))
-            f.write("\n\n[PATTERNS]\n")
-            ans = list(msx.PATERNS)
-            for item in ans:
-                f.write("{}\n".format(item))
-
-            f.write('\n[REPORT]\n')
+            f.write('\n\n[REPORT]\n')
             f.write('NODES ALL\n')
             f.write('LINKS ALL\n')
+
+    def setMSXPatternMatrix(self, pattern_matrix):
+        """Sets all of the multiplier factors for all patterns
+
+            Example:
+                inpname = os.path.join(os.getcwd(), 'epyt', 'networks','msx-examples', 'net2-cl2.inp')
+                msxname = os.path.join(os.getcwd(), 'epyt', 'networks','msx-examples', 'net2-cl2.msx')
+                d = epanet(inpname)
+                d.loadMSXFile(msxname)
+                d.addMSXPattern('1',[])
+                d.setMSXPatternMatrix([.1,.2,.5,.2,1,.9])
+                print(d.getMSXPattern())
+        """
+        if not all(isinstance(i, list) for i in pattern_matrix):
+            pattern_matrix = [pattern_matrix]
+
+        pattern_matrix = [[float(value) for value in row] for row in pattern_matrix]
+        nfactors = len(pattern_matrix[0])
+        for i, pattern in enumerate(pattern_matrix):
+            self.msx.MSXsetpattern(i+1, pattern, nfactors)
+
 
 
 class epanetapi:
@@ -15913,7 +16166,7 @@ class epanetmsxapi:
         if not ignore_msxfile:
             self.MSXopen(msxfile)
 
-    def MSXopen(self, msxfile):
+    def MSXopen(self, msxfile, reload = False):
         """
         Open MSX file
         filename - Arsenite.msx or use full path
@@ -15925,7 +16178,7 @@ class epanetmsxapi:
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
 
-        if self.display_msg:
+        if self.display_msg and not reload:
             print("Opening MSX file:", msxfile)
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
@@ -16332,7 +16585,8 @@ class epanetmsxapi:
                 factors: an array of multiplier values to replace those previously used by
                          the pattern
                 nfactors: the number of entries in the multiplier array/ vector factors"""
-        index = c_int(index)
+        if isinstance(index, int):
+            index =  c_int(index)
         nfactors = c_int(nfactors)
         DoubleArray = c_double * len(factors)
         mult_array = DoubleArray(*factors)
@@ -16450,7 +16704,7 @@ class epanetmsxapi:
            Returns:
                The value of the computed concentration of the species at the current
                time period.
-                """
+        """
 
         value = 0
         value = c_double(value)
