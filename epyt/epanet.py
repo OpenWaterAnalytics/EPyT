@@ -11257,7 +11257,7 @@ class epanet:
         self.MSXFile = msxname[:-4]
         self.MSXTempFile = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.MSXTempFile)
-        self.msx = epanetmsxapi(self.MSXTempFile, customMSXlib=customMSXlib, display_msg=self.display_msg)
+        self.msx = epanetmsxapi(self.MSXTempFile, customMSXlib=customMSXlib, display_msg=self.display_msg, msxrealfile = self.MSXFile)
 
         # Message to user if he uses ph with msx
         if self.api._ph is not None:
@@ -13063,14 +13063,14 @@ class epanet:
         self.initializeMSXQualityAnalysis(0)
 
         time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
+
         quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
         time_data = []
 
         k = 0
         t = 0
         tleft = 1
-        i = 1
-        # Initialize Quality Data for each node and species
+        # Initialize Quality Data for each link and species
         for nl in ss:
             for idx, j in enumerate(uu, start=1):
                 try:
@@ -13078,22 +13078,22 @@ class epanet:
                 except IndexError:
                     raise ValueError(
                         'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
+        k += 1
 
         # Run simulation steps and collect quality data
-        while tleft > 0 and t != self.getTimeSimulationDuration():
+        simulation_duration = self.getTimeSimulationDuration()
+        while tleft > 0 and t != simulation_duration:
             t, tleft = self.stepMSXQualityAnalysisTimeLeft()
             time_data.append(t)
-
             for nl in ss:
                 for idx, j in enumerate(uu, start=1):
-                    quality_data[nl][k + 1, idx - 1] = self.getMSXSpeciesConcentration(1, nl, j)
-
+                    concentration = self.getMSXSpeciesConcentration(1, nl, j)
+                    quality_data[nl][k, idx - 1] = concentration
             k += 1
 
         out = EpytValues()
         out.Quality = quality_data
         out.Time = time_data
-
         return out
 
     def setMSXLinkInitqualValue(self, value):
@@ -16168,7 +16168,7 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None, display_msg=True):
+    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None, display_msg=True, msxrealfile = ''):
         self.display_msg = display_msg
         if customMSXlib is not None:
             self.MSXLibEPANET = customMSXlib
@@ -16194,9 +16194,9 @@ class epanetmsxapi:
             self.msx_error.argtypes = [c_int, c_char_p, c_int]
 
         if not ignore_msxfile:
-            self.MSXopen(msxfile)
+            self.MSXopen(msxfile, msxrealfile)
 
-    def MSXopen(self, msxfile):
+    def MSXopen(self, msxfile, msxrealfile):
         """
         Open MSX file
         filename - Arsenite.msx or use full path
@@ -16206,10 +16206,10 @@ class epanetmsxapi:
             msx.MSXopen(Arsenite.msx)
         """
         if not os.path.exists(msxfile):
-            raise FileNotFoundError(f"File not found: {msxfile}")
+            raise FileNotFoundError(f"File not found: ")
 
         if self.display_msg:
-            print("Opening MSX file:", msxfile)
+            print(f"Opening MSX file:{msxrealfile}.msx")
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
         if err != 0:
