@@ -10787,7 +10787,7 @@ class epanet:
         # (long/lat & intermediate pipe coordinates)
         self.Version = self.getVersion()
 
-        # UNITS
+        # Units
         self.NodePressureUnits = units.NodePressureUnits
         self.PatternDemandsUnits = units.PatternDemandsUnits
         self.LinkPipeDiameterUnits = units.LinkPipeDiameterUnits
