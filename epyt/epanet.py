@@ -12825,19 +12825,20 @@ class epanet:
 
                 See also getMSXComputedQualityNode, getMSXComputedQualityLink.
             """
-
-        if self.getMSXSpeciesCount() == 0:
-            return -1
         if not isinstance(species, list):
             species = [species]
+        if self.getMSXSpeciesCount() == 0:
+            return -1
         if species is None:
             species_index_name = self.getMSXSpeciesIndex()
         else:
             species_index_name = self.getMSXSpeciesIndex(species)
 
+
+
         node_count = self.getNodeCount()
         link_count = self.getLinkCount()
-        specie_count = len(species)
+        specie_count = len(species_index_name)
         node_indices = list(range(1, node_count + 1))
         link_indices = list(range(1, link_count + 1))
         # Initialized quality and time
