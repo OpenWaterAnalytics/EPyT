@@ -376,6 +376,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |initializeHydraulicAnalysis|Initializes storage tank levels, link status and settings, and the simulation clock time prior to running a hydraulic analysis
 |initializeQualityAnalysis|Initializes water quality and the simulation clock time prior to running a water quality analysis
 |loadEPANETFile|Load epanet file when use bin functions
+|loadMSXEPANETFile|Re-Load EPANET MSX file - parfor
 |nextHydraulicAnalysisStep|Determines the length of time until the next hydraulic event occurs in an extended period simulation
 |nextQualityAnalysisStep|Advances the water quality simulation to the start of the next hydraulic time period
 |openAnyInp|Open as on matlab editor any EPANET input file using built function open

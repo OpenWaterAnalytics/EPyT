@@ -516,7 +516,8 @@ class epanet:
         warnings.simplefilter('always')
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
-        self.msxname = None
+        self.MSXFile = None
+        self.MSXTempFile = None
         self.DEMANDMODEL = ['DDA', 'PDA']
         # Link types
         self.TYPELINK = ['CVPIPE', 'PIPE', 'PUMP', 'PRV', 'PSV',
@@ -6503,8 +6504,18 @@ class epanet:
         else:
             self.api.ENopen(argv[0], argv[1], argv[2])
 
+    def loadMSXEPANETFile(self, msxfile):
+        """ Load EPANET MSX file.
+
+        Example:
+
+        >>> d.loadMSXEPANETFile(d.MSXTempFile)
+        """
+        err = self.msx.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
+        return err
+
     def max(self, value):
-        """ Retrieves the max value of numpy.array or numpy.mat """
+        """ Retrieves the smax value of numpy.array or numpy.mat """
         return np.max(value)
 
     def multiply_elements(self, arr1, arr2):
@@ -11243,9 +11254,10 @@ class epanet:
                     continue
                 break
 
-        self.msxname = msxname[:-4] + '_temp.msx'
-        copyfile(msxname, self.msxname)
-        self.msx = epanetmsxapi(self.msxname, customMSXlib=customMSXlib, display_msg=self.display_msg)
+        self.MSXFile = msxname[:-4]
+        self.MSXTempFile = msxname[:-4] + '_temp.msx'
+        copyfile(msxname, self.MSXTempFile)
+        self.msx = epanetmsxapi(self.MSXTempFile, customMSXlib=customMSXlib, display_msg=self.display_msg)
 
         # Message to user if he uses ph with msx
         if self.api._ph is not None:
@@ -11499,7 +11511,7 @@ class epanet:
             in_options = False
 
             # Open and read the file
-            with open(self.msxname, 'r') as file:
+            with open(self.MSXTempFile, 'r') as file:
                 for line in file:
                     # Check for [OPTIONS] section
                     if "[OPTIONS]" in line:
@@ -12040,7 +12052,7 @@ class epanet:
         return value
 
     def getEquations(self):
-        msxname = self.msxname
+        msxname = self.MSXTempFile
         Terms = {}
         Pipes = {}
         Tanks = {}
@@ -12409,8 +12421,8 @@ class epanet:
             f.truncate()
 
         self.msx.MSXclose()
-        copyfile(options_section, self.msxname)
-        self.msx.MSXopen(self.msxname, reload = True)
+        copyfile(options_section, self.MSXTempFile)
+        self.loadMSXEPANETFile(self.MSXTempFile)
 
     def setMSXAreaUnitsCM2(self):
         """  Sets the area units to square centimeters.
@@ -16171,7 +16183,7 @@ class epanetmsxapi:
         if not ignore_msxfile:
             self.MSXopen(msxfile)
 
-    def MSXopen(self, msxfile, reload = False):
+    def MSXopen(self, msxfile):
         """
         Open MSX file
         filename - Arsenite.msx or use full path
@@ -16183,7 +16195,7 @@ class epanetmsxapi:
         if not os.path.exists(msxfile):
             raise FileNotFoundError(f"File not found: {msxfile}")
 
-        if self.display_msg and not reload:
+        if self.display_msg:
             print("Opening MSX file:", msxfile)
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
