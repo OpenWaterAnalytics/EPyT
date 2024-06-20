@@ -33,3 +33,4 @@ venv.bak/
 # PyCharm
 .idea/
 .pypirc
+/epyt/tutorials/.ipynb_checkpoints
