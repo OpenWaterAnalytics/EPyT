@@ -13302,7 +13302,7 @@ class epanet:
         for k, v in obj.__dict__.items():
             print(k, v)
             if hasattr(v, '__dict__'):
-                getallAtr(v)
+                self.getallAtr(v)
 
     def getmethods(self):
         """Returns all methods of epanet
