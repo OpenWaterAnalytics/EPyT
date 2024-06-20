@@ -16218,7 +16218,7 @@ class epanetmsxapi:
                 print("Error 503 may indicate a problem with the MSX file or the MSX library.")
         else:
             if self.display_msg:
-                print(f"MSX file {msxbasename} loaded successfully.")
+                print(f"MSX file {msxrealfile} loaded successfully.")
 
     def MSXclose(self):
         """  Close .msx file
