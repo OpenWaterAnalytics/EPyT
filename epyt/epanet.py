@@ -12389,7 +12389,10 @@ class epanet:
         return nodes
 
     def changeMSXOptions(self, param, change):
-        with open(self.msxname, 'r+') as f:
+        options_section = 'options_section.msx'
+        self.saveMSXFile(options_section)
+
+        with open(options_section, 'r+') as f:
             lines = f.readlines()
             options_index = -1  # Default to -1 in case the [OPTIONS] section does not exist
             flag = 0
@@ -12404,7 +12407,9 @@ class epanet:
             f.seek(0)
             f.writelines(lines)
             f.truncate()
+
         self.msx.MSXclose()
+        copyfile(options_section, self.msxname)
         self.msx.MSXopen(self.msxname, reload = True)
 
     def setMSXAreaUnitsCM2(self):
