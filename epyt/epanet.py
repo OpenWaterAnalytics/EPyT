@@ -639,12 +639,6 @@ class epanet:
             if self.display_msg:
                 print(f'Input File {self.netName} loaded successfully.\n')
 
-        # Global plot settings
-        plt.rcParams["figure.figsize"] = [3, 2]
-        plt.rcParams['figure.dpi'] = 300
-        plt.rcParams['figure.constrained_layout.use'] = True
-        plt.rcParams['figure.max_open_warning'] = 30
-
     def addControls(self, control, *argv):
         """ Adds a new simple control.
 
