@@ -13333,7 +13333,7 @@ class epanet:
         s = self.getMSXComputedQualityNode(args[0], args[1])
         nodesID = self.getNodeNameID()
         SpeciesNameID = self.getMSXSpeciesNameID()
-        # Print the sizes of Time and Quality for debugging
+
         for nd, l in enumerate(args[0]):
             nodeID = nodesID[l - 1]
             plt.figure(figsize=(10, 6))
