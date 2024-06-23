@@ -12990,7 +12990,6 @@ class epanet:
         else:
             ss = list(range(1, self.getNodeCount() + 1))
             uu = list(range(1, self.getMSXSpeciesCount() + 1))
-
         self.solveMSXCompleteHydraulics()
         self.initializeMSXQualityAnalysis(0)
 
@@ -13318,6 +13317,38 @@ class epanet:
         methods_dir = [method for method in dir(self) if
                        callable(getattr(self, method)) and not method.startswith('__') and not method.startswith('_')]
         return methods_dir
+
+    def plotMSXSpeciesNodeConcentration(self, *args):
+        """Plots concentration of species for nodes over time.
+
+             Example:
+               d = epanet('example.inp')
+               d.loadMSXFile('example.msx')
+               d.plotMSXSpeciesNodeConcentration([1],[1])  # Plots first node's concentration of the first specie over time.
+               d.plotMSXSpeciesNodeConcentration([1:5], 1) # Plots concentration of nodes 1 to 5 for the first specie over time.
+
+             See also plotMSXSpeciesLinkConcentration.
+        """
+
+        s = self.getMSXComputedQualityNode(args[0], args[1])
+        nodesID = self.getNodeNameID()
+        SpeciesNameID = self.getMSXSpeciesNameID()
+        # Print the sizes of Time and Quality for debugging
+        for nd, l in enumerate(args[0]):
+            nodeID = nodesID[l - 1]
+            plt.figure(figsize=(10, 6))
+            plt.title(f'NODE {nodeID}')
+            for i in args[1]:
+                specie_index = args[1].index(i)
+                quality_data = np.array(s.Quality[l])[:, specie_index]
+                time_data = np.array(s.Time)
+                min_length = min(len(time_data), len(quality_data))  # Calculate the minimum length
+                plt.plot(time_data[:min_length], quality_data[:min_length], label=SpeciesNameID[i - 1])
+
+            plt.xlabel('Time(s)')
+            plt.ylabel('Quantity')
+            plt.legend()
+            plt.show()
 
 class epanetapi:
     """
