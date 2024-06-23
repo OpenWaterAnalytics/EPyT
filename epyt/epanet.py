@@ -516,6 +516,7 @@ class epanet:
         warnings.simplefilter('always')
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
+        self.customlib = customlib
         self.MSXFile = None
         self.MSXTempFile = None
         self.DEMANDMODEL = ['DDA', 'PDA']
@@ -576,7 +577,7 @@ class epanet:
         self.classversion = __version__
         self.api = epanetapi(version, ph=ph, customlib=customlib)
         self.display_msg = display_msg
-        if self.display_msg:
+        if self.display_msg and self.customlib is None:
             print(f'EPANET version {self.getVersion()} '
                   f'loaded (EPyT version {self.classversion}).')
 
@@ -16173,10 +16174,10 @@ class epanetmsxapi:
 
     def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None, display_msg=True, msxrealfile = ''):
         self.display_msg = display_msg
+        self.customMSXlib = customMSXlib
         if customMSXlib is not None:
             self.MSXLibEPANET = customMSXlib
             loadlib = False
-
             self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
             self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
             self.msx_error = self.msx_lib.MSXgeterror
@@ -16212,7 +16213,10 @@ class epanetmsxapi:
             raise FileNotFoundError(f"File not found: ")
 
         if self.display_msg:
-            print(f"Opening MSX file:{msxrealfile}.msx")
+            msxname = os.path.basename(msxrealfile)
+            if self.customMSXlib is None:
+                print(f"EPANET-MSX version {__msxversion__} loaded.")
+
         msxbasename = os.path.basename(msxfile)
         err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
         if err != 0:
@@ -16221,7 +16225,7 @@ class epanetmsxapi:
                 print("Error 503 may indicate a problem with the MSX file or the MSX library.")
         else:
             if self.display_msg:
-                print(f"MSX file {msxrealfile}.msx loaded successfully.")
+                print(f"MSX file {msxname}.msx loaded successfully.")
 
     def MSXclose(self):
         """  Close .msx file
