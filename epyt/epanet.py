@@ -13322,24 +13322,74 @@ class epanet:
         """Plots concentration of species for nodes over time.
 
              Example:
-               d = epanet('example.inp')
-               d.loadMSXFile('example.msx')
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
                d.plotMSXSpeciesNodeConcentration([1],[1])  # Plots first node's concentration of the first specie over time.
-               d.plotMSXSpeciesNodeConcentration([1:5], 1) # Plots concentration of nodes 1 to 5 for the first specie over time.
 
+             Example 2:
+                d = epanet('net2-cl2.inp')
+                d.loadMSXFile('net2-cl2.msx')
+                x = [1,2,3,4,5]
+                d.plotMSXSpeciesNodeConcentration(x,1)  # Plots concentration of nodes 1 to 5 for the first specie over time.
              See also plotMSXSpeciesLinkConcentration.
         """
-
-        s = self.getMSXComputedQualityNode(args[0], args[1])
+        node = args[0]
+        specie = args[1]
+        if not isinstance(node, list):
+            node = [node]
+        if not isinstance(specie, list):
+            specie = [specie]
+        s = self.getMSXComputedQualityNode(node, specie)
         nodesID = self.getNodeNameID()
         SpeciesNameID = self.getMSXSpeciesNameID()
 
-        for nd, l in enumerate(args[0]):
+        for nd, l in enumerate(node):
             nodeID = nodesID[l - 1]
             plt.figure(figsize=(10, 6))
             plt.title(f'NODE {nodeID}')
-            for i in args[1]:
-                specie_index = args[1].index(i)
+            for i in specie:
+                specie_index = specie.index(i)
+                quality_data = np.array(s.Quality[l])[:, specie_index]
+                time_data = np.array(s.Time)
+                min_length = min(len(time_data), len(quality_data))  # Calculate the minimum length
+                plt.plot(time_data[:min_length], quality_data[:min_length], label=SpeciesNameID[i - 1])
+
+            plt.xlabel('Time(s)')
+            plt.ylabel('Quantity')
+            plt.legend()
+            plt.show()
+
+    def plotMSXSpeciesLinkConcentration(self, *args):
+        """% Plots concentration of species for links over time.
+
+             Example:
+               d = epanet('net2-cl2.inp')
+               d.loadMSXFile('net2-cl2.msx')
+               d.plotMSXSpeciesLinkConcentration(5, 2)    Plots node index 5 concentration of the second specie over time.
+               d.plotMSXSpeciesLinkConcentration(1, 1)    Plots first node's concentration of the first specie over time.
+
+                Example 2:
+                d = epanet('net2-cl2.inp')
+                d.loadMSXFile('net2-cl2.msx')
+                x = [1,2,3,4,5]
+                d.plotMSXSpeciesLinkConcentration(x,1)  # Plots concentration of links 1 to 5 for the first specie over time.
+            % See also plotMSXSpeciesNodeConcentration."""
+        link = args[0]
+        specie = args[1]
+        if not isinstance(link, list):
+            link = [link]
+        if not isinstance(specie, list):
+            specie = [specie]
+        s = self.getMSXComputedQualityLink(link, specie)
+        linksID = self.getLinkNameID()
+        SpeciesNameID = self.getMSXSpeciesNameID()
+
+        for nd, l in enumerate(link):
+            linkID = linksID[l - 1]
+            plt.figure(figsize=(10, 6))
+            plt.title(f'LINK {linkID}')
+            for i in specie:
+                specie_index = specie.index(i)
                 quality_data = np.array(s.Quality[l])[:, specie_index]
                 time_data = np.array(s.Time)
                 min_length = min(len(time_data), len(quality_data))  # Calculate the minimum length
