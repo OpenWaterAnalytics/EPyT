@@ -65,7 +65,7 @@ from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void
 from types import SimpleNamespace
 import matplotlib.pyplot as plt
 from datetime import datetime
-from epyt import __version__, __msxversion__
+from epyt import __version__, __msxversion__, __lastupdate__
 from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
@@ -579,7 +579,7 @@ class epanet:
         self.display_msg = display_msg
         if self.display_msg and self.customlib is None:
             print(f'EPANET version {self.getVersion()} '
-                  f'loaded (EPyT version {self.classversion}).')
+                  f'loaded (EPyT version v{self.classversion} - Last Update: {__lastupdate__}).')
 
         # ToolkitConstants: Contains all parameters from epanet2_2.h
         self.ToolkitConstants = ToolkitConstants()
