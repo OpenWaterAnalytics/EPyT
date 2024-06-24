@@ -65,7 +65,7 @@ from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void
 from types import SimpleNamespace
 import matplotlib.pyplot as plt
 from datetime import datetime
-from epyt import __version__, __msxversion__
+from epyt import __version__, __msxversion__, __lastupdate__
 from shutil import copyfile
 from matplotlib import cm
 import matplotlib as mpl
@@ -579,7 +579,7 @@ class epanet:
         self.display_msg = display_msg
         if self.display_msg and self.customlib is None:
             print(f'EPANET version {self.getVersion()} '
-                  f'loaded (EPyT version {self.classversion}).')
+                  f'loaded (EPyT version v{self.classversion} - Last Update: {__lastupdate__}).')
 
         # ToolkitConstants: Contains all parameters from epanet2_2.h
         self.ToolkitConstants = ToolkitConstants()
@@ -11252,7 +11252,8 @@ class epanet:
         self.MSXFile = msxname[:-4]
         self.MSXTempFile = msxname[:-4] + '_temp.msx'
         copyfile(msxname, self.MSXTempFile)
-        self.msx = epanetmsxapi(self.MSXTempFile, customMSXlib=customMSXlib, display_msg=self.display_msg, msxrealfile = self.MSXFile)
+        self.msx = epanetmsxapi(self.MSXTempFile, customMSXlib=customMSXlib, display_msg=self.display_msg,
+                                msxrealfile=self.MSXFile)
 
         # Message to user if he uses ph with msx
         if self.api._ph is not None:
@@ -11304,6 +11305,7 @@ class epanet:
             msx_temp_files = list(filter(lambda f: os.path.isfile(os.path.join(os.getcwd(), f))
                                                    and f.startswith("msx") and "." not in f, os.listdir(os.getcwd())))
             safe_delete(msx_temp_files)
+            print('EPANET-MSX Toolkit is unloaded.')
 
     def getMSXSpeciesCount(self):
         """ Retrieves the number of species.
@@ -12417,6 +12419,10 @@ class epanet:
 
         self.msx.MSXclose()
         copyfile(options_section, self.MSXTempFile)
+        try:
+            os.remove(options_section)
+        except:
+            pass
         self.loadMSXEPANETFile(self.MSXTempFile)
 
     def setMSXAreaUnitsCM2(self):
@@ -12829,8 +12835,6 @@ class epanet:
         else:
             species_index_name = self.getMSXSpeciesIndex(species)
 
-
-
         node_count = self.getNodeCount()
         link_count = self.getLinkCount()
         specie_count = len(species_index_name)
@@ -13010,7 +13014,7 @@ class epanet:
                     raise ValueError(
                         'Wrong species index. Please check the functions getMSXSpeciesNameID, getMSXSpeciesCount.')
         k += 1
-
+        time_data.append(0)
         # Run simulation steps and collect quality data
         simulation_duration = self.getTimeSimulationDuration()
         while tleft > 0 and t != simulation_duration:
@@ -13018,15 +13022,13 @@ class epanet:
             time_data.append(t)
             for nl in ss:
                 for idx, j in enumerate(uu, start=1):
-
-                        concentration = self.getMSXSpeciesConcentration(0, nl, j)
-                        quality_data[nl][k , idx-1] = concentration
+                    concentration = self.getMSXSpeciesConcentration(0, nl, j)
+                    quality_data[nl][k, idx - 1] = concentration
             k += 1
-
 
         out = EpytValues()
         out.Quality = quality_data
-        out.Time = time_data
+        out.Time = np.array(time_data)
         return out
 
     def getMSXComputedQualityLink(self, *args):
@@ -13059,7 +13061,7 @@ class epanet:
 
         time_steps = int(self.getTimeSimulationDuration() / self.getMSXTimeStep()) + 1
 
-        quality_data = {node: np.zeros((time_steps, len(uu))) for node in ss}
+        quality_data = {link: np.zeros((time_steps, len(uu))) for link in ss}
         time_data = []
 
         k = 0
@@ -13088,7 +13090,7 @@ class epanet:
 
         out = EpytValues()
         out.Quality = quality_data
-        out.Time = time_data
+        out.Time = np.array(time_data)
         return out
 
     def setMSXLinkInitqualValue(self, value):
@@ -13189,6 +13191,7 @@ class epanet:
             setattr(value, attr, {})
 
         return value
+
     def writeMSXFile(self, msx):
         """
         Write a new MSX file
@@ -13260,7 +13263,6 @@ class epanet:
                 for item in items:
                     f.write("\n{}".format(item))
 
-
             f.write('\n\n[REPORT]\n')
             f.write('NODES ALL\n')
             f.write('LINKS ALL\n')
@@ -13283,7 +13285,7 @@ class epanet:
         pattern_matrix = [[float(value) for value in row] for row in pattern_matrix]
         nfactors = len(pattern_matrix[0])
         for i, pattern in enumerate(pattern_matrix):
-            self.msx.MSXsetpattern(i+1, pattern, nfactors)
+            self.msx.MSXsetpattern(i + 1, pattern, nfactors)
 
     def getAllAttributes(self, obj):
         """Get all attributes of a given Python object
@@ -13296,6 +13298,7 @@ class epanet:
                 print(attr) #Will print Time, LinkQuality , NodeQuality and MassFlowRate
             """
         attributes = []
+
         def recurse_attrs(obj):
             for k, v in obj.__dict__.items():
                 attributes.append((k, v))
@@ -13399,6 +13402,7 @@ class epanet:
             plt.ylabel('Quantity')
             plt.legend()
             plt.show()
+            
 
 class epanetapi:
     """
@@ -16253,7 +16257,8 @@ class epanetapi:
 class epanetmsxapi:
     """example msx = epanetmsxapi()"""
 
-    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None, display_msg=True, msxrealfile = ''):
+    def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None, display_msg=True,
+                 msxrealfile=''):
         self.display_msg = display_msg
         self.customMSXlib = customMSXlib
         if customMSXlib is not None:
@@ -16704,7 +16709,7 @@ class epanetmsxapi:
                          the pattern
                 nfactors: the number of entries in the multiplier array/ vector factors"""
         if isinstance(index, int):
-            index =  c_int(index)
+            index = c_int(index)
         nfactors = c_int(nfactors)
         DoubleArray = c_double * len(factors)
         mult_array = DoubleArray(*factors)
