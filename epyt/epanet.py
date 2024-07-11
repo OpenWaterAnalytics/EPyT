@@ -10271,7 +10271,7 @@ class epanet:
 
         if fix_colorbar and link_values is not None or node_values is not None:
             scal = cm.ScalarMappable(norm=mpl.colors.Normalize(min_colorbar, max_colorbar), cmap=colorbar)
-            bar = plt.colorbar(scal, orientation='horizontal', shrink=0.7, pad=0.05)
+            bar = plt.colorbar(scal, ax=plt.gca(), orientation='horizontal', shrink=0.7, pad=0.05)
             bar.ax.tick_params(labelsize=fontsize)
             bar.outline.set_visible(False)
             bar.set_label(label=colorbar_label, size=fontsize)
