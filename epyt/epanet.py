@@ -510,10 +510,12 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
-    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True):
+    def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True,
+                 display_warnings=True):
         # Constants
         self.msx = None
-        warnings.simplefilter('always')
+        if display_warnings:
+            warnings.simplefilter('always') # 'action', "error", "ignore", "always", "default", "module", "once"
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
         self.customlib = customlib
