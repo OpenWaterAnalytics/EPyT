@@ -6499,6 +6499,9 @@ class epanet:
             code = argv[0]
         self.api.ENinitQ(code)
 
+    def loadlibrary(self):
+        self._lib = cdll.LoadLibrary(self.LibEPANET)
+
     def loadEPANETFile(self, *argv):
         """ Load epanet file when use bin functions.
 
