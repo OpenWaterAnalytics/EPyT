@@ -2387,14 +2387,25 @@ class epanet:
         value_final.Status = value_final.Status.astype(int)
         return value_final
 
-    def getComputedTimeSeries_ENepanet(self):
+    def getComputedTimeSeries_ENepanet(self, tempfile=None, binfile=None, rptfile=None):
         """ Run analysis using ENepanet function """
-        self.saveInputFile(self.TempInpFile)
-        uuID = ''.join(random.choices(string.ascii_letters +
-                                      string.digits, k=10))
-        rptfile = self.TempInpFile[0:-4] + '.txt'
-        binfile = '@#' + uuID + '.bin'
-        self.api.ENepanet(self.TempInpFile, rptfile, binfile)
+
+        if tempfile is not None:
+            self.saveInputFile(tempfile)
+        else:
+            self.saveInputFile(self.TempInpFile)
+            uuID = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+
+        if binfile is None:
+            binfile = '@#' + uuID + '.bin'
+        if rptfile is None:
+            rptfile = self.TempInpFile[:-4] + '.txt'
+        self.api.ENclose()
+        if tempfile is not None:
+            self.api.ENepanet(tempfile, rptfile, binfile)
+        else:
+            self.api.ENepanet(self.TempInpFile, rptfile, binfile)
+        
         fid = open(binfile, "rb")
         value = self.__readEpanetBin(fid, binfile, 0)
         value.WarnFlag = False
