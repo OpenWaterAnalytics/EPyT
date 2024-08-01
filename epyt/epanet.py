@@ -11217,14 +11217,14 @@ class epanet:
                 param = [param]
             for i in indices:
                 if i in resInd:
-                    if c + 1 > self.getNodeDemandCategoriesNumber(i):
+                    self.api.ENsetnodevalue(i, propertyCode, param[j])
+                elif categ == 1 or len(indices) == 1:
+                    eval('self.api.' + fun + '(i, categ, param[j])')
+                else:
+                    if  c + 1 > self.getNodeDemandCategoriesNumber(i):
                         self.addNodeJunctionDemand(i, param[j])
                     else:
                         eval('self.api.' + fun + '(i, c, param[j])')
-                elif categ == 1:
-                    self.api.ENsetnodevalue(i, propertyCode, param[j])
-                else:
-                    eval('self.api.' + fun + '(i, categ, param[j])')
                 j += 1
 
     """MSX Functions"""
