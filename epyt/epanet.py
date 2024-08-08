@@ -13431,6 +13431,9 @@ class epanet:
     def getcontrolenabled(self, index, enabled):
         self.api.EN_getcontrolenabled(index, enabled)
 
+    def setcontrolenabled(self, index, enabled):
+        self.api.EN_setcontrolenabled(index, enabled)
+
 class epanetapi:
     """
     EPANET Toolkit functions - API
