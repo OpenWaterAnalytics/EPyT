@@ -14260,6 +14260,18 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENgetlinksvalues(property, values)
 
+    def EN_loadpatternfile(self, filename, id):
+        """ Input:   filename =  name of the file containing pattern data
+            id = ID for the new pattern
+            Output:  none
+            Returns: error code
+            Purpose: loads time patterns from a file into a project under a specific pattern ID"""
+        
+        if self._ph is not None:
+            self.errcode = self._lib.EN_loadpatternfile(self._ph, filename, id)
+        else:
+            self.errcode = self._lib.ENloadpatternfile(filename, id)
+
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
 
