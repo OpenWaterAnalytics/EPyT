@@ -14195,6 +14195,16 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENtimetonextevent(eventType, duration, elementIndex)
 
+    def EN_getcontrolenabled(self, index, enabled):
+        index = c_int(index)
+        enabled = c_int(enabled) #pointer in C
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getcontrolenabled(self._ph, index, enabled)
+        else:
+            self.errcode = self._lib.ENgetcontrolenabled(index, enabled)
+
+
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
 
