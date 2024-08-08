@@ -14168,6 +14168,23 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENsetcurvetype(index, type)
 
+    def EN_setvertex(self, index, vertex, x, y):
+        """ Input:   index = link index
+             vertex = index of a link vertex point
+             x = vertex point's X-coordinate
+             y = vertex point's Y-coordinate
+          Returns: error code
+          Purpose: sets the coordinates of a vertex point in a link"""
+        index = c_int(index)
+        vertex = c_int(vertex)
+        x = c_double(x)
+        y = c_double(y)
+        if self._ph is not None:
+            self.errcode = self._lib.EN_setvertex(self._ph, index, vertex, x, y)
+        else:
+            self.errcode = self._lib.ENsetvertex(index, vertex, x, y)
+
+
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
 
