@@ -13419,10 +13419,12 @@ class epanet:
             plt.legend()
             plt.show()
 
-    def setCurvetype(self, index, type):
+    def setcurvetype(self, index, type):
         self.api.EN_setcurvetype(index, type)
 
-
+    def setvertex(self, index, x, y):
+        self.api.EN_setvertex(index, x, y)
+        
 
 class epanetapi:
     """
