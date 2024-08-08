@@ -14231,7 +14231,21 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENsetruleenabled(index, enabled)
 
-    
+    def EN_openX(self, inpFile, rptFile, outFile):
+        """Input:   inpFile = name of input file
+                    rptFile = name of report file
+                    outFile = name of binary output file
+           Output:  none
+           Returns: error code
+           Purpose: reads an EPANET input file with errors allowed."""
+
+        self.inpFile = bytes(inpFile, 'utf-8')
+        self.rptFile = bytes(rptFile, 'utf-8')
+        self.outFile = bytes(outFile, 'utf-8')
+        if self._ph is not None:
+            self.errcode = self._lib.EN_openX(self._ph, inpFile, rptFile, outFile)
+        else:
+            self.errcode = self._lib.ENopenX(inpFile, rptFile, outFile)
 
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
