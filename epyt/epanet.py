@@ -14246,6 +14246,19 @@ class epanetapi:
             self.errcode = self._lib.EN_openX(self._ph, inpFile, rptFile, outFile)
         else:
             self.errcode = self._lib.ENopenX(inpFile, rptFile, outFile)
+    def EN_getlinksvalues(self, property, values):
+        """
+          Input:   property = link property code (see EN_LinkProperty)
+          Output:  values = array of link property values
+          Returns: error code
+          Purpose: retrieves property values for all links
+        """
+        property = c_int(property)
+        values = c_double(values)
+        if self._ph is not None:
+            self.errcode = self._lib.EN_getlinksvalues(self._ph, property, values)
+        else:
+            self.errcode = self._lib.ENgetlinksvalues(property, values)
 
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
