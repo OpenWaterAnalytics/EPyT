@@ -13424,9 +13424,12 @@ class epanet:
 
     def setvertex(self, index, x, y):
         self.api.EN_setvertex(index, x, y)
-        
+
     def timetonexteven(self, eventType, duration, elementIndex):
-        self.api.EN_timetonextevent(self, eventType, duration, elementIndex)
+        self.api.EN_timetonextevent(eventType, duration, elementIndex)
+
+    def getcontrolenabled(self, index, enabled):
+        self.api.EN_getcontrolenabled(index, enabled)
 
 class epanetapi:
     """
