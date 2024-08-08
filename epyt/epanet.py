@@ -13418,7 +13418,11 @@ class epanet:
             plt.ylabel('Quantity')
             plt.legend()
             plt.show()
-            
+
+    def setCurvetype(self, index, type):
+        self.api.EN_setcurvetype(index, type)
+
+
 
 class epanetapi:
     """
@@ -14266,7 +14270,7 @@ class epanetapi:
             Output:  none
             Returns: error code
             Purpose: loads time patterns from a file into a project under a specific pattern ID"""
-        
+
         if self._ph is not None:
             self.errcode = self._lib.EN_loadpatternfile(self._ph, filename, id)
         else:
