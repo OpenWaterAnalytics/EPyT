@@ -14184,6 +14184,16 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENsetvertex(index, vertex, x, y)
 
+    def EN_timetonextevent(self, eventType, duration, elementIndex):
+        """get the time to next event, and give a reason for the time step truncation"""
+        eventType = c_int(eventType) #pointer in C
+        duration = c_double(duration) #long in C
+        elementIndex = c_int(elementIndex) #pointer in C
+
+        if self._ph is not None:
+            self.errcode = self._lib.EN_timetonextevent(self._ph, eventType, duration, elementIndex)
+        else:
+            self.errcode = self._lib.ENtimetonextevent(eventType, duration, elementIndex)
 
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
