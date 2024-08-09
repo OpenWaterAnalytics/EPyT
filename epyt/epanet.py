@@ -13445,6 +13445,10 @@ class epanet:
 
     def loadpatternfile(self, filename, id):
         self.api.EN_loadpatternfile(filename, id)
+
+    def getlinksvalues(self, property, values):
+        self.api.EN_getlinksvalues(property, values)
+        
 class epanetapi:
     """
     EPANET Toolkit functions - API
