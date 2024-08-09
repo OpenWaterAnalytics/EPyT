@@ -13443,6 +13443,8 @@ class epanet:
     def openX(self, inpFile, rptFile, outFile):
         self.api.EN_openX(inpFile, rptFile, outFile)
 
+    def loadpatternfile(self, filename, id):
+        self.api.EN_loadpatternfile(filename, id)
 class epanetapi:
     """
     EPANET Toolkit functions - API
