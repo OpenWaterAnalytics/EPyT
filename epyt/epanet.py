@@ -13440,6 +13440,9 @@ class epanet:
     def setruleenabled(self, index, enabled):
         self.api.EN_setruleenabled(index, enabled)
 
+    def openX(self, inpFile, rptFile, outFile):
+        self.api.EN_openX(inpFile, rptFile, outFile)
+
 class epanetapi:
     """
     EPANET Toolkit functions - API
