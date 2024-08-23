@@ -13446,9 +13446,28 @@ class epanet:
     def loadpatternfile(self, filename, id):
         self.api.EN_loadpatternfile(filename, id)
 
-    def getlinksvalues(self, property, values):
-        self.api.EN_getlinksvalues(property, values)
-        
+    def getlinkvalues(self, property):
+        """Purpose: retrieves property values for all links
+        Example:
+         from epyt import epanet
+        inpfile = "Net1.inp"
+        d = epanet(inpfile)
+        d.openHydraulicAnalysis()
+        d.initializeHydraulicAnalysis()
+        tstep, P, T_H, D, H, F, S =1, [], [], [], [], [], []
+        while   tstep>0:
+            t = d.runHydraulicAnalysis()
+            S.append(d.getlinkvalues(d.ToolkitConstants.EN_FLOW))
+            F.append(d.getLinkFlows())
+            T_H.append(t)
+            print(F)
+            print(S)
+            print(T_H)
+            tstep=d.nextHydraulicAnalysisStep()
+        d.closeHydraulicAnalysis()"""
+        values = self.api.EN_getlinkvalues(property)
+        return values
+
 class epanetapi:
     """
     EPANET Toolkit functions - API
@@ -14275,19 +14294,25 @@ class epanetapi:
             self.errcode = self._lib.EN_openX(self._ph, inpFile, rptFile, outFile)
         else:
             self.errcode = self._lib.ENopenX(inpFile, rptFile, outFile)
-    def EN_getlinksvalues(self, property, values):
+    def EN_getlinkvalues(self, property):
         """
           Input:   property = link property code (see EN_LinkProperty)
           Output:  values = array of link property values
           Returns: error code
           Purpose: retrieves property values for all links
         """
+
+        EN_LINKCOUNT = 2
+        num_links = self.ENgetcount(EN_LINKCOUNT)
+
         property = c_int(property)
-        values = c_double(values)
         if self._ph is not None:
-            self.errcode = self._lib.EN_getlinksvalues(self._ph, property, values)
+            values_array = (c_double * num_links)()
+            self.errcode = self._lib.EN_getlinkvalues(self._ph, property,  values_array)
         else:
-            self.errcode = self._lib.ENgetlinksvalues(property, values)
+            values_array = (c_float * num_links)()
+            self.errcode = self._lib.ENgetlinkvalues(property,  values_array)
+        return list(values_array)
 
     def EN_loadpatternfile(self, filename, id):
         """ Input:   filename =  name of the file containing pattern data
