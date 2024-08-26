@@ -14411,6 +14411,7 @@ class epanetapi:
             self.errcode = self._lib.EN_timetonextevent(self._ph, eventType, duration, elementIndex)
         else:
             self.errcode = self._lib.ENtimetonextevent(eventType, duration, elementIndex)
+        self.ENgeterror()
 
     def EN_getcontrolenabled(self, index):
         index = c_int(index)
@@ -14469,6 +14470,7 @@ class epanetapi:
             self.errcode = self._lib.EN_openX(self._ph,  self.inpFile,  self.rptFile, self.outFile)
         else:
             self.errcode = self._lib.ENopenX( self.inpFile,  self.rptFile, self.outFile)
+                self.ENgeterror()
     def EN_getlinkvalues(self, property):
         """
           Input:   property = link property code (see EN_LinkProperty)
@@ -14501,6 +14503,7 @@ class epanetapi:
             self.errcode = self._lib.EN_loadpatternfile(self._ph, self.patternfile, id)
         else:
             self.errcode = self._lib.ENloadpatternfile(self.patternfile, id)
+        self.ENgeterror()
 
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
