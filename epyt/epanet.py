@@ -14283,6 +14283,7 @@ class epanetapi:
             self.errcode = self._lib.EN_setcurvetype(self._ph, index, type)
         else:
             self.errcode = self._lib.ENsetcurvetype(index, type)
+        self.ENgeterror()
         return self.errcode
 
     def EN_setvertex(self, index, vertex, x, y):
@@ -14294,12 +14295,16 @@ class epanetapi:
           Purpose: sets the coordinates of a vertex point in a link"""
         index = c_int(index)
         vertex = c_int(vertex)
-        x = c_double(x)
-        y = c_double(y)
+
         if self._ph is not None:
+            x = c_double(x)
+            y = c_double(y)
             self.errcode = self._lib.EN_setvertex(self._ph, index, vertex, x, y)
         else:
+            x = c_float(x)
+            y = c_float(y)
             self.errcode = self._lib.ENsetvertex(index, vertex, x, y)
+        self.ENgeterror()
         return self.errcode
 
     def EN_timetonextevent(self, eventType, duration, elementIndex):
@@ -14382,6 +14387,7 @@ class epanetapi:
         else:
             values_array = (c_float * num_links)()
             self.errcode = self._lib.ENgetlinkvalues(property,  values_array)
+        self.ENgeterror()
         return list(values_array)
 
     def EN_loadpatternfile(self, filename, id):
