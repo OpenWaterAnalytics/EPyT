@@ -13419,7 +13419,27 @@ class epanet:
             plt.legend()
             plt.show()
 
-    def setcurvetype(self, index, type):
+    def setCurveType(self, index, type):
+        """
+        Purpose:
+            Sets the type of a specified curve in the EPANET model.
+
+        Parameters:
+            index (int): The index of the curve to modify.
+            curve_type (int): The desired type of the curve, based on the following categories:
+                - 0: Volume
+                - 1: Pump
+                - 2: Efficiency
+                - 3: Headloss
+                - 4: General
+
+        Example Usage:
+            inp_filename = "Net1.inp"
+
+            d = epanet(inp_filename)
+            d.setCurveType(1, 0)
+            curve_type = d.getCurveType(1)
+        """
         self.api.EN_setcurvetype(index, type)
 
     def setvertex(self, index, x, y):
@@ -13446,24 +13466,35 @@ class epanet:
     def loadpatternfile(self, filename, id):
         self.api.EN_loadpatternfile(filename, id)
 
-    def getlinkvalues(self, property):
-        """Purpose: retrieves property values for all links
-        Example:
-         from epyt import epanet
+    def getLinkValues(self, property):
+        """
+    Purpose:
+        Retrieves property values for all links within the EPANET model during a hydraulic analysis.
+
+    Example Usage:
+        from epyt import epanet
+    
         inpfile = "Net1.inp"
         d = epanet(inpfile)
+
         d.openHydraulicAnalysis()
         d.initializeHydraulicAnalysis()
-        tstep, P, T_H, D, H, F, S =1, [], [], [], [], [], []
-        while   tstep>0:
+
+        tstep = 1
+        P, T_H, D, H, F, S = [], [], [], [], [], []
+
+        while tstep > 0:
             t = d.runHydraulicAnalysis()
-            S.append(d.getlinkvalues(d.ToolkitConstants.EN_FLOW))
+            S.append(d.getLinkValues(d.ToolkitConstants.EN_FLOW))
             F.append(d.getLinkFlows())
             T_H.append(t)
+
             print(F)
             print(S)
             print(T_H)
-            tstep=d.nextHydraulicAnalysisStep()
+
+            tstep = d.nextHydraulicAnalysisStep()
+
         d.closeHydraulicAnalysis()"""
         values = self.api.EN_getlinkvalues(property)
         return values
