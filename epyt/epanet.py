@@ -13426,24 +13426,61 @@ class epanet:
 
         Parameters:
             index (int): The index of the curve to modify.
-            curve_type (int): The desired type of the curve, based on the following categories:
+            (curve)type (int): The desired type of the curve, based on the following categories:
                 - 0: Volume
                 - 1: Pump
                 - 2: Efficiency
                 - 3: Headloss
                 - 4: General
+        Returns:
+            int: An error code indicating success or failure of the operation.
 
         Example Usage:
             inp_filename = "Net1.inp"
 
             d = epanet(inp_filename)
-            d.setCurveType(1, 0)
+            errcode = d.setCurveType(1, 0)
             curve_type = d.getCurveType(1)
+            if errcode == 0:
+                print("Curve type set successfully.")
+            else:
+                print(f"Error setting curve type. Error code: {d.getError(errcode)}")
         """
-        self.api.EN_setcurvetype(index, type)
+        errcode = self.api.EN_setcurvetype(index, type)
+        return errcode
 
-    def setvertex(self, index, x, y):
-        self.api.EN_setvertex(index, x, y)
+    def setVertex(self, index, vertex, x, y):
+        """
+        Purpose:
+            Sets the coordinates of a vertex point in a link within the EPANET model.
+
+        Parameters:
+            index (int): The index of the link for which the vertex coordinates are to be set.
+            vertex (int): The index of the specific vertex point within the link.
+            x (float): The X-coordinate of the vertex point.
+            y (float): The Y-coordinate of the vertex point.
+
+        Returns:
+            int: An error code indicating success or failure of the operation.
+
+        Example Usage:
+            inpname = "Net1.inp"
+
+            # Initialize EPANET model with the input file
+            d = epanet(inpname)
+
+            # Set the coordinates of the first vertex point (vertex index 1) in link with index 1
+            errcode = d.setvertex(1, 1, 1.0, 1.0)
+
+            # Check if the operation was successful
+            if errcode == 0:
+                print("Vertex coordinates set successfully.")
+            else:
+                print(f"Error setting vertex coordinates. Error code: {d.getError(error_code)}")
+        """
+
+        errcode = self.api.EN_setvertex(index, vertex, x, y)
+        return errcode
 
     def timetonexteven(self, eventType, duration, elementIndex):
         self.api.EN_timetonextevent(eventType, duration, elementIndex)
@@ -13473,7 +13510,7 @@ class epanet:
 
     Example Usage:
         from epyt import epanet
-    
+
         inpfile = "Net1.inp"
         d = epanet(inpfile)
 
@@ -14246,6 +14283,7 @@ class epanetapi:
             self.errcode = self._lib.EN_setcurvetype(self._ph, index, type)
         else:
             self.errcode = self._lib.ENsetcurvetype(index, type)
+        return self.errcode
 
     def EN_setvertex(self, index, vertex, x, y):
         """ Input:   index = link index
@@ -14262,6 +14300,7 @@ class epanetapi:
             self.errcode = self._lib.EN_setvertex(self._ph, index, vertex, x, y)
         else:
             self.errcode = self._lib.ENsetvertex(index, vertex, x, y)
+        return self.errcode
 
     def EN_timetonextevent(self, eventType, duration, elementIndex):
         """get the time to next event, and give a reason for the time step truncation"""
