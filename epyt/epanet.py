@@ -13485,11 +13485,58 @@ class epanet:
     def timetonexteven(self, eventType, duration, elementIndex):
         self.api.EN_timetonextevent(eventType, duration, elementIndex)
 
-    def getcontrolenabled(self, index, enabled):
-        self.api.EN_getcontrolenabled(index, enabled)
+    def getControlEnabled(self, index):
+        """
+            Purpose:
+                Retrieves the enabled state of a specified control in the EPANET model.
 
-    def setcontrolenabled(self, index, enabled):
-        self.api.EN_setcontrolenabled(index, enabled)
+            Parameters:
+                index (int): The index of the control to check, starting from 1.
+
+            Returns:
+                int: The state of the control:
+                    - 0: Control is disabled (False)
+                    - 1: Control is enabled (True)
+
+            Example Usage:
+                inpfile = "Net1.inp"
+                d = epanet(inpfile)
+
+                # Retrieve and print the state of the control at index 1
+                x = d.getControlEnabled(1)
+                print(f"Control state: {x}")
+            """
+        enabled = self.api.EN_getcontrolenabled(index)
+        return enabled
+
+    def setControlEnabled(self, index, enabled):
+        """
+    Purpose:
+        Enables or disables a control in the EPANET model.
+
+    Parameters:
+        index (int): The index of the control to be modified, starting from 1.
+        enabled (int): The state to set for the control:
+            - 0: Disable the control (False)
+            - 1: Enable the control (True)
+
+    Example Usage:
+        inpfile = "Net1.inp"
+        d = epanet(inpfile)
+
+        # Retrieve the current state of the control at index 1
+        x = d.getControlEnabled(1)
+        print(f"Control state before: {x}")
+
+        # Disable the control at index 1
+        d.setControlEnabled(1, 0)
+
+        # Check the state of the control again
+        x = d.getControlEnabled(1)
+        print(f"Control state after: {x}")
+    """
+        errcode = self.api.EN_setcontrolenabled(index, enabled)
+        return errcode
 
     def getruleenabled(self, index, enabled):
         self.api.EN_getruleenabled(index, enabled)
@@ -14318,14 +14365,15 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENtimetonextevent(eventType, duration, elementIndex)
 
-    def EN_getcontrolenabled(self, index, enabled):
+    def EN_getcontrolenabled(self, index):
         index = c_int(index)
-        enabled = c_int(enabled) #pointer in C
-
+        enabled = c_int()
         if self._ph is not None:
-            self.errcode = self._lib.EN_getcontrolenabled(self._ph, index, enabled)
+            self.errcode = self._lib.EN_getcontrolenabled(self._ph, index, byref(enabled))
         else:
-            self.errcode = self._lib.ENgetcontrolenabled(index, enabled)
+            self.errcode = self._lib.ENgetcontrolenabled(index, byref(enabled))
+        self.ENgeterror()
+        return enabled.value
 
     def EN_setcontrolenabled(self, index, enabled):
 
@@ -14335,6 +14383,8 @@ class epanetapi:
             self.errcode = self._lib.EN_setcontrolenabled(self._ph, index, enabled)
         else:
             self.errcode = self._lib.ENsetcontrolenabled(index, enabled)
+        self.ENgeterror()
+        return self.errcode
 
     def EN_getruleenabled(self, index, enabled):
 
