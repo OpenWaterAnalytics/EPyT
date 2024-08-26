@@ -13538,11 +13538,58 @@ class epanet:
         errcode = self.api.EN_setcontrolenabled(index, enabled)
         return errcode
 
-    def getruleenabled(self, index, enabled):
-        self.api.EN_getruleenabled(index, enabled)
+    def getRuleEnabled(self, index):
+        """
+           Purpose:
+               Retrieves the enabled state of a specific rule in the EPANET model.
 
-    def setruleenabled(self, index, enabled):
-        self.api.EN_setruleenabled(index, enabled)
+           Parameters:
+               index (int): The index of the rule to check, starting from 1.
+
+           Returns:
+               int: The state of the rule:
+                   - 0: Rule is disabled (False)
+                   - 1: Rule is enabled (True)
+
+           Example Usage:
+               inpfile = "Net1.inp"
+               d = epanet(inpfile)
+
+               # Retrieve and print the current state of the rule at index 1
+               x = d.getRuleEnabled(1)
+               print(f"Rule state: {x}")
+        """
+        enabled = self.api.EN_getruleenabled(index)
+        return enabled
+
+    def setRuleEnabled(self, index, enabled):
+        """
+        Purpose:
+            Enables or disables a specific rule in the EPANET model.
+
+        Parameters:
+            index (int): The index of the rule to be modified, starting from 1.
+            enabled (int): The state to set for the rule:
+                - 0: Disable the rule (False)
+                - 1: Enable the rule (True)
+
+        Example Usage:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            # Retrieve and print the current state of the rule at index 1
+            x = d.getRuleEnabled(1)
+            print(f"Rule state before: {x}")
+
+            # Enable the rule at index 1
+            d.setRuleEnabled(1, 1)
+
+            # Retrieve and print the state of the rule again to confirm the change
+            x = d.getRuleEnabled(1)
+            print(f"Rule state after: {x}")
+        """
+        errcode = self.api.EN_setruleenabled(index, enabled)
+        return errcode
 
     def openX(self, inpFile, rptFile, outFile):
         self.api.EN_openX(inpFile, rptFile, outFile)
@@ -14386,15 +14433,16 @@ class epanetapi:
         self.ENgeterror()
         return self.errcode
 
-    def EN_getruleenabled(self, index, enabled):
+    def EN_getruleenabled(self, index):
 
         index = c_int(index)
-        enabled = c_int(enabled) #pointer in C
+        enabled = c_int()
         if self._ph is not None:
-            self.errcode = self._lib.EN_getruleenabled(self._ph, index, enabled)
+            self.errcode = self._lib.EN_getruleenabled(self._ph, index, byref(enabled))
         else:
-            self.errcode = self._lib.ENgetruleenabled(index, enabled)
-
+            self.errcode = self._lib.ENgetruleenabled(index, byref(enabled))
+        self.ENgeterror()
+        return enabled.value
     def EN_setruleenabled(self, index, enabled):
 
         index = c_int(index)
@@ -14403,6 +14451,8 @@ class epanetapi:
             self.errcode = self._lib.EN_setruleenabled(self._ph, index, enabled)
         else:
             self.errcode = self._lib.ENsetruleenabled(index, enabled)
+        self.ENgeterror()
+        return self.errcode
 
     def EN_openX(self, inpFile, rptFile, outFile):
         """Input:   inpFile = name of input file
