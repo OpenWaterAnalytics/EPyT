@@ -14466,9 +14466,9 @@ class epanetapi:
         self.rptFile = bytes(rptFile, 'utf-8')
         self.outFile = bytes(outFile, 'utf-8')
         if self._ph is not None:
-            self.errcode = self._lib.EN_openX(self._ph, inpFile, rptFile, outFile)
+            self.errcode = self._lib.EN_openX(self._ph,  self.inpFile,  self.rptFile, self.outFile)
         else:
-            self.errcode = self._lib.ENopenX(inpFile, rptFile, outFile)
+            self.errcode = self._lib.ENopenX( self.inpFile,  self.rptFile, self.outFile)
     def EN_getlinkvalues(self, property):
         """
           Input:   property = link property code (see EN_LinkProperty)
