@@ -13594,7 +13594,7 @@ class epanet:
     def openX(self, inpFile, rptFile, outFile):
         self.api.EN_openX(inpFile, rptFile, outFile)
 
-    def loadpatternfile(self, filename, id):
+    def loadPatternFile(self, filename, id):
         self.api.EN_loadpatternfile(filename, id)
 
     def getLinkValues(self, property):
@@ -14496,11 +14496,11 @@ class epanetapi:
             Output:  none
             Returns: error code
             Purpose: loads time patterns from a file into a project under a specific pattern ID"""
-
+        self.patternfile = bytes(filename, 'utf-8')
         if self._ph is not None:
-            self.errcode = self._lib.EN_loadpatternfile(self._ph, filename, id)
+            self.errcode = self._lib.EN_loadpatternfile(self._ph, self.patternfile, id)
         else:
-            self.errcode = self._lib.ENloadpatternfile(filename, id)
+            self.errcode = self._lib.ENloadpatternfile(self.patternfile, id)
 
     def ENgetcurvevalue(self, index, period):
         """ Retrieves the value of a single data point for a curve.
