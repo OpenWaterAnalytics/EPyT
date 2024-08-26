@@ -13476,7 +13476,7 @@ class epanet:
             if errcode == 0:
                 print("Vertex coordinates set successfully.")
             else:
-                print(f"Error setting vertex coordinates. Error code: {d.getError(error_code)}")
+                print(f"Error setting vertex coordinates. Error code: {d.getError(errcode)}")
         """
 
         errcode = self.api.EN_setvertex(index, vertex, x, y)
