@@ -36,5 +36,16 @@ class update23(unittest.TestCase):
         self.assertEqual(self.epanetClass.getCurveType(1),
                          ('GENERAL'), 'Wrong Curve Type comment output')
 
+    def test_setControlEnabled(self):
+
+        self.assertEqual( self.epanetClass.getControlEnabled(1),
+                         (1), 'Wrong Control enabled comment output')
+
+        self.epanetClass.setControlEnabled(1, 0)
+
+        self.assertEqual(self.epanetClass.getControlEnabled(1),
+                         (0), 'Wrong Control enabled comment output')
+
+
 if __name__ == "__main__":
     unittest.main()
