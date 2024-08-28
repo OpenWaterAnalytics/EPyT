@@ -14470,7 +14470,7 @@ class epanetapi:
             self.errcode = self._lib.EN_openX(self._ph,  self.inpFile,  self.rptFile, self.outFile)
         else:
             self.errcode = self._lib.ENopenX( self.inpFile,  self.rptFile, self.outFile)
-                self.ENgeterror()
+        self.ENgeterror()
     def EN_getlinkvalues(self, property):
         """
           Input:   property = link property code (see EN_LinkProperty)
