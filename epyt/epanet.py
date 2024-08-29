@@ -10852,8 +10852,7 @@ class epanet:
             else:
                 values = self.api.ENgetlinkvalue(index, code_p)
         else:
-            for i in range(self.getLinkCount()):
-                values.append(self.api.ENgetlinkvalue(i + 1, code_p))
+            values = self.api.EN_getlinkvalues(code_p)
         return np.array(values)
 
     def __getNodeIndices(self, *argv):
