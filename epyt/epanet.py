@@ -2537,6 +2537,8 @@ class epanet:
         else:
             return value[argv[0]]
 
+    def getControlRulesCount(self):
+        warnings.warn("This function: getControlRulesCount has been renamed to getControlCount please rename the function")
     def getControlCount(self):
         """ Retrieves the number of controls.
 
