@@ -717,7 +717,7 @@ class epanet:
         >>> d.getControls(index).to_dict()
 
         See also deleteControls, getControls, setControls,
-        getControlRulesCount.
+        getControlCount.
         """
         if type(control) is dict:
             index = []
@@ -1747,10 +1747,10 @@ class epanet:
         >>> d.deleteControls([index_3, index_4])
         >>> d.getControls()
 
-        See also addControls, setControls, getControls, getControlRulesCount.
+        See also addControls, setControls, getControls, getControlCount.
         """
         if len(argv) == 0:
-            index = list(range(1, self.getControlRulesCount() + 1))
+            index = list(range(1, self.getControlCount() + 1))
         else:
             index = argv[0]
         if not isList(index): index = [index]
@@ -2537,12 +2537,12 @@ class epanet:
         else:
             return value[argv[0]]
 
-    def getControlRulesCount(self):
+    def getControlCount(self):
         """ Retrieves the number of controls.
 
         Example:
 
-        >>> d.getControlRulesCount()
+        >>> d.getControlCount()
 
         See also getControls, getRuleCount.
         """
@@ -2604,7 +2604,7 @@ class epanet:
         >>> d.getCounts().SimpleControls
 
         See also getNodeCount, getNodeJunctionCount, getLinkCount,
-        getControlRulesCount.
+        getControlCount.
         """
         value = EpytValues()
         value.Nodes = self.getNodeCount()
@@ -2616,7 +2616,7 @@ class epanet:
         value.Pumps = self.getLinkPumpCount()
         value.Valves = self.getLinkValveCount()
         value.Curves = self.getCurveCount()
-        value.SimpleControls = self.getControlRulesCount()
+        value.SimpleControls = self.getControlCount()
         value.RuleBasedControls = self.getRuleCount()
         value.Patterns = self.getPatternCount()
         return value
@@ -5967,7 +5967,7 @@ class epanet:
 
         >>> d.getRuleCount()
 
-        See also getRules, getControlRulesCount.
+        See also getRules, getControlCount.
         """
         return self.api.ENgetcount(self.ToolkitConstants.EN_RULECOUNT)
 
@@ -6748,7 +6748,7 @@ class epanet:
 
         >>> d.setControls(1, 0, 13, 0, 11, 30)
 
-        See also getControls, getControlRulesCount, addControls, deleteControls.
+        See also getControls, getControlCount, addControls, deleteControls.
         """
         if type(index) is dict:
             for key in index:
@@ -10636,7 +10636,7 @@ class epanet:
 
     def __getControlIndices(self, *argv):
         if len(argv) == 0:
-            indices = list(range(1, self.getControlRulesCount() + 1))
+            indices = list(range(1, self.getControlCount() + 1))
         else:
             indices = argv[0]
         return indices
@@ -10741,7 +10741,7 @@ class epanet:
         self.CurveIndex = self.getCurveIndex()  # Index of curves
         self.CurvesInfo = self.getCurvesInfo()  # Curves info
 
-        self.ControlRulesCount = self.getControlRulesCount()  # Number of controls
+        self.ControlRulesCount = self.getControlCount()  # Number of controls
         self.Controls = self.getControls()  # Controls information
 
         self.OptionsMaxTrials = self.getOptionsMaxTrials()  # Maximum number of trials (40 is default)
