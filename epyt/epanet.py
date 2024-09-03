@@ -13579,7 +13579,7 @@ class epanet:
         errcode = self.api.ENsetcontrolenabled(index, 0)
         return errcode
 
-    def getRuleEnabled(self, index):
+    def getRuleEnabled(self, index = None):
         """
            Purpose:
                Retrieves the enabled state of a specific rule in the EPANET model.
@@ -13599,7 +13599,22 @@ class epanet:
                # Retrieve and print the current state of the rule at index 1
                x = d.getRuleEnabled(1)
                print(f"Rule state: {x}")
+
+           Example Usage with all items:
+           inpfile = "Net1.inp"
+           d = epanet(inpfile)
+
+           # Retrieve and print the current state of the rule at index 1
+           x = d.getRuleEnabled()
+           print(f"Rule state: {x}")
         """
+        if index == None :
+            enablelist =  []
+            iterations = self.getRuleCount()
+            for i in range(1, iterations + 1):
+                enabled = self.api.ENgetruleenabled(i)
+                enablelist.append(enabled)
+            return enablelist
         enabled = self.api.ENgetruleenabled(index)
         return enabled
 
