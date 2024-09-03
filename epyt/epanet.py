@@ -10852,7 +10852,7 @@ class epanet:
             else:
                 values = self.api.ENgetlinkvalue(index, code_p)
         else:
-            values = self.api.EN_getlinkvalues(code_p)
+            values = self.api.ENgetlinkvalues(code_p)
         return np.array(values)
 
     def __getNodeIndices(self, *argv):
@@ -13445,7 +13445,7 @@ class epanet:
             else:
                 print(f"Error setting curve type. Error code: {d.getError(errcode)}")
         """
-        errcode = self.api.EN_setcurvetype(index, type)
+        errcode = self.api.ENsetcurvetype(index, type)
         return errcode
 
     def setVertex(self, index, vertex, x, y):
@@ -13478,11 +13478,11 @@ class epanet:
                 print(f"Error setting vertex coordinates. Error code: {d.getError(errcode)}")
         """
 
-        errcode = self.api.EN_setvertex(index, vertex, x, y)
+        errcode = self.api.ENsetvertex(index, vertex, x, y)
         return errcode
 
     def timetonexteven(self, eventType, duration, elementIndex):
-        self.api.EN_timetonextevent(eventType, duration, elementIndex)
+        self.api.ENtimetonextevent(eventType, duration, elementIndex)
 
     def getControlEnabled(self, index):
         """
@@ -13505,7 +13505,7 @@ class epanet:
                 x = d.getControlEnabled(1)
                 print(f"Control state: {x}")
             """
-        enabled = self.api.EN_getcontrolenabled(index)
+        enabled = self.api.ENgetcontrolenabled(index)
         return enabled
 
     def setControlEnabled(self, index, enabled):
@@ -13534,7 +13534,7 @@ class epanet:
         x = d.getControlEnabled(1)
         print(f"Control state after: {x}")
     """
-        errcode = self.api.EN_setcontrolenabled(index, enabled)
+        errcode = self.api.ENsetcontrolenabled(index, enabled)
         return errcode
 
     def getRuleEnabled(self, index):
@@ -13558,7 +13558,7 @@ class epanet:
                x = d.getRuleEnabled(1)
                print(f"Rule state: {x}")
         """
-        enabled = self.api.EN_getruleenabled(index)
+        enabled = self.api.ENgetruleenabled(index)
         return enabled
 
     def setRuleEnabled(self, index, enabled):
@@ -13587,14 +13587,14 @@ class epanet:
             x = d.getRuleEnabled(1)
             print(f"Rule state after: {x}")
         """
-        errcode = self.api.EN_setruleenabled(index, enabled)
+        errcode = self.api.ENsetruleenabled(index, enabled)
         return errcode
 
     def openX(self, inpFile, rptFile, outFile):
-        self.api.EN_openX(inpFile, rptFile, outFile)
+        self.api.ENopenX(inpFile, rptFile, outFile)
 
     def loadPatternFile(self, filename, id):
-        self.api.EN_loadpatternfile(filename, id)
+        self.api.ENloadpatternfile(filename, id)
 
     def getLinkValues(self, property):
         """
@@ -13626,7 +13626,7 @@ class epanet:
             tstep = d.nextHydraulicAnalysisStep()
 
         d.closeHydraulicAnalysis()"""
-        values = self.api.EN_getlinkvalues(property)
+        values = self.api.ENgetlinkvalues(property)
         return values
 
 class epanetapi:
@@ -14365,7 +14365,7 @@ class epanetapi:
         self.ENgeterror()
         return type_.value
 
-    def EN_setcurvetype(self, index, type):
+    def ENsetcurvetype(self, index, type):
         """ Allow API clients to set a curve's type (e.g., EN_PUMP_CURVE, EN_VOLUME_CURVE, etc.).
         Input:   index = data curve index
                  type = type of data curve (see EN_CurveType)
@@ -14379,7 +14379,7 @@ class epanetapi:
         self.ENgeterror()
         return self.errcode
 
-    def EN_setvertex(self, index, vertex, x, y):
+    def ENsetvertex(self, index, vertex, x, y):
         """ Input:   index = link index
              vertex = index of a link vertex point
              x = vertex point's X-coordinate
@@ -14400,7 +14400,7 @@ class epanetapi:
         self.ENgeterror()
         return self.errcode
 
-    def EN_timetonextevent(self, eventType, duration, elementIndex):
+    def ENtimetonextevent(self, eventType, duration, elementIndex):
         """get the time to next event, and give a reason for the time step truncation"""
         eventType = c_int(eventType) #pointer in C
         duration = c_double(duration) #long in C
@@ -14412,7 +14412,7 @@ class epanetapi:
             self.errcode = self._lib.ENtimetonextevent(eventType, duration, elementIndex)
         self.ENgeterror()
 
-    def EN_getcontrolenabled(self, index):
+    def ENgetcontrolenabled(self, index):
         index = c_int(index)
         enabled = c_int()
         if self._ph is not None:
@@ -14422,7 +14422,7 @@ class epanetapi:
         self.ENgeterror()
         return enabled.value
 
-    def EN_setcontrolenabled(self, index, enabled):
+    def ENsetcontrolenabled(self, index, enabled):
 
         index = c_int(index)
         enabled = c_int(enabled)
@@ -14433,7 +14433,7 @@ class epanetapi:
         self.ENgeterror()
         return self.errcode
 
-    def EN_getruleenabled(self, index):
+    def ENgetruleenabled(self, index):
 
         index = c_int(index)
         enabled = c_int()
@@ -14443,7 +14443,7 @@ class epanetapi:
             self.errcode = self._lib.ENgetruleenabled(index, byref(enabled))
         self.ENgeterror()
         return enabled.value
-    def EN_setruleenabled(self, index, enabled):
+    def ENsetruleenabled(self, index, enabled):
 
         index = c_int(index)
         enabled = c_int(enabled)
@@ -14454,7 +14454,7 @@ class epanetapi:
         self.ENgeterror()
         return self.errcode
 
-    def EN_openX(self, inpFile, rptFile, outFile):
+    def ENopenX(self, inpFile, rptFile, outFile):
         """Input:   inpFile = name of input file
                     rptFile = name of report file
                     outFile = name of binary output file
@@ -14470,7 +14470,7 @@ class epanetapi:
         else:
             self.errcode = self._lib.ENopenX( self.inpFile,  self.rptFile, self.outFile)
         self.ENgeterror()
-    def EN_getlinkvalues(self, property):
+    def ENgetlinkvalues(self, property):
         """
           Input:   property = link property code (see EN_LinkProperty)
           Output:  values = array of link property values
@@ -14491,7 +14491,7 @@ class epanetapi:
         self.ENgeterror()
         return list(values_array)
 
-    def EN_loadpatternfile(self, filename, id):
+    def ENloadpatternfile(self, filename, id):
         """ Input:   filename =  name of the file containing pattern data
             id = ID for the new pattern
             Output:  none
