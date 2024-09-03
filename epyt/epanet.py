@@ -530,7 +530,7 @@ class epanet:
         # Node types
         self.TYPENODE = ['JUNCTION', 'RESERVOIR', 'TANK']
         # Constants for pumps
-        self.TYPEPUMP = ['CONSTANT_HORSEPOWER', 'POWER_FUNCTION', 'CUSTOM', '']
+        self.TYPEPUMP = ['CONSTANT_HORSEPOWER', 'POWER_FUNCTION', 'CUSTOM', 'NO_CURVE']
         # Link PUMP status
         self.TYPEPUMPSTATE = ['XHEAD', '', 'CLOSED', 'OPEN', '', 'XFLOW']
         # Constants for quality
