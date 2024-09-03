@@ -2539,6 +2539,7 @@ class epanet:
 
     def getControlRulesCount(self):
         warnings.warn("This function: getControlRulesCount has been renamed to getControlCount please rename the function")
+
     def getControlCount(self):
         """ Retrieves the number of controls.
 
@@ -13486,7 +13487,7 @@ class epanet:
     def timetonexteven(self, eventType, duration, elementIndex):
         self.api.ENtimetonextevent(eventType, duration, elementIndex)
 
-    def getControlEnabled(self, index):
+    def getControlEnabled(self, index = None):
         """
             Purpose:
                 Retrieves the enabled state of a specified control in the EPANET model.
@@ -13506,8 +13507,24 @@ class epanet:
                 # Retrieve and print the state of the control at index 1
                 x = d.getControlEnabled(1)
                 print(f"Control state: {x}")
+
+            Example Usage with all items:
+                inpfile = "Net1.inp"
+                d = epanet(inpfile)
+
+                # Retrieve and print the state of the control at index 1
+                x = d.getControlEnabled()
+                print(f"Control state: {x}")
             """
-        enabled = self.api.ENgetcontrolenabled(index)
+        if index == None :
+            enablelist =  []
+            iterations = self.getControlCount()
+            for i in range(1, iterations + 1):
+                enabled = self.api.ENgetcontrolenabled(i)
+                enablelist.append(enabled)
+            return enablelist
+        else:
+            enabled = self.api.ENgetcontrolenabled(index)
         return enabled
 
     def setControlEnabled(self, index):
