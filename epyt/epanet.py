@@ -13487,7 +13487,7 @@ class epanet:
     def timetonexteven(self, eventType, duration, elementIndex):
         self.api.ENtimetonextevent(eventType, duration, elementIndex)
 
-    def getControlEnabled(self, index = None):
+    def getControlState(self, index = None):
         """
             Purpose:
                 Retrieves the enabled state of a specified control in the EPANET model.
@@ -13505,7 +13505,7 @@ class epanet:
                 d = epanet(inpfile)
 
                 # Retrieve and print the state of the control at index 1
-                x = d.getControlEnabled(1)
+                x = d.getControlState(1)
                 print(f"Control state: {x}")
 
             Example Usage with all items:
@@ -13513,7 +13513,7 @@ class epanet:
                 d = epanet(inpfile)
 
                 # Retrieve and print the state of the control at index 1
-                x = d.getControlEnabled()
+                x = d.getControlState()
                 print(f"Control state: {x}")
             """
         if index == None :
@@ -13540,14 +13540,14 @@ class epanet:
         d = epanet(inpfile)
 
         # Retrieve the current state of the control at index 1
-        x = d.getControlEnabled(1)
+        x = d.getControlState(1)
         print(f"Control state before: {x}")
 
         # Disable the control at index 1
         d.setControlEnabled(1, 0)
 
         # Check the state of the control again
-        x = d.getControlEnabled(1)
+        x = d.getControlState(1)
         print(f"Control state after: {x}")
     """
         errcode = self.api.ENsetcontrolenabled(index, 1)
@@ -13566,14 +13566,14 @@ class epanet:
         d = epanet(inpfile)
 
         # Retrieve the current state of the control at index 1
-        x = d.getControlEnabled(1)
+        x = d.getControlState(1)
         print(f"Control state before: {x}")
 
         # Disable the control at index 1
         d.setControlEnabled(1, 0)
 
         # Check the state of the control again
-        x = d.getControlEnabled(1)
+        x = d.getControlState(1)
         print(f"Control state after: {x}")
     """
         errcode = self.api.ENsetcontrolenabled(index, 0)
