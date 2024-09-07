@@ -13527,7 +13527,7 @@ class epanet:
             enabled = self.api.ENgetcontrolenabled(index)
         return enabled
 
-    def setControlEnabled(self, index):
+    def setControlEnabled(self, index, enabled):
         """
     Purpose:
         Enables  a control in the EPANET model.
@@ -13550,34 +13550,10 @@ class epanet:
         x = d.getControlState(1)
         print(f"Control state after: {x}")
     """
-        errcode = self.api.ENsetcontrolenabled(index, 1)
+        errcode = self.api.ENsetcontrolenabled(index, enabled)
         return errcode
 
-    def setControlDisabled(self, index):
-        """
-    Purpose:
-        Disables a control in the EPANET model.
 
-    Parameters:
-        index (int): The index of the control to be modified, starting from 1.
-
-    Example Usage:
-        inpfile = "Net1.inp"
-        d = epanet(inpfile)
-
-        # Retrieve the current state of the control at index 1
-        x = d.getControlState(1)
-        print(f"Control state before: {x}")
-
-        # Disable the control at index 1
-        d.setControlEnabled(1, 0)
-
-        # Check the state of the control again
-        x = d.getControlState(1)
-        print(f"Control state after: {x}")
-    """
-        errcode = self.api.ENsetcontrolenabled(index, 0)
-        return errcode
 
     def getRuleEnabled(self, index = None):
         """
@@ -13618,7 +13594,7 @@ class epanet:
         enabled = self.api.ENgetruleenabled(index)
         return enabled
 
-    def setRuleEnabled(self, index):
+    def setRuleEnabled(self, index, enabled):
         """
         Purpose:
             Enables a specific rule in the EPANET model.
@@ -13635,40 +13611,16 @@ class epanet:
             print(f"Rule state before: {x}")
 
             # Enable the rule at index 1
-            d.setRuleEnabled(1)
+            d.setRuleEnabled(1,1)
 
             # Retrieve and print the state of the rule again to confirm the change
             x = d.getRuleEnabled(1)
             print(f"Rule state after: {x}")
         """
-        errcode = self.api.ENsetruleenabled(index, 1)
+        errcode = self.api.ENsetruleenabled(index, enabled)
         return errcode
 
-    def setRuleDisabled(self, index):
-        """
-        Purpose:
-            Disables a specific rule in the EPANET model.
 
-        Parameters:
-            index (int): The index of the rule to be modified, starting from 1.
-
-        Example Usage:
-            inpfile = "Net1.inp"
-            d = epanet(inpfile)
-
-            # Retrieve and print the current state of the rule at index 1
-            x = d.getRuleEnabled(1)
-            print(f"Rule state before: {x}")
-
-            # Enable the rule at index 1
-            d.setRuleDisabled(1)
-
-            # Retrieve and print the state of the rule again to confirm the change
-            x = d.getRuleEnabled(1)
-            print(f"Rule state after: {x}")
-        """
-        errcode = self.api.ENsetruleenabled(index, 0)
-        return errcode
 
     def openX(self, inpFile, rptFile, outFile):
         self.api.ENopenX(inpFile, rptFile, outFile)
