@@ -240,6 +240,10 @@ class ToolkitConstants:
     EN_WALLORDER = 20
     EN_TANKORDER = 21
     EN_CONCENLIMIT = 22
+    EN_DEMANDPATTERN = 23
+    EN_EMITBACKFLOW = 24
+    EN_PRESS_UNITS = 25
+    EN_STATUS_REPORT = 26
 
     # Control types
     EN_LOWLEVEL = 0
