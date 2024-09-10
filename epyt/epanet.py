@@ -13766,10 +13766,15 @@ class epanet:
     def setLinkLeakArea(self, index, value):
 
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_AREA, value)
-    
+
     def setLinkExpansionProp(self, index, value):
 
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_EXPAN, value)
+
+    def getLinkLeakageRate(self):
+
+        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LINK_LEAKAGE)
+
 
 class epanetapi:
     """
