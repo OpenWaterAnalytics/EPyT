@@ -13782,6 +13782,31 @@ class epanet:
     def getTotalLeakageLoss(self):
 
         return self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
+    
+    def getConsumerDemandReq(self):
+        
+        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_FULLDEMAND)
+
+    def getConsumerDemandDel(self):
+
+        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMANDFLOW)
+
+    def getConsumerDemandDiff(self):
+
+        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMANDDEFICIT)
+
+    def getNodeEmitterFlow(self):
+
+        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_EMITTERFLOW)
+
+    def getNodeLeakageFlow(self):
+
+        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_LEAKAGEFLOW)
+
+    def getNodeSumDemandandFLow(self):
+
+        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMAND)
+
 
 class epanetapi:
     """
