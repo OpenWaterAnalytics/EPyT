@@ -9148,6 +9148,15 @@ class epanet:
         See also getOptionsTankBulkReactionOrder, setOptionsPipeBulkReactionOrder, setOptionsPipeWallReactionOrder.
         """
         return self.api.ENsetoption(self.ToolkitConstants.EN_TANKORDER, value)
+    
+    def setPressureUnit(self, value):
+        """Sets the pressure unit used in Epanet
+            Example:
+                inpfile = "Net3.inp"
+                d = epanet(inpfile)
+                d.setPressureUnit(1)"""
+
+        return self.api.ENsetoption(self.ToolkitConstants.EN_PRESS_UNITS, value)
 
     def setQualityType(self, *argv):
         """ Sets the type of water quality analysis called for.
