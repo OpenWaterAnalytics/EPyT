@@ -13733,6 +13733,15 @@ class epanet:
     def setPCVCurve(self, index, value):
 
         return self.api.ENsetlinkvalues(index, self.ToolkitConstants.EN_PCV_CURVE, value)
+
+    def getDefaultTimePat(self):
+        
+        return self.api.ENgetoption(self.ToolkitConstants.EN_DEMANDPATTERN)
+
+    def setDefaultTimePat(self, value):
+
+        self.api.ENsetoption(self.ToolkitConstants.EN_DEMANDPATTERN, value)
+    
 class epanetapi:
     """
     EPANET Toolkit functions - API
