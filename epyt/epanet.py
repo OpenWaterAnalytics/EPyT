@@ -152,7 +152,12 @@ class ToolkitConstants:
     EN_PUMP_ECURVE = 20
     EN_PUMP_ECOST = 21
     EN_PUMP_EPAT = 22
-
+    EN_LINK_INCONTROL = 23
+    EN_GPV_CURVE = 24
+    EN_PCV_CURVE = 25
+    EN_LEAK_AREA = 26
+    EN_LEAK_EXPAN = 27
+    EN_LINK_LEAKAGE = 28
     # Time parameters
     EN_DURATION = 0
     EN_HYDSTEP = 1
