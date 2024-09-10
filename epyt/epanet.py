@@ -9645,6 +9645,15 @@ class epanet:
         """
         self.api.ENsettimeparam(self.ToolkitConstants.EN_PATTERNSTART, value)
 
+    def setStartTime(self, value):
+        """Sets the start time for the simulation.
+
+        Parameters:
+            value (long): The start time of the simulation in seconds.
+                          Warning: The value must be smaller than the total number of seconds
+                          in a day (i.e., 86400 seconds)."""
+        self.api.ENsettimeparam(self.ToolkitConstants.EN_STARTTIME, value)
+
     def setTimePatternStep(self, value):
         """ Sets the time pattern step.
 
