@@ -5692,6 +5692,12 @@ class epanet:
         """
         return int(self.api.ENgetoption(self.ToolkitConstants.EN_TANKORDER))
 
+    def getPressureUnit(self):
+        """
+        Gets the pressure unit used in Epanet
+        """
+        return int(self.api.ENgetoption(self.ToolkitConstants.EN_PRESS_UNITS))
+
     def getPattern(self):
         """
         Retrieves the multiplier factor for all patterns and all times.
