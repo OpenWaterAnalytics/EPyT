@@ -278,6 +278,18 @@ class ToolkitConstants:
     EN_INITFLOW = 10
     EN_SAVE_AND_INIT = 11
 
+    EN_CONST_HP = 0      # Constant horsepower pump curve
+    EN_POWER_FUNC = 1    # Power function pump curve
+    EN_CUSTOM = 2     # User-defined custom pump curve
+    EN_NOCURVE = 3    # No pump curve
+
+    EN_VOLUME_CURVE = 0    # Volume curve
+    EN_PUMP_CURVE = 1      # Pump curve
+    EN_EFFIC_CURVE = 2     # Efficiency curve
+    EN_HLOSS_CURVE = 3     # Head loss curve
+    EN_GENERIC_CURVE = 4   # Generic curve
+    EN_VALVE_CURVE = 5     # Valve position curve
+
     # ObjectType
     EN_NODE = 0
     EN_LINK = 1
