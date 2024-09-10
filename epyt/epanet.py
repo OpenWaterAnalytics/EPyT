@@ -13774,7 +13774,14 @@ class epanet:
     def getLinkLeakageRate(self):
 
         return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LINK_LEAKAGE)
+    
+    def getNodeLeakageDeamand(self):
+        
+        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_LEAKAGEFLOW)
 
+    def getTotalLeakageLoss(self):
+
+        return self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
 
 class epanetapi:
     """
