@@ -13754,7 +13754,23 @@ class epanet:
     def setDefaultTimePat(self, value):
 
         self.api.ENsetoption(self.ToolkitConstants.EN_DEMANDPATTERN, value)
+        
+    def getLinkLeakArea(self):
+
+        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LEAK_AREA)
+
+    def getLinkExpansionProp(self):
+
+        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LEAK_EXPAN)
+
+    def setLinkLeakArea(self, index, value):
+
+        self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_AREA, value)
     
+    def setLinkExpansionProp(self, index, value):
+
+        self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_EXPAN, value)
+
 class epanetapi:
     """
     EPANET Toolkit functions - API
