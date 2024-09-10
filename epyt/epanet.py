@@ -13718,7 +13718,21 @@ class epanet:
         d.closeHydraulicAnalysis()"""
         values = self.api.ENgetlinkvalues(property)
         return values
+    
+    def getGPVCurve(self):
 
+        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_GPV_CURVE)
+    def getPCVCurve(self):
+
+        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_PCV_CURVE)
+
+    def setGPVCurve(self, index, value):
+
+        self.api.ENsetlinkvalue(index, self.ToolkitConstants.EN_GPV_CURVE, value)
+
+    def setPCVCurve(self, index, value):
+
+        return self.api.ENsetlinkvalues(index, self.ToolkitConstants.EN_PCV_CURVE, value)
 class epanetapi:
     """
     EPANET Toolkit functions - API
