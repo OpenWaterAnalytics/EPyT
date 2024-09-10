@@ -123,7 +123,11 @@ class ToolkitConstants:
     EN_MAXVOLUME = 25
     EN_CANOVERFLOW = 26
     EN_DEMANDDEFICIT = 27
-
+    EN_NODE_INCONTROL = 28
+    EN_EMITTERFLOW = 29
+    EN_LEAKAGEFLOW = 30
+    EN_DEMANDFLOW = 31
+    EN_FULLDEMAND = 32
     # Link parameters
     EN_DIAMETER = 0
     EN_LENGTH = 1
@@ -9163,6 +9167,12 @@ class epanet:
                 d.setPressureUnit(1)"""
 
         return self.api.ENsetoption(self.ToolkitConstants.EN_PRESS_UNITS, value)
+
+    def setStatusReport(self, value):
+        """Sets the status report for epanet
+        (`EN_NO_REPORT`, `EN_NORMAL_REPORT` or `EN_FULL_REPORT`).
+        """
+        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, value)
 
     def setQualityType(self, *argv):
         """ Sets the type of water quality analysis called for.
