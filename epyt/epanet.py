@@ -320,6 +320,10 @@ class ToolkitConstants:
     EN_R_IS_CLOSED = 2
     EN_R_IS_ACTIVE = 3
 
+    EN_MISSING = -1.0E10
+    EN_SET_CLOSED = -1.0E10
+    EN_SET_OPEN = 1.0E10
+
     # MSX Constants
     MSX_NODE = 0
     MSX_LINK = 1
