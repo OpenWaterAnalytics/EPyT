@@ -331,6 +331,7 @@ class ToolkitConstants:
     EN_MASSBALANCE = 4
     EN_DEFICIENTNODES = 5
     EN_DEMANDREDUCTION = 6
+    EN_LEAKAGELOSS = 7
 
     # Link status codes used in rule-based controls
     EN_R_IS_OPEN = 1
