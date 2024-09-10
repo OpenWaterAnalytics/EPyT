@@ -4324,6 +4324,11 @@ class epanet:
         See also setNodeEmitterCoeff, getNodesInfo, getNodeElevations.
         """
         return self.__getNodeInfo(self.ToolkitConstants.EN_EMITTER, *argv)
+    
+    def getNodeEmitterFlow(self, index):
+        """Retrieves node emmiter flow"""
+
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_EMITTERFLOW)
 
     def getNodeHydraulicHead(self, *argv):
         """ Retrieves the computed values of all node hydraulic heads.
@@ -5701,6 +5706,12 @@ class epanet:
         Gets the pressure unit used in Epanet
         """
         return int(self.api.ENgetoption(self.ToolkitConstants.EN_PRESS_UNITS))
+    
+    def getStatusReport(self):
+        """ Gets the status report ,
+        (`EN_NO_REPORT`, `EN_NORMAL_REPORT` or `EN_FULL_REPORT`)."""
+
+        return (self.api.ENgetoption(self.ToolkitConstants.EN_STATUS_REPORT))
 
     def getPattern(self):
         """
