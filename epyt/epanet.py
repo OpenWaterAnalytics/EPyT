@@ -6348,7 +6348,7 @@ class epanet:
         """
         return self.api.ENgettimeparam(self.ToolkitConstants.EN_PERIODS)
 
-    def getTimeStartTime(self):
+    def getTimeStartClockStartTime(self):
         """ Retrieves the simulation starting time of day.
 
         Example:
@@ -9708,7 +9708,7 @@ class epanet:
         """
         self.api.ENsettimeparam(self.ToolkitConstants.EN_PATTERNSTART, value)
 
-    def setStartTime(self, value):
+    def setTimeClockStartTime(self, value):
         """Sets the start time for the simulation.
 
         Parameters:
