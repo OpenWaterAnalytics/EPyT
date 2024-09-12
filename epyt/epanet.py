@@ -5781,7 +5781,7 @@ class epanet:
                d = epanet(network.inp)
                d.getPatternAverageDefaultValue() """
         return self.api.ENgetaveragepatternvalue(0)
-    
+
     def getPatternComment(self, *argv):
         """ Retrieves the comment string assigned to the pattern object.
 
@@ -6361,7 +6361,7 @@ class epanet:
 
         Example:
 
-        >>> d.getTimeStartTime()
+        >>> d.getTimeStartClockStartTime()
 
         See also getTimeSimulationDuration, getTimePatternStart.
         """
@@ -6396,7 +6396,7 @@ class epanet:
 
         >>> d.getTimeHaltFlag()
 
-        See also getTimeStartTime, getTimeSimulationDuration.
+        See also getTimeStartClockStartTime, getTimeSimulationDuration.
         """
         return self.api.ENgettimeparam(self.ToolkitConstants.EN_HALTFLAG)
 
@@ -9799,7 +9799,7 @@ class epanet:
         >>> d.setTimeSimulationDuration(simulationDuration)
         >>> d.getTimeSimulationDuration()
 
-        See also getTimeSimulationDuration(), getTimeStartTime(), getTimeHaltFlag().
+        See also getTimeSimulationDuration(), getTimeStartClockStartTime(), getTimeHaltFlag().
         """
         self.api.ENsettimeparam(self.ToolkitConstants.EN_DURATION, value)
 
@@ -10870,7 +10870,7 @@ class epanet:
         self.TimeStatisticsType = self.getTimeStatisticsType()  # Type ('NONE', 'AVERAGE', 'MINIMUM',
         # 'MAXIMUM', 'RANGE')
         self.TimeReportingPeriods = self.getTimeReportingPeriods()  # Reporting periods
-        self.TimeStartTime = self.getTimeStartTime()  # Number of start time
+        self.TimeStartTime = self.getTimeStartClockStartTime()  # Number of start time
         self.TimeHTime = self.getTimeHTime()  # Number of htime
         self.TimeHaltFlag = self.getTimeHaltFlag()  # Number of halt flag
         self.TimeNextEvent = self.getTimeNextEvent()  # Find the next event of the hydraulic time step length,
@@ -13855,14 +13855,26 @@ class epanet:
 
     def setLinkValveCurvePCV(self, index, value):
 
-        return self.api.ENsetlinkvalues(index, self.ToolkitConstants.EN_PCV_CURVE, value)
+        return self.api.ENsetlinkvalue(index, self.ToolkitConstants.EN_PCV_CURVE, value)
 
-    def getDefaultTimePat(self):
-        
+    def getOptionsDemandPattern(self):
+        """Retrieves the default Demand pattern.
+
+        Example:
+                inpfile = "Richmond_standard.inp"
+                d = epanet(inpfile)
+                d.printv(d.getOptionsDemandPattern())"""
+
         return self.api.ENgetoption(self.ToolkitConstants.EN_DEMANDPATTERN)
 
-    def setDefaultTimePat(self, value):
+    def setOptionsDemandPattern(self, value):
+        """ Retrieves the default Demand pattern.
 
+        Example:
+                inpfile = "Richmond_standard.inp"
+                d = epanet(inpfile)
+                d.setOptionsDemandPattern(3)
+                d.printv(d.getOptionsDemandPattern())"""
         self.api.ENsetoption(self.ToolkitConstants.EN_DEMANDPATTERN, value)
         
     def getLinkLeakArea(self):
