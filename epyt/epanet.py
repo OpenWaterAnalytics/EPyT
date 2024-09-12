@@ -5774,6 +5774,14 @@ class epanet:
             value.append(self.api.ENgetaveragepatternvalue(i))
         return value
 
+    def getPatternAverageDefaultValue(self):
+        """Retrieves the average value of the default pattern
+
+        Example:
+               d = epanet(network.inp)
+               d.getPatternAverageDefaultValue() """
+        return self.api.ENgetaveragepatternvalue(0)
+    
     def getPatternComment(self, *argv):
         """ Retrieves the comment string assigned to the pattern object.
 
