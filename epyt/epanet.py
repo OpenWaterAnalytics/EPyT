@@ -200,6 +200,7 @@ class ToolkitConstants:
     EN_FCV = 6
     EN_TCV = 7
     EN_GPV = 8
+    EN_PCV = 9
 
     # Quality analysis types
     EN_NONE = 0
@@ -13521,6 +13522,107 @@ class epanet:
         """
         errcode = self.api.ENsetcurvetype(index, type)
         return errcode
+
+    def setCurveTypeVolume(self, index):
+        """Purpose:
+            Sets the type of a curve to Volume in the EPANET model.
+
+        Parameters:
+            index (int): The index of the curve to modify.
+
+        Returns:
+            int: An error code indicating success or failure of the operation.
+
+        Example Usage:
+            inp_filename = "Net1.inp"
+
+            d = epanet(inp_filename)
+            errcode = d.setCurveTypeVolume(1)
+            curve_type = d.getCurveType(1)
+            """
+        errcode = self.api.ENsetcurvetype(index, 0)
+        return errcode
+
+    def setCurveTypePump(self, index):
+        """Purpose:
+            Sets the type of a curve to Pump in the EPANET model.
+
+        Parameters:
+            index (int): The index of the curve to modify.
+
+        Returns:
+            int: An error code indicating success or failure of the operation.
+
+        Example Usage:
+            inp_filename = "Net1.inp"
+
+            d = epanet(inp_filename)
+            errcode = d.setCurveTypePump(1)
+            curve_type = d.getCurveType(1)
+            """
+        errcode = self.api.ENsetcurvetype(index, 1)
+        return errcode
+
+    def setCurveTypeEfficiency(self, index):
+        """Purpose:
+            Sets the type of curve to Efficiency in the EPANET model.
+
+        Parameters:
+            index (int): The index of the curve to modify.
+
+        Returns:
+            int: An error code indicating success or failure of the operation.
+
+        Example Usage:
+            inp_filename = "Net1.inp"
+
+            d = epanet(inp_filename)
+            errcode = d.setCurveTypeEfficiency(1)
+            curve_type = d.getCurveType(1)
+            """
+        errcode = self.api.ENsetcurvetype(index, 2)
+        return errcode
+
+    def setCurveTypeHeadloss(self, index):
+        """Purpose:
+            Sets the type of a curve to Headloss in the EPANET model.
+
+        Parameters:
+            index (int): The index of the curve to modify.
+
+        Returns:
+            int: An error code indicating success or failure of the operation.
+
+        Example Usage:
+            inp_filename = "Net1.inp"
+
+            d = epanet(inp_filename)
+            errcode = d.setCurveTypeHeadloss(1)
+            curve_type = d.getCurveType(1)
+            """
+        errcode = self.api.ENsetcurvetype(index, 3)
+        return errcode
+
+    def setCurveTypeGeneral(self, index):
+        """Purpose:
+            Sets the type of a curve to general in the EPANET model.
+
+        Parameters:
+            index (int): The index of the curve to modify.
+
+        Returns:
+            int: An error code indicating success or failure of the operation.
+
+        Example Usage:
+            inp_filename = "Net1.inp"
+
+            d = epanet(inp_filename)
+            errcode = d.setCurveTypeGeneral(1)
+            curve_type = d.getCurveType(1)
+            """
+        errcode = self.api.ENsetcurvetype(index, 4)
+        return errcode
+
 
     def setVertex(self, index, vertex, x, y):
         """
