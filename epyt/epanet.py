@@ -672,6 +672,8 @@ class epanet:
             self.LibEPANET = self.api.LibEPANET
             if self.display_msg:
                 print(f'Input File {self.netName} loaded successfully.\n')
+            if not self.isConnected():
+                warnings.warn("The network is not fully connected, one or more link(s) are missing.",UserWarning)
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -13928,6 +13930,21 @@ class epanet:
     def getNodeSumDemandandFLow(self):
 
         return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMAND)
+
+    def isConnected(self):
+        matrix = self.getConnectivityMatrix()
+        n = len(matrix)
+        visited = [False] * n
+        def dfs(node):
+            visited[node] = True
+            for neighbor in range(n):
+                if matrix[node][neighbor] == 1 and not visited[neighbor]:
+                    dfs(neighbor)
+        dfs(0)
+        if all(visited):
+            return True
+        else:
+            return False
 
 
 class epanetapi:
