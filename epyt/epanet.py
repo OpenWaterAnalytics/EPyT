@@ -13835,17 +13835,21 @@ class epanet:
         return values
     
     def getGPVCurve(self):
+    def getLinkValveCurveGPV(self):
 
         return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_GPV_CURVE)
     def getPCVCurve(self):
+    def getLinkValveCurvePCV(self):
 
         return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_PCV_CURVE)
 
     def setGPVCurve(self, index, value):
+    def setLinkValveCurveGPV(self, index, value):
 
         self.api.ENsetlinkvalue(index, self.ToolkitConstants.EN_GPV_CURVE, value)
 
     def setPCVCurve(self, index, value):
+    def setLinkValveCurvePCV(self, index, value):
 
         return self.api.ENsetlinkvalues(index, self.ToolkitConstants.EN_PCV_CURVE, value)
 
