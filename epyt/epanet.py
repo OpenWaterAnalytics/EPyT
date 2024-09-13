@@ -13930,7 +13930,37 @@ class epanet:
                 d.setOptionsDemandPattern(3)
                 d.printv(d.getOptionsDemandPattern())"""
         self.api.ENsetoption(self.ToolkitConstants.EN_DEMANDPATTERN, value)
-        
+
+    def getOptionsEmitterBackFlow(self):
+        """
+        Retrieves the current setting for allowing reverse flow through emitters.
+
+        Example:
+            inpfile = "Richmond_standard.inp"
+            d = epanet(inpfile)
+            d.printv(d.getOptionsEmitBackFlow())
+
+        Returns:
+            int: 1 if reverse flow is allowed (default), 0 if not.
+        """
+        return int(self.api.ENgetoption(self.ToolkitConstants.EN_EMITBACKFLOW))
+
+    def setOptionsEmitterBackFlow(self, value):
+        """
+        Sets the option to allow or prevent reverse flow through emitters.
+
+        Parameters:
+            value (int): 1 to allow reverse flow (default), 0 to prevent it.
+
+        Example:
+            inpfile = "Richmond_standard.inp"
+            d = epanet(inpfile)
+            d.setOptionsEmitBackFlow(0)
+            d.printv(d.getOptionsEmitBackFlow())
+        """
+        self.api.ENsetoption(self.ToolkitConstants.EN_EMITBACKFLOW, int(value))
+
+
     def getLinkLeakArea(self):
 
         return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LEAK_AREA)
