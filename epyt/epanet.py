@@ -555,7 +555,7 @@ class epanet:
         self.DEMANDMODEL = ['DDA', 'PDA']
         # Link types
         self.TYPELINK = ['CVPIPE', 'PIPE', 'PUMP', 'PRV', 'PSV',
-                         'PBV', 'FCV', 'TCV', 'GPV']
+                         'PBV', 'FCV', 'TCV', 'GPV', 'PCV']
         # Constants for mixing models
         self.TYPEMIXMODEL = ['MIX1', 'MIX2', 'FIFO', 'LIFO']
         # Node types
@@ -1107,6 +1107,26 @@ class epanet:
                  addLinkValvePRV, deleteLink, setLinkTypeValveFCV.
         """
         return self.api.ENaddlink(vID, self.ToolkitConstants.EN_GPV,
+                                  fromNode, toNode)
+
+    def addLinkValvePCV(self, vID, fromNode, toNode):
+        """ Adds a new PCV valve.
+        Returns the index of the new PCV valve.
+
+         The example is based on d = epanet('Net1.inp')
+
+        Example:
+
+        >>> valveID = 'newValvePCV'
+        >>> fromNode = '10'
+        >>> toNode = '21'
+        >>> valveIndex = d.addLinkValvePCV(valveID, fromNode, toNode)
+        >>> d.plot()
+
+        See also plot, setLinkNodesIndex, addLinkPipe,
+                 addLinkValvePCV, deleteLink, setLinkTypeValvePCV.
+        """
+        return self.api.ENaddlink(vID, self.ToolkitConstants.EN_PCV,
                                   fromNode, toNode)
 
     def addLinkValvePBV(self, vID, fromNode, toNode):
@@ -7851,6 +7871,38 @@ class epanet:
             condition = argv[0]
         index = self.__checkLinkIfString(Id)
         return self.api.ENsetlinktype(index, self.ToolkitConstants.EN_GPV, condition)
+
+    def setLinkTypeValvePCV(self, Id, *argv):
+        """ Sets the link type valve PCV(Position control valve) for a specified link.
+
+        Note:
+            * condition = 0 | if is EN_UNCONDITIONAL: Delete all controls that contain object
+            * condition = 1 | if is EN_CONDITIONAL: Cancel object type change if contained in controls
+
+        Default condition is 0.
+
+        Example 1:
+
+        >>> d.getLinkType(1)                                    # Retrieves the type of the 1st link
+        >>> linkid = d.getLinkPipeNameID(1)                     # Retrieves the ID of the 1t pipe
+        >>> index = d.setLinkTypeValvePCV(linkid)               # Changes the 1st pipe to valve PCV given it's ID
+        >>> d.getLinkType(index)
+
+        Example 2:
+
+        >>> linkid = d.getLinkPipeNameID(1)
+        >>> condition = 1
+        >>> index = d.setLinkTypeValvePCV(linkid, condition)    # Changes the 1st pipe to valve PCV given it's ID and a condition (if possible)
+        >>> d.getLinkType(index)
+
+        See also getLinkType, getLinkPipeNameID, setLinkTypePipe,
+        setLinkTypePump, setLinkTypeValveFCV.
+        """
+        condition = 0  # default
+        if len(argv) == 1:
+            condition = argv[0]
+        index = self.__checkLinkIfString(Id)
+        return self.api.ENsetlinktype(index, self.ToolkitConstants.EN_PCV, condition)
 
     def setLinkTypeValvePBV(self, Id, *argv):
         """ Sets the link type valve PBV(pressure breaker valve) for a specified link.
@@ -16934,6 +16986,8 @@ class epanetapi:
             self.errcode = self._lib.ENwriteline(line.encode("utf-8"))
 
         self.ENgeterror()
+
+
 
 
 class epanetmsxapi:
