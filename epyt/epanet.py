@@ -13896,12 +13896,12 @@ class epanet:
         values = self.api.ENgetlinkvalues(property)
         return values
     
-    def getLinkValveCurveGPV(self):
+    def getLinkValveCurveGPV(self, *argv):
 
-        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_GPV_CURVE)
-    def getLinkValveCurvePCV(self):
+        return self.__getLinkInfo(self.ToolkitConstants.EN_GPV_CURVE, *argv)
+    def getLinkValveCurvePCV(self, *argv):
 
-        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_PCV_CURVE)
+        return self.__getLinkInfo(self.ToolkitConstants.EN_PCV_CURVE, *argv)
 
     def setLinkValveCurveGPV(self, index, value):
 
@@ -13961,13 +13961,13 @@ class epanet:
         self.api.ENsetoption(self.ToolkitConstants.EN_EMITBACKFLOW, int(value))
 
 
-    def getLinkLeakArea(self):
+    def getLinkLeakArea(self, *argv):
 
-        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LEAK_AREA)
+        return self.__getLinkInfo(self.ToolkitConstants.EN_LEAK_AREA, *argv)
 
-    def getLinkExpansionProp(self):
+    def getLinkExpansionProp(self, *argv):
 
-        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LEAK_EXPAN)
+        return self.__getLinkInfo(self.ToolkitConstants.EN_LEAK_EXPAN, *argv)
 
     def setLinkLeakArea(self, index, value):
 
@@ -13977,9 +13977,9 @@ class epanet:
 
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_EXPAN, value)
 
-    def getLinkLeakageRate(self):
+    def getLinkLeakageRate(self, *argv):
 
-        return self.api.ENgetlinkvalues(self.ToolkitConstants.EN_LINK_LEAKAGE)
+        return self.__getLinkInfo(self.ToolkitConstants.EN_LINK_LEAKAGE, *argv)
     
     def getNodeLeakageDeamand(self):
         
