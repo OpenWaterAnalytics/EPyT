@@ -339,6 +339,12 @@ class ToolkitConstants:
     EN_R_IS_CLOSED = 2
     EN_R_IS_ACTIVE = 3
 
+    EN_STEP_REPORT = 0 #Types of events that cause a timestep to end
+    EN_STEP_HYD = 1
+    EN_STEP_WQ = 2
+    EN_STEP_TANKEVENT = 3
+    EN_STEP_CONTROLEVENT = 4
+
     EN_MISSING = -1.0E10
     EN_SET_CLOSED = -1.0E10
     EN_SET_OPEN = 1.0E10
@@ -14800,17 +14806,20 @@ class epanetapi:
         self.ENgeterror()
         return self.errcode
 
-    def ENtimetonextevent(self, eventType, duration, elementIndex):
+    def ENtimetonextevent(self):
         """get the time to next event, and give a reason for the time step truncation"""
-        eventType = c_int(eventType) #pointer in C
-        duration = c_double(duration) #long in C
-        elementIndex = c_int(elementIndex) #pointer in C
+        eventType = c_int() #pointer in C
+        #duration = c_double() #long  pointer in C
+        elementIndex = c_int() #pointer in C
 
         if self._ph is not None:
-            self.errcode = self._lib.EN_timetonextevent(self._ph, eventType, duration, elementIndex)
+            duration = c_double()
+            self.errcode = self._lib.EN_timetonextevent(self._ph, byref(eventType), byref(duration), byref(elementIndex))
         else:
-            self.errcode = self._lib.ENtimetonextevent(eventType, duration, elementIndex)
+            duration = c_long()
+            self.errcode = self._lib.ENtimetonextevent(byref(eventType), byref(duration), byref(elementIndex))
         self.ENgeterror()
+        return eventType.value,duration.value,elementIndex.value
 
     def ENgetcontrolenabled(self, index):
         index = c_int(index)
