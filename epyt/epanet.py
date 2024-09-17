@@ -14034,7 +14034,26 @@ class epanet:
         else:
             return False
 
+    def getTimetoNextEventIndex(self):
+        x, y, z = self.api.ENtimetonextevent()
+        return z
 
+    def getTimeDurationtoNextEvent(self):
+        x, y, z = self.api.ENtimetonextevent()
+        return y
+
+    def getTimeNextEventtoType(self):
+        x, y, z = self.api.ENtimetonextevent()
+        if x == 0 :
+            return "REPORT"
+        if x == 1 :
+            return "HYD"
+        if x == 2 :
+            return "WQ"
+        if x == 3 :
+            return "TANK"
+        if x == 4 :
+            return "CONTROL"
 class epanetapi:
     """
     EPANET Toolkit functions - API
@@ -14813,7 +14832,7 @@ class epanetapi:
         elementIndex = c_int() #pointer in C
 
         if self._ph is not None:
-            duration = c_double()
+            duration = c_double() #not checked
             self.errcode = self._lib.EN_timetonextevent(self._ph, byref(eventType), byref(duration), byref(elementIndex))
         else:
             duration = c_long()
