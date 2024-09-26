@@ -14062,9 +14062,9 @@ class epanet:
 
         return self.__getLinkInfo(self.ToolkitConstants.EN_LINK_LEAKAGE, *argv)
     
-    def getNodeLeakageDeamand(self):
+    def getNodeLeakageDemand(self, index):
         
-        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_LEAKAGEFLOW)
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LEAKAGEFLOW)
 
     def getTotalLeakageLoss(self):
 
