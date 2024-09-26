@@ -232,6 +232,9 @@ class ToolkitConstants:
     EN_KPA = 1;
     EN_METERS =2
 
+    EN_DDA = 0 # Demand driven analysis
+    EN_PDA = 1 # Pressure driven analysis
+
     # Option types
     EN_TRIALS = 0
     EN_ACCURACY = 1
