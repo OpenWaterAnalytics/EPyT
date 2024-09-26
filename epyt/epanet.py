@@ -14122,9 +14122,11 @@ class epanet:
             x = "CONTROL"
         return x, y, z
 
+    def getLinkInControl(self, index):
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)
 
-
-
+    def getNodeInControl(self, index):
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)
 
 class epanetapi:
     """
