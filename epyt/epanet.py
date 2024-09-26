@@ -225,6 +225,12 @@ class ToolkitConstants:
     EN_MLD = 7
     EN_CMH = 8
     EN_CMD = 9
+    EN_CMS = 10
+
+    # Pressure units type
+    EN_PSI = 0
+    EN_KPA = 1;
+    EN_METERS =2
 
     # Option types
     EN_TRIALS = 0
