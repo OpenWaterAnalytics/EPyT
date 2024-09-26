@@ -291,6 +291,14 @@ class ToolkitConstants:
     EN_GENERIC_CURVE = 4   # Generic curve
     EN_VALVE_CURVE = 5     # Valve position curve
 
+
+    EN_UNCONDITIONAL = 0  #Unconditional object deletion
+    EN_CONDITIONAL = 1
+
+    EN_NO_REPORT = 0  # No status report
+    EN_NORMAL_REPORT = 1 # Normal status report
+    EN_FULL_REPORT = 2 # Full status report
+
     # ObjectType
     EN_NODE = 0
     EN_LINK = 1
