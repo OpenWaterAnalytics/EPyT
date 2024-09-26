@@ -13948,12 +13948,23 @@ class epanet:
         """
         return int(self.api.ENgetoption(self.ToolkitConstants.EN_EMITBACKFLOW))
 
-    def setOptionsEmitterBackFlow(self, value):
+    def setOptionsEmitterBackFlowAllowed(self):
         """
-        Sets the option to allow or prevent reverse flow through emitters.
+        Sets the option to allow reverse flow through emitters.
 
-        Parameters:
-            value (int): 1 to allow reverse flow (default), 0 to prevent it.
+
+
+        Example:
+            inpfile = "Richmond_standard.inp"
+            d = epanet(inpfile)
+            d.setOptionsEmitBackFlowAllowed()
+            d.printv(d.getOptionsEmitBackFlow())
+        """
+        self.api.ENsetoption(self.ToolkitConstants.EN_EMITBACKFLOW, 1)
+
+    def setOptionsEmitterBackFlowDisallowed(self):
+        """
+        Sets the option  prevent reverse flow through emitters.
 
         Example:
             inpfile = "Richmond_standard.inp"
@@ -13961,7 +13972,7 @@ class epanet:
             d.setOptionsEmitBackFlow(0)
             d.printv(d.getOptionsEmitBackFlow())
         """
-        self.api.ENsetoption(self.ToolkitConstants.EN_EMITBACKFLOW, int(value))
+        self.api.ENsetoption(self.ToolkitConstants.EN_EMITBACKFLOW, 0)
 
 
     def getLinkLeakArea(self, *argv):
