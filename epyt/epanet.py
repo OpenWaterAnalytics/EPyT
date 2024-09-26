@@ -14070,26 +14070,26 @@ class epanet:
 
         return self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
     
-    def getConsumerDemandReq(self):
+    def getConsumerDemandReq(self, index):
         
-        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_FULLDEMAND)
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_FULLDEMAND)
 
-    def getConsumerDemandDel(self):
+    def getConsumerDemandDel(self, index):
 
-        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMANDFLOW)
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMANDFLOW)
 
-    def getConsumerDemandDiff(self):
+    def getConsumerDemandDiff(self, index):
 
-        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMANDDEFICIT)
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMANDDEFICIT)
 
 
-    def getNodeLeakageFlow(self):
+    def getNodeLeakageFlow(self, index):
 
-        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_LEAKAGEFLOW)
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LEAKAGEFLOW)
 
-    def getNodeSumDemandandFLow(self):
+    def getNodeSumDemandandFLow(self, index):
 
-        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMAND)
+        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMAND)
 
     def isConnected(self):
         matrix = self.getConnectivityMatrix()
