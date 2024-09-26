@@ -5766,7 +5766,7 @@ class epanet:
         """
         return int(self.api.ENgetoption(self.ToolkitConstants.EN_TANKORDER))
 
-    def getPressureUnit(self):
+    def getOptionsPressureUnits(self):
         """
         Gets the pressure unit used in Epanet
         """
