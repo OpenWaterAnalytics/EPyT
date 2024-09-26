@@ -5766,11 +5766,17 @@ class epanet:
         """
         return int(self.api.ENgetoption(self.ToolkitConstants.EN_PRESS_UNITS))
     
-    def getStatusReport(self):
+    def getOptionsStatusReport(self):
         """ Gets the status report ,
         (`EN_NO_REPORT`, `EN_NORMAL_REPORT` or `EN_FULL_REPORT`)."""
 
-        return (self.api.ENgetoption(self.ToolkitConstants.EN_STATUS_REPORT))
+        z = int(self.api.ENgetoption(self.ToolkitConstants.EN_STATUS_REPORT))
+        if z == 0:
+            return "NO REPORT"
+        if z == 1:
+            return "NORMAL REPORT"
+        if z == 2:
+            return "FULL REPORT"
 
     def getPattern(self):
         """
@@ -9278,11 +9284,20 @@ class epanet:
 
         return self.api.ENsetoption(self.ToolkitConstants.EN_PRESS_UNITS, value)
 
-    def setStatusReport(self, value):
+    def setOptionsStatusReport(self, value):
         """Sets the status report for epanet
         (`EN_NO_REPORT`, `EN_NORMAL_REPORT` or `EN_FULL_REPORT`).
+
         """
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, value)
+
+    def setOptionsStatusReportNo(self):
+        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, 0)
+    def setOptionsStatusReportFull(self):
+        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, 2)
+
+    def setOptionsStatusReportNormal(self):
+        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, 1)
 
     def setQualityType(self, *argv):
         """ Sets the type of water quality analysis called for.
@@ -14062,6 +14077,10 @@ class epanet:
         if x == 4:
             x = "CONTROL"
         return x, y, z
+
+
+
+
 
 class epanetapi:
     """
