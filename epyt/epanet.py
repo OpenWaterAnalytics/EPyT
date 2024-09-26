@@ -597,7 +597,7 @@ class epanet:
         # Link Status
         self.TYPESTATUS = ['CLOSED', 'OPEN']
         # Constants for pump curves: 'PUMP', 'EFFICIENCY', 'VOLUME', 'HEADLOSS'
-        self.TYPECURVE = ['VOLUME', 'PUMP', 'EFFICIENCY', 'HEADLOSS', 'GENERAL']
+        self.TYPECURVE = ['VOLUME', 'PUMP', 'EFFICIENCY', 'HEADLOSS', 'GENERAL', 'VALVE']
         # Constants of headloss types: HW: Hazen-Williams,
         # DW: Darcy-Weisbach, CM: Chezy-Manning
         self.TYPEHEADLOSS = ['HW', 'DW', 'CM']
@@ -13730,6 +13730,25 @@ class epanet:
         errcode = self.api.ENsetcurvetype(index, self.ToolkitConstants.EN_GENERIC_CURVE)
         return errcode
 
+    def setCurveTypeValveCurve(self, index):
+        """Purpose:
+                    Sets the type of a curve to Valve in the EPANET model.
+
+                Parameters:
+                    index (int): The index of the curve to modify.
+
+                Returns:
+                    int: An error code indicating success or failure of the operation.
+
+                Example Usage:
+                    inp_filename = "Net1.inp"
+
+                    d = epanet(inp_filename)
+                    errcode = d.setCurveTypeValveCurve(1)
+                    curve_type = d.getCurveType(1)
+                    """
+        errcode = self.api.ENsetcurvetype(index, self.ToolkitConstants.EN_VALVE_CURVE)
+        return errcode
 
     def setVertex(self, index, vertex, x, y):
         """
