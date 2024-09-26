@@ -9308,12 +9308,12 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, value)
 
     def setOptionsStatusReportNo(self):
-        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, 0)
+        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_NO_REPORT)
     def setOptionsStatusReportFull(self):
-        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, 2)
+        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_FULL_REPORT)
 
     def setOptionsStatusReportNormal(self):
-        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, 1)
+        return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_NORMAL_REPORT)
 
     def setQualityType(self, *argv):
         """ Sets the type of water quality analysis called for.
