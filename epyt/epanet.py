@@ -9291,13 +9291,13 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_PRESS_UNITS, value)
 
     def setOptionsPressureUnitsMeters(self):
-        return self.setPressureUnits(self.ToolkitConstants.EN_METERS)
+        return self.setOptionsPressureUnits(self.ToolkitConstants.EN_METERS)
 
     def setOptionsPressureUnitsPSI(self):
-        return self.setPressureUnits(self.ToolkitConstants.EN_PSI)
+        return self.setOptionsPressureUnits(self.ToolkitConstants.EN_PSI)
 
     def setOptionsPressureUnitsKPA(self):
-        return self.setPressureUnits(self.ToolkitConstants.EN_KPA)
+        return self.setOptionsPressureUnits(self.ToolkitConstants.EN_KPA)
 
 
     def setOptionsStatusReport(self, value):
@@ -13647,7 +13647,7 @@ class epanet:
             errcode = d.setCurveTypeVolume(1)
             curve_type = d.getCurveType(1)
             """
-        errcode = self.api.ENsetcurvetype(index, 0)
+        errcode = self.api.ENsetcurvetype(index, self.ToolkitConstants.EN_VOLUME_CURVE)
         return errcode
 
     def setCurveTypePump(self, index):
@@ -13667,7 +13667,7 @@ class epanet:
             errcode = d.setCurveTypePump(1)
             curve_type = d.getCurveType(1)
             """
-        errcode = self.api.ENsetcurvetype(index, 1)
+        errcode = self.api.ENsetcurvetype(index, self.ToolkitConstants.EN_PUMP_CURVE)
         return errcode
 
     def setCurveTypeEfficiency(self, index):
@@ -13687,7 +13687,7 @@ class epanet:
             errcode = d.setCurveTypeEfficiency(1)
             curve_type = d.getCurveType(1)
             """
-        errcode = self.api.ENsetcurvetype(index, 2)
+        errcode = self.api.ENsetcurvetype(index, self.ToolkitConstants.EN_EFFIC_CURVE)
         return errcode
 
     def setCurveTypeHeadloss(self, index):
@@ -13707,7 +13707,7 @@ class epanet:
             errcode = d.setCurveTypeHeadloss(1)
             curve_type = d.getCurveType(1)
             """
-        errcode = self.api.ENsetcurvetype(index, 3)
+        errcode = self.api.ENsetcurvetype(index, self.ToolkitConstants.EN_HLOSS_CURVE)
         return errcode
 
     def setCurveTypeGeneral(self, index):
@@ -13727,7 +13727,7 @@ class epanet:
             errcode = d.setCurveTypeGeneral(1)
             curve_type = d.getCurveType(1)
             """
-        errcode = self.api.ENsetcurvetype(index, 4)
+        errcode = self.api.ENsetcurvetype(index, self.ToolkitConstants.EN_GENERIC_CURVE)
         return errcode
 
 
