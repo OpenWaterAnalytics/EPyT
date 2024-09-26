@@ -13725,9 +13725,6 @@ class epanet:
         errcode = self.api.ENsetvertex(index, vertex, x, y)
         return errcode
 
-    def timetonexteven(self, eventType, duration, elementIndex):
-        self.api.ENtimetonextevent(eventType, duration, elementIndex)
-
     def getControlState(self, index = None):
         """
             Purpose:
@@ -14007,9 +14004,6 @@ class epanet:
 
         return self.api.ENgetnodevalue(self.ToolkitConstants.EN_DEMANDDEFICIT)
 
-    def getNodeEmitterFlow(self):
-
-        return self.api.ENgetnodevalue(self.ToolkitConstants.EN_EMITTERFLOW)
 
     def getNodeLeakageFlow(self):
 
@@ -14023,6 +14017,7 @@ class epanet:
         matrix = self.getConnectivityMatrix()
         n = len(matrix)
         visited = [False] * n
+
         def dfs(node):
             visited[node] = True
             for neighbor in range(n):
@@ -14034,26 +14029,21 @@ class epanet:
         else:
             return False
 
-    def getTimetoNextEventIndex(self):
+    def getTimetoNextEvent(self):
         x, y, z = self.api.ENtimetonextevent()
-        return z
+        "y = duration , z = index , x = type"
+        if x == 0:
+            x = "REPORT"
+        if x == 1:
+            x = "HYD"
+        if x == 2:
+            x = "WQ"
+        if x == 3:
+            x = "TANK"
+        if x == 4:
+            x = "CONTROL"
+        return x, y, z
 
-    def getTimeDurationtoNextEvent(self):
-        x, y, z = self.api.ENtimetonextevent()
-        return y
-
-    def getTimeNextEventtoType(self):
-        x, y, z = self.api.ENtimetonextevent()
-        if x == 0 :
-            return "REPORT"
-        if x == 1 :
-            return "HYD"
-        if x == 2 :
-            return "WQ"
-        if x == 3 :
-            return "TANK"
-        if x == 4 :
-            return "CONTROL"
 class epanetapi:
     """
     EPANET Toolkit functions - API
