@@ -5777,11 +5777,11 @@ class epanet:
         (`EN_NO_REPORT`, `EN_NORMAL_REPORT` or `EN_FULL_REPORT`)."""
 
         z = int(self.api.ENgetoption(self.ToolkitConstants.EN_STATUS_REPORT))
-        if z == 0:
+        if z == self.ToolkitConstants.EN_NO_REPORT:
             return "NO REPORT"
-        if z == 1:
+        if z == self.ToolkitConstants.EN_NORMAL_REPORT:
             return "NORMAL REPORT"
-        if z == 2:
+        if z == self.ToolkitConstants.EN_FULL_REPORT:
             return "FULL REPORT"
 
     def getPattern(self):
@@ -9281,7 +9281,7 @@ class epanet:
         """
         return self.api.ENsetoption(self.ToolkitConstants.EN_TANKORDER, value)
     
-    def setPressureUnit(self, value):
+    def setOptionsPressureUnits(self, value):
         """Sets the pressure unit used in Epanet
             Example:
                 inpfile = "Net3.inp"
@@ -9289,6 +9289,16 @@ class epanet:
                 d.setPressureUnit(1)"""
 
         return self.api.ENsetoption(self.ToolkitConstants.EN_PRESS_UNITS, value)
+
+    def setOptionsPressureUnitsMeters(self):
+        return self.setPressureUnits(self.ToolkitConstants.EN_METERS)
+
+    def setOptionsPressureUnitsPSI(self):
+        return self.setPressureUnits(self.ToolkitConstants.EN_PSI)
+
+    def setOptionsPressureUnitsKPA(self):
+        return self.setPressureUnits(self.ToolkitConstants.EN_KPA)
+
 
     def setOptionsStatusReport(self, value):
         """Sets the status report for epanet
