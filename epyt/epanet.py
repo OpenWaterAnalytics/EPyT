@@ -4376,10 +4376,10 @@ class epanet:
         """
         return self.__getNodeInfo(self.ToolkitConstants.EN_EMITTER, *argv)
     
-    def getNodeEmitterFlow(self, index):
+    def getNodeEmitterFlow(self, *argv):
         """Retrieves node emmiter flow"""
 
-        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_EMITTERFLOW)
+        return self.__getNodeInfo(self.ToolkitConstants.EN_EMITTERFLOW, *argv)
 
     def getNodeHydraulicHead(self, *argv):
         """ Retrieves the computed values of all node hydraulic heads.
