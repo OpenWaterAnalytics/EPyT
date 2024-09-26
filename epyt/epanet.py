@@ -5770,7 +5770,13 @@ class epanet:
         """
         Gets the pressure unit used in Epanet
         """
-        return int(self.api.ENgetoption(self.ToolkitConstants.EN_PRESS_UNITS))
+        z = int(self.api.ENgetoption(self.ToolkitConstants.EN_PRESS_UNITS))
+        if z == self.ToolkitConstants.EN_PSI:
+            return "PSI"
+        if z == self.ToolkitConstants.EN_KPA:
+            return "KPA"
+        if z == self.ToolkitConstants.EN_METERS:
+            return "METERS"
     
     def getOptionsStatusReport(self):
         """ Gets the status report ,
