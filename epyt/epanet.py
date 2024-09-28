@@ -9318,6 +9318,7 @@ class epanet:
 
     def setOptionsStatusReportNo(self):
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_NO_REPORT)
+
     def setOptionsStatusReportFull(self):
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_FULL_REPORT)
 
@@ -14123,7 +14124,7 @@ class epanet:
         return x, y, z
 
     def getLinkInControl(self, index):
-        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)
+        return self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)
 
     def getNodeInControl(self, index):
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)
