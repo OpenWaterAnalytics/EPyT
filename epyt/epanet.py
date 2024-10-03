@@ -6275,6 +6275,26 @@ class epanet:
         value.TotalLeakageLoss = self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
         return value
 
+    def getStatisticTotalLeakageLoss(self):
+
+        return self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
+
+    def getStatisticIterations(self):
+
+        return self.api.ENgetstatistic(self.ToolkitConstants.EN_ITERATIONS)
+
+    def getStatisticRelativeError(self):
+
+        return self.api.ENgetstatistic(self.ToolkitConstants.EN_RELATIVEERROR)
+
+    def getStatisticDeficientNodes(self):
+
+        return self.api.ENgetstatistic(self.ToolkitConstants.EN_DEFICIENTNODES)
+
+    def getStatisticDemandReduction(self):
+
+        return self.api.ENgetstatistic(self.ToolkitConstants.EN_DEMANDREDUCTION)
+
     def getTimeSimulationDuration(self):
         """ Retrieves the value of simulation duration.
 
