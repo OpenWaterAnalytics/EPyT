@@ -14062,10 +14062,6 @@ class epanet:
     def getLinkLeakageRate(self, *argv):
 
         return self.__getLinkInfo(self.ToolkitConstants.EN_LINK_LEAKAGE, *argv)
-    
-    def getNodeLeakageDemand(self, index):
-        
-        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LEAKAGEFLOW)
 
     def getTotalLeakageLoss(self):
 
@@ -14088,9 +14084,6 @@ class epanet:
 
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LEAKAGEFLOW)
 
-    def getNodeSumDemandandFLow(self, index):
-
-        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMAND)
 
     def isConnected(self):
         matrix = self.getConnectivityMatrix()
