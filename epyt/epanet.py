@@ -564,6 +564,27 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
+    def __getattribute__(self, item):
+        # Call the superclass's __getattribute__ to retrieve the attribute
+        attr = super().__getattribute__(item)
+
+        if callable(attr) and not item.startswith("__") and not item.startswith("_") and not item.startswith("EN"):
+            # Create a wrapper function to include additional actions
+            def wrapper(*args, **kwargs):
+
+                result = attr(*args, **kwargs)
+
+                # Check for API error code after the method call
+                if hasattr(self, 'api') and self.api.errcode != 0 and item != "logFunctionError":
+                    # Log function error by passing the function name
+                    self.logFunctionError(item)
+
+                return result
+
+            return wrapper  # Return the wrapped function
+
+        return attr  # Return the attribute directly if not callable
+
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True,
                  display_warnings=True):
         # Constants
@@ -14171,28 +14192,34 @@ class epanet:
             return results
 
     def getNodeInControl(self, *args):
+        results = []
 
         if not args:
             countnode = self.getNodeCount()
-            results = []
             for index in range(1, countnode + 1):
                 results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
             return results
 
         if len(args) == 1:
             if isinstance(args[0], list):  # If the single argument is a list
-                results = []
-                for index in args[0]:  # Loop through the list of indices
+                for index in args[0]:
                     results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
                 return results
             else:  # If it's a single index (not a list)
                 index = args[0]
-                return int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL))
-        # More than one argument provided
-        results = []
+                return [int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL))]
         for index in args:
             results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
         return results
+
+    def logFunctionError(self, nameofFunction):
+        """Notifies the user where the error is coming from with red text."""
+
+        # ANSI escape code for red text
+        red_text = "\033[91m"
+        reset_text = "\033[0m"
+
+        print(f"{red_text}UserWarning: Error in function: {nameofFunction}{reset_text}")
 
 
 class epanetapi:
