@@ -606,7 +606,7 @@ class epanet:
         self.TYPEHEADLOSS = ['HW', 'DW', 'CM']
         # Constants for units
         self.TYPEUNITS = ['CFS', 'GPM', 'MGD', 'IMGD', 'AFD',
-                          'LPS', 'LPM', 'MLD', 'CMH', 'CMD']
+                          'LPS', 'LPM', 'MLD', 'CMH', 'CMD','CMS']
         # 0 = closed (max. head exceeded), 1 = temporarily closed,
         # 2 = closed, 3 = open, 4 = active (partially open)
         # 5 = open (max. flow exceeded), 6 = open (flow setting not met),
@@ -7066,6 +7066,19 @@ class epanet:
         See also setFlowUnitsMLD, setFlowUnitsCMD.
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_CMH, *argv)  # cubic meters per hour
+
+    def setFlowUnitsCMS(self, *argv):
+
+        """ Sets flow units to CMS(Cubic Meters per Second).
+
+                Example:
+
+                >>> d.setFlowUnitsCMS()
+                >>> d.getFlowUnits()
+
+                See also setFlowUnitsMLD, setFlowUnitsCMD.
+                """
+        self.__setFlowUnits(self.ToolkitConstants.EN_CMS, *argv)  
 
     def setFlowUnitsGPM(self, *argv):
         """ Sets flow units to GPM(Gallons Per Minute).
