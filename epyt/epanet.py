@@ -6272,6 +6272,7 @@ class epanet:
         value.RelativeError = self.api.ENgetstatistic(self.ToolkitConstants.EN_RELATIVEERROR)
         value.DeficientNodes = self.api.ENgetstatistic(self.ToolkitConstants.EN_DEFICIENTNODES)
         value.DemandReduction = self.api.ENgetstatistic(self.ToolkitConstants.EN_DEMANDREDUCTION)
+        value.TotalLeakageLoss = self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
         return value
 
     def getTimeSimulationDuration(self):
@@ -7078,7 +7079,7 @@ class epanet:
 
                 See also setFlowUnitsMLD, setFlowUnitsCMD.
                 """
-        self.__setFlowUnits(self.ToolkitConstants.EN_CMS, *argv)  
+        self.__setFlowUnits(self.ToolkitConstants.EN_CMS, *argv)
 
     def setFlowUnitsGPM(self, *argv):
         """ Sets flow units to GPM(Gallons Per Minute).
@@ -14076,10 +14077,6 @@ class epanet:
 
         return self.__getLinkInfo(self.ToolkitConstants.EN_LINK_LEAKAGE, *argv)
 
-    def getTotalLeakageLoss(self):
-
-        return self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
-    
     def getConsumerDemandReq(self, index):
         
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_FULLDEMAND)
