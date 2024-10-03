@@ -14116,11 +14116,54 @@ class epanet:
             x = "CONTROL"
         return x, y, z
 
-    def getLinkInControl(self, index):
-        return int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL))
+    def getLinkInControl(self, *args):
 
-    def getNodeInControl(self, index):
-        return int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL))
+            if not args:
+                countlink = self.getLinkCount()
+                results = []
+                for index in range(1, countlink + 1):
+                    results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
+                return results
+
+            if len(args) == 1:
+                if isinstance(args[0], list):  # If the single argument is a list
+                    results = []
+                    for index in args[0]:  # Loop through the list of indices
+                        results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
+                    return results
+                else:  # If it's a single index (not a list)
+                    index = args[0]
+                    return int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL))
+            # More than one argument provided
+            results = []
+            for index in args:
+                results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
+            return results
+
+    def getNodeInControl(self, *args):
+
+        if not args:
+            countnode = self.getNodeCount()
+            results = []
+            for index in range(1, countnode + 1):
+                results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
+            return results
+
+        if len(args) == 1:
+            if isinstance(args[0], list):  # If the single argument is a list
+                results = []
+                for index in args[0]:  # Loop through the list of indices
+                    results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
+                return results
+            else:  # If it's a single index (not a list)
+                index = args[0]
+                return int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL))
+        # More than one argument provided
+        results = []
+        for index in args:
+            results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
+        return results
+
 
 class epanetapi:
     """
