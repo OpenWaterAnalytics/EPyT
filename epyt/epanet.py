@@ -14266,18 +14266,103 @@ class epanet:
         return values
     
     def getLinkValveCurveGPV(self, *argv):
+        """
+        Retrieves the valve curve for a specified pressure control valve (GPV).
 
-        return self.__getLinkInfo(self.ToolkitConstants.EN_GPV_CURVE, *argv)
+        Returns:
+            int: 1 if the link is a GPV, 0 if it is not.
+
+        Example for one Valve:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            linkid = d.getLinkPipeNameID(1)
+            condition = 1
+            index = d.setLinkTypeValveGPV(linkid, condition)
+            d.setLinkValveCurveGPV(index,1)
+            x = d.getLinkValveCurveGPV(index)
+            print(x)
+
+        Example for all Valves:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            linkid = d.getLinkPipeNameID(1)
+            condition = 1
+            index = d.setLinkTypeValveGPV(linkid, condition)
+            d.setLinkValveCurveGPV(index,1)
+            x = d.getLinkValveCurveGPV()
+            print(x)
+                """
+        values = self.__getLinkInfo(self.ToolkitConstants.EN_GPV_CURVE, *argv)
+        return  values
     def getLinkValveCurvePCV(self, *argv):
+        """
+        Retrieves the valve curve for a specified pressure control valve (PCV).
 
-        return self.__getLinkInfo(self.ToolkitConstants.EN_PCV_CURVE, *argv)
+        Returns:
+            int: 1 if the link is a PCV, 0 if it is not.
+
+        Example for one Valve:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            linkid = d.getLinkPipeNameID(1)
+            condition = 1
+            index = d.setLinkTypeValvePCV(linkid, condition)
+            d.setLinkValveCurvePCV(index,1)
+            x = d.getLinkValveCurvePCV(index)
+            print(x)
+
+        Example for all Valves:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            linkid = d.getLinkPipeNameID(1)
+            condition = 1
+            index = d.setLinkTypeValvePCV(linkid, condition)
+            d.setLinkValveCurvePCV(index,1)
+            x = d.getLinkValveCurvePCV()
+            print(x)
+        """
+
+        values = self.__getLinkInfo(self.ToolkitConstants.EN_PCV_CURVE, *argv)
+
+        return  values
 
     def setLinkValveCurveGPV(self, index, value):
+        """
+         Sets the valve curve for a specified pressure control valve (GPV).
 
+        Parameters:
+            index (int): The index of the GPV to be set. (starting from 1)
+            value (float): The value to set for the valve curve. (1 for valve to be GPV 0 for not)
+
+        Example:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            linkid = d.getLinkPipeNameID(1)
+            condition = 1
+            index = d.setLinkTypeValveGPV(linkid, condition)"""
         self.api.ENsetlinkvalue(index, self.ToolkitConstants.EN_GPV_CURVE, value)
 
     def setLinkValveCurvePCV(self, index, value):
+        """
+         Sets the valve curve for a specified pressure control valve (PCV).
 
+        Parameters:
+            index (int): The index of the PCV to be set. (starting from 1)
+            value (float): The value to set for the valve curve. (1 for valve to be GPV 0 for not)
+
+        Example:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            linkid = d.getLinkPipeNameID(1)
+            condition = 1
+            index = d.setLinkTypeValvePCV(linkid, condition)
+        """
         return self.api.ENsetlinkvalue(index, self.ToolkitConstants.EN_PCV_CURVE, value)
 
     def getOptionsDemandPattern(self):
