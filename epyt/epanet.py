@@ -577,7 +577,8 @@ class epanet:
                 # Check for API error code after the method call
                 if hasattr(self, 'api') and self.api.errcode != 0 and item != "logFunctionError" and item !="getError":
                     # Log function error by passing the function name
-                    self.logFunctionError(item)
+                    message = self.api.ENgeterror(self.api.errcode)
+                    self.logFunctionError(item, message)
                     #if you want to chase the error uncomment
                     """
                     print(self.api.errcode)
@@ -14220,14 +14221,14 @@ class epanet:
             results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
         return results
 
-    def logFunctionError(self, nameofFunction):
+    def logFunctionError(self, nameofFunction, message):
         """Notifies the user where the error is coming from with red text."""
 
         # ANSI escape code for red text
         red_text = "\033[91m"
         reset_text = "\033[0m"
 
-        print(f"{red_text}UserWarning: Error in function: {nameofFunction}{reset_text}")
+        print(f"{red_text}UserWarning: Error in function: {nameofFunction},{message}{reset_text}")
 
 
 class epanetapi:
@@ -15285,7 +15286,8 @@ class epanetapi:
                 self.errcode = errcode
             errmssg = create_string_buffer(150)
             self._lib.ENgeterror(self.errcode, byref(errmssg), 150)
-            warnings.warn(errmssg.value.decode())
+            return errmssg.value.decode() # for smoother error messages
+            #warnings.warn(errmssg.value.decode())
 
     def ENgetflowunits(self):
         """ Retrieves a project's flow units.
