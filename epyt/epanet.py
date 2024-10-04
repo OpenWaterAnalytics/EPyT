@@ -14482,30 +14482,99 @@ class epanet:
         return x, y, z
 
     def getLinkInControl(self, *args):
+        """
+        Function to determine wether a link apperas in any simple or rule based control
 
-            if not args:
-                countlink = self.getLinkCount()
-                results = []
-                for index in range(1, countlink + 1):
-                    results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
-                return results
+        Return: (int) 1 if the link has control, 0 otherwise
 
-            if len(args) == 1:
-                if isinstance(args[0], list):  # If the single argument is a list
-                    results = []
-                    for index in args[0]:  # Loop through the list of indices
-                        results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
-                    return results
-                else:  # If it's a single index (not a list)
-                    index = args[0]
-                    return int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL))
-            # More than one argument provided
+        Example 1 Retrieving one Link:
+            inpfile = "Net1.inp"
+
+            d = epanet(inpfile)
+            linkcontrolid = d.getControls(1).LinkID
+            linkcontrolindex = d.getLinkIndex(linkcontrolid)
+            x = d.getLinkInControl(linkcontrolindex)
+            print(x)                   # it will return 1
+
+        Example 2 Retrieving all Links:
+            inpfile = "Net1.inp"
+
+            d = epanet(inpfile)
+            x = d.getLinkInControl()
+            print(x)
+
+        Example 3 Retrieving more than one link:
+            inpfile = "Net1.inp"
+
+            d = epanet(inpfile)
+            x = d.getLinkInControl(1,2,3,13) #Link with index 13 is the one with control in Net1
+            print(x)
+
+        Example 4 Retrieving more than one link using list:
+            inpfile = "Net1.inp"
+
+            d = epanet(inpfile)
+            x = d.getLinkInControl([1,2,3,13])
+            print(x)
+        """
+        if not args:
+            countlink = self.getLinkCount()
             results = []
-            for index in args:
+            for index in range(1, countlink + 1):
                 results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
             return results
 
+        if len(args) == 1:
+            if isinstance(args[0], list):  # If the single argument is a list
+                results = []
+                for index in args[0]:  # Loop through the list of indices
+                    results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
+                return results
+            else:  # If it's a single index (not a list)
+                index = args[0]
+                return int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL))
+        # More than one argument provided
+        results = []
+        for index in args:
+            results.append(int(self.api.ENgetlinkvalue(index, self.ToolkitConstants.EN_LINK_INCONTROL)))
+        return results
+
     def getNodeInControl(self, *args):
+        """
+        Function to determine wether a node apperas in any simple or rule based control
+
+        Return: (int) 1 if the Node has control, 0 otherwise
+
+        Example 1 Retrieving one Node:
+            inpfile = "Net1.inp"
+
+            d = epanet(inpfile)
+            nodecontrolid = d.getControls(1).NodeID
+            nodecontrolindex = d.getNodeIndex(nodecontrolid)
+            x = d.getNodeInControl(nodecontrolindex)
+            print(x)            # it will return 1
+
+        Example 2 Retrieving all Nodes:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            x = d.getLinkInControl()
+            print(x)
+
+        Example 3 Retrieving more than one Node:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            x = d.getNodeInControl(1, 2, 3, 9) #Node with index 9 is the one with control in Net1
+            print(x)
+
+        Example 4 Retrieving more than one link using list:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            x = d.getNodeInControl([1, 2, 3, 9])
+            print(x)
+        """
         results = []
 
         if not args:
