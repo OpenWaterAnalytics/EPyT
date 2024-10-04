@@ -9520,12 +9520,15 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_PRESS_UNITS, value)
 
     def setOptionsPressureUnitsMeters(self):
+        self.ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsMeters")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_METERS)
 
     def setOptionsPressureUnitsPSI(self):
+        self.ErrorinChangingMetric("PSI", "setOptionsPressureUnitsPSI")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_PSI)
 
     def setOptionsPressureUnitsKPA(self):
+        self.ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsKPA")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_KPA)
 
 
@@ -14385,6 +14388,31 @@ class epanet:
         reset_text = "\033[0m"
 
         print(f"{red_text}UserWarning: Error in function: {nameofFunction},{message}{reset_text}")
+
+    def ErrorinChangingMetric(self, wanted, nameofFunction):
+        red_text = "\033[91m"
+        reset_text = "\033[0m"
+        current = self.FlowUnitsCheck()
+        if current == "PSI" and wanted == "KPA AND METERS":
+            print(f"{red_text}UserWarning: Error in function: {nameofFunction}, the function didnt change the metric Please change"
+                  f" the metric using one of the following:\n "
+                  f"1. setFlowUnitsCMH() ->  Cubic meters per hour \n"
+                  f" 2. setFlowUnitsCMS() ->  Cubic meters per second \n"
+                  f" 3. setFlowUnitsMLD() ->  Million liters per day \n"
+                  f" 4. setFlowUnitsCMD() ->  Cubic meters per day \n"
+                  f" 5. setFlowUnitsLPS() ->  Liters per second \n"
+                  f" 6. setFlowUnitsLPM() ->  Liters per minute {reset_text}")
+        else:
+            if current == "KPA AND METERS" and wanted == "PSI":
+                print(
+                    f"{red_text}UserWarning: Error in function: {nameofFunction}, the function didnt change the metric, Please change"
+                    f" the metric using one of the following:\n"
+                    f" 1. setFlowUnitsAFD() ->  Acre-feet per day \n"
+                    f" 2. setFlowUnitsIMGD()->  Imperial million gallons per day \n"
+                    f" 3. setFlowUnitsCFS() ->  Cubic feet per second \n"
+                    f" 4. setFlowUnitsMGD() ->  Million gallons per day \n"
+                    f" 5. setFlowUnitsGPM() ->  Gallons per minute \n{reset_text}")
+
 
     def FlowUnitsCheck(self):
         flowunits = self.getFlowUnits()
