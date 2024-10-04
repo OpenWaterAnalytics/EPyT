@@ -14450,6 +14450,7 @@ class epanet:
 
 
     def isConnected(self):
+        """Checks if the water network is fully connected"""
         matrix = self.getConnectivityMatrix()
         n = len(matrix)
         visited = [False] * n
@@ -14535,6 +14536,7 @@ class epanet:
         print(f"{red_text}UserWarning: Error in function: {nameofFunction},{message}{reset_text}")
 
     def ErrorinChangingMetric(self, wanted, nameofFunction):
+        "Checks if the metric change is not possible and suggest possbile solutions"
         red_text = "\033[91m"
         reset_text = "\033[0m"
         current = self.FlowUnitsCheck()
@@ -14560,6 +14562,7 @@ class epanet:
 
 
     def FlowUnitsCheck(self):
+        "Returns the Metric of the system"
         flowunits = self.getFlowUnits()
         if flowunits == "MDG" or flowunits == "IMGD" or flowunits == "CFS" or flowunits == "CFS" or flowunits == "GPM":
             return "PSI"
