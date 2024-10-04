@@ -564,21 +564,21 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
-    def __getattribute__(self, item):
+    def __getattribute__(self, function_id):
         # Call the superclass's __getattribute__ to retrieve the attribute
-        attr = super().__getattribute__(item)
+        attr = super().__getattribute__(function_id)
 
-        if callable(attr) and not item.startswith("__") and not item.startswith("_") and not item.startswith("EN"):
+        if callable(attr) and not function_id.startswith("__") and not function_id.startswith("_") and not function_id.startswith("EN"):
             # Create a wrapper function to include additional actions
             def wrapper(*args, **kwargs):
 
                 result = attr(*args, **kwargs)
 
                 # Check for API error code after the method call
-                if hasattr(self, 'api') and self.api.errcode != 0 and item != "logFunctionError" and item !="getError":
+                if hasattr(self, 'api') and self.api.errcode != 0 and function_id != "logFunctionError" and function_id !="getError":
                     # Log function error by passing the function name
                     message = self.api.ENgeterror(self.api.errcode)
-                    self.logFunctionError(item, message)
+                    self.logFunctionError(function_id, message)
                     #if you want to chase the error uncomment
                     """
                     print(self.api.errcode)
@@ -14119,7 +14119,7 @@ class epanet:
 
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_AREA, value)
 
-    def setLinkExpansionProp(self, index, value):
+    def setLinkExpansionProperties(self, index, value):
 
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_EXPAN, value)
 
@@ -14127,15 +14127,15 @@ class epanet:
 
         return self.__getLinkInfo(self.ToolkitConstants.EN_LINK_LEAKAGE, *argv)
 
-    def getConsumerDemandReq(self, index):
+    def getConsumerDemandRequested(self, index):
         
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_FULLDEMAND)
 
-    def getConsumerDemandDel(self, index):
+    def getConsumerDemandDelivered(self, index):
 
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMANDFLOW)
 
-    def getConsumerDemandDiff(self, index):
+    def getConsumerDemandDificit(self, index):
 
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMANDDEFICIT)
 
