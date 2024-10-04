@@ -7078,7 +7078,21 @@ class epanet:
         >>> d.setFlowUnitsAFD()   # d.setFlowUnitsAFD('NET1_AFD.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsCFS, setFlowUnitsIMGD.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_AFD, *argv)  # acre-feet per day
 
@@ -7090,7 +7104,21 @@ class epanet:
         >>> d.setFlowUnitsCFS()   # d.setFlowUnitsCFS('NET1_CFS.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsAFD, setFlowUnitsIMGD.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_CFS, *argv)  # cubic feet per second
 
@@ -7102,7 +7130,21 @@ class epanet:
         >>> d.setFlowUnitsCMD()  #  d.setFlowUnitsCMD('NET1_CMD.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsMLD, setFlowUnitsCMH.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_CMD, *argv)  # cubic meters per day
 
@@ -7114,7 +7156,21 @@ class epanet:
         >>> d.setFlowUnitsCMH()   # d.setFlowUnitsCMH('NET1_CMH.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsMLD, setFlowUnitsCMD.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_CMH, *argv)  # cubic meters per hour
 
@@ -7127,7 +7183,21 @@ class epanet:
                 >>> d.setFlowUnitsCMS()
                 >>> d.getFlowUnits()
 
-                See also setFlowUnitsMLD, setFlowUnitsCMD.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
                 """
         self.__setFlowUnits(self.ToolkitConstants.EN_CMS, *argv)
 
@@ -7139,9 +7209,25 @@ class epanet:
         >>> d.setFlowUnitsGPM()   # d.setFlowUnitsGPM('NET1_GPM.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsLPS, setFlowUnitsMGD.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_GPM, *argv)  # gallons per minute
+
+
 
     def setFlowUnitsIMGD(self, *argv):
         """ Sets flow units to IMGD(Imperial Million Gallons per Day).
@@ -7151,7 +7237,21 @@ class epanet:
         >>> d.setFlowUnitsIMGD()   # d.setFlowUnitsIMGD('NET1_IMGD.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsMGD, setFlowUnitsCFS.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_IMGD, *argv)  # imperial mgd
 
@@ -7163,7 +7263,21 @@ class epanet:
         >>> d.setFlowUnitsLPM()   #  d.setFlowUnitsLPM('NET1_LPM.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsAFD, setFlowUnitsMLD.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_LPM, *argv)  # liters per minute
 
@@ -7175,7 +7289,21 @@ class epanet:
         >>> d.setFlowUnitsLPS()   #  d.setFlowUnitsLPS('NET1_LPS.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsGPM, setFlowUnitsMGD.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_LPS, *argv)  # liters per second
 
@@ -7187,7 +7315,21 @@ class epanet:
         >>> d.setFlowUnitsMGD()   #  d.setFlowUnitsMGD('NET1_MGD.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsGPM, setFlowUnitsLPS.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_MGD, *argv)  # million gallons per day
 
@@ -7199,7 +7341,21 @@ class epanet:
         >>> d.setFlowUnitsMLD()   #  d.setFlowUnitsMLD('NET1_MLD.inp')
         >>> d.getFlowUnits()
 
-        See also setFlowUnitsLPM, setFlowUnitsCMH.
+        See also:
+        # Functions for PSI (sorted by higher to lower capacity):
+        setFlowUnitsAFD()  ### Acre-feet per day (higher capacity than GPM)
+        setFlowUnitsIMGD() ### Imperial million gallons per day (higher capacity than AFD)
+        setFlowUnitsCFS()  ### Cubic feet per second (higher capacity than IMGD)
+        setFlowUnitsMGD()  ### Million gallons per day (similar capacity to IMGD)
+        setFlowUnitsGPM()  ### Gallons per minute (lower capacity than AFD, IMGD, CFS, and MGD)
+
+        Functions for KPA and meters (sorted by higher to lower capacity):
+        setFlowUnitsCMH()  ### Cubic meters per hour (higher capacity than CMS)
+        setFlowUnitsCMS()  ### Cubic meters per second (higher capacity than LPS)
+        setFlowUnitsMLD()  ### Million liters per day (higher capacity than CMD and LPM)
+        setFlowUnitsCMD()  ### Cubic meters per day (lower capacity than MLD)
+        setFlowUnitsLPS()  ### Liters per second (lower capacity than CMH and CMS)
+        setFlowUnitsLPM()  ### Liters per minute (lower capacity than LPS)
         """
         self.__setFlowUnits(self.ToolkitConstants.EN_MLD, *argv)  # million liters per day
 
