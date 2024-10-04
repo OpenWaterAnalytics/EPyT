@@ -14546,19 +14546,48 @@ class epanet:
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_EXPAN, value)
 
     def getLinkLeakageRate(self, *argv):
+        """
+            Retrieves the leakage rate of a specific pipe (link) at a given point in time.
 
+            Returns:
+                float: The leakage rate of the specified pipe at the requested time point
+            """
         return self.__getLinkInfo(self.ToolkitConstants.EN_LINK_LEAKAGE, *argv)
 
     def getConsumerDemandRequested(self, index):
-        
+        """
+            Retrieves the requested consumer demand for a specific node.
+
+            Args:
+                index (int): The index of the node for which the consumer demand is to be retrieved.
+
+            Returns:
+                float: The full demand requested by the consumer at the specified node
+            """
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_FULLDEMAND)
 
     def getConsumerDemandDelivered(self, index):
+        """
+            Retrieves the delivered consumer demand for a specific node.
 
+            Args:
+                index (int): The index of the node for which the delivered consumer demand is to be retrieved.
+
+            Returns:
+                float: The amount of demand delivered to the consumer at the specified node
+            """
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMANDFLOW)
 
     def getNodeLeakageFlow(self, index):
+        """
+            Retrieves the leakage flow for a specific node.
 
+            Args:
+                index (int): The index of the node for which the leakage flow is to be retrieved.
+
+            Returns:
+                float: The amount of leakage flow at the specified node
+            """
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LEAKAGEFLOW)
 
 
