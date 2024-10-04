@@ -14444,11 +14444,6 @@ class epanet:
 
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMANDFLOW)
 
-    def getConsumerDemandDificit(self, index):
-
-        return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_DEMANDDEFICIT)
-
-
     def getNodeLeakageFlow(self, index):
 
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LEAKAGEFLOW)
