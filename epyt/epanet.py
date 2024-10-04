@@ -14552,8 +14552,22 @@ class epanet:
             return False
 
     def getTimetoNextEvent(self):
+        """
+        Determines the type of event that will cause the end of the current time step,
+        along with the duration until the event occurs and its index.
+
+        Returns:
+            x (str): The type of the next event (e.g., REPORT, HYD, WQ, TANK, CONTROL).
+            y (float): The duration of time until the next event occurs.
+            z (int): The index of the event.
+
+        Event Types:
+            0: REPORT   - A report generation event.
+            1: HYD      - A hydraulic event.
+            2: WQ       - A water quality event.
+            3: TANK     - A tank level event.
+            4: CONTROL  - A control rule event. """
         x, y, z = self.api.ENtimetonextevent()
-        "y = duration , z = index , x = type"
         if x == 0:
             x = "REPORT"
         if x == 1:
