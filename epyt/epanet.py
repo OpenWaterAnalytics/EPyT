@@ -6306,23 +6306,51 @@ class epanet:
         return value
 
     def getStatisticTotalLeakageLoss(self):
+        """
+           Retrieves the total leakage loss statistic from the simulation.
 
+           Returns:
+               float: The total amount of leakage loss in the system,
+
+        """
         return self.api.ENgetstatistic(self.ToolkitConstants.EN_LEAKAGELOSS)
 
     def getStatisticIterations(self):
+        """
+            Retrieves the number of iterations taken in the simulation.
 
+            Returns:
+                int: The total number of iterations performed during the hydraulic analysis,
+
+        """
         return self.api.ENgetstatistic(self.ToolkitConstants.EN_ITERATIONS)
 
     def getStatisticRelativeError(self):
+        """
+            Retrieves the relative error statistic from the simulation.
 
+            Returns:
+                float: The relative error from the last hydraulic iteration
+        """
         return self.api.ENgetstatistic(self.ToolkitConstants.EN_RELATIVEERROR)
 
     def getStatisticDeficientNodes(self):
+        """
+            Retrieves the number of deficient nodes in the simulation.
 
+            Returns:
+                int: The number of nodes in the system that are unable to meet the required demand,
+
+        """
         return self.api.ENgetstatistic(self.ToolkitConstants.EN_DEFICIENTNODES)
 
     def getStatisticDemandReduction(self):
+        """
+            Retrieves the demand reduction statistic from the simulation.
 
+            Returns:
+                float: The total demand reduction in the system
+            """
         return self.api.ENgetstatistic(self.ToolkitConstants.EN_DEMANDREDUCTION)
 
     def getTimeSimulationDuration(self):
