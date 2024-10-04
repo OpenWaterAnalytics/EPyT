@@ -575,9 +575,14 @@ class epanet:
                 result = attr(*args, **kwargs)
 
                 # Check for API error code after the method call
-                if hasattr(self, 'api') and self.api.errcode != 0 and item != "logFunctionError":
+                if hasattr(self, 'api') and self.api.errcode != 0 and item != "logFunctionError" and item !="getError":
                     # Log function error by passing the function name
                     self.logFunctionError(item)
+                    #if you want to chase the error uncomment
+                    """
+                    print(self.api.errcode)
+                    err = self.getError(self.api.errcode)
+                    print(err)"""
 
                 return result
 
@@ -4898,6 +4903,7 @@ class epanet:
                 value.append(e)
             else:
                 value.append(0)
+                self.api.errcode = 0
         if len(argv) > 0 and not isList(argv[0]):
             return value[0]
         return self.to_array(value)
@@ -4923,6 +4929,7 @@ class epanet:
                     value.append(e)
                 else:
                     value.append(0)
+                    self.api.errcode = 0
             except Exception as Errcode:
                 if Errcode.args[0][13:16] == '203':
                     return self.getError(Errcode)
@@ -4976,6 +4983,7 @@ class epanet:
                     value.append(e)
                 else:
                     value.append(0)
+                    self.api.errcode = 0
             except Exception as Errcode:
                 if Errcode.args[0][13:16] == '203':
                     return self.getError(Errcode)
