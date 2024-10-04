@@ -14366,8 +14366,29 @@ class epanet:
         """
         return self.__getLinkInfo(self.ToolkitConstants.EN_LEAK_AREA, *argv)
 
-    def getLinkExpansionProp(self, *argv):
+    def getLinkExpansionProperties(self, *argv):
+        """
+        Function to retrieve the expansion properties for a specified link (pipe).
 
+        Returns:
+        float: The current expansion property value for the specified link.
+
+        Example 1 Retrieving all link expansion properties:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+            d.setLinkExpansionProperties(5,2)
+            x = d.getLinkExpansionProperties()
+            print(x)
+
+        Example 2 Retrieving one link expansion property:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+            d.setLinkExpansionProperties(5,2)
+            x = d.getLinkExpansionProperties(5)
+            print(x)
+
+        See also : setLinkExpansionProperties()
+            """
         return self.__getLinkInfo(self.ToolkitConstants.EN_LEAK_EXPAN, *argv)
 
     def setLinkLeakArea(self, index, value):
@@ -14391,7 +14412,24 @@ class epanet:
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_AREA, value)
 
     def setLinkExpansionProperties(self, index, value):
+        """
+        Function to set the expansion properties for a specified link (pipe).
 
+        Input:
+        index (int): The index of the link (pipe) for which to set the expansion properties. (starting from 1)
+        value (float): The value to assign as the expansion property for the specified link.
+
+        Example:
+            inpfile = "Net1.inp"
+            d = epanet(inpfile)
+
+            d.setLinkExpansionProperties(5,2)
+            x = d.getLinkExpansionProperties()
+            print(x)
+
+        See also:
+            getLinkExpansionProperties
+        """
         self.api.ENsetlinkvalue(index,self.ToolkitConstants.EN_LEAK_EXPAN, value)
 
     def getLinkLeakageRate(self, *argv):
