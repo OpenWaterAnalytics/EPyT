@@ -14078,14 +14078,14 @@ class epanet:
             # Initialize EPANET model with the input file
             d = epanet(inpname)
 
-            # Set the coordinates of the first vertex point (vertex index 1) in link with index 1
-            errcode = d.setvertex(1, 1, 1.0, 1.0)
-
-            # Check if the operation was successful
-            if errcode == 0:
-                print("Vertex coordinates set successfully.")
-            else:
-                print(f"Error setting vertex coordinates. Error code: {d.getError(errcode)}")
+            linkID = '10'
+            x = [ 22,24, 28]
+            y = [ 30,68, 69]
+            d.setLinkVertices(linkID, x, y)
+            x = d.getLinkVertices()
+            d.setVertex(1,1,1,1)
+            x = d.getLinkVertices()
+            print(x)
         """
 
         errcode = self.api.ENsetvertex(index, vertex, x, y)
@@ -15408,8 +15408,8 @@ class epanetapi:
             y = c_double(y)
             self.errcode = self._lib.EN_setvertex(self._ph, index, vertex, x, y)
         else:
-            x = c_float(x)
-            y = c_float(y)
+            x = c_double(x)
+            y = c_double(y)
             self.errcode = self._lib.ENsetvertex(index, vertex, x, y)
         self.ENgeterror()
         return self.errcode
