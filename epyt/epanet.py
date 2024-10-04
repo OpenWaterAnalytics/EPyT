@@ -9520,14 +9520,44 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_PRESS_UNITS, value)
 
     def setOptionsPressureUnitsMeters(self):
+        """Function to set pressure units to meters and check if the change is possible.
+
+        - If not possible, suggests functions to the user to enable the change.
+
+        Example:
+            inpfile = "Net3.inp"
+            d = epanet(inpfile)
+            d.setOptionsPressureUnitsMeters()
+            x = d.getOptionsPressureUnits()
+        """
         self.ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsMeters")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_METERS)
 
     def setOptionsPressureUnitsPSI(self):
+        """Function to set pressure units to PSI and check if the change is possible.
+
+        - If not possible, suggests functions to the user to enable the change.
+
+        Example:
+            inpfile = "Net3.inp"
+            d = epanet(inpfile)
+            d.setOptionsPressureUnitsPSI()
+            x = d.getOptionsPressureUnits()
+            """
         self.ErrorinChangingMetric("PSI", "setOptionsPressureUnitsPSI")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_PSI)
 
     def setOptionsPressureUnitsKPA(self):
+        """Function to set pressure units to meters and check if the change is possible.
+
+        - If not possible, suggests functions to the user to enable the change.
+
+        Example:
+            inpfile = "Net3.inp"
+            d = epanet(inpfile)
+            d.setOptionsPressureUnitsKPA()
+            x = d.getOptionsPressureUnits()
+        """
         self.ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsKPA")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_KPA)
 
