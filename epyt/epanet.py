@@ -9570,12 +9570,57 @@ class epanet:
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, value)
 
     def setOptionsStatusReportNo(self):
+        """Function to set the status report option to 'No Report'.
+
+        Returns:
+        The result of the API call to set the status report option. In this case "NO REPORT"
+
+        Example :
+            inpfile = "Net3.inp"
+            d = epanet(inpfile)
+            d.setOptionsStatusReportNo()
+            x = d.getOptionsStatusReport()
+            print(x)
+
+        See Also: setOptionsStatusReportFull , setOptionsStatusReportNormal
+
+        """
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_NO_REPORT)
 
     def setOptionsStatusReportFull(self):
+        """Function to set the status report option to 'No Report'.
+
+            Returns:
+            The result of the API call to set the status report option. In this case "FULL REPORT"
+
+            Example :
+                inpfile = "Net3.inp"
+                d = epanet(inpfile)
+                d.setOptionsStatusReportFull()
+                x = d.getOptionsStatusReport()
+                print(x)
+
+            See Also: setOptionsStatusReportNo , setOptionsStatusReportNormal
+
+            """
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_FULL_REPORT)
 
     def setOptionsStatusReportNormal(self):
+        """Function to set the status report option to 'No Report'.
+
+            Returns:
+            The result of the API call to set the status report option. In this case "NORMAL REPORT"
+
+            Example :
+                inpfile = "Net3.inp"
+                d = epanet(inpfile)
+                d.setOptionsStatusReportNormal()
+                x = d.getOptionsStatusReport()
+                print(x)
+
+            See Also: setOptionsStatusReportNo , setOptionsStatusReportFull
+
+            """
         return self.api.ENsetoption(self.ToolkitConstants.EN_STATUS_REPORT, self.ToolkitConstants.EN_NORMAL_REPORT)
 
     def setQualityType(self, *argv):
