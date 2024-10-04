@@ -14386,6 +14386,17 @@ class epanet:
 
         print(f"{red_text}UserWarning: Error in function: {nameofFunction},{message}{reset_text}")
 
+    def FlowUnitsCheck(self):
+        flowunits = self.getFlowUnits()
+        if flowunits == "MDG" or flowunits == "IMGD" or flowunits == "CFS" or flowunits == "CFS" or flowunits == "GPM":
+            return "PSI"
+        else:
+            if (flowunits == "CMH" or flowunits == "CMS" or flowunits == "MLD" or flowunits == "CMD" or flowunits == "LPS" or
+                    flowunits == "LPM"):
+                return "KPA AND METERS"
+            else:
+                return "UNKNOWN"
+
 
 class epanetapi:
     """
