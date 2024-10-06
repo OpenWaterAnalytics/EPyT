@@ -188,6 +188,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | getComputedTimeSeries             |Run analysis with binary fil
 | getConnectivityMatrix             |Retrieve the Connectivity Matrix of the networ
 | getControlRulesCount              |Retrieves the number of controls
+| getControlCount                   |Retrieves the number of controls => will replace getControlRulesCount
 | getControls                       |Retrieves the parameters of all control statements
 | getCounts                         |Retrieves the number of network components
 | getCurveComment                   |Retrieves the comment string of a curve
@@ -543,6 +544,8 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | stepMSXQualityAnalysisTimeLeft    |Advances the water quality solution through a single water quality time step when performing a step-wise simulation|
 | saveMSXFile                       |Saves the data associated with the current MSX project into a new MSX input file|
 | saveMSXQualityFile                |Saves water quality results computed for each node, link and reporting time period to a named binary file|
+| plotMSXSpeciesLinkConcentration   |Plots concentration of species for links over time.
+| plotMSXSpeciesNodeConcentration   |Plots concentration of species for nodes over time.
 | getMSXSourcePatternIndex          |Retrieves the value of all node source pattern index|
 | getMSXLinkInitqualValue           |Retrieves the initial concentration of chemical species assigned to links of the pipe network|
 | getMSXNodeInitqualValue           |Retrieves the initial concentration of chemical species assigned to nodes|
@@ -582,6 +585,10 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | getMSXCoupling                    |Retrieves the coupling (FULL/NONE)|
 | getMSXAtol                        |Retrieves the absolute concentration tolerance|
 | getMSXRtol                        |Retrieves the relative concentration tolerance|
+| getMSXComputedQualityLink         |Returns the computed quality for links.|
+| getMSXConstantsValue              |Retrieves the constant's value.|
+| getMSXSolver                      |Retrieves the solver method.|
+| getMSXSources                     |Retrieves Msx sources|
 | getMSXComputedQualitySpecie       |Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie(['CL2']))|
 | getMSXEquationsPipes              |Retrieves the species dynamics in pipes|
 | getMSXEquationsTanks              |Retrieves the species dynamics in tanks|
@@ -606,6 +613,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | setMSXTimeStep                    |Sets time step|
 | setMSXPatternValue                |Assigns a new value to the multiplier for a specific time period in a given MSX source time pattern|
 | setMSXPattern                     |Sets all of the multiplier factors for a specific time pattern|
+| setMSXPatternMatrix               |Sets the multiplier factors for all patterns|
 | setMSXParametersPipesValue        |Assigns a value to a particular reaction parameter for given pipes|
 | setMSXParametersTanksValue        |Assigns a value to a particular reaction parameter for given tanks|
 | setMSXConstantsValue              |Assigns a new value to a specific reaction constant|
@@ -748,5 +756,80 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 |ENstepQ|Advances a water quality simulation by a single water quality time step
 |ENusehydfile|Uses a previously saved binary hydraulics file to supply a project's hydraulics
 |ENwriteline|Writes a line of text to a project's report file
+
+
+## List of EPANET 2.3 Functions 
+
+|Function|Description|
+|---------|----------|
+|ENgetcontrolenabled|Retrieves the enabled state of a specified control in the EPANET model using the API.
+|getControlState|Retrieves the enabled state of a specified control in the EPANET model
+|ENgetlinkvalues|retrieves property values for all links|
+|ENgetruleenabled|etrieves the enabled state of a specific rule in the EPANET model using API.
+|getRuleEnabled|Retrieves the enabled state of a specific rule in the EPANET model.
+|ENloadpatternfile|
+|loadPatternFile|
+|ENopenX|
+|openX|
+|ENsetcontrolenabled|Sets the control state to either enable or disable in the EPANET model usin API.
+|setControlEnabled|Sets the control state to either enable or disable in the EPANET model.
+|ENsetcurvetype|Sets the type of a specified curve in the EPANET model using API.
+|setCurveType|Sets the type of a specified curve in the EPANET model.
+|setCurveTypePump|Sets the type of a curve to Pump in the EPANET model.
+|setCurveTypeEfficiency|Sets the type of curve to Efficiency in the EPANET model.
+|setCurveTypeHeadloss|Sets the type of a curve to Headloss in the EPANET model.
+|setCurveTypeGeneral|Sets the type of a curve to general in the EPANET model.
+|setCurveTypeValveCurve|Sets the type of a curve to Valve in the EPANET model.
+|setCurveTypeVolume|Sets the type of a curve to Volume in the EPANET model.
+|ENsetruleenabled|Enables a specific rule in the EPANET model using API.
+|setRuleEnabled|Enables a specific rule in the EPANET model.
+|ENtimetonextevent|Determines the type of event that will cause the end of the current time step,
+        along with the duration until the event occurs and its index using API
+|getTimetoNextEvent|Determines the type of event that will cause the end of the current time step,
+        along with the duration until the event occurs and its index.
+|getLinkInControl|Function to determine wether a link apperas in any simple or rule based control
+|getNodeInControl|Function to determine wether a node apperas in any simple or rule based control
+|getPatternAverageDefaultValue|Retrieves the average value of the default pattern
+|getStatisticDeficientNodes|Retrieves the number of deficient nodes in the simulation.
+|getStatisticDemandReduction|Retrieves the demand reduction statistic from the simulation.
+|getStatisticIterations|Retrieves the number of iterations taken in the simulation.
+|getStatisticRelativeError|Retrieves the relative error statistic from the simulation.
+|getStatisticTotalLeakageLoss|Retrieves the total leakage loss statistic from the simulation.
+|getTimeStartClockStartTime|Retrieves the simulation starting time of day.
+|getLinkExpansionProperties|Retrieves the expansion properties for a specified link (pipe).
+|getLinkLeakArea|Function to retrieve the leak area for a specified link (pipe).
+|getLinkLeakageRate|Retrieves the leakage rate of a specific pipe (link) at a given point in time.
+|getLinkValues|Retrieves property values for all links within the EPANET model during a hydraulic analysis.
+|getLinkValveCurveGPV|Retrieves the valve curve for a specified general purpose valve (GPV).
+|getLinkValveCurvePCV|Retrieves the valve curve for a specified pressure control valve (PCV).
+|getNodeEmitterFlow|Retrieves node emmiter flow
+|getNodeLeakageFlow|Retrieves the leakage flow for a specific node.
+|getConsumerDemandDelivered|Retrieves the delivered consumer demand for a specific node.
+|getConsumerDemandRequested|Retrieves the requested consumer demand for a specific node.
+|getOptionsDemandPattern|Retrieves the default Demand pattern.
+|getOptionsEmitterBackFlow|Retrieves the current setting for allowing reverse flow through emitters.
+|getOptionsPressureUnits|get the pressure unit used in Epanet
+|getOptionsStatusReport|get the type of the status report(full/no/normal)
+|setOptionsStatusReport|Sets the status report for epanet
+|setOptionsStatusReportNo|set the status report option to no Report
+|setOptionsStatusReportNormal|set the status report option to normal report
+|setOptionsStatusReportFull|set the status report option to full report 
+|setOptionsPressureUnitsMeters|Set pressure units to Meters and check if the change is possible.
+|setOptionsPressureUnitsPSI|Set pressure units to PSI and check if the change is possible.
+|setOptionsPressureUnitsKPA|Set pressure units to KPA and check if the change is possible.
+|setOptionsEmitterBackFlowAllowed|Sets the option to allow reverse flow through emitters.
+|setOptionsEmitterBackFlowDisallowed|Sets the option  prevent reverse flow through emitters.
+|setOptionsDemandPattern|Retrieves the default Demand pattern.
+|setOptionsPressureUnits|Sets the pressure unit used in Epanet
+|setTimeClockStartTime|Sets the start time for simulation
+|setLinkTypeValvePCV|Sets the link type valve PCV(Position control valve) for a specified link.
+|setLinkValveCurveGPV| Sets the valve curve for a specified general purpose valve (GPV).
+|setLinkValveCurvePCV| Sets the valve curve for a specified pressure control valve (PCV).
+|setLinkExpansionProperties|Sets the expansion properties for a specified link (pipe).
+|setLinkLeakArea|Sets the leak area for a specified link (pipe).
+|setFlowUnitsCMS|Sets flow units to CMS(Cubic Meters per Second).
+|ENsetvertex|Sets the coordinates of a vertex point in a link within the EPANET model using API.
+|setVertex|Sets the coordinates of a vertex point in a link within the EPANET model.
+|addLinkValvePCV|Adds a new PCV valve and returns the index of the new PCV valve.
 
 &uparrow; [Back to top](#table-of-contents)

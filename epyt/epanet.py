@@ -12676,6 +12676,7 @@ class epanet:
         return z
 
     def getMSXSources(self):
+        "Retrieves Msx sources"
         value = []
         for i in range(1, self.getNodeCount() + 1):
             value_row = []
@@ -13801,7 +13802,7 @@ class epanet:
             f.write('LINKS ALL\n')
 
     def setMSXPatternMatrix(self, pattern_matrix):
-        """Sets all of the multiplier factors for all patterns
+        """Sets the multiplier factors for all patterns.
 
             Example:
                 inpname = os.path.join(os.getcwd(), 'epyt', 'networks','msx-examples', 'net2-cl2.inp')
@@ -14162,7 +14163,7 @@ class epanet:
     def setControlEnabled(self, index, enabled):
         """
     Purpose:
-        Enables  a control in the EPANET model.
+        Sets the control state to either enable or disable in the EPANET model.
 
     Parameters:
         index (int): The index of the control to be modified, starting from 1.
@@ -14431,8 +14432,6 @@ class epanet:
         """
         Sets the option to allow reverse flow through emitters.
 
-
-
         Example:
             inpfile = "Richmond_standard.inp"
             d = epanet(inpfile)
@@ -14506,7 +14505,7 @@ class epanet:
 
     def setLinkLeakArea(self, index, value):
         """
-        Function to set the leak arean for a specified link (pipe).
+        Function to set the leak area    for a specified link (pipe).
 
         input:
             index(int) : The index of the link(pipe) for which to set the leak area (starting from 1)
@@ -14714,7 +14713,7 @@ class epanet:
             inpfile = "Net1.inp"
             d = epanet(inpfile)
 
-            x = d.getLinkInControl()
+            x = d.getNodeInControl()
             print(x)
 
         Example 3 Retrieving more than one Node:
