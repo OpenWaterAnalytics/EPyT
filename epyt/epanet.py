@@ -386,7 +386,7 @@ class ToolkitConstants:
     MSX_FLOWPACED = 3
 
 
-def safe_delete(file):
+def _safe_delete(file):
     if isinstance(file, list):
         for file_path in file:
             if os.path.exists(file_path):
@@ -569,16 +569,16 @@ class epanet:
         attr = super().__getattribute__(function_id)
 
         if callable(attr) and not function_id.startswith("__") and not function_id.startswith("_") and not function_id.startswith("EN"):
-            # Create a wrapper function to include additional actions
-            def wrapper(*args, **kwargs):
+            # Create a _wrapper function to include additional actions
+            def _wrapper(*args, **kwargs):
 
                 result = attr(*args, **kwargs)
 
                 # Check for API error code after the method call
-                if hasattr(self, 'api') and self.api.errcode != 0 and function_id != "logFunctionError" and function_id !="getError":
+                if hasattr(self, 'api') and self.api.errcode != 0 and function_id != "_logFunctionError" and function_id !="getError":
                     # Log function error by passing the function name
                     message = self.api.ENgeterror(self.api.errcode)
-                    self.logFunctionError(function_id, message)
+                    self._logFunctionError(function_id, message)
                     #if you want to chase the error uncomment
                     """
                     print(self.api.errcode)
@@ -587,7 +587,7 @@ class epanet:
 
                 return result
 
-            return wrapper  # Return the wrapped function
+            return _wrapper  # Return the wrapped function
 
         return attr  # Return the attribute directly if not callable
 
@@ -722,7 +722,7 @@ class epanet:
             self.LibEPANET = self.api.LibEPANET
             if self.display_msg:
                 print(f'Input File {self.netName} loaded successfully.\n')
-            if not self.isConnected():
+            if not self._isConnected():
                 warnings.warn("The network is not fully connected, one or more link(s) are missing.",UserWarning)
 
     def addControls(self, control, *argv):
@@ -2460,7 +2460,7 @@ class epanet:
         self.saveInputFile(self.TempInpFile)
         [fid, binfile, _] = self.runEPANETexe()
         if fid is False:  # temporary.
-            value_final = self.getComputedTimeSeries_ENepanet()
+            value_final = self._getComputedTimeSeries_ENepanet()
             return value_final
         value = self.__readEpanetBin(fid, binfile, 0)
         value.WarnFlag = False
@@ -2490,7 +2490,7 @@ class epanet:
         value_final.Status = value_final.Status.astype(int)
         return value_final
 
-    def getComputedTimeSeries_ENepanet(self, tempfile=None, binfile=None, rptfile=None):
+    def _getComputedTimeSeries_ENepanet(self, tempfile=None, binfile=None, rptfile=None):
         """ Run analysis using ENepanet function """
 
         if tempfile is not None:
@@ -9558,7 +9558,7 @@ class epanet:
             d.setOptionsPressureUnitsMeters()
             x = d.getOptionsPressureUnits()
         """
-        self.ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsMeters")
+        self._ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsMeters")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_METERS)
 
     def setOptionsPressureUnitsPSI(self):
@@ -9572,7 +9572,7 @@ class epanet:
             d.setOptionsPressureUnitsPSI()
             x = d.getOptionsPressureUnits()
             """
-        self.ErrorinChangingMetric("PSI", "setOptionsPressureUnitsPSI")
+        self._ErrorinChangingMetric("PSI", "setOptionsPressureUnitsPSI")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_PSI)
 
     def setOptionsPressureUnitsKPA(self):
@@ -9586,7 +9586,7 @@ class epanet:
             d.setOptionsPressureUnitsKPA()
             x = d.getOptionsPressureUnits()
         """
-        self.ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsKPA")
+        self._ErrorinChangingMetric("KPA AND METERS","setOptionsPressureUnitsKPA")
         return self.setOptionsPressureUnits(self.ToolkitConstants.EN_KPA)
 
 
@@ -10930,13 +10930,13 @@ class epanet:
                 self.api.ENclose()
         finally:
             try:
-                safe_delete(self.TempInpFile)
+                _safe_delete(self.TempInpFile)
 
                 files_to_delete = [self.TempInpFile[0:-4] + '.txt', self.InputFile[0:-4] + '.txt', self.BinTempfile]
                 for file in files_to_delete:
-                    safe_delete(file)
+                    _safe_delete(file)
                 for file in Path(".").glob("@#*.txt"):
-                    safe_delete(file)
+                    _safe_delete(file)
 
                 arch = sys.platform
                 if arch == 'win64' or arch == 'win32':
@@ -10950,7 +10950,7 @@ class epanet:
                            "." not in f
                     ]
                     tmp_files_paths = [os.path.join(cwd, f) for f in tmp_files]
-                    safe_delete(tmp_files_paths)
+                    _safe_delete(tmp_files_paths)
             except:
                 pass
         if self.display_msg:
@@ -11837,7 +11837,7 @@ class epanet:
         if arch == 'win64' or arch == 'win32':
             msx_temp_files = list(filter(lambda f: os.path.isfile(os.path.join(os.getcwd(), f))
                                                    and f.startswith("msx") and "." not in f, os.listdir(os.getcwd())))
-            safe_delete(msx_temp_files)
+            _safe_delete(msx_temp_files)
             print('EPANET-MSX Toolkit is unloaded.')
 
     def getMSXSpeciesCount(self):
@@ -11935,6 +11935,7 @@ class epanet:
         self.msx.MSXsolveQ()
 
     def writeMSXReport(self):
+        """Writes msx report"""
         self.msx.MSXreport()
 
     def useMSXHydraulicFile(self, hydname):
@@ -12581,7 +12582,7 @@ class epanet:
                 value.append(y[1])
         return value
 
-    def getEquations(self):
+    def _getEquations(self):
         msxname = self.MSXTempFile
         Terms = {}
         Pipes = {}
@@ -12645,7 +12646,7 @@ class epanet:
                d.getMSXEquationsTerms()
 
              See also getMSXEquationsPipes, getMSXEquationsTanks."""
-        x, y, z = self.getEquations()
+        x, y, z = self._getEquations()
         x = list(x.values())
         return x
 
@@ -12658,7 +12659,7 @@ class epanet:
                d.getMSXEquationsPipes()
 
              See also getMSXEquationsTerms, getMSXEquationsTanks."""
-        x, y, z = self.getEquations()
+        x, y, z = self._getEquations()
         y = list(y.values())
         return y
 
@@ -12671,7 +12672,7 @@ class epanet:
                d.getMSXEquationsTanks()
 
              See also getMSXEquationsTerms, getMSXEquationsPipes."""
-        x, y, z = self.getEquations()
+        x, y, z = self._getEquations()
         z = list(z.values())
         return z
 
@@ -12931,7 +12932,7 @@ class epanet:
                 nodes.append(i)
         return nodes
 
-    def changeMSXOptions(self, param, change):
+    def _changeMSXOptions(self, param, change):
         options_section = 'options_section.msx'
         self.saveMSXFile(options_section)
 
@@ -12972,7 +12973,7 @@ class epanet:
               d.getMSXAreaUnits()
 
              See also setMSXAreaUnitsFT2, setMSXAreaUnitsM2."""
-        self.changeMSXOptions("AREA_UNITS", "CM2")
+        self._changeMSXOptions("AREA_UNITS", "CM2")
 
     def setMSXAreaUnitsFT2(self):
         """ Sets the area units to square feet.
@@ -12987,7 +12988,7 @@ class epanet:
               d.getMSXAreaUnits()
 
              See also setMSXAreaUnitsM2, setMSXAreaUnitsCM2."""
-        self.changeMSXOptions("AREA_UNITS", "FT2")
+        self._changeMSXOptions("AREA_UNITS", "FT2")
 
     def setMSXAreaUnitsM2(self):
         """ Sets the area units to square meters.
@@ -13002,7 +13003,7 @@ class epanet:
               d.getMSXAreaUnits()
 
              See also setMSXAreaUnitsFT2, setMSXAreaUnitsCM2."""
-        self.changeMSXOptions("AREA_UNITS", "M2")
+        self._changeMSXOptions("AREA_UNITS", "M2")
 
     def setMSXAtol(self, value):
         """ Sets the absolute tolerance used to determine when two concentration levels of a
@@ -13019,7 +13020,7 @@ class epanet:
               d.getMSXAtol()
 
             % See also setMSXRtol."""
-        self.changeMSXOptions("ATOL", value)
+        self._changeMSXOptions("ATOL", value)
 
     def setMSXRtol(self, value):
         """Sets the relative accuracy level on a species’ concentration
@@ -13035,7 +13036,7 @@ class epanet:
               d.getMSXRtol()
 
              See also setMSXAtol."""
-        self.changeMSXOptions("RTOL", value)
+        self._changeMSXOptions("RTOL", value)
 
     def setMSXCompilerGC(self):
         """  Sets chemistry function compiler code to GC.
@@ -13048,7 +13049,7 @@ class epanet:
               d.getMSXCompiler()
 
              See also setMSXCompilerNONE, setMSXCompilerVC."""
-        self.changeMSXOptions("COMPILER", "GC")
+        self._changeMSXOptions("COMPILER", "GC")
 
     def setMSXCompilerVC(self):
         """ Sets chemistry function compiler code to VC.
@@ -13061,7 +13062,7 @@ class epanet:
               d.getMSXCompiler()
 
              See also setMSXCompilerNONE, setMSXCompilerGC."""
-        self.changeMSXOptions("COMPILER", "VC")
+        self._changeMSXOptions("COMPILER", "VC")
 
     def setMSXCompilerNONE(self):
         """ Sets chemistry function compiler code to NONE.
@@ -13074,7 +13075,7 @@ class epanet:
               d.getMSXCompiler()
 
              See also setMSXCompilerVC, setMSXCompilerGC."""
-        self.changeMSXOptions("COMPILER", "NONE")
+        self._changeMSXOptions("COMPILER", "NONE")
 
     def setMSXCouplingFULL(self):
         """  Sets coupling to FULL.
@@ -13093,7 +13094,7 @@ class epanet:
               d.getMSXCoupling()
 
              See also setMSXCouplingNONE."""
-        self.changeMSXOptions("COUPLING", "FULL")
+        self._changeMSXOptions("COUPLING", "FULL")
 
     def setMSXCouplingNONE(self):
         """ Sets coupling to NONE.
@@ -13112,7 +13113,7 @@ class epanet:
               d.getMSXCoupling()
 
              See also setMSXCouplingFULL."""
-        self.changeMSXOptions("COUPLING", "NONE")
+        self._changeMSXOptions("COUPLING", "NONE")
 
     def setMSXRateUnitsDAY(self):
         """  Sets the rate units to days.
@@ -13128,7 +13129,7 @@ class epanet:
 
              See also setMSXRateUnitsSEC, setMSXRateUnitsMIN
                       setMSXRateUnitsHR."""
-        self.changeMSXOptions("RATE_UNITS", "DAY")
+        self._changeMSXOptions("RATE_UNITS", "DAY")
 
     def setMSXRateUnitsHR(self):
         """  Sets the rate units to hours.
@@ -13144,7 +13145,7 @@ class epanet:
 
              See also setMSXRateUnitsSEC, setMSXRateUnitsMIN
                       setMSXRateUnitsDAY."""
-        self.changeMSXOptions("RATE_UNITS", "HR")
+        self._changeMSXOptions("RATE_UNITS", "HR")
 
     def setMSXRateUnitsMIN(self):
         """ Sets the rate units to minutes.
@@ -13160,7 +13161,7 @@ class epanet:
 
              See also setMSXRateUnitsSEC, setMSXRateUnitsHR,
                       setMSXRateUnitsDAY."""
-        self.changeMSXOptions("RATE_UNITS", "MIN")
+        self._changeMSXOptions("RATE_UNITS", "MIN")
 
     def setMSXRateUnitsSEC(self):
         """ Sets the rate units to seconds.
@@ -13176,7 +13177,7 @@ class epanet:
 
              See also setMSXRateUnitsMIN, setMSXRateUnitsHR,
                       setMSXRateUnitsDAY."""
-        self.changeMSXOptions("RATE_UNITS", "SEC")
+        self._changeMSXOptions("RATE_UNITS", "SEC")
 
     def setMSXSolverEUL(self):
         """ Sets the numerical integration method to solve the reaction
@@ -13192,7 +13193,7 @@ class epanet:
               d.getMSXSolver()
 
              See also setMSXSolverRK5, setMSXSolverROS2."""
-        self.changeMSXOptions("SOLVER", "EUL")
+        self._changeMSXOptions("SOLVER", "EUL")
 
     def setMSXSolverRK5(self):
         """ Sets the numerical integration method to solve the reaction
@@ -13208,7 +13209,7 @@ class epanet:
               d.getMSXSolver()
 
             % See also setMSXSolverEUL, setMSXSolverROS2."""
-        self.changeMSXOptions("SOLVER", "RK5")
+        self._changeMSXOptions("SOLVER", "RK5")
 
     def setMSXSolverROS2(self):
         """  Sets the numerical integration method to solve the reaction
@@ -13224,7 +13225,7 @@ class epanet:
               d.getMSXSolver()
 
              See also setMSXSolverEUL, setMSXSolverRK5."""
-        self.changeMSXOptions("SOLVER", "ROS2")
+        self._changeMSXOptions("SOLVER", "ROS2")
 
     def setMSXTimeStep(self, value):
         """ Sets the time step.
@@ -13239,7 +13240,7 @@ class epanet:
               d.getMSXTimeStep()
 
              See also getMSXTimeStep."""
-        self.changeMSXOptions("TIMESTEP", value)
+        self._changeMSXOptions("TIMESTEP", value)
 
     def setMSXPatternValue(self, index, patternTimeStep, patternFactor):
         """ Sets the pattern factor for an index for a specific time step.
@@ -14256,9 +14257,15 @@ class epanet:
 
 
     def openX(self, inpFile, rptFile, outFile):
+        """Enable the opening of input files with formatting errors"""
         self.api.ENopenX(inpFile, rptFile, outFile)
 
     def loadPatternFile(self, filename, id):
+        """/*----------------------------------------------------------------
+        **  Input:   filename =  name of the file containing pattern data
+        **           id = ID for the new pattern
+        **  Purpose: loads time patterns from a file into a project under a specific pattern ID
+        **----------------------------------------------------------------"""
         self.api.ENloadpatternfile(filename, id)
 
     def getLinkValues(self, property):
@@ -14590,18 +14597,18 @@ class epanet:
         return self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_LEAKAGEFLOW)
 
 
-    def isConnected(self):
+    def _isConnected(self):
         """Checks if the water network is fully connected"""
         matrix = self.getConnectivityMatrix()
         n = len(matrix)
         visited = [False] * n
 
-        def dfs(node):
+        def _dfs(node):
             visited[node] = True
             for neighbor in range(n):
                 if matrix[node][neighbor] == 1 and not visited[neighbor]:
-                    dfs(neighbor)
-        dfs(0)
+                    _dfs(neighbor)
+        _dfs(0)
         if all(visited):
             return True
         else:
@@ -14750,7 +14757,7 @@ class epanet:
             results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
         return results
 
-    def logFunctionError(self, nameofFunction, message):
+    def _logFunctionError(self, nameofFunction, message):
         """Notifies the user where the error is coming from with red text."""
 
         # ANSI escape code for red text
@@ -14759,11 +14766,11 @@ class epanet:
 
         print(f"{red_text}UserWarning: Error in function: {nameofFunction},{message}{reset_text}")
 
-    def ErrorinChangingMetric(self, wanted, nameofFunction):
+    def _ErrorinChangingMetric(self, wanted, nameofFunction):
         "Checks if the metric change is not possible and suggest possbile solutions"
         red_text = "\033[91m"
         reset_text = "\033[0m"
-        current = self.FlowUnitsCheck()
+        current = self._FlowUnitsCheck()
         if current == "PSI" and wanted == "KPA AND METERS":
             print(f"{red_text}UserWarning: Error in function: {nameofFunction}, the function didnt change the metric Please change"
                   f" the metric using one of the following:\n "
@@ -14785,7 +14792,7 @@ class epanet:
                     f" 5. setFlowUnitsGPM() ->  Gallons per minute \n{reset_text}")
 
 
-    def FlowUnitsCheck(self):
+    def _FlowUnitsCheck(self):
         "Returns the Metric of the system"
         flowunits = self.getFlowUnits()
         if flowunits == "MDG" or flowunits == "IMGD" or flowunits == "CFS" or flowunits == "CFS" or flowunits == "GPM":
@@ -15666,8 +15673,6 @@ class epanetapi:
     def ENloadpatternfile(self, filename, id):
         """ Input:   filename =  name of the file containing pattern data
             id = ID for the new pattern
-            Output:  none
-            Returns: error code
             Purpose: loads time patterns from a file into a project under a specific pattern ID"""
         self.patternfile = bytes(filename, 'utf-8')
         if self._ph is not None:
@@ -18298,7 +18303,7 @@ class epanetmsxapi:
             Warning(self.MSXerror(err))
 
     def MSXusehydfile(self, filename):
-        """             """
+        """ Uses hyd file            """
         err = self.msx_lib.MSXusehydfile(filename.encode())
         if err:
             Warning(self.MSXerror(err))

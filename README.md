@@ -145,691 +145,726 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 ## List of Python Class Functions
 
 | Function                          |Description|
-|-----------------------------------|----------|
-| addControls                       |Adds a new simple control|
-| addCurve                          |Adds a new curve appended to the end of the existing curves|
-| addLinkPipe                       |Adds a new pipe|
-| addLinkPipeCV                     |Adds a new control valve pipe|
-| addLinkPump                       |Adds a new pump|
-| addLinkValveFCV                   |Adds a new FCV valve|
-| addLinkValveGPV                   |Adds a new GPV valve|
-| addLinkValvePBV                   |Adds a new PBV valve|
-| addLinkValvePRV                   |Adds a new PRV valve|
-| addLinkValvePSV                   |Adds a new PSV valve|
-| addLinkValveTCV                   |Adds a new TCV valve|
-| addNodeJunction                   |Adds a new junction|
-| addNodeJunctionDemand             |Adds a new demand to a junction given the junction index, base demand, demand time pattern and demand category name|
-| addNodeReservoir                  |Adds a new reservoir|
-| addNodeTank                       |Adds a new tank|
-| addPattern                        |Adds a new time pattern to the network|
-| addRules                          |Adds a new rule-based control to a project|
-| appRotateNetwork                  |Rotates the network by theta degrees counter-clockwise|
-| appShiftNetwork                   |Shifts the network|
-| clearReport                       |Clears the contents of a project's report file|
-| closeHydraulicAnalysis            |Closes the hydraulic analysis system, freeing all allocated memory|
-| closeNetwork                      |Closes down the Toolkit system|
-| closeQualityAnalysis              |Closes the water quality analysis system, freeing all allocated memory|
-| copyReport                        |Copies the current contents of a project's report file to another file|
-| createProject                     |Creates a new epanet projec|
-| deleteAllTemps                    |Delete all temporary files (.inp, .bin) created in networks folder|
-| deleteControls                    |Deletes an existing simple control|
-| deleteCurve                       |Deletes a data curve from a project|
-| deleteLink                        |Deletes a link|
-| deleteNode                        |Deletes nodes|
-| deletePattern                     |Deletes a time pattern from a project|
-| deletePatternsAll                 |Deletes all time patterns from a project|
-| deleteProject                     |Deletes the epanet project|
-| deleteRules                       |Deletes an existing rule-based control given it's index
-| getAdjacencyMatrix                |Compute the adjacency matrix (connectivity graph) considering the flows, using mean flow|
-| getAllAttributes                  |Get all attributes of a given Python object|
-| getCMDCODE                        |Retrieves the CMC code|
-| getComputedHydraulicTimeSeries    |Computes hydraulic simulation and retrieves all time-series
-| getComputedQualityTimeSeries      |Computes Quality simulation and retrieves all or some time-series
-| getComputedTimeSeries             |Run analysis with binary fil
-| getConnectivityMatrix             |Retrieve the Connectivity Matrix of the networ
-| getControlRulesCount              |Retrieves the number of controls
-| getControlCount                   |Retrieves the number of controls => will replace getControlRulesCount
-| getControls                       |Retrieves the parameters of all control statements
-| getCounts                         |Retrieves the number of network components
-| getCurveComment                   |Retrieves the comment string of a curve
-| getCurveCount                     |Retrieves the number of curves
-| getCurveIndex                     |Retrieves the index of a curve with specific ID
-| getCurveLengths                   |Retrieves number of points in a curve
-| getCurveNameID                    |Retrieves the IDs of curves
-| getCurveType                      |Retrieves the curve-type for all curves
-| getCurveTypeIndex                 |Retrieves the curve-type index for all curves
-| getCurveValue                     |Retrieves the X, Y values of points of curves
-| getCurvesInfo                     |Retrieves all the info of curves
-| getDemandModel                    |Retrieves the type of demand model in use and its parameters
-| getENfunctionsImpemented          |Retrieves the epanet functions that have been developed
-| getError                          |Retrieves the text of the message associated with a particular error or warning code
-| getFlowUnits                      |Retrieves flow units used to express all flow rates
-| getLibFunctions                   |Retrieves the functions of DLL
-| getLinkActualQuality              |Retrieves the current computed link quality (read only)
-| getLinkBulkReactionCoeff          |Retrieves the value of all link bulk chemical reaction coefficient
-| getLinkComment                    |Retrieves the comment string assigned to the link object
-| getLinkCount                      |Retrieves the number of links
-| getLinkDiameter                   |Retrieves the value of link diameters
-| getLinkEnergy                     |Retrieves the current computed pump energy usage (read only)
-| getLinkFlows                      |Retrieves the current computed flow rate (read only)
-| getLinkHeadloss                   |Retrieves the current computed head loss (read only)
-| getLinkIndex                      |Retrieves the indices of all links, or the indices of an ID set of links
-| getLinkInitialSetting             |Retrieves the value of all link roughness for pipes or initial speed for pumps or initial setting for valves
-| getLinkInitialStatus              |Retrieves the value of all link initial status
-| getLinkLength                     |Retrieves the value of link lengths
-| getLinkMinorLossCoeff             |Retrieves the value of link minor loss coefficients
-| getLinkNameID                     |Retrieves the ID label(s) of all links, or the IDs of an index set of links
-| getLinkNodesIndex                 |Retrieves the indexes of the from/to nodes of all links
-| getLinkPipeCount                  |Retrieves the number of pipes
-| getLinkPipeIndex                  |Retrieves the pipe indices
-| getLinkPipeNameID                 |Retrieves the pipe ID
-| getLinkPumpCount                  |Retrieves the number of pumps
-| getLinkPumpECost                  |Retrieves the pump average energy price
-| getLinkPumpECurve                 |Retrieves the pump efficiency v
-| getLinkPumpEPat                   |Retrieves the pump energy price time pattern index
-| getLinkPumpEfficiency             |Retrieves the current computed pump efficiency (read only)
-| getLinkPumpHCurve                 |Retrieves the pump head v
-| getLinkPumpHeadCurveIndex         |Retrieves the index of a head curve for all pumps
-| getLinkPumpIndex                  |Retrieves the pump indices
-| getLinkPumpNameID                 |Retrieves the pump ID
-| getLinkPumpPatternIndex           |Retrieves the pump speed time pattern index
-| getLinkPumpPatternNameID          |Retrieves pump pattern name ID
-| getLinkPumpPower                  |Retrieves the pump constant power rating (read only)
-| getLinkPumpState                  |Retrieves the current computed pump state (read only) (see @ref EN_PumpStateType)
-| getLinkPumpSwitches               |Retrieves the number of pump switches
-| getLinkPumpType                   |Retrieves the type of a pump
-| getLinkPumpTypeCode               |Retrieves the code of type of a pump
-| getLinkQuality                    |Retrieves the value of link quality
-| getLinkResultIndex                |Retrieves the order in which a link's results were saved to an output file
-| getLinkRoughnessCoeff             |Retrieves the value of link roughness coefficient
-| getLinkSettings                   |Retrieves the current computed value of all link roughness for pipes or actual speed for pumps or actual setting for valves
-| getLinkStatus                     |Retrieves the current link status (see @ref EN_LinkStatusType) (0 = closed, 1 = open)
-| getLinkType                       |Retrieves the link-type code for all links
-| getLinkTypeIndex                  |Retrieves the link-type code for all links
-| getLinkValveCount                 |Retrieves the number of valves
-| getLinkValveIndex                 |Retrieves the valve indices
-| getLinkValveNameID                |Retrieves the valve ID
-| getLinkVelocity                   |Retrieves the current computed flow velocity (read only)
-| getLinkVertices                   |Retrieves the coordinate's of a vertex point assigned to a link
-| getLinkVerticesCount              |Retrieves the number of internal vertex points assigned to a link
-| getLinkWallReactionCoeff          |Retrieves the value of all pipe wall chemical reaction coefficient
-| getLinksInfo                      |Retrieves all link info
-| getNetworksDatabase               |Retrieves all EPANET Input Files from EPyT database
-| getNodeActualDemand               |Retrieves the computed value of all node actual demands
-| getNodeActualDemandSensingNodes   |Retrieves the computed demand values at some sensing nodes
-| getNodeActualQuality              |Retrieves the computed values of the actual quality for all nodes
-| getNodeActualQualitySensingNodes  |Retrieves the computed quality values at some sensing node
-| getNodeBaseDemands                |Retrieves the value of all node base demands
-| getNodeComment                    |Retrieves the comment string assigned to the node object
-| getNodeCoordinates                
-| getNodeCount                      |Retrieves the number of nodes
-| getNodeDemandCategoriesNumber     |Retrieves the value of all node base demands categorie number
-| getNodeDemandDeficit              |Retrieves the amount that full demand is reduced under PDA
-| getNodeDemandPatternIndex         |Retrieves the value of all node base demands pattern index
-| getNodeDemandPatternNameID        |Retrieves the value of all node base demands pattern name ID
-| getNodeElevations                 |Retrieves the value of all node elevations
-| getNodeEmitterCoeff               |Retrieves the value of all node emmitter coefficients
-| getNodeHydraulicHead              |Retrieves the computed values of all node hydraulic heads
-| getNodeIndex                      |Retrieves the indices of all nodes or some nodes with a specified ID
-| getNodeInitialQuality             |Retrieves the value of all node initial quality
-| getNodeJunctionCount              |Retrieves the number of junction nodes
-| getNodeJunctionDemandIndex        |Retrieves the demand index of the junctions
-| getNodeJunctionDemandName         |Gets the name of a node's demand category
-| getNodeJunctionIndex              |Retrieves the indices of junctions
-| getNodeJunctionNameID             |Retrieves the junction ID label
-| getNodeMassFlowRate               |Retrieves the computed mass flow rates per minute of chemical sources for all nodes
-| getNodeNameID                     |Retrieves the ID label of all nodes or some nodes with a specified index
-| getNodePatternIndex               |Retrieves the value of all node demand pattern indices
-| getNodePressure                   |Retrieves the computed values of all node pressures
-| getNodeReservoirCount             |Retrieves the number of Reservoirs
-| getNodeReservoirIndex             |Retrieves the indices of reservoirs
-| getNodeReservoirNameID            |Retrieves the reservoir ID label
-| getNodeResultIndex                |Retrieves the order in which a node's results were saved to an output file
-| getNodeSourcePatternIndex         |Retrieves the value of all node source pattern index
-| getNodeSourceQuality              |Retrieves the value of all node source quality
-| getNodeSourceType                 |Retrieves the value of all node source type
-| getNodeSourceTypeIndex            |Retrieves the value of all node source type index
-| getNodeTankBulkReactionCoeff      |Retrieves the tank bulk rate coefficient
-| getNodeTankCanOverFlow            |Retrieves the tank can overflow (= 1) or not (= 0)
-| getNodeTankCount                  |Retrieves the number of Tanks
-| getNodeTankData                   |Retrieves a group of properties for a tank
-| getNodeTankDiameter               |Retrieves the tank diameters
-| getNodeTankIndex                  |Retrieves the tank indices
-| getNodeTankInitialLevel           |Retrieves the value of all tank initial water levels
-| getNodeTankInitialWaterVolume     |Retrieves the tank initial water volume
-| getNodeTankMaximumWaterLevel      |Retrieves the tank maximum water level
-| getNodeTankMaximumWaterVolume     |Retrieves the tank maximum water volume
-| getNodeTankMinimumWaterLevel      |Retrieves the tank minimum water level
-| getNodeTankMinimumWaterVolume     |Retrieves the tank minimum water volume
-| getNodeTankMixZoneVolume          |Retrieves the tank mixing zone volume
-| getNodeTankMixingFraction         |Retrieves the tank Fraction of total volume occupied by the inlet/outlet zone in a 2-compartment tank
-| getNodeTankMixingModelCode        |Retrieves the tank mixing model code
-| getNodeTankMixingModelType        |Retrieves the tank mixing model type
-| getNodeTankNameID                 |Retrieves the tank IDs
-| getNodeTankReservoirCount         |Retrieves the number of tanks
-| getNodeTankVolume                 |Retrieves the tank volume
-| getNodeTankVolumeCurveIndex       |Retrieves the tank volume curve index
-| getNodeType                       |Retrieves the node-type code for all nodes
-| getNodeTypeIndex                  |Retrieves the node-type code for all nodes
-| getNodesConnectingLinksID         |Retrieves the id of the from/to nodes of all links
-| getNodesConnectingLinksIndex      |Retrieves the indexes of the from/to nodes of all links
-| getNodesInfo                      |Retrieves nodes info (elevations, demand patterns, emmitter coeff, initial quality, source quality, source pattern index, source type index, node type index)
-| getOptionsAccuracyValue           |Retrieves the total normalized flow change for hydraulic convergence
-| getOptionsCheckFrequency          |Retrieves the frequency of hydraulic status checks
-| getOptionsDampLimit               |Retrieves the accuracy level where solution damping begins
-| getOptionsDemandCharge            |Retrieves the energy charge per maximum KW usage
-| getOptionsEmitterExponent         |Retrieves the power exponent for the emmitters
-| getOptionsExtraTrials             |Retrieves the extra trials allowed if hydraulics don't converge
-| getOptionsFlowChange              |Retrieves the maximum flow change for hydraulic convergence
-| getOptionsGlobalEffic             |Retrieves the global efficiency for pumps(percent)
-| getOptionsGlobalPattern           |Retrieves the index of the global energy price pattern
-| getOptionsGlobalPrice             |Retrieves the global average energy price per kW-Hour
-| getOptionsHeadError               |Retrieves the maximum head loss error for hydraulic convergence
-| getOptionsHeadLossFormula         |Retrieves the headloss formula
-| getOptionsLimitingConcentration   |Retrieves the limiting concentration for growth reactions
-| getOptionsMaxTrials               |Retrieves the maximum hydraulic trials allowed for hydraulic convergence
-| getOptionsMaximumCheck            |Retrieves the maximum trials for status checking
-| getOptionsPatternDemandMultiplier |Retrieves the global pattern demand multiplier
-| getOptionsPipeBulkReactionOrder   |Retrieves the bulk water reaction order for pipes
-| getOptionsPipeWallReactionOrder   |Retrieves the wall reaction order for pipes (either 0 or 1)
-| getOptionsQualityTolerance        |Retrieves the water quality analysis tolerance
-| getOptionsSpecificDiffusivity     |Retrieves the specific diffusivity (relative to chlorine at 20 deg C)
-| getOptionsSpecificGravity         |Retrieves the specific gravity
-| getOptionsSpecificViscosity       |Retrieves the specific viscosity
-| getOptionsTankBulkReactionOrder   |Retrieves the bulk water reaction order for tanks
-| getPattern                        |Retrieves the multiplier factor for all patterns and all times
-| getPatternAverageValue            |Retrieves the average values of all the time patterns
-| getPatternComment                 |Retrieves the comment string assigned to the pattern object
-| getPatternCount                   |Retrieves the number of patterns
-| getPatternIndex                   |Retrieves the index of all or some time patterns given their IDs
-| getPatternLengths                 |Retrieves the number of time periods in all or some time patterns
-| getPatternNameID                  |Retrieves the ID label of all or some time patterns indices
-| getPatternValue                   |Retrieves the multiplier factor for a certain pattern and time
-| getQualityCode                    |Retrieves the code of water quality analysis type
-| getQualityInfo                    |Retrieves quality analysis information (type, chemical name, units, trace node ID)
-| getQualityTraceNodeIndex          |Retrieves the trace node index of water quality analysis type
-| getQualityType                    |Retrieves the type of water quality analysis type
-| getRuleCount                      |Retrieves the number of rules
-| getRuleID                         |Retrieves the ID name of a rule-based control given its index
-| getRuleInfo                       |Retrieves summary information about a rule-based control given it's index
-| getRules                          |Retrieves the rule - based control statements
-| getStatistic                      |Returns error code
-| getTimeHTime                      |Retrieves the elapsed time of current hydraulic solution
-| getTimeHaltFlag                   |Retrieves the number of halt flag indicating if the simulation was halted
-| getTimeHydraulicStep              |Retrieves the value of the hydraulic time step
-| getTimeNextEvent                  |Retrieves the shortest time until a tank becomes empty or full
-| getTimeNextEventTank              |Retrieves the index of tank with shortest time to become empty or full
-| getTimePatternStart               |Retrieves the value of pattern start time
-| getTimePatternStep                |Retrieves the value of the pattern time step
-| getTimeQTime                      |Retrieves the elapsed time of current quality solution
-| getTimeQualityStep                |Retrieves the value of the water quality time step
-| getTimeReportingPeriods           |Retrieves the number of reporting periods saved to the binary
-| getTimeReportingStart             |Retrieves the value of the reporting start time
-| getTimeReportingStep              |Retrieves the value of the reporting time step
-| getTimeRuleControlStep            |Retrieves the time step for evaluating rule-based controls
-| getTimeSimulationDuration         |Retrieves the value of simulation duration
-| getTimeStartTime                  |Retrieves the simulation starting time of day
-| getTimeStatisticsIndex            |Retrieves the index of the type of time series post-processing
-| getTimeStatisticsType             |Retrieves the type of time series post-processing
-| getTitle                          |Retrieves the title lines of the project
-| getUnits                          |Retrieves the Units of Measurement
-| getVersion                        |Retrieves the current EPANET version of DLL
-| initializeEPANET                  |Initializes an EPANET project that isn't opened with an input fil
-| initializeHydraulicAnalysis       |Initializes storage tank levels, link status and settings, and the simulation clock time prior to running a hydraulic analysis
-| initializeQualityAnalysis         |Initializes water quality and the simulation clock time prior to running a water quality analysis
-| loadEPANETFile                    |Load epanet file when use bin functions
-| loadMSXEPANETFile                 |Re-Load EPANET MSX file - parfor
-| nextHydraulicAnalysisStep         |Determines the length of time until the next hydraulic event occurs in an extended period simulation
-| nextQualityAnalysisStep           |Advances the water quality simulation to the start of the next hydraulic time period
-| openAnyInp                        |Open as on matlab editor any EPANET input file using built function open
-| openCurrentInp                    |Opens EPANET input file who is loade
-| openHydraulicAnalysis             |Opens the hydraulics analysis system
-| openQualityAnalysis               |Opens the water quality analysis system
-| plot                              |Plot Network, show all components, plot pressure/flow/elevation|
-| plot_close                        |Close all open figures|
-| plot_save                         |Save plot|
-| plot_show                         |Show plot|
-| reloadNetwork                     |Reloads the Network (ENopen)
-| runEPANETexe                      |Runs epanet .exe file|
-| runHydraulicAnalysis              |Runs a single period hydraulic analysis, retrieving the current simulation clock time t
-| runQualityAnalysis                |Makes available the hydraulic and water quality results that occur at the start of the next time period of a water quality analysis, where the start of the period is returned in t
-| runsCompleteSimulation            |Runs a complete hydraulic and water simulation to create binary & report files with name: [NETWORK_temp.txt], [NETWORK_temp.bin] OR you can use argument to runs a complete simulation via self.api.en_epane
-| saveHydraulicFile                 |Saves the current contents of the binary hydraulics file to a file
-| saveHydraulicsOutputReportingFile |Transfers results of a hydraulic simulation from the binary Hydraulics file to the binary Output file, where results are only reported at uniform reporting intervals
-| saveInputFile                     |Writes all current network input data to a file using the format of an EPANET input file
-| setCMDCODE                        |Sets the CMC code|
-| setControls                       |Sets the parameters of a simple control statement
-| setCurve                          |Sets x, y values for a specific curve
-| setCurveComment                   |Sets the comment string of a curve
-| setCurveNameID                    |Sets the name ID of a curve given it's index and the new ID
-| setCurveValue                     |Sets x, y point for a specific point number and curve
-| setDemandModel                    |Sets the type of demand model to use and its parameters
-| setFlowUnitsAFD                   |Sets flow units to AFD(Acre-Feet per Day)
-| setFlowUnitsCFS                   |Sets flow units to CFS(Cubic Feet per Second)
-| setFlowUnitsCMD                   |Sets flow units to CMD(Cubic Meters per Day)
-| setFlowUnitsCMH                   |Sets flow units to CMH(Cubic Meters per Hour)
-| setFlowUnitsGPM                   |Sets flow units to GPM(Gallons Per Minute)
-| setFlowUnitsIMGD                  |Sets flow units to IMGD(Imperial Million Gallons per Day)
-| setFlowUnitsLPM                   |Sets flow units to LPM(Liters Per Minute)
-| setFlowUnitsLPS                   |Sets flow units to LPS(Liters Per Second)
-| setFlowUnitsMGD                   |Sets flow units to MGD(Million Gallons per Day)
-| setFlowUnitsMLD                   |Sets flow units to MLD(Million Liters per Day)
-| setLinkBulkReactionCoeff          |Sets the value of bulk chemical reaction coefficient
-| setLinkComment                    |Sets the comment string assigned to the link object
-| setLinkDiameter                   |Sets the values of diameters
-| setLinkInitialSetting             |Sets the values of initial settings, roughness for pipes or initial speed for pumps or initial setting for valves
-| setLinkInitialStatus              |Sets the values of initial status
-| setLinkLength                     |Sets the values of lengths
-| setLinkMinorLossCoeff             |Sets the values of minor loss coefficient
-| setLinkNameID                     |Sets the ID name for links
-| setLinkNodesIndex                 |Sets the indexes of a link's start- and end-nodes
-| setLinkPipeData                   |Sets a group of properties for a pipe
-| setLinkPumpECost                  |Sets the pump average energy price
-| setLinkPumpECurve                 |Sets the pump efficiency v
-| setLinkPumpEPat                   |Sets the pump energy price time pattern index
-| setLinkPumpHCurve                 |Sets the pump head v
-| setLinkPumpHeadCurveIndex         |Sets the curves index for pumps index|
-| setLinkPumpPatternIndex           |Sets the pump speed time pattern index
-| setLinkPumpPower                  |Sets the power for pumps
-| setLinkRoughnessCoeff             |Sets the values of roughness coefficient
-| setLinkSettings                   |Sets the values of current settings, roughness for pipes or initial speed for pumps or initial setting for valves
-| setLinkStatus                     |Sets the values of current status for links
-| setLinkTypePipe                   |Sets the link type pipe for a specified link
-| setLinkTypePipeCV                 |Sets the link type cvpipe(pipe with check valve) for a specified link
-| setLinkTypePump                   |Sets the link type pump for a specified link
-| setLinkTypeValveFCV               |Sets the link type valve FCV(flow control valve) for a specified link
-| setLinkTypeValveGPV               |Sets the link type valve GPV(general purpose valve) for a specified link
-| setLinkTypeValvePBV               |Sets the link type valve PBV(pressure breaker valve) for a specified link
-| setLinkTypeValvePRV               |Sets the link type valve PRV(pressure reducing valve) for a specified link
-| setLinkTypeValvePSV               |Sets the link type valve PSV(pressure sustaining valve) for a specified link
-| setLinkTypeValveTCV               |Sets the link type valve TCV(throttle control valve) for a specified link
-| setLinkVertices                   |Assigns a set of internal vertex points to a link
-| setLinkWallReactionCoeff          |Sets the value of wall chemical reaction coefficient
-| setNodeBaseDemands                |Sets the values of demand for nodes
-| setNodeComment                    |Sets the comment string assigned to the node object
-| setNodeCoordinates                |Sets node coordinates
-| setNodeDemandPatternIndex         |Sets the values of demand time pattern indices
-| setNodeElevations                 |Sets the values of elevation for nodes
-| setNodeEmitterCoeff               |Sets the values of emitter coefficient for nodes
-| setNodeInitialQuality             |Sets the values of initial quality for nodes
-| setNodeJunctionData               |Sets a group of properties for a junction node
-| setNodeJunctionDemandName         |Assigns a name to a node's demand category
-| setNodeNameID                     |Sets the ID name for nodes
-| setNodeSourcePatternIndex         |Sets the values of quality source pattern index
-| setNodeSourceQuality              |Sets the values of quality source strength
-| setNodeSourceType                 |Sets the values of quality source type
-| setNodeTankBulkReactionCoeff      |Sets the tank bulk reaction coefficient
-| setNodeTankCanOverFlow            |Sets the tank can-overflow (= 1) or not (= 0)
-| setNodeTankData                   |Sets a group of properties for a tank
-| setNodeTankDiameter               |Sets the diameter value for tanks
-| setNodeTankInitialLevel           |Sets the values of initial level for tanks
-| setNodeTankMaximumWaterLevel      |Sets the maximum water level value for tanks
-| setNodeTankMinimumWaterLevel      |Sets the minimum water level value for tanks
-| setNodeTankMinimumWaterVolume     |Sets the minimum water volume value for tanks
-| setNodeTankMixingFraction         |Sets the tank mixing fraction of total volume occupied by the inlet/outlet zone in a 2-compartment tank
-| setNodeTankMixingModelType        |Sets the mixing model type value for tanks
-| setNodeTypeJunction               |Transforms a node to JUNCTION The new node keeps the id,coordinates and elevation of the deleted on
-| setNodeTypeReservoir              |Transforms a node to RESERVOIR The new node keeps the id,coordinates and elevation of the deleted on
-| setNodeTypeTank                   |Transforms a node to TANK The new node keeps the id,coordinates and elevation of the deleted on
-| setNodesConnectingLinksID         |Sets the IDs of a link's start- and end-nodes
-| setOptionsAccuracyValue           |Sets the total normalized flow change for hydraulic convergence
-| setOptionsCheckFrequency          |Sets the frequency of hydraulic status checks
-| setOptionsDampLimit               |Sets the accuracy level where solution damping begins
-| setOptionsDemandCharge            |Sets the energy charge per maximum KW usage
-| setOptionsEmitterExponent         |Sets the power exponent for the emmitters
-| setOptionsExtraTrials             |Sets the extra trials allowed if hydraulics don't converge
-| setOptionsFlowChange              |Sets the maximum flow change for hydraulic convergence
-| setOptionsGlobalEffic             |Sets the global efficiency for pumps(percent)
-| setOptionsGlobalPattern           |Sets the global energy price pattern
-| setOptionsGlobalPrice             |Sets the global average energy price per kW-Hour
-| setOptionsHeadError               |Sets the maximum head loss error for hydraulic convergence
-| setOptionsHeadLossFormula         |Sets the headloss formula
-| setOptionsLimitingConcentration   |Sets the limiting concentration for growth reactions
-| setOptionsMaxTrials               |Sets the maximum hydraulic trials allowed for hydraulic convergence
-| setOptionsMaximumCheck            |Sets the maximum trials for status checking
-| setOptionsPatternDemandMultiplier |Sets the global pattern demand multiplier
-| setOptionsPipeBulkReactionOrder   |Sets the bulk water reaction order for pipes
-| setOptionsPipeWallReactionOrder   |Sets the wall reaction order for pipes (either 0 or 1)
-| setOptionsQualityTolerance        |Sets the water quality analysis tolerance
-| setOptionsSpecificDiffusivity     |Sets the specific diffusivity (relative to chlorine at 20 deg C)
-| setOptionsSpecificGravity         |Sets the specific gravity
-| setOptionsSpecificViscosity       |Sets the specific viscosity
-| setOptionsTankBulkReactionOrder   |Sets the bulk water reaction order for tanks
-| setPattern                        |Sets all of the multiplier factors for a specific time pattern
-| setPatternComment                 |Sets the comment string assigned to the pattern object
-| setPatternMatrix                  |Sets all of the multiplier factors for all time patterns
-| setPatternNameID                  |Sets the name ID of a time pattern given it's index and the new ID
-| setPatternValue                   |Sets the multiplier factor for a specific period within a time pattern
-| setQualityType                    |Sets the type of water quality analysis called for
-| setReport                         |Issues a report formatting command
-| setReportFormatReset              |Resets a project's report options to their default values
-| setReportStatus                   |Sets the level of hydraulic status reporting
-| setRuleElseAction                 |Sets rule - based control else actions
-| setRulePremise                    |Sets the premise of a rule - based control
-| setRulePremiseObejctNameID        |Sets the ID of an object in a premise of a rule-based control
-| setRulePremiseStatus              |Sets the status being compared to in a premise of a rule-based control
-| setRulePremiseValue               |Sets the value being compared to in a premise of a rule-based control
-| setRulePriority                   |Sets rule - based control priority
-| setRuleThenAction                 |Sets rule - based control then actions
-| setRules                          |Sets a rule - based control
-| setTimeHydraulicStep              |Sets the hydraulic time step
-| setTimePatternStart               |Sets the time when time patterns begin
-| setTimePatternStep                |Sets the time pattern step
-| setTimeQualityStep                |Sets the quality time step
-| setTimeReportingStart             |Sets the time when reporting starts
-| setTimeReportingStep              |Sets the reporting time step
-| setTimeRuleControlStep            |Sets the rule-based control evaluation time step
-| setTimeSimulationDuration         |Sets the simulation duration (in seconds)
-| setTimeStatisticsType             |Sets the statistic type
-| setTitle                          |Sets the title lines of the project
-| solveCompleteHydraulics           |Runs a complete hydraulic simulation with results for all time periods written to the binary Hydraulics file
-| solveCompleteQuality              |Runs a complete water quality simulation with results at uniform reporting intervals written to EPANET's binary Output file
-| splitPipe                         |Splits a pipe, creating two new pipes and adds a junction/node in between
-| stepQualityAnalysisTimeLeft       |Advances the water quality simulation one water quality time step
-| unload                            |unload library and close the EPANET Toolkit system
-| useHydraulicFile                  |Uses the contents of the specified file as the current binary hydraulics file
-| writeLineInReportFile             |Writes a line of text to the EPANET report file
-| writeReport                       |Writes a formatted text report on simulation results to the Report file
-| <b> MSX Functions </b>            
-| loadMSXFile                       |Opens the EPANET-MSX toolkit system|
-| unloadMSX                         |Closes the EPANET-MSX toolkit system|
-| addMSXPattern                     |Adds a new, empty MSX source time pattern to the project|
-| writeMSXFile                      |Write a new MSX file|
-| initializeMSXQualityAnalysis      |Initializes the MSX system before solving for water quality results in step-wise fashion|
-| getMethods                        |Returns all methods of epanet|
-| getMSXComputedQualitySpecie       |Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie('CL2'))|
-| getMSXComputedLinkQualitySpecie   |Returns the link quality for specific specie|
-| getMSXComputedNodeQualitySpecie   |Returns the node quality for specific specie|
-| getMSXComputedQualityNode         |Retrieves the concentration of a chemical species at a specific node of the network at the current simulation time step.|
-| stepMSXQualityAnalysisTimeLeft    |Advances the water quality solution through a single water quality time step when performing a step-wise simulation|
-| saveMSXFile                       |Saves the data associated with the current MSX project into a new MSX input file|
-| saveMSXQualityFile                |Saves water quality results computed for each node, link and reporting time period to a named binary file|
-| plotMSXSpeciesLinkConcentration   |Plots concentration of species for links over time.
-| plotMSXSpeciesNodeConcentration   |Plots concentration of species for nodes over time.
-| getMSXSourcePatternIndex          |Retrieves the value of all node source pattern index|
-| getMSXLinkInitqualValue           |Retrieves the initial concentration of chemical species assigned to links of the pipe network|
-| getMSXNodeInitqualValue           |Retrieves the initial concentration of chemical species assigned to nodes|
-| getMSXSourceLevel                 |Retrieves the value of all nodes source level|
-| getMSXSourceType                  |Retrieves the value of all node source type|
-| getMSXSourceNodeNameID            |Retrieves the ID label of all nodes|
-| getMSXSpeciesCount                |Retrieves the number of species|
-| getMSXSpeciesNameID               |Retrieves the species IDs|
-| getMSXSpeciesIndex                |Retrieves the indices of species|
-| getMSXSpeciesType                 |Retrieves the type of all species (BULK/WALL)|
-| getMSXSpeciesUnits                |Retrieves the species mass units|
-| getMSXSpeciesATOL                 |Retrieves the atol|
-| getMSXSpeciesRTOL                 |Retrieves the rtol|
-| getMSXSpeciesConcentration        |Retrieves the concentration of chemical species for nodes and links|
-| getMSXConstantsCount              |Retrieves the number of constants|
-| getMSXConstantsNameID             |Retrieves the ID name of constants (given its internal index number)|
-| getMSXConstantsIndex              |Retrieves the internal index number of constants (given its ID name)|
-| getMSXPattern                     |Retrieves the multiplier factor for all patterns and all times|
-| getMSXPatternsCount               |Retrieves the number of patterns|
-| getMSXPatternValue                |Retrieves the multiplier at a specific time period for a given source time pattern|
-| getMSXPatternsNameID              |Retrieves the patterns IDs|
-| getMSXPatternsIndex               |Retrieves the indices of patterns|
-| getMSXPatternsLengths             |Retrieves the number of time periods in all or some patterns|
-| getMSXParametersCount             |Retrieves the number of parameters|
-| getMSXParametersNameID            |Retrieves the ID name of parameters|
-| getMSXParametersIndex             |Retrieves the indices of parameters|
-| getMSXParametersPipesValue        |Retrieves the value of reaction parameters for pipes|
-| getMSXParametersTanksValue        |Retrieves the value of reaction parameters for tanks|
-| solveMSXCompleteHydraulics        |Solves for system hydraulics over the entire simulation period saving results to an internal scratch file|
-| solveMSXCompleteQuality           |Solves for water quality over the entire simulation period and saves the results to an internal scratch file|
-| getMSXError                       |Returns the text for an error message given its error code|
-| getMSXOptions                     |Retrieves all the msx option parameters|
-| getMSXTimeStep                    |Retrieves the time step|
-| getMSXRateUnits                   |Retrieves the rate/time units (SEC/MIN/HR/DAY)|
-| getMSXAreaUnits                   |Retrieves the area units (FT2/M2/CM2)|
-| getMSXCompiler                    |Retrieves the compiler (NONE/VC/GC)|
-| getMSXCoupling                    |Retrieves the coupling (FULL/NONE)|
-| getMSXAtol                        |Retrieves the absolute concentration tolerance|
-| getMSXRtol                        |Retrieves the relative concentration tolerance|
-| getMSXComputedQualityLink         |Returns the computed quality for links.|
-| getMSXConstantsValue              |Retrieves the constant's value.|
-| getMSXSolver                      |Retrieves the solver method.|
-| getMSXSources                     |Retrieves Msx sources|
-| getMSXComputedQualitySpecie       |Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie(['CL2']))|
-| getMSXEquationsPipes              |Retrieves the species dynamics in pipes|
-| getMSXEquationsTanks              |Retrieves the species dynamics in tanks|
-| getMSXEquationsTerms              |Retrieves the species dynamics in terms|
-| setMSXAreaUnitsCM2                |Sets area units to CM2|
-| setMSXAreaUnitsFT2                |Sets area units to FT2|
-| setMSXAreaUnitsM2                 |Sets area units to M2|
-| setMSXAtol                        |Sets the value of Atol|
-| setMSXRtol                        |Sets the value of Rtol|
-| setMSXCompilerGC                  |Sets compilet to GC|
-| setMSXCompilerNONE                |Sets compiler to None|
-| setMSXCompilerVC                  |Sets compiler to VC|
-| setMSXCouplingFULL                |Sets coupling option to FULL|
-| setMSXCouplingNONE                |Sets coupling option to NONE|
-| setMSXRateUnitsDAY                |Sets rate units to DAY|
-| setMSXRateUnitsHR                 |Sets rate units to HR|
-| setMSXRateUnitsMIN                |Sets rate units to MIN|
-| setMSXRateUnitsSEC                |Sets rate units to SEC|
-| setMSXSolverEUL                   |Sets solver to EUL (standard Euler integrator)|
-| setMSXSolverRK5                   |Sets solver to RK5 (Runge-Kutta 5th order integrator)|
-| setMSXSolverROS2                  |Sets solver to ROS2 (2nd order Rosenbrock integrator)|
-| setMSXTimeStep                    |Sets time step|
-| setMSXPatternValue                |Assigns a new value to the multiplier for a specific time period in a given MSX source time pattern|
-| setMSXPattern                     |Sets all of the multiplier factors for a specific time pattern|
-| setMSXPatternMatrix               |Sets the multiplier factors for all patterns|
-| setMSXParametersPipesValue        |Assigns a value to a particular reaction parameter for given pipes|
-| setMSXParametersTanksValue        |Assigns a value to a particular reaction parameter for given tanks|
-| setMSXConstantsValue              |Assigns a new value to a specific reaction constant|
-| setMSXLinkInitqualValue           |Assigns an initial concentration of chemical species to links|
-| setMSXNodeInitqualValue           |Assigns an initial concentration of chemical species to nodes|
-| setMSXSources                     |Sets the attributes of an external source of a particular chemical species to a specific node of the pipe network|
-| useMSXHydraulicFile               |Uses a previously saved EPANET hydraulics file as the source of hydraulic information|
+|-------------------------------------|---------------------------|
+| addControls                         | Adds a new simple control |
+| addCurve                            | Adds a new curve appended to the end of the existing curves |
+| addLinkPipe                         | Adds a new pipe |
+| addLinkPipeCV                       | Adds a new control valve pipe |
+| addLinkPump                         | Adds a new pump |
+| addLinkValveFCV                     | Adds a new FCV valve |
+| addLinkValveGPV                     | Adds a new GPV valve |
+| addLinkValvePBV                     | Adds a new PBV valve |
+| addLinkValvePCV                     | Adds a new PCV valve and returns the index of the new PCV valve |
+| addLinkValvePRV                     | Adds a new PRV valve |
+| addLinkValvePSV                     | Adds a new PSV valve |
+| addLinkValveTCV                     | Adds a new TCV valve |
+| addNodeJunction                     | Adds a new junction |
+| addNodeJunctionDemand               | Adds a new demand to a junction given the junction index, base demand, demand time pattern and demand category name |
+| addNodeReservoir                    | Adds a new reservoir |
+| addNodeTank                         | Adds a new tank |
+| addPattern                          | Adds a new time pattern to the network |
+| addRules                            | Adds a new rule-based control to a project |
+| appRotateNetwork                    | Rotates the network by theta degrees counter-clockwise |
+| appShiftNetwork                     | Shifts the network |
+| clearReport                         | Clears the contents of a project's report file |
+| closeHydraulicAnalysis              | Closes the hydraulic analysis system, freeing all allocated memory |
+| closeNetwork                        | Closes down the Toolkit system |
+| closeQualityAnalysis                | Closes the water quality analysis system, freeing all allocated memory |
+| copyReport                          | Copies the current contents of a project's report file to another file |
+| createProject                       | Creates a new epanet projec |
+| deleteAllTemps                      | Delete all temporary files (.inp, .bin) created in networks folder |
+| deleteControls                      | Deletes an existing simple control |
+| deleteCurve                         | Deletes a data curve from a project |
+| deleteLink                          | Deletes a link |
+| deleteNode                          | Deletes nodes |
+| deleteNodeJunctionDemand            | Deletes a demand from a junction given the junction index and demand index.
+| deletePattern                       | Deletes a time pattern from a project |
+| deletePatternsAll                   | Deletes all time patterns from a project |
+| deleteProject                       | Deletes the epanet project |
+| deleteRules                         | Deletes an existing rule-based control given it's index |
+| getAdjacencyMatrix                  | Compute the adjacency matrix (connectivity graph) considering the flows, using mean flow |
+| getAllAttributes                    | Get all attributes of a given Python object |
+| getCMDCODE                          | Retrieves the CMC code |
+| getComputedHydraulicTimeSeries      | Computes hydraulic simulation and retrieves all time-series |
+| getComputedQualityTimeSeries        | Computes Quality simulation and retrieves all or some time-series |
+| getComputedTimeSeries               | Run analysis with binary fil |
+| getConnectivityMatrix               | Retrieve the Connectivity Matrix of the networ |
+| getConsumerDemandDelivered          | Retrieves the delivered consumer demand for a specific node |
+| getConsumerDemandRequested          | Retrieves the requested consumer demand for a specific node |
+| getControlCount                     | Retrieves the number of controls => will replace getControlRulesCount |
+| getControlRulesCount                | Retrieves the number of controls |
+| getControlState                     | Retrieves the enabled state of a specified control in the EPANET model |
+| getControls                         | Retrieves the parameters of all control statements |
+| getCounts                           | Retrieves the number of network components |
+| getCurveComment                     | Retrieves the comment string of a curve |
+| getCurveCount                       | Retrieves the number of curves |
+| getCurveIndex                       | Retrieves the index of a curve with specific ID |
+| getCurveLengths                     | Retrieves number of points in a curve |
+| getCurveNameID                      | Retrieves the IDs of curves |
+| getCurveType                        | Retrieves the curve-type for all curves |
+| getCurveTypeIndex                   | Retrieves the curve-type index for all curves |
+| getCurveValue                       | Retrieves the X, Y values of points of curves |
+| getCurvesInfo                       | Retrieves all the info of curves |
+| getDemandModel                      | Retrieves the type of demand model in use and its parameters |
+| getENfunctionsImpemented            | Retrieves the epanet functions that have been developed |
+| getError                            | Retrieves the text of the message associated with a particular error or warning code |
+| getFlowUnits                        | Retrieves flow units used to express all flow rates |
+| getLibFunctions                     | Retrieves the functions of DLL |
+| getLinkActualQuality                | Retrieves the current computed link quality (read only) |
+| getLinkBulkReactionCoeff            | Retrieves the value of all link bulk chemical reaction coefficient |
+| getLinkComment                      | Retrieves the comment string assigned to the link object |
+| getLinkCount                        | Retrieves the number of links |
+| getLinkDiameter                     | Retrieves the value of link diameters |
+| getLinkEnergy                       | Retrieves the current computed pump energy usage (read only) |
+| getLinkExpansionProperties          | Retrieves the expansion properties for a specified link (pipe) |
+| getLinkFlows                        | Retrieves the current computed flow rate (read only) |
+| getLinkHeadloss                     | Retrieves the current computed head loss (read only) |
+| getLinkInControl                    | Function to determine wether a link apperas in any simple or rule based control |
+| getLinkIndex                        | Retrieves the indices of all links, or the indices of an ID set of links |
+| getLinkInitialSetting               | Retrieves the value of all link roughness for pipes or initial speed for pumps or initial setting for valves |
+| getLinkInitialStatus                | Retrieves the value of all link initial status |
+| getLinkLeakArea                     | Function to retrieve the leak area for a specified link (pipe) |
+| getLinkLeakageRate                  | Retrieves the leakage rate of a specific pipe (link) at a given point in time |
+| getLinkLength                       | Retrieves the value of link lengths |
+| getLinkMinorLossCoeff               | Retrieves the value of link minor loss coefficients |
+| getLinkNameID                       | Retrieves the ID label(s) of all links, or the IDs of an index set of links |
+| getLinkNodesIndex                   | Retrieves the indexes of the from/to nodes of all links |
+| getLinkPipeCount                    | Retrieves the number of pipes |
+| getLinkPipeIndex                    | Retrieves the pipe indices |
+| getLinkPipeNameID                   | Retrieves the pipe ID |
+| getLinkPumpCount                    | Retrieves the number of pumps |
+| getLinkPumpECost                    | Retrieves the pump average energy price |
+| getLinkPumpECurve                   | Retrieves the pump efficiency v |
+| getLinkPumpEPat                     | Retrieves the pump energy price time pattern index |
+| getLinkPumpEfficiency               | Retrieves the current computed pump efficiency (read only) |
+| getLinkPumpHCurve                   | Retrieves the pump head v |
+| getLinkPumpHeadCurveIndex           | Retrieves the index of a head curve for all pumps |
+| getLinkPumpIndex                    | Retrieves the pump indices |
+| getLinkPumpNameID                   | Retrieves the pump ID |
+| getLinkPumpPatternIndex             | Retrieves the pump speed time pattern index |
+| getLinkPumpPatternNameID            | Retrieves pump pattern name ID |
+| getLinkPumpPower                    | Retrieves the pump constant power rating (read only) |
+| getLinkPumpState                    | Retrieves the current computed pump state (read only) (see @ref EN_PumpStateType) |
+| getLinkPumpSwitches                 | Retrieves the number of pump switches |
+| getLinkPumpType                     | Retrieves the type of a pump |
+| getLinkPumpTypeCode                 | Retrieves the code of type of a pump |
+| getLinkQuality                      | Retrieves the value of link quality |
+| getLinkResultIndex                  | Retrieves the order in which a link's results were saved to an output file |
+| getLinkRoughnessCoeff               | Retrieves the value of link roughness coefficient |
+| getLinkSettings                     | Retrieves the current computed value of all link roughness for pipes or actual speed for pumps or actual setting for valves |
+| getLinkStatus                       | Retrieves the current link status (see @ref EN_LinkStatusType) (0 = closed, 1 = open) |
+| getLinkType                         | Retrieves the link-type code for all links |
+| getLinkTypeIndex                    | Retrieves the link-type code for all links |
+| getLinkValues                       | Retrieves property values for all links within the EPANET model during a hydraulic analysis |
+| getLinkValveCount                   | Retrieves the number of valves |
+| getLinkValveCurveGPV                | Retrieves the valve curve for a specified general purpose valve (GPV) |
+| getLinkValveCurvePCV                | Retrieves the valve curve for a specified pressure control valve (PCV) |
+| getLinkValveIndex                   | Retrieves the valve indices |
+| getLinkValveNameID                  | Retrieves the valve ID |
+| getLinkVelocity                     | Retrieves the current computed flow velocity (read only) |
+| getLinkVertices                     | Retrieves the coordinate's of a vertex point assigned to a link |
+| getLinkVerticesCount                | Retrieves the number of internal vertex points assigned to a link |
+| getLinkWallReactionCoeff            | Retrieves the value of all pipe wall chemical reaction coefficient |
+| getLinksInfo                        | Retrieves all link info |
+| getNetworksDatabase                 | Retrieves all EPANET Input Files from EPyT database |
+| getNodeActualDemand                 | Retrieves the computed value of all node actual demands |
+| getNodeActualDemandSensingNodes     | Retrieves the computed demand values at some sensing nodes |
+| getNodeActualQuality                | Retrieves the computed values of the actual quality for all nodes |
+| getNodeActualQualitySensingNodes    | Retrieves the computed quality values at some sensing node |
+| getNodeBaseDemands                  | Retrieves the value of all node base demands |
+| getNodeComment                      | Retrieves the comment string assigned to the node object |
+| getNodeCount                        | Retrieves the number of nodes |
+| getNodeDemandCategoriesNumber       | Retrieves the value of all node base demands categorie number |
+| getNodeDemandDeficit                | Retrieves the amount that full demand is reduced under PDA |
+| getNodeDemandPatternIndex           | Retrieves the value of all node base demands pattern index |
+| getNodeDemandPatternNameID          | Retrieves the value of all node base demands pattern name ID |
+| getNodeElevations                   | Retrieves the value of all node elevations |
+| getNodeEmitterCoeff                 | Retrieves the value of all node emmitter coefficients |
+| getNodeEmitterFlow                  | Retrieves node emmiter flow |
+| getNodeHydraulicHead                | Retrieves the computed values of all node hydraulic heads |
+| getNodeInControl                    | Function to determine wether a node apperas in any simple or rule based control |
+| getNodeIndex                        | Retrieves the indices of all nodes or some nodes with a specified ID |
+| getNodeInitialQuality               | Retrieves the value of all node initial quality |
+| getNodeJunctionCount                | Retrieves the number of junction nodes |
+| getNodeJunctionDemandIndex          | Retrieves the demand index of the junctions |
+| getNodeJunctionDemandName           | Gets the name of a node's demand category |
+| getNodeJunctionIndex                | Retrieves the indices of junctions |
+| getNodeJunctionNameID               | Retrieves the junction ID label |
+| getNodeLeakageFlow                  | Retrieves the leakage flow for a specific node |
+| getNodeMassFlowRate                 | Retrieves the computed mass flow rates per minute of chemical sources for all nodes |
+| getNodeNameID                       | Retrieves the ID label of all nodes or some nodes with a specified index |
+| getNodePatternIndex                 | Retrieves the value of all node demand pattern indices |
+| getNodePressure                     | Retrieves the computed values of all node pressures |
+| getNodeReservoirCount               | Retrieves the number of Reservoirs |
+| getNodeReservoirIndex               | Retrieves the indices of reservoirs |
+| getNodeReservoirNameID              | Retrieves the reservoir ID label |
+| getNodeResultIndex                  | Retrieves the order in which a node's results were saved to an output file |
+| getNodeSourcePatternIndex           | Retrieves the value of all node source pattern index |
+| getNodeSourceQuality                | Retrieves the value of all node source quality |
+| getNodeSourceType                   | Retrieves the value of all node source type |
+| getNodeSourceTypeIndex              | Retrieves the value of all node source type index |
+| getNodeTankBulkReactionCoeff        | Retrieves the tank bulk rate coefficient |
+| getNodeTankCanOverFlow              | Retrieves the tank can overflow (= 1) or not (= 0) |
+| getNodeTankCount                    | Retrieves the number of Tanks |
+| getNodeTankData                     | Retrieves a group of properties for a tank |
+| getNodeTankDiameter                 | Retrieves the tank diameters |
+| getNodeTankIndex                    | Retrieves the tank indices |
+| getNodeTankInitialLevel             | Retrieves the value of all tank initial water levels |
+| getNodeTankInitialWaterVolume       | Retrieves the tank initial water volume |
+| getNodeTankMaximumWaterLevel        | Retrieves the tank maximum water level |
+| getNodeTankMaximumWaterVolume       | Retrieves the tank maximum water volume |
+| getNodeTankMinimumWaterLevel        | Retrieves the tank minimum water level |
+| getNodeTankMinimumWaterVolume       | Retrieves the tank minimum water volume |
+| getNodeTankMixZoneVolume            | Retrieves the tank mixing zone volume |
+| getNodeTankMixingFraction           | Retrieves the tank Fraction of total volume occupied by the inlet/outlet zone in a 2-compartment tank |
+| getNodeTankMixingModelCode          | Retrieves the tank mixing model code |
+| getNodeTankMixingModelType          | Retrieves the tank mixing model type |
+| getNodeTankNameID                   | Retrieves the tank IDs |
+| getNodeTankReservoirCount           | Retrieves the number of tanks |
+| getNodeTankVolume                   | Retrieves the tank volume |
+| getNodeTankVolumeCurveIndex         | Retrieves the tank volume curve index |
+| getNodeType                         | Retrieves the node-type code for all nodes |
+| getNodeTypeIndex                    | Retrieves the node-type code for all nodes |
+| getNodesConnectingLinksID           | Retrieves the id of the from/to nodes of all links |
+| getNodesConnectingLinksIndex        | Retrieves the indexes of the from/to nodes of all links |
+| getNodesInfo                        | Retrieves nodes info (elevations, demand patterns, emmitter coeff, initial quality, source quality, source pattern index, source type index, node type index) |
+| getOptionsAccuracyValue             | Retrieves the total normalized flow change for hydraulic convergence |
+| getOptionsCheckFrequency            | Retrieves the frequency of hydraulic status checks |
+| getOptionsDampLimit                 | Retrieves the accuracy level where solution damping begins |
+| getOptionsDemandCharge              | Retrieves the energy charge per maximum KW usage |
+| getOptionsDemandPattern             | Retrieves the default Demand pattern |
+| getOptionsEmitterBackFlow           | Retrieves the current setting for allowing reverse flow through emitters |
+| getOptionsEmitterExponent           | Retrieves the power exponent for the emmitters |
+| getOptionsExtraTrials               | Retrieves the extra trials allowed if hydraulics don't converge |
+| getOptionsFlowChange                | Retrieves the maximum flow change for hydraulic convergence |
+| getOptionsGlobalEffic               | Retrieves the global efficiency for pumps(percent) |
+| getOptionsGlobalPattern             | Retrieves the index of the global energy price pattern |
+| getOptionsGlobalPrice               | Retrieves the global average energy price per kW-Hour |
+| getOptionsHeadError                 | Retrieves the maximum head loss error for hydraulic convergence |
+| getOptionsHeadLossFormula           | Retrieves the headloss formula |
+| getOptionsLimitingConcentration     | Retrieves the limiting concentration for growth reactions |
+| getOptionsMaxTrials                 | Retrieves the maximum hydraulic trials allowed for hydraulic convergence |
+| getOptionsMaximumCheck              | Retrieves the maximum trials for status checking |
+| getOptionsPatternDemandMultiplier   | Retrieves the global pattern demand multiplier |
+| getOptionsPipeBulkReactionOrder     | Retrieves the bulk water reaction order for pipes |
+| getOptionsPipeWallReactionOrder     | Retrieves the wall reaction order for pipes (either 0 or 1) |
+| getOptionsPressureUnits             | get the pressure unit used in Epanet |
+| getOptionsQualityTolerance          | Retrieves the water quality analysis tolerance |
+| getOptionsSpecificDiffusivity       | Retrieves the specific diffusivity (relative to chlorine at 20 deg C) |
+| getOptionsSpecificGravity           | Retrieves the specific gravity |
+| getOptionsSpecificViscosity         | Retrieves the specific viscosity |
+| getOptionsStatusReport              | get the type of the status report(full/no/normal) |
+| getOptionsTankBulkReactionOrder     | Retrieves the bulk water reaction order for tanks |
+| getPattern                          | Retrieves the multiplier factor for all patterns and all times |
+| getPatternAverageDefaultValue       | Retrieves the average value of the default pattern |
+| getPatternAverageValue              | Retrieves the average values of all the time patterns |
+| getPatternComment                   | Retrieves the comment string assigned to the pattern object |
+| getPatternCount                     | Retrieves the number of patterns |
+| getPatternIndex                     | Retrieves the index of all or some time patterns given their IDs |
+| getPatternLengths                   | Retrieves the number of time periods in all or some time patterns |
+| getPatternNameID                    | Retrieves the ID label of all or some time patterns indices |
+| getPatternValue                     | Retrieves the multiplier factor for a certain pattern and time |
+| getQualityCode                      | Retrieves the code of water quality analysis type |
+| getQualityInfo                      | Retrieves quality analysis information (type, chemical name, units, trace node ID) |
+| getQualityTraceNodeIndex            | Retrieves the trace node index of water quality analysis type |
+| getQualityType                      | Retrieves the type of water quality analysis type |
+| getRuleCount                        | Retrieves the number of rules |
+| getRuleEnabled                      | Retrieves the enabled state of a specific rule in the EPANET model |
+| getRuleID                           | Retrieves the ID name of a rule-based control given its index |
+| getRuleInfo                         | Retrieves summary information about a rule-based control given it's index |
+| getRules                            | Retrieves the rule - based control statements |
+| getStatistic                        | Returns error code |
+| getStatisticDeficientNodes          | Retrieves the number of deficient nodes in the simulation |
+| getStatisticDemandReduction         | Retrieves the demand reduction statistic from the simulation |
+| getStatisticIterations              | Retrieves the number of iterations taken in the simulation |
+| getStatisticRelativeError           | Retrieves the relative error statistic from the simulation |
+| getStatisticTotalLeakageLoss        | Retrieves the total leakage loss statistic from the simulation. |
+| getTimeHTime                        | Retrieves the elapsed time of current hydraulic solution |
+| getTimeHaltFlag                     | Retrieves the number of halt flag indicating if the simulation was halted |
+| getTimeHydraulicStep                | Retrieves the value of the hydraulic time step |
+| getTimeNextEvent                    | Retrieves the shortest time until a tank becomes empty or full |
+| getTimeNextEventTank                | Retrieves the index of tank with shortest time to become empty or full |
+| getTimePatternStart                 | Retrieves the value of pattern start time |
+| getTimePatternStep                  | Retrieves the value of the pattern time step |
+| getTimeQTime                        | Retrieves the elapsed time of current quality solution |
+| getTimeQualityStep                  | Retrieves the value of the water quality time step |
+| getTimeReportingPeriods             | Retrieves the number of reporting periods saved to the binary |
+| getTimeReportingStart               | Retrieves the value of the reporting start time |
+| getTimeReportingStep                | Retrieves the value of the reporting time step |
+| getTimeRuleControlStep              | Retrieves the time step for evaluating rule-based controls |
+| getTimeSimulationDuration           | Retrieves the value of simulation duration |
+| getTimeStartClockStartTime          | Retrieves the simulation starting time of day |
+| getTimeStartTime                    | Retrieves the simulation starting time of day |
+| getTimeStatisticsIndex              | Retrieves the index of the type of time series post-processing |
+| getTimeStatisticsType               | Retrieves the type of time series post-processing |
+| getTimetoNextEvent                  | Determines the type of event that will cause the end of the current time step/duration/index |
+| getTitle                            | Retrieves the title lines of the project |
+| getUnits                            | Retrieves the Units of Measurement |
+| getVersion                          | Retrieves the current EPANET version of DLL |
+| initializeEPANET                    | Initializes an EPANET project that isn't opened with an input fil |
+| initializeHydraulicAnalysis         | Initializes storage tank levels, link status and settings, and the simulation clock time prior to running a hydraulic analysis |
+| initializeQualityAnalysis           | Initializes water quality and the simulation clock time prior to running a water quality analysis |
+| loadEPANETFile                      | Load epanet file when use bin functions |
+| loadMSXEPANETFile                   | Re-Load EPANET MSX file - parfor |
+| loadPatternFile                     | loads time patterns from a file into a project under a specific pattern ID |
+| nextHydraulicAnalysisStep           | Determines the length of time until the next hydraulic event occurs in an extended period simulation |
+| nextQualityAnalysisStep             | Advances the water quality simulation to the start of the next hydraulic time period |
+| openAnyInp                          | Open as on matlab editor any EPANET input file using built function open |
+| openCurrentInp                      | Opens EPANET input file who is loade |
+| openHydraulicAnalysis               | Opens the hydraulics analysis system |
+| openQualityAnalysis                 | Opens the water quality analysis system |
+| openX                               | enable the opening of input files with formatting errors |
+| plot                                | Plot Network, show all components, plot pressure/flow/elevation |
+| plot_close                          | Close all open figures |
+| plot_save                           | Save plot |
+| plot_show                           | Show plot |
+| reloadNetwork                       | Reloads the Network (ENopen) |
+| runEPANETexe                        | Runs epanet .exe file |
+| runHydraulicAnalysis                | Runs a single period hydraulic analysis, retrieving the current simulation clock time t |
+| runQualityAnalysis                  | Makes available the hydraulic and water quality results that occur at the start of the next time period of a water quality analysis, where the start of the period is returned in t |
+| runsCompleteSimulation              | Runs a complete hydraulic and water simulation to create binary & report files with name: [NETWORK_temp.txt], [NETWORK_temp.bin] OR you can use argument to runs a complete simulation via self.api.en_epane |
+| saveHydraulicFile                   | Saves the current contents of the binary hydraulics file to a file |
+| saveHydraulicsOutputReportingFile   | Transfers results of a hydraulic simulation from the binary Hydraulics file to the binary Output file, where results are only reported at uniform reporting intervals |
+| saveInputFile                       | Writes all current network input data to a file using the format of an EPANET input file |
+| setCMDCODE                          | Sets the CMC code |
+| setControlEnabled                   | Sets the control state to either enable or disable in the EPANET model |
+| setControls                         | Sets the parameters of a simple control statement |
+| setCurve                            | Sets x, y values for a specific curve |
+| setCurveComment                     | Sets the comment string of a curve |
+| setCurveNameID                      | Sets the name ID of a curve given it's index and the new ID |
+| setCurveType                        | Sets the type of a specified curve in the EPANET model |
+| setCurveTypeEfficiency              | Sets the type of curve to Efficiency in the EPANET model |
+| setCurveTypeGeneral                 | Sets the type of a curve to general in the EPANET model |
+| setCurveTypeHeadloss                | Sets the type of a curve to Headloss in the EPANET model |
+| setCurveTypePump                    | Sets the type of a curve to Pump in the EPANET model |
+| setCurveTypeValveCurve              | Sets the type of a curve to Valve in the EPANET model |
+| setCurveTypeVolume                  | Sets the type of a curve to Volume in the EPANET model |
+| setCurveValue                       | Sets x, y point for a specific point number and curve |
+| setDemandModel                      | Sets the type of demand model to use and its parameters |
+| setFlowUnitsAFD                     | Sets flow units to AFD(Acre-Feet per Day) |
+| setFlowUnitsCFS                     | Sets flow units to CFS(Cubic Feet per Second) |
+| setFlowUnitsCMD                     | Sets flow units to CMD(Cubic Meters per Day) |
+| setFlowUnitsCMH                     | Sets flow units to CMH(Cubic Meters per Hour) |
+| setFlowUnitsCMS                     | Sets flow units to CMS(Cubic Meters per Second) |
+| setFlowUnitsGPM                     | Sets flow units to GPM(Gallons Per Minute) |
+| setFlowUnitsIMGD                    | Sets flow units to IMGD(Imperial Million Gallons per Day) |
+| setFlowUnitsLPM                     | Sets flow units to LPM(Liters Per Minute) |
+| setFlowUnitsLPS                     | Sets flow units to LPS(Liters Per Second) |
+| setFlowUnitsMGD                     | Sets flow units to MGD(Million Gallons per Day) |
+| setFlowUnitsMLD                     | Sets flow units to MLD(Million Liters per Day) |
+| setLinkBulkReactionCoeff            | Sets the value of bulk chemical reaction coefficient |
+| setLinkComment                      | Sets the comment string assigned to the link object |
+| setLinkDiameter                     | Sets the values of diameters |
+| setLinkExpansionProperties          | Sets the expansion properties for a specified link (pipe) |
+| setLinkInitialSetting               | Sets the values of initial settings, roughness for pipes or initial speed for pumps or initial setting for valves |
+| setLinkInitialStatus                | Sets the values of initial status |
+| setLinkLeakArea                     | Sets the leak area for a specified link (pipe) |
+| setLinkLength                       | Sets the values of lengths |
+| setLinkMinorLossCoeff               | Sets the values of minor loss coefficient |
+| setLinkNameID                       | Sets the ID name for links |
+| setLinkNodesIndex                   | Sets the indexes of a link's start- and end-nodes |
+| setLinkPipeData                     | Sets a group of properties for a pipe |
+| setLinkPumpECost                    | Sets the pump average energy price |
+| setLinkPumpECurve                   | Sets the pump efficiency v |
+| setLinkPumpEPat                     | Sets the pump energy price time pattern index |
+| setLinkPumpHCurve                   | Sets the pump head v |
+| setLinkPumpHeadCurveIndex           | Sets the curves index for pumps index |
+| setLinkPumpPatternIndex             | Sets the pump speed time pattern index |
+| setLinkPumpPower                    | Sets the power for pumps |
+| setLinkRoughnessCoeff               | Sets the values of roughness coefficient |
+| setLinkSettings                     | Sets the values of current settings, roughness for pipes or initial speed for pumps or initial setting for valves |
+| setLinkStatus                       | Sets the values of current status for links |
+| setLinkTypePipe                     | Sets the link type pipe for a specified link |
+| setLinkTypePipeCV                   | Sets the link type cvpipe(pipe with check valve) for a specified link |
+| setLinkTypePump                     | Sets the link type pump for a specified link |
+| setLinkTypeValveFCV                 | Sets the link type valve FCV(flow control valve) for a specified link |
+| setLinkTypeValveGPV                 | Sets the link type valve GPV(general purpose valve) for a specified link |
+| setLinkTypeValvePBV                 | Sets the link type valve PBV(pressure breaker valve) for a specified link |
+| setLinkTypeValvePCV                 | Sets the link type valve PCV(Position control valve) for a specified link |
+| setLinkTypeValvePRV                 | Sets the link type valve PRV(pressure reducing valve) for a specified link |
+| setLinkTypeValvePSV                 | Sets the link type valve PSV(pressure sustaining valve) for a specified link |
+| setLinkTypeValveTCV                 | Sets the link type valve TCV(throttle control valve) for a specified link |
+| setLinkValveCurveGPV                | Sets the valve curve for a specified general purpose valve (GPV) |
+| setLinkValveCurvePCV                | Sets the valve curve for a specified pressure control valve (PCV) |
+| setLinkVertices                     | Assigns a set of internal vertex points to a link |
+| setLinkWallReactionCoeff            | Sets the value of wall chemical reaction coefficient |
+| setNodeBaseDemands                  | Sets the values of demand for nodes |
+| setNodeComment                      | Sets the comment string assigned to the node object |
+| setNodeCoordinates                  | Sets node coordinates |
+| setNodeDemandPatternIndex           | Sets the values of demand time pattern indices |
+| setNodeElevations                   | Sets the values of elevation for nodes |
+| setNodeEmitterCoeff                 | Sets the values of emitter coefficient for nodes |
+| setNodeInitialQuality               | Sets the values of initial quality for nodes |
+| setNodeJunctionData                 | Sets a group of properties for a junction node |
+| setNodeJunctionDemandName           | Assigns a name to a node's demand category |
+| setNodeNameID                       | Sets the ID name for nodes |
+| setNodeSourcePatternIndex           | Sets the values of quality source pattern index |
+| setNodeSourceQuality                | Sets the values of quality source strength |
+| setNodeSourceType                   | Sets the values of quality source type |
+| setNodeTankBulkReactionCoeff        | Sets the tank bulk reaction coefficient |
+| setNodeTankCanOverFlow              | Sets the tank can-overflow (= 1) or not (= 0) |
+| setNodeTankData                     | Sets a group of properties for a tank |
+| setNodeTankDiameter                 | Sets the diameter value for tanks |
+| setNodeTankInitialLevel             | Sets the values of initial level for tanks |
+| setNodeTankMaximumWaterLevel        | Sets the maximum water level value for tanks |
+| setNodeTankMinimumWaterLevel        | Sets the minimum water level value for tanks |
+| setNodeTankMinimumWaterVolume       | Sets the minimum water volume value for tanks |
+| setNodeTankMixingFraction           | Sets the tank mixing fraction of total volume occupied by the inlet/outlet zone in a 2-compartment tank |
+| setNodeTankMixingModelType          | Sets the mixing model type value for tanks |
+| setNodeTypeJunction                 | Transforms a node to JUNCTION The new node keeps the id,coordinates and elevation of the deleted on |
+| setNodeTypeReservoir                | Transforms a node to RESERVOIR The new node keeps the id,coordinates and elevation of the deleted on |
+| setNodeTypeTank                     | Transforms a node to TANK The new node keeps the id,coordinates and elevation of the deleted on |
+| setNodesConnectingLinksID           | Sets the IDs of a link's start- and end-nodes |
+| setOptionsAccuracyValue             | Sets the total normalized flow change for hydraulic convergence |
+| setOptionsCheckFrequency            | Sets the frequency of hydraulic status checks |
+| setOptionsDampLimit                 | Sets the accuracy level where solution damping begins |
+| setOptionsDemandCharge              | Sets the energy charge per maximum KW usage |
+| setOptionsDemandPattern             | Retrieves the default Demand pattern |
+| setOptionsEmitterBackFlowAllowed    | Sets the option to allow reverse flow through emitters |
+| setOptionsEmitterBackFlowDisallowed | Sets the option  prevent reverse flow through emitters |
+| setOptionsEmitterExponent           | Sets the power exponent for the emmitters |
+| setOptionsExtraTrials               | Sets the extra trials allowed if hydraulics don't converge |
+| setOptionsFlowChange                | Sets the maximum flow change for hydraulic convergence |
+| setOptionsGlobalEffic               | Sets the global efficiency for pumps(percent) |
+| setOptionsGlobalPattern             | Sets the global energy price pattern |
+| setOptionsGlobalPrice               | Sets the global average energy price per kW-Hour |
+| setOptionsHeadError                 | Sets the maximum head loss error for hydraulic convergence |
+| setOptionsHeadLossFormula           | Sets the headloss formula |
+| setOptionsLimitingConcentration     | Sets the limiting concentration for growth reactions |
+| setOptionsMaxTrials                 | Sets the maximum hydraulic trials allowed for hydraulic convergence |
+| setOptionsMaximumCheck              | Sets the maximum trials for status checking |
+| setOptionsPatternDemandMultiplier   | Sets the global pattern demand multiplier |
+| setOptionsPipeBulkReactionOrder     | Sets the bulk water reaction order for pipes |
+| setOptionsPipeWallReactionOrder     | Sets the wall reaction order for pipes (either 0 or 1) |
+| setOptionsPressureUnits             | Sets the pressure unit used in Epanet |
+| setOptionsPressureUnitsKPA          | Set pressure units to KPA and check if the change is possible |
+| setOptionsPressureUnitsMeters       | Set pressure units to Meters and check if the change is possible |
+| setOptionsPressureUnitsPSI          | Set pressure units to PSI and check if the change is possible |
+| setOptionsQualityTolerance          | Sets the water quality analysis tolerance |
+| setOptionsSpecificDiffusivity       | Sets the specific diffusivity (relative to chlorine at 20 deg C) |
+| setOptionsSpecificGravity           | Sets the specific gravity |
+| setOptionsSpecificViscosity         | Sets the specific viscosity |
+| setOptionsStatusReport              | Sets the status report for epanet |
+| setOptionsStatusReportFull          | set the status report option to full report |
+| setOptionsStatusReportNo            | set the status report option to no Report |
+| setOptionsStatusReportNormal        | set the status report option to normal report |
+| setOptionsTankBulkReactionOrder     | Sets the bulk water reaction order for tanks |
+| setPattern                          | Sets all of the multiplier factors for a specific time pattern |
+| setPatternComment                   | Sets the comment string assigned to the pattern object |
+| setPatternMatrix                    | Sets all of the multiplier factors for all time patterns |
+| setPatternNameID                    | Sets the name ID of a time pattern given it's index and the new ID |
+| setPatternValue                     | Sets the multiplier factor for a specific period within a time pattern |
+| setQualityType                      | Sets the type of water quality analysis called for |
+| setReport                           | Issues a report formatting command |
+| setReportFormatReset                | Resets a project's report options to their default values |
+| setReportStatus                     | Sets the level of hydraulic status reporting |
+| setRuleElseAction                   | Sets rule - based control else actions |
+| setRuleEnabled                      | Enables a specific rule in the EPANET model |
+| setRulePremise                      | Sets the premise of a rule - based control |
+| setRulePremiseObejctNameID          | Sets the ID of an object in a premise of a rule-based control |
+| setRulePremiseStatus                | Sets the status being compared to in a premise of a rule-based control |
+| setRulePremiseValue                 | Sets the value being compared to in a premise of a rule-based control |
+| setRulePriority                     | Sets rule - based control priority |
+| setRuleThenAction                   | Sets rule - based control then actions |
+| setRules                            | Sets a rule - based control |
+| setTimeClockStartTime               | Sets the start time for simulation |
+| setTimeHydraulicStep                | Sets the hydraulic time step |
+| setTimePatternStart                 | Sets the time when time patterns begin |
+| setTimePatternStep                  | Sets the time pattern step |
+| setTimeQualityStep                  | Sets the quality time step |
+| setTimeReportingStart               | Sets the time when reporting starts |
+| setTimeReportingStep                | Sets the reporting time step |
+| setTimeRuleControlStep              | Sets the rule-based control evaluation time step |
+| setTimeSimulationDuration           | Sets the simulation duration (in seconds) |
+| setTimeStatisticsType               | Sets the statistic type |
+| setTitle                            | Sets the title lines of the project |
+| setVertex                           | Sets the coordinates of a vertex point in a link within the EPANET model |
+| solveCompleteHydraulics             | Runs a complete hydraulic simulation with results for all time periods written to the binary Hydraulics file |
+| solveCompleteQuality                | Runs a complete water quality simulation with results at uniform reporting intervals written to EPANET's binary Output file |
+| splitPipe                           | Splits a pipe, creating two new pipes and adds a junction/node in between |
+| stepQualityAnalysisTimeLeft         | Advances the water quality simulation one water quality time step |
+| unload                              | unload library and close the EPANET Toolkit system |
+| useHydraulicFile                    | Uses the contents of the specified file as the current binary hydraulics file |
+| writeLineInReportFile               | Writes a line of text to the EPANET report file |
+| writeReport                         | Writes a formatted text report on simulation results to the Report file |
+## <b> MSX Functions </b>            
+| addMSXPattern                   | Adds a new, empty MSX source time pattern to the project |
+| getMSXAreaUnits                 | Retrieves the area units (FT2/M2/CM2) |
+| getMSXAtol                      | Retrieves the absolute concentration tolerance |
+| getMSXCompiler                  | Retrieves the compiler (NONE/VC/GC) |
+| getMSXComputedLinkQualitySpecie | Returns the link quality for specific specie |
+| getMSXComputedNodeQualitySpecie | Returns the node quality for specific specie |
+| getMSXComputedQualityLink       | Returns the computed quality for links. |
+| getMSXComputedQualityNode       | Retrieves the concentration of a chemical species at a specific node of the network at the current simulation time step. |
+| getMSXComputedQualitySpecie     | Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie('CL2')) |
+| getMSXComputedQualitySpecie     | Retrieves the quality values for specific specie (e.g getMSXComputedQualitySpecie(['CL2'])) |
+| getMSXConstantsCount            | Retrieves the number of constants |
+| getMSXConstantsIndex            | Retrieves the internal index number of constants (given its ID name) |
+| getMSXConstantsNameID           | Retrieves the ID name of constants (given its internal index number) |
+| getMSXConstantsValue            | Retrieves the constant's value. |
+| getMSXCoupling                  | Retrieves the coupling (FULL/NONE) |
+| getMSXEquationsPipes            | Retrieves the species dynamics in pipes |
+| getMSXEquationsTanks            | Retrieves the species dynamics in tanks |
+| getMSXEquationsTerms            | Retrieves the species dynamics in terms |
+| getMSXError                     | Returns the text for an error message given its error code |
+| getMSXLinkInitqualValue         | Retrieves the initial concentration of chemical species assigned to links of the pipe network |
+| getMSXNodeInitqualValue         | Retrieves the initial concentration of chemical species assigned to nodes |
+| getMSXOptions                   | Retrieves all the msx option parameters |
+| getMSXParametersCount           | Retrieves the number of parameters |
+| getMSXParametersIndex           | Retrieves the indices of parameters |
+| getMSXParametersNameID          | Retrieves the ID name of parameters |
+| getMSXParametersPipesValue      | Retrieves the value of reaction parameters for pipes |
+| getMSXParametersTanksValue      | Retrieves the value of reaction parameters for tanks |
+| getMSXPattern                   | Retrieves the multiplier factor for all patterns and all times |
+| getMSXPatternValue              | Retrieves the multiplier at a specific time period for a given source time pattern |
+| getMSXPatternsCount             | Retrieves the number of patterns |
+| getMSXPatternsIndex             | Retrieves the indices of patterns |
+| getMSXPatternsLengths           | Retrieves the number of time periods in all or some patterns |
+| getMSXPatternsNameID            | Retrieves the patterns IDs |
+| getMSXRateUnits                 | Retrieves the rate/time units (SEC/MIN/HR/DAY) |
+| getMSXRtol                      | Retrieves the relative concentration tolerance |
+| getMSXSolver                    | Retrieves the solver method. |
+| getMSXSourceLevel               | Retrieves the value of all nodes source level |
+| getMSXSourceNodeNameID          | Retrieves the ID label of all nodes |
+| getMSXSourcePatternIndex        | Retrieves the value of all node source pattern index |
+| getMSXSourceType                | Retrieves the value of all node source type |
+| getMSXSources                   | Retrieves Msx sources |
+| getMSXSpeciesATOL               | Retrieves the atol |
+| getMSXSpeciesConcentration      | Retrieves the concentration of chemical species for nodes and links |
+| getMSXSpeciesCount              | Retrieves the number of species |
+| getMSXSpeciesIndex              | Retrieves the indices of species |
+| getMSXSpeciesNameID             | Retrieves the species IDs |
+| getMSXSpeciesRTOL               | Retrieves the rtol |
+| getMSXSpeciesType               | Retrieves the type of all species (BULK/WALL) |
+| getMSXSpeciesUnits              | Retrieves the species mass units |
+| getMSXTimeStep                  | Retrieves the time step |
+| getMethods                      | Returns all methods of epanet |
+| initializeMSXQualityAnalysis    | Initializes the MSX system before solving for water quality results in step-wise fashion |
+| plotMSXSpeciesLinkConcentration | Plots concentration of species for links over time. |
+| plotMSXSpeciesNodeConcentration | Plots concentration of species for nodes over time. |
+| saveMSXFile                     | Saves the data associated with the current MSX project into a new MSX input file |
+| saveMSXQualityFile              | Saves water quality results computed for each node, link and reporting time period to a named binary file |
+| setMSXAreaUnitsCM2              | Sets area units to CM2 |
+| setMSXAreaUnitsFT2              | Sets area units to FT2 |
+| setMSXAreaUnitsM2               | Sets area units to M2 |
+| setMSXAtol                      | Sets the value of Atol |
+| setMSXCompilerGC                | Sets compilet to GC |
+| setMSXCompilerNONE              | Sets compiler to None |
+| setMSXCompilerVC                | Sets compiler to VC |
+| setMSXConstantsValue            | Assigns a new value to a specific reaction constant |
+| setMSXCouplingFULL              | Sets coupling option to FULL |
+| setMSXCouplingNONE              | Sets coupling option to NONE |
+| setMSXLinkInitqualValue         | Assigns an initial concentration of chemical species to links |
+| setMSXNodeInitqualValue         | Assigns an initial concentration of chemical species to nodes |
+| setMSXParametersPipesValue      | Assigns a value to a particular reaction parameter for given pipes |
+| setMSXParametersTanksValue      | Assigns a value to a particular reaction parameter for given tanks |
+| setMSXPattern                   | Sets all of the multiplier factors for a specific time pattern |
+| setMSXPatternMatrix             | Sets the multiplier factors for all patterns |
+| setMSXPatternValue              | Assigns a new value to the multiplier for a specific time period in a given MSX source time pattern |
+| setMSXRateUnitsDAY              | Sets rate units to DAY |
+| setMSXRateUnitsHR               | Sets rate units to HR |
+| setMSXRateUnitsMIN              | Sets rate units to MIN |
+| setMSXRateUnitsSEC              | Sets rate units to SEC |
+| setMSXRtol                      | Sets the value of Rtol |
+| setMSXSolverEUL                 | Sets solver to EUL (standard Euler integrator) |
+| setMSXSolverRK5                 | Sets solver to RK5 (Runge-Kutta 5th order integrator) |
+| setMSXSolverROS2                | Sets solver to ROS2 (2nd order Rosenbrock integrator) |
+| setMSXSources                   | Sets the attributes of an external source of a particular chemical species to a specific node of the pipe network |
+| setMSXTimeStep                  | Sets time step |
+| solveMSXCompleteHydraulics      | Solves for system hydraulics over the entire simulation period saving results to an internal scratch file |
+| solveMSXCompleteQuality         | Solves for water quality over the entire simulation period and saves the results to an internal scratch file |
+| stepMSXQualityAnalysisTimeLeft  | Advances the water quality solution through a single water quality time step when performing a step-wise simulation |
+| useMSXHydraulicFile             | Uses a previously saved EPANET hydraulics file as the source of hydraulic information |
+| unloadMSX                       | Unloads MSX file |
+| writeMSXFile                    | Write a new MSX file |
+| writeMSXReport                  | Writes MSX report |
+
+## List of EPANET 2.2 Functions API
+
+| Function                 | Description                                                                                                                                                           |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ENaddcontrol             | Adds a new simple control to a project |
+| ENaddcurve               | Adds a new data curve to a project |
+| ENadddemand              | Appends a new demand to a junction node demands list |
+| ENaddlink                | Adds a new link to a project |
+| ENaddnode                | Adds a new node to a project |
+| ENaddpattern             | Adds a new time pattern to a project |
+| ENaddrule                | Adds a new rule-based control to a project |
+| ENclearreport            | Clears the contents of a project's report file |
+| ENclose                  | Closes a project and frees all of its memory |
+| ENcloseH                 | Closes the hydraulic solver freeing all of its allocated memory |
+| ENcloseQ                 | Closes the water quality solver, freeing all of its allocated memory |
+| ENcopyreport             | Copies the current contents of a project's report file to another file |
+| ENcreateproject          | Copies the current contents of a project's report file to another file |
+| ENdeletecontrol          | Deletes an existing simple control |
+| ENdeletecurve            | Deletes a data curve from a project |
+| ENdeletedemand           | Deletes a demand from a junction node |
+| ENdeletelink             | Deletes a link from the project |
+| ENdeletenode             | Deletes a node from a project |
+| ENdeletepattern          | Deletes a time pattern from a project |
+| ENdeleteproject          | Deletes an EPANET project |
+| ENdeleterule             | Deletes an existing rule-based control|
+| ENepanet                 | Runs a complete EPANET simulation |
+| ENgetaveragepatternvalue | Retrieves the average of all pattern factors in a time pattern |
+| ENgetbasedemand          | Gets the base demand for one of a node's demand categories |
+| ENgetcomment             | Sets a comment to a specific index |
+| ENgetcontrol             | Retrieves the comment of a specific index of a type object |
+| ENgetcoord               | Gets the (x,y) coordinates of a node |
+| ENgetcount               | Retrieves the number of objects of a given type in a project |
+| ENgetcurve               | Retrieves all of a curve's data |
+| ENgetcurveid             | Retrieves the ID name of a curve given its index |
+| ENgetcurveindex          | Retrieves the index of a curve given its ID name |
+| ENgetcurvelen            | Retrieves the number of points in a curve |
+| ENgetcurvetype           | Retrieves a curve's type |
+| ENgetcurvevalue          | Retrieves the value of a single data point for a curve |
+| ENgetdemandindex         | Retrieves the index of a node's named demand category |
+| ENgetdemandmodel         | Retrieves the type of demand model in use and its parameters |
+| ENgetdemandname          | Retrieves the name of a node's demand category |
+| ENgetdemandpattern       | Retrieves the index of a time pattern assigned to one of a node's demand categories |
+| ENgetelseaction          | Gets the properties of an ELSE action in a rule-based control |
+| ENgeterror               | Returns the text of an error message generated by an error code, as warning |
+| ENgetflowunits           | Retrieves a project's flow units |
+| ENgetheadcurveindex      | Retrieves the curve assigned to a pump's head curve |
+| ENgetlinkid              | Gets the ID name of a link given its index |
+| ENgetlinkindex           | Gets the index of a link given its ID name |
+| ENgetlinknodes           | Gets the indexes of a link's start- and end-nodes |
+| ENgetlinktype            | Retrieves a link's type |
+| ENgetlinkvalue           | Retrieves a property value for a link |
+| ENgetnodeid              | Gets the ID name of a node given its index |
+| ENgetnodeindex           | Gets the index of a node given its ID name |
+| ENgetnodetype            | Retrieves a node's type given its index |
+| ENgetnodevalue           | Retrieves a property value for a node |
+| ENgetnumdemands          | Retrieves the number of demand categories for a junction node |
+| ENgetoption              | Retrieves the value of an analysis option |
+| ENgetpatternid           | Retrieves the ID name of a time pattern given its index |
+| ENgetpatternindex        | Retrieves the index of a time pattern given its ID name |
+| ENgetpatternlen          | Retrieves the number of time periods in a time pattern |
+| ENgetpatternvalue        | Retrieves a time pattern's factor for a given time period |
+| ENgetpremise             | Gets the properties of a premise in a rule-based control |
+| ENgetpumptype            | Retrieves the type of head curve used by a pump |
+| ENgetqualinfo            | Gets information about the type of water quality analysis requested |
+| ENgetqualtype            | Retrieves the type of water quality analysis to be run |
+| ENgetresultindex         | Retrieves the order in which a node or link appears in an output file |
+| ENgetrule                | Retrieves summary information about a rule-based control |
+| ENgetruleID              | Gets the ID name of a rule-based control given its index |
+| ENgetstatistic           | Retrieves a particular simulation statistic |
+| ENgetthenaction          | Gets the properties of a THEN action in a rule-based control |
+| ENgettimeparam           | Retrieves the value of a time parameter |
+| ENgettitle               | Retrieves the title lines of the project |
+| ENgetversion             | Retrieves the toolkit API version number |
+| ENgetvertex              | Retrieves the coordinate's of a vertex point assigned to a link |
+| ENgetvertexcount         | Retrieves the number of internal vertex points assigned to a link |
+| ENinit                   | Initializes an EPANET project |
+| ENinitH                  | Initializes a network prior to running a hydraulic analysis |
+| ENinitQ                  | Initializes a network prior to running a water quality analysis |
+| ENnextH                  | Determines the length of time until the next hydraulic event occurs in an extended period simulation |
+| ENnextQ                  | Advances a water quality simulation over the time until the next hydraulic event |
+| ENopen                   | Opens an EPANET input file & reads in network data |
+| ENopenH                  | Opens a project's hydraulic solver |
+| ENopenQ                  | Opens a project's water quality solver |
+| ENreport                 | Writes simulation results in a tabular format to a project's report file |
+| ENresetreport            | Resets a project's report options to their default values |
+| ENrunH                   | Computes a hydraulic solution for the current point in time |
+| ENrunQ                   | Makes hydraulic and water quality results at the start of the current time period available to a project's water quality solver |
+| ENsaveH                  | Transfers a project's hydraulics results from its temporary hydraulics file to its binary output file, where results are only reported at uniform reporting intervals |
+| ENsavehydfile            | Saves a project's temporary hydraulics file to disk |
+| ENsaveinpfile            | Saves a project's data to an EPANET-formatted text file |
+| ENsetbasedemand          | Sets the base demand for one of a node's demand categories |
+| ENsetcomment             | Sets a comment to a specific index |
+| ENsetcontrol             | Sets the properties of an existing simple control |
+| ENsetcoord               | Sets the (x,y) coordinates of a node |
+| ENsetcurve               | Assigns a set of data points to a curve |
+| ENsetcurveid             | Changes the ID name of a data curve given its index |
+| ENsetcurvevalue          | Sets the value of a single data point for a curve |
+| ENsetdemandmodel         | Sets the Type of demand model to use and its parameters |
+| ENsetdemandname          | Assigns a name to a node's demand category |
+| ENsetdemandpattern       | Sets the index of a time pattern used for one of a node's demand categories |
+| ENsetelseaction          | Sets the properties of an ELSE action in a rule-based control |
+| ENsetflowunits           | Sets a project's flow units |
+| ENsetheadcurveindex      | Assigns a curve to a pump's head curve |
+| ENsetjuncdata            | Sets a group of properties for a junction node |
+| ENsetlinkid              | Changes the ID name of a link |
+| ENsetlinknodes           | Sets the indexes of a link's start- and end-nodes |
+| ENsetlinktype            | Changes a link's type |
+| ENsetlinkvalue           | Sets a property value for a link |
+| ENsetnodeid              | Changes the ID name of a node |
+| ENsetnodevalue           | Sets a property value for a node |
+| ENsetoption              | Sets the value for an anlysis option |
+| ENsetpattern             | Sets the pattern factors for a given time pattern |
+| ENsetpatternid           | Changes the ID name of a time pattern given its index |
+| ENsetpatternvalue        | Sets a time pattern's factor for a given time period |
+| ENsetpipedata            | Sets a group of properties for a pipe link |
+| ENsetpremise             | Sets the properties of a premise in a rule-based control |
+| ENsetpremiseindex        | Sets the index of an object in a premise of a rule-based control |
+| ENsetpremisestatus       | Sets the status being compared to in a premise of a rule-based control |
+| ENsetpremisevalue        | Sets the value in a premise of a rule-based control |
+| ENsetqualtype            | Sets the type of water quality analysis to run |
+| ENsetreport              | Processes a reporting format command |
+| ENsetrulepriority        | Sets the priority of a rule-based control |
+| ENsetstatusreport        | Sets the level of hydraulic status reporting |
+| ENsettankdata            | Sets a group of properties for a tank node |
+| ENsetthenaction          | Sets the properties of a THEN action in a rule-based control |
+| ENsettimeparam           | Sets the value of a time parameter |
+| ENsettitle               | Sets the title lines of the project |
+| ENsetvertices            | Assigns a set of internal vertex points to a link |
+| ENsolveH                 | Runs a complete hydraulic simulation with results for all time periods written to a temporary hydraulics file |
+| ENsolveQ                 | Runs a complete water quality simulation with results at uniform reporting intervals written to the project's binary output file |
+| ENstepQ                  | Advances a water quality simulation by a single water quality time step |
+| ENusehydfile             | Uses a previously saved binary hydraulics file to supply a project's hydraulics |
+| ENwriteline              | Writes a line of text to a project's report file |
+
+## List of EPANET MSX Functions API (.msx)
+
+| Function           | Description                                                                                                                              |
+|--------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| MSXaddpattern      | Adds a new empty MSX source time pattern to an MSX project |
+| MSXclose           | Close .msx file |
+| MSXerror           | Retrieves the MSX erorr message for specific erorr code |
+| MSXgetID           | Retrieves the ID name of an object given its internal index number |
+| MSXgetIDlen        | Retrieves the number of characters in the ID name of an MSX object given its internal index number |
+| MSXgetconstant     | Retrieves the value of a particular rection constant |
+| MSXgetcount        | Retrieves the number of objects of a specific type |
+| MSXgeterror        | Returns the text for an error message given its error code |
+| MSXgetindex        | Retrieves the number of objects of a specific type |
+| MSXgetinitqual     | Retrieves the intial concetration of a particular chemical species assigned to a specific node or link of the pipe network |
+| MSXgetparameter    | Retrieves the value of a particular reaction parameter for a given pipe |
+| MSXgetpatternlen   | Retrieves the number of time periods within a source time pattern |
+| MSXgetpatternvalue | Retrieves the multiplier at a specific time period for a given source time pattern |
+| MSXgetqual         | Retrieves a chemical species concentration at a given node or the average concentration along a link at the current sumulation time step |
+| MSXgetsource       | Retrieves information on any external source of a particular chemical species assigned to a specific node or link of the pipe network |
+| MSXgetspecies      | Retrieves the attributes of a chemical species given its internal index number |
+| MSXinit            | Initialize the MSX system before solving for water quality results in the step-wise fashion |
+| loadMSXFile        | Loads an msx file |
+| MSXopen            | Opens .MSX file |
+| MSXreport          | Writes water quality simulations results as instructed by MSX input file to a text file |
+| MSXsavemsxfile     | Saves the data associated with the current MSX project into a new MSX input file |
+| MSXsaveoutfile     | Saves water quality results computed for each node, link and reporting time period to a named binary file |
+| MSXsetconstant     | Assigns a new value to a specific reaction constant |
+| MSXsetinitqual     | Assigns an initial concetration of a particular chemical species node or link of the pipe network |
+| MSXsetparameter    | Assigns a value to a particular reaction parameter for a given pipe or tank within the pipe network |
+| MSXsetpattern      | Assigns a new set of multipliers to a given MSX source time pattern |
+| MSXsetpatternvalue | Assigns a new value to the multiplier for a specific time period in a given MSX source time pattern |
+| MSXsetsource       | Sets the attributes of an external source of particular chemical species to specific node of the pipe network |
+| MSXsolveH          | Solves for system hydraulics over the entire simulation period saving results to an internal scratch file |
+| MSXsolveQ          | Solves for water quality over the entire simulation period and saves the results to an internal scratch file |
+| MSXstep            | Advances the water quality solution through a single water quality time step when performing a step-wise simulation |
+| MSXusehydfile      | Uses a previously saved EPANET hydraulics file as the source of hydraulic information |
 
 
-## List of EPANET 2.2 Functions 
 
-|Function|Description|
-|---------|----------|
-|ENepanet|Runs a complete EPANET simulation
-|ENaddcontrol|Adds a new simple control to a project
-|ENaddcurve|Adds a new data curve to a project
-|ENadddemand|Appends a new demand to a junction node demands list
-|ENaddlink|Adds a new link to a project
-|ENaddnode|Adds a new node to a project
-|ENaddpattern|Adds a new time pattern to a project
-|ENaddrule|Adds a new rule-based control to a project
-|ENclearreport|Clears the contents of a project's report file
-|ENclose|Closes a project and frees all of its memory
-|ENcloseH|Closes the hydraulic solver freeing all of its allocated memory
-|ENcloseQ|Closes the water quality solver, freeing all of its allocated memory
-|ENcopyreport|Copies the current contents of a project's report file to another file
-|ENcreateproject|Copies the current contents of a project's report file to another file
-|ENdeletecontrol|Deletes an existing simple control
-|ENdeletecurve|Deletes a data curve from a project
-|ENdeletedemand|Deletes a demand from a junction node
-|ENdeletelink|Deletes a link from the project
-|ENdeletenode|Deletes a node from a project
-|ENdeletepattern|Deletes a time pattern from a project
-|ENdeleteproject|Deletes an EPANET project
-|ENdeleterule|Deletes an existing rule-based control
-|ENgetaveragepatternvalue|Retrieves the average of all pattern factors in a time pattern
-|ENgetbasedemand|Gets the base demand for one of a node's demand categories
-|ENgetcomment|Sets a comment to a specific index
-|ENgetcontrol|Retrieves the comment of a specific index of a type object
-|ENgetcoord|Gets the (x,y) coordinates of a node
-|ENgetcount|Retrieves the number of objects of a given type in a project
-|ENgetcurve|Retrieves all of a curve's data
-|ENgetcurveid|Retrieves the ID name of a curve given its index
-|ENgetcurveindex|Retrieves the index of a curve given its ID name
-|ENgetcurvelen|Retrieves the number of points in a curve
-|ENgetcurvetype|Retrieves a curve's type
-|ENgetcurvevalue|Retrieves the value of a single data point for a curve
-|ENgetdemandindex|Retrieves the index of a node's named demand category
-|ENgetdemandmodel|Retrieves the type of demand model in use and its parameters
-|ENgetdemandname|Retrieves the name of a node's demand category
-|ENgetdemandpattern|Retrieves the index of a time pattern assigned to one of a node's demand categories
-|ENgetelseaction|Gets the properties of an ELSE action in a rule-based control
-|ENgeterror|Returns the text of an error message generated by an error code, as warning
-|ENgetflowunits|Retrieves a project's flow units
-|ENgetheadcurveindex|Retrieves the curve assigned to a pump's head curve
-|ENgetlinkid|Gets the ID name of a link given its index
-|ENgetlinkindex|Gets the index of a link given its ID name
-|ENgetlinknodes|Gets the indexes of a link's start- and end-nodes
-|ENgetlinktype|Retrieves a link's type
-|ENgetlinkvalue|Retrieves a property value for a link
-|ENgetnodeid|Gets the ID name of a node given its index
-|ENgetnodeindex|Gets the index of a node given its ID name
-|ENgetnodetype|Retrieves a node's type given its index
-|ENgetnodevalue|Retrieves a property value for a node
-|ENgetnumdemands|Retrieves the number of demand categories for a junction node
-|ENgetoption|Retrieves the value of an analysis option
-|ENgetpatternid|Retrieves the ID name of a time pattern given its index
-|ENgetpatternindex|Retrieves the index of a time pattern given its ID name
-|ENgetpatternlen|Retrieves the number of time periods in a time pattern
-|ENgetpatternvalue|Retrieves a time pattern's factor for a given time period
-|ENgetpremise|Gets the properties of a premise in a rule-based control
-|ENgetpumptype|Retrieves the type of head curve used by a pump
-|ENgetqualinfo|Gets information about the type of water quality analysis requested
-|ENgetqualtype|Retrieves the type of water quality analysis to be run
-|ENgetresultindex|Retrieves the order in which a node or link appears in an output file
-|ENgetrule|Retrieves summary information about a rule-based control
-|ENgetruleID|Gets the ID name of a rule-based control given its index
-|ENgetstatistic|Retrieves a particular simulation statistic
-|ENgetthenaction|Gets the properties of a THEN action in a rule-based control
-|ENgettimeparam|Retrieves the value of a time parameter
-|ENgettitle|Retrieves the title lines of the project
-|ENgetversion|Retrieves the toolkit API version number
-|ENgetvertex|Retrieves the coordinate's of a vertex point assigned to a link
-|ENgetvertexcount|Retrieves the number of internal vertex points assigned to a link
-|ENinit|Initializes an EPANET project
-|ENinitH|Initializes a network prior to running a hydraulic analysis
-|ENinitQ|Initializes a network prior to running a water quality analysis
-|ENnextH| Determines the length of time until the next hydraulic event occurs in an extended period simulation
-|ENnextQ|Advances a water quality simulation over the time until the next hydraulic event
-|ENopen|Opens an EPANET input file & reads in network data
-|ENopenH|Opens a project's hydraulic solver
-|ENopenQ|Opens a project's water quality solver
-|ENreport|Writes simulation results in a tabular format to a project's report file
-|ENresetreport|Resets a project's report options to their default values
-|ENrunH|Computes a hydraulic solution for the current point in time
-|ENrunQ|Makes hydraulic and water quality results at the start of the current time period available to a project's water quality solver
-|ENsaveH|Transfers a project's hydraulics results from its temporary hydraulics file to its binary output file, where results are only reported at uniform reporting intervals
-|ENsavehydfile|Saves a project's temporary hydraulics file to disk
-|ENsaveinpfile|Saves a project's data to an EPANET-formatted text file
-|ENsetbasedemand|Sets the base demand for one of a node's demand categories
-|ENsetcomment|Sets a comment to a specific index
-|ENsetcontrol|Sets the properties of an existing simple control
-|ENsetcoord|Sets the (x,y) coordinates of a node
-|ENsetcurve|Assigns a set of data points to a curve
-|ENsetcurveid|Changes the ID name of a data curve given its index
-|ENsetcurvevalue|Sets the value of a single data point for a curve
-|ENsetdemandmodel|Sets the Type of demand model to use and its parameters
-|ENsetdemandname|Assigns a name to a node's demand category
-|ENsetdemandpattern|Sets the index of a time pattern used for one of a node's demand categories
-|ENsetelseaction|Sets the properties of an ELSE action in a rule-based control
-|ENsetflowunits|Sets a project's flow units
-|ENsetheadcurveindex|Assigns a curve to a pump's head curve
-|ENsetjuncdata|Sets a group of properties for a junction node
-|ENsetlinkid|Changes the ID name of a link
-|ENsetlinknodes|Sets the indexes of a link's start- and end-nodes
-|ENsetlinktype|Changes a link's type
-|ENsetlinkvalue|Sets a property value for a link
-|ENsetnodeid|Changes the ID name of a node
-|ENsetnodevalue|Sets a property value for a node
-|ENsetoption|Sets the value for an anlysis option
-|ENsetpattern|Sets the pattern factors for a given time pattern
-|ENsetpatternid|Changes the ID name of a time pattern given its index
-|ENsetpatternvalue|Sets a time pattern's factor for a given time period
-|ENsetpipedata|Sets a group of properties for a pipe link
-|ENsetpremise|Sets the properties of a premise in a rule-based control
-|ENsetpremiseindex|Sets the index of an object in a premise of a rule-based control
-|ENsetpremisestatus|Sets the status being compared to in a premise of a rule-based control
-|ENsetpremisevalue|Sets the value in a premise of a rule-based control
-|ENsetqualtype|Sets the type of water quality analysis to run
-|ENsetreport|Processes a reporting format command
-|ENsetrulepriority|Sets the priority of a rule-based control
-|ENsetstatusreport|Sets the level of hydraulic status reporting
-|ENsettankdata|Sets a group of properties for a tank node
-|ENsetthenaction|Sets the properties of a THEN action in a rule-based control
-|ENsettimeparam|Sets the value of a time parameter
-|ENsettitle|Sets the title lines of the project
-|ENsetvertices|Assigns a set of internal vertex points to a link
-|ENsolveH|Runs a complete hydraulic simulation with results for all time periods written to a temporary hydraulics file
-|ENsolveQ| Runs a complete water quality simulation with results at uniform reporting intervals written to the project's binary output file
-|ENstepQ|Advances a water quality simulation by a single water quality time step
-|ENusehydfile|Uses a previously saved binary hydraulics file to supply a project's hydraulics
-|ENwriteline|Writes a line of text to a project's report file
+## List of EPANET 2.3 Functions API
 
-
-## List of EPANET 2.3 Functions 
-
-|Function|Description|
-|---------|----------|
-|ENgetcontrolenabled|Retrieves the enabled state of a specified control in the EPANET model using the API.
-|getControlState|Retrieves the enabled state of a specified control in the EPANET model
-|ENgetlinkvalues|retrieves property values for all links|
-|ENgetruleenabled|etrieves the enabled state of a specific rule in the EPANET model using API.
-|getRuleEnabled|Retrieves the enabled state of a specific rule in the EPANET model.
-|ENloadpatternfile|
-|loadPatternFile|
-|ENopenX|
-|openX|
-|ENsetcontrolenabled|Sets the control state to either enable or disable in the EPANET model usin API.
-|setControlEnabled|Sets the control state to either enable or disable in the EPANET model.
-|ENsetcurvetype|Sets the type of a specified curve in the EPANET model using API.
-|setCurveType|Sets the type of a specified curve in the EPANET model.
-|setCurveTypePump|Sets the type of a curve to Pump in the EPANET model.
-|setCurveTypeEfficiency|Sets the type of curve to Efficiency in the EPANET model.
-|setCurveTypeHeadloss|Sets the type of a curve to Headloss in the EPANET model.
-|setCurveTypeGeneral|Sets the type of a curve to general in the EPANET model.
-|setCurveTypeValveCurve|Sets the type of a curve to Valve in the EPANET model.
-|setCurveTypeVolume|Sets the type of a curve to Volume in the EPANET model.
-|ENsetruleenabled|Enables a specific rule in the EPANET model using API.
-|setRuleEnabled|Enables a specific rule in the EPANET model.
-|ENtimetonextevent|Determines the type of event that will cause the end of the current time step,
-        along with the duration until the event occurs and its index using API
-|getTimetoNextEvent|Determines the type of event that will cause the end of the current time step,
-        along with the duration until the event occurs and its index.
-|getLinkInControl|Function to determine wether a link apperas in any simple or rule based control
-|getNodeInControl|Function to determine wether a node apperas in any simple or rule based control
-|getPatternAverageDefaultValue|Retrieves the average value of the default pattern
-|getStatisticDeficientNodes|Retrieves the number of deficient nodes in the simulation.
-|getStatisticDemandReduction|Retrieves the demand reduction statistic from the simulation.
-|getStatisticIterations|Retrieves the number of iterations taken in the simulation.
-|getStatisticRelativeError|Retrieves the relative error statistic from the simulation.
-|getStatisticTotalLeakageLoss|Retrieves the total leakage loss statistic from the simulation.
-|getTimeStartClockStartTime|Retrieves the simulation starting time of day.
-|getLinkExpansionProperties|Retrieves the expansion properties for a specified link (pipe).
-|getLinkLeakArea|Function to retrieve the leak area for a specified link (pipe).
-|getLinkLeakageRate|Retrieves the leakage rate of a specific pipe (link) at a given point in time.
-|getLinkValues|Retrieves property values for all links within the EPANET model during a hydraulic analysis.
-|getLinkValveCurveGPV|Retrieves the valve curve for a specified general purpose valve (GPV).
-|getLinkValveCurvePCV|Retrieves the valve curve for a specified pressure control valve (PCV).
-|getNodeEmitterFlow|Retrieves node emmiter flow
-|getNodeLeakageFlow|Retrieves the leakage flow for a specific node.
-|getConsumerDemandDelivered|Retrieves the delivered consumer demand for a specific node.
-|getConsumerDemandRequested|Retrieves the requested consumer demand for a specific node.
-|getOptionsDemandPattern|Retrieves the default Demand pattern.
-|getOptionsEmitterBackFlow|Retrieves the current setting for allowing reverse flow through emitters.
-|getOptionsPressureUnits|get the pressure unit used in Epanet
-|getOptionsStatusReport|get the type of the status report(full/no/normal)
-|setOptionsStatusReport|Sets the status report for epanet
-|setOptionsStatusReportNo|set the status report option to no Report
-|setOptionsStatusReportNormal|set the status report option to normal report
-|setOptionsStatusReportFull|set the status report option to full report 
-|setOptionsPressureUnitsMeters|Set pressure units to Meters and check if the change is possible.
-|setOptionsPressureUnitsPSI|Set pressure units to PSI and check if the change is possible.
-|setOptionsPressureUnitsKPA|Set pressure units to KPA and check if the change is possible.
-|setOptionsEmitterBackFlowAllowed|Sets the option to allow reverse flow through emitters.
-|setOptionsEmitterBackFlowDisallowed|Sets the option  prevent reverse flow through emitters.
-|setOptionsDemandPattern|Retrieves the default Demand pattern.
-|setOptionsPressureUnits|Sets the pressure unit used in Epanet
-|setTimeClockStartTime|Sets the start time for simulation
-|setLinkTypeValvePCV|Sets the link type valve PCV(Position control valve) for a specified link.
-|setLinkValveCurveGPV| Sets the valve curve for a specified general purpose valve (GPV).
-|setLinkValveCurvePCV| Sets the valve curve for a specified pressure control valve (PCV).
-|setLinkExpansionProperties|Sets the expansion properties for a specified link (pipe).
-|setLinkLeakArea|Sets the leak area for a specified link (pipe).
-|setFlowUnitsCMS|Sets flow units to CMS(Cubic Meters per Second).
-|ENsetvertex|Sets the coordinates of a vertex point in a link within the EPANET model using API.
-|setVertex|Sets the coordinates of a vertex point in a link within the EPANET model.
-|addLinkValvePCV|Adds a new PCV valve and returns the index of the new PCV valve.
+| Function            | Description                                                                                  |
+|---------------------|----------------------------------------------------------------------------------------------|
+| ENgetcontrolenabled | Retrieves the enabled state of a specified control in the EPANET model. |
+| ENgetlinkvalues     | Retrieves property values for all links in the hydraulic model |
+| ENgetruleenabled    | etrieves the enabled state of a specific rule in the EPANET model using API. |
+| ENloadpatternfile   | loads time patterns from a file into a project under a specific pattern ID using API |
+| ENopenX             | enable the opening of input files with formatting errors through the API |
+| ENsetcontrolenabled | Sets the control state to either enable or disable in the EPANET model usin API. |
+| ENsetcurvetype      | Sets the type of a specified curve in the EPANET model using API. |
+| ENsetruleenabled    | Enables a specific rule in the EPANET model using API. |
+| ENsetvertex         | Sets the coordinates of a vertex point in a link within the EPANET model using API. |
+| ENtimetonextevent   | Determines the type of event that will cause the end of the current time step/duration/index |
 
 &uparrow; [Back to top](#table-of-contents)
