@@ -561,7 +561,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | setRuleElseAction                   | Sets rule - based control else actions |
 | setRuleEnabled                      | Enables a specific rule in the EPANET model |
 | setRulePremise                      | Sets the premise of a rule - based control |
-| setRulePremiseObejctNameID          | Sets the ID of an object in a premise of a rule-based control |
+| setRulePremiseObjectNameID          | Sets the ID of an object in a premise of a rule-based control |
 | setRulePremiseStatus                | Sets the status being compared to in a premise of a rule-based control |
 | setRulePremiseValue                 | Sets the value being compared to in a premise of a rule-based control |
 | setRulePriority                     | Sets rule - based control priority |
