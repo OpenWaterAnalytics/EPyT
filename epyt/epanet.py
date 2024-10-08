@@ -569,7 +569,8 @@ class epanet:
         # Call the superclass's __getattribute__ to retrieve the attribute
         attr = super().__getattribute__(function_id)
 
-        if callable(attr) and not function_id.startswith("__") and not function_id.startswith("_") and not function_id.startswith("EN"):
+        if callable(attr) and not function_id.startswith("__") and not function_id.startswith("_") and not function_id.startswith("EN")\
+                and not function_id.startswith("printv")and not function_id.startswith("MSX"):
             # Create a _wrapper function to include additional actions
             def _wrapper(*args, **kwargs):
                 result = attr(*args, **kwargs)  # Call the actual function
@@ -4263,7 +4264,7 @@ class epanet:
             value.append(self.api.ENgetcomment(self.ToolkitConstants.EN_NODE, i))
         return value
 
-    def getNodeCoordinates(self, *argv):
+    def getNodeCoordinates(self, *argv, init = 0):
         # GET VERTICES
         vertices = self.getLinkVertices()
         # SET X Y node coordinates
@@ -4275,6 +4276,8 @@ class epanet:
         for i in indices:
             vx.append(self.api.ENgetcoord(i)[0])
             vy.append(self.api.ENgetcoord(i)[1])
+            if init ==1:
+                self.api.errcode = 0
         if len(argv) == 0:
             vxx, vyy = {}, {}
             for i in indices:
@@ -11323,7 +11326,7 @@ class epanet:
         self.Iterations = n.Iterations  # Iterations to reach solution
 
         units = self.getUnits()  # Get all units of the network parameters
-        self.NodeCoordinates = self.getNodeCoordinates()  # Coordinates for each node
+        self.NodeCoordinates = self.getNodeCoordinates(init=1)  # Coordinates for each node
         # (long/lat & intermediate pipe coordinates)
         self.Version = self.getVersion()
 
@@ -12957,13 +12960,21 @@ class epanet:
             f.writelines(lines)
             f.truncate()
 
-        self.msx.MSXclose()
+        try:
+            self.msx.MSXclose()
+        except:
+            pass
+
         copyfile(options_section, self.MSXTempFile)
+        try:
+            self.loadMSXEPANETFile(self.MSXTempFile)
+        except:
+            pass
         try:
             os.remove(options_section)
         except:
             pass
-        self.loadMSXEPANETFile(self.MSXTempFile)
+
 
     def setMSXAreaUnitsCM2(self):
         """  Sets the area units to square centimeters.
