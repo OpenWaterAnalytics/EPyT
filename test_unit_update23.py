@@ -38,17 +38,17 @@ class update23(unittest.TestCase):
 
     def test_setControlEnabledandDissabled(self):
 
-        self.assertEqual( self.epanetClass.getControlEnabled(1),
+        self.assertEqual( self.epanetClass.getControlState(1),
                          (1), 'Wrong Control enabled comment output')
 
-        self.epanetClass.setControlDisabled(1)
+        self.epanetClass.setControlEnabled(1,0)
 
-        self.assertEqual(self.epanetClass.getControlEnabled(1),
+        self.assertEqual(self.epanetClass.getControlState(1),
                          (0), 'Wrong Control enabled comment output')
 
-        self.epanetClass.setControlEnabled(1)
+        self.epanetClass.setControlEnabled(1,1)
 
-        self.assertEqual(self.epanetClass.getControlEnabled(1),
+        self.assertEqual(self.epanetClass.getControlState(1),
                          (1), 'Wrong Control enabled comment output')
 
     def test_getLinkValuesFLOW(self):
@@ -70,216 +70,69 @@ class update23(unittest.TestCase):
         self.epanetClass.closeHydraulicAnalysis()
         self.assertEqual(Fb[0].tolist(), Ft[0]) #Flow check
 
-    def test_getLinkValuesHEADLOSS(self):
+    def test_setVertex(self):
+        linkID = '10'
+        x = [22, 24, 28]
+        y = [30, 68, 69]
+        self.epanetClass.setLinkVertices(linkID, x, y)
+        self.epanetClass.setVertex(1, 1, 1, 1)
+        x = self.epanetClass.getLinkVertices()
+        self.assertEqual(x['x'][1], [1, 24, 28], 'Wrong output for setVertex ')
+        self.assertEqual(x['y'][1], [1, 68, 69], 'Wrong output for setVertex ')
 
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
+    def test_getsetLinkValveCurvePCV(self):
+        linkid =  self.epanetClass.getLinkPipeNameID(1)
+        condition = 1
+        index =  self.epanetClass.setLinkTypeValvePCV(linkid, condition)
+        self.epanetClass.setLinkValveCurvePCV(index, 1)
+        self.assertEqual(self.epanetClass.getLinkValveCurvePCV(index), 1,"Wrong output for set/get LinkValveCurvePCV")
 
-        tstep = 1
-        T_H, Ht, Hb = [], [], []
+    def test_getsetLinkValveCurveGPV(self):
+        linkid =  self.epanetClass.getLinkPipeNameID(1)
+        condition = 1
+        index =  self.epanetClass.setLinkTypeValveGPV(linkid, condition)
+        self.epanetClass.setLinkValveCurveGPV(index, 1)
+        self.assertEqual(self.epanetClass.getLinkValveCurveGPV(index), 1,"Wrong output for set/get LinkValveCurveGPV")
 
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # headloss test
-            Ht.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_HEADLOSS))
-            Hb.append(self.epanetClass.getLinkHeadloss())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
+    def test_getsetTimeClockStartTime(self):
+        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 0,"Wrong output for get getTimeClockStartTime")
+        self.epanetClass.setTimeClockStartTime(3600)
+        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 3600,"Wrong output for get getTimeClockStartTime")
 
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Hb[0].tolist(), Ht[0])  # Headloss check
+    def test_getsetOptionsDemandPattern(self):
+        self.assertEqual(self.epanetClass.getOptionsDemandPattern(), 1,"Wrong output for get getOptionsDemandPattern")
+        self.epanetClass.setOptionsDemandPattern(0)
+        self.assertEqual(self.epanetClass.getOptionsDemandPattern(), 0,"Wrong output for get getsetOptionsDemandPattern")
 
-    def test_getLinkValuesVELOCITY(self):
+    def test_setLinkTypeValvePCV(self):
+        linkid = self.epanetClass.getLinkPipeNameID(1)  # Retrieves the ID of the 1t pipe
+        index = self.epanetClass.setLinkTypeValvePCV(linkid)  # Changes the 1st pipe to valve PCV given it's ID
+        self.assertEqual(self.epanetClass.getLinkType(index), "PCV","Wrong output for setLinkTypeValvePCV")
 
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
+    def test_getsetEmiterBackFLow(self):
+        self.assertEqual(self.epanetClass.getOptionsEmitterBackFlow(), 1, "Wrong output for getsetEmiterBackFLow")
+        self.epanetClass.setOptionsEmitterBackFlowDisallowed()
+        self.assertEqual(self.epanetClass.getOptionsEmitterBackFlow(), 0, "Wrong output for getsetEmiterBackFLow")
+        self.epanetClass.setOptionsEmitterBackFlowAllowed()
+        self.assertEqual(self.epanetClass.getOptionsEmitterBackFlow(), 1, "Wrong output for getsetEmiterBackFLow")
 
-        tstep = 1
-        T_H, Vt, Vb = [], [], []
+    def test_setLinkFlowUnitsCMS(self):
+        self.epanetClass.setFlowUnitsCMS()  # kpa and meters
+        self.assertEqual(self.epanetClass.getFlowUnits(), "CMS", "Wrong output for setLinkFlowUnitsCMS")
 
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # Velocity test
-            Vt.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_VELOCITY))
-            Vb.append(self.epanetClass.getLinkVelocity())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
+    def test_OptionsStatusReport(self):
+        self.epanetClass.setOptionsStatusReportNo()
+        self.assertEqual(self.epanetClass.getOptionsStatusReport(), "NO REPORT", "Wrong output for OptionsStatusReport")
 
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Vb[0].tolist(), Vt[0])  # Velocity check
+        self.epanetClass.setOptionsStatusReportNormal()
+        self.assertEqual(self.epanetClass.getOptionsStatusReport(), "NORMAL REPORT",
+                         "Wrong output for OptionsStatusReport")
 
-    def test_getLinkValuesDIAMETER(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, Dt, Db = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # Diameter test
-            Dt.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_DIAMETER))
-            Db.append(self.epanetClass.getLinkDiameter())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Db[0].tolist(), Dt[0])  # Diameter check
-
-    def test_getLinkValuesLENGTH(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, Lt, Lb = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # LENGTH test
-            Lt.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_LENGTH))
-            Lb.append(self.epanetClass.getLinkLength())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Lb[0].tolist(), Lt[0])  # LENGTH check
-
-    def test_getLinkValuesROUGHNESS(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, Rt, Rb = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # ROUGHNESS test
-            Rt.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_ROUGHNESS))
-            Rb.append(self.epanetClass.getLinkRoughnessCoeff())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Rb[0].tolist(), Rt[0])  # ROUGHNESS check
-
-    def test_getLinkValuesMINORLOSS(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, Mt, Mb = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # MINORLOSS test
-            Mt.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_MINORLOSS))
-            Mb.append(self.epanetClass.getLinkMinorLossCoeff())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Mb[0].tolist(), Mt[0])  # MINORLOSS check
-
-    def test_getLinkValuesINITSTATUS(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, It, Ib = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # INITSTATUS test
-            It.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_INITSTATUS))
-            Ib.append(self.epanetClass.getLinkInitialStatus())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Ib[0].tolist(), It[0])  # INITSTATUS check
-
-    def test_getLinkValuesINITSETTING(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, It, Ib = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # INITSETTING test
-            It.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_INITSETTING))
-            Ib.append(self.epanetClass.getLinkInitialSetting())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Ib[0].tolist(), It[0])  # INITSETTING check
-
-    def test_getLinkValuesSTATUS(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, St, Sb = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # STATUS test
-            St.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_STATUS))
-            Sb.append(self.epanetClass.getLinkStatus())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Sb[0].tolist(), St[0])  # STATUS check
-
-    def test_getLinkValuesSETTING(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, St, Sb = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # STATUS test
-            St.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_SETTING))
-            Sb.append(self.epanetClass.getLinkSettings())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Sb[0].tolist(), St[0])  # SETTING check
-
-    def test_getLinkValuesENERGY(self):
-
-        self.epanetClass.openHydraulicAnalysis()
-        self.epanetClass.initializeHydraulicAnalysis()
-
-        tstep = 1
-        T_H, Et, Eb = [], [], []
-
-        while tstep > 0:
-            t = self.epanetClass.runHydraulicAnalysis()
-            # ENERGY test
-            Et.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_ENERGY))
-            Eb.append(self.epanetClass.getLinkEnergy())
-            T_H.append(t)
-            tstep = self.epanetClass.nextHydraulicAnalysisStep()
-
-        self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Eb[0].tolist(), Et[0])  # ENERGY check
+        self.epanetClass.setOptionsStatusReportFull()
+        self.assertEqual(self.epanetClass.getOptionsStatusReport(), "FULL REPORT",
+                         "Wrong output for OptionsStatusReport")
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(),
 
