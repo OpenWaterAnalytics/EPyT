@@ -6500,12 +6500,12 @@ class epanet:
         """
         return self.api.ENgettimeparam(self.ToolkitConstants.EN_PERIODS)
 
-    def getTimeStartClockStartTime(self):
+    def getTimeClockStartTime(self):
         """ Retrieves the simulation starting time of day.
 
         Example:
 
-        >>> d.getTimeStartClockStartTime()
+        >>> d.getTimeClockStartTime()
 
         See also getTimeSimulationDuration, getTimePatternStart.
         """
@@ -6540,7 +6540,7 @@ class epanet:
 
         >>> d.getTimeHaltFlag()
 
-        See also getTimeStartClockStartTime, getTimeSimulationDuration.
+        See also getTimeClockStartTime, getTimeSimulationDuration.
         """
         return self.api.ENgettimeparam(self.ToolkitConstants.EN_HALTFLAG)
 
@@ -10242,7 +10242,7 @@ class epanet:
         >>> d.setTimeSimulationDuration(simulationDuration)
         >>> d.getTimeSimulationDuration()
 
-        See also getTimeSimulationDuration(), getTimeStartClockStartTime(), getTimeHaltFlag().
+        See also getTimeSimulationDuration(), getTimeClockStartTime(), getTimeHaltFlag().
         """
         self.api.ENsettimeparam(self.ToolkitConstants.EN_DURATION, value)
 
@@ -11313,7 +11313,7 @@ class epanet:
         self.TimeStatisticsType = self.getTimeStatisticsType()  # Type ('NONE', 'AVERAGE', 'MINIMUM',
         # 'MAXIMUM', 'RANGE')
         self.TimeReportingPeriods = self.getTimeReportingPeriods()  # Reporting periods
-        self.TimeStartTime = self.getTimeStartClockStartTime()  # Number of start time
+        self.TimeStartTime = self.getTimeClockStartTime()  # Number of start time
         self.TimeHTime = self.getTimeHTime()  # Number of htime
         self.TimeHaltFlag = self.getTimeHaltFlag()  # Number of halt flag
         self.TimeNextEvent = self.getTimeNextEvent()  # Find the next event of the hydraulic time step length,
@@ -14768,7 +14768,7 @@ class epanet:
                 return results
             else:  # If it's a single index (not a list)
                 index = args[0]
-                return [int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL))]
+                return int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL))
         for index in args:
             results.append(int(self.api.ENgetnodevalue(index, self.ToolkitConstants.EN_NODE_INCONTROL)))
         return results
