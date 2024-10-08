@@ -83,6 +83,7 @@ import json
 import sys
 import os
 import re
+import traceback
 
 
 class ToolkitConstants:
@@ -571,25 +572,29 @@ class epanet:
         if callable(attr) and not function_id.startswith("__") and not function_id.startswith("_") and not function_id.startswith("EN"):
             # Create a _wrapper function to include additional actions
             def _wrapper(*args, **kwargs):
+                result = attr(*args, **kwargs)  # Call the actual function
 
-                result = attr(*args, **kwargs)
-
-                # Check for API error code after the method call
-                if hasattr(self, 'api') and self.api.errcode != 0 and function_id != "_logFunctionError" and function_id !="getError":
+                if hasattr(self, 'api') and self.api.errcode != 0 and function_id != "_logFunctionError" and function_id != "getError":
                     # Log function error by passing the function name
                     message = self.api.ENgeterror(self.api.errcode)
                     self._logFunctionError(function_id, message)
-                    #if you want to chase the error uncomment
-                    """
-                    print(self.api.errcode)
-                    err = self.getError(self.api.errcode)
-                    print(err)"""
+
+                    # Capture the current stack to find where the function was called and where the error happened
+                    tb_lines = traceback.extract_stack()
+                    red_text = "\033[91m"
+                    reset_text = "\033[0m"
+
+                    if len(tb_lines) >= 2:
+                        # This is where the function was called from (main program)
+                        caller_line = tb_lines[-2]
+                        caller_output = f"{caller_line.filename}:{red_text}{caller_line.lineno}, line {caller_line.lineno}: {caller_line.line}{reset_text}"
+                        print(f"{caller_output}")
 
                 return result
 
-            return _wrapper  # Return the wrapped function
+            return _wrapper
 
-        return attr  # Return the attribute directly if not callable
+        return attr
 
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True,
                  display_warnings=True):
