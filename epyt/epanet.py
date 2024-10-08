@@ -570,7 +570,7 @@ class epanet:
         attr = super().__getattribute__(function_id)
 
         if callable(attr) and not function_id.startswith("__") and not function_id.startswith("_") and not function_id.startswith("EN")\
-                and not function_id.startswith("printv")and not function_id.startswith("MSX"):
+                and not function_id.startswith("printv")and not function_id.startswith("MSX")and not function_id.startswith("test"):
             # Create a _wrapper function to include additional actions
             def _wrapper(*args, **kwargs):
                 result = attr(*args, **kwargs)  # Call the actual function
