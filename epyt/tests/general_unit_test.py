@@ -2390,7 +2390,7 @@ class AnalysisTest(unittest.TestCase):
                                     75.6572215, 5.91245886, 122.73900313, 37.26099687,
                                     1909.42463758])
         np.testing.assert_array_almost_equal(flow[25], desired_flow_25, err_msg=err_msg, decimal=4)
-"""
+    """
     def testStepByStepHydraulicQuality(self):
         d = epanet('Net2.inp', ph=False)
         d.openHydraulicAnalysis()
