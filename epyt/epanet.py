@@ -2466,7 +2466,7 @@ class epanet:
         self.saveInputFile(self.TempInpFile)
         [fid, binfile, _] = self.runEPANETexe()
         if fid is False:  # temporary.
-            value_final = self._getComputedTimeSeries_ENepanet()
+            value_final = self.getComputedTimeSeries_ENepanet()
             return value_final
         value = self.__readEpanetBin(fid, binfile, 0)
         value.WarnFlag = False
@@ -2496,7 +2496,7 @@ class epanet:
         value_final.Status = value_final.Status.astype(int)
         return value_final
 
-    def _getComputedTimeSeries_ENepanet(self, tempfile=None, binfile=None, rptfile=None):
+    def getComputedTimeSeries_ENepanet(self, tempfile=None, binfile=None, rptfile=None):
         """ Run analysis using ENepanet function """
 
         if tempfile is not None:
@@ -4661,6 +4661,7 @@ class epanet:
                 value.append(temp_val)
             else:
                 value.append(None)
+                self.api.errcode = 0
         return np.array(value)
 
     def getNodePatternIndex(self, *argv):

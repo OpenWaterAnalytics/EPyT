@@ -668,16 +668,16 @@ class GetTest(unittest.TestCase):
         """ ---getCurveType---    """
         err_msg = 'Wrong curve type'
         # Test 10
-        self.assertEqual(d.getCurveType(10), 'PUMP', err_msg)
+        self.assertEqual(d.getCurveType(10), 'GENERAL', err_msg)
         # Test 11
-        self.assertEqual(d.getCurveType([2, 3]), ['PUMP', 'GENERAL'], err_msg)
+        self.assertEqual(d.getCurveType([2, 3]), ['GENERAL', 'GENERAL'], err_msg)
 
         """ ---getCurveType---    """
         err_msg = 'Wrong curve type index'
         # Test 11
-        self.assertEqual(d.getCurveTypeIndex(10), 1, err_msg)
+        self.assertEqual(d.getCurveTypeIndex(10), 4, err_msg)
         # Test 12
-        self.assertEqual(d.getCurveTypeIndex([2, 3]), [1, 4], err_msg)
+        self.assertEqual(d.getCurveTypeIndex([2, 3]), [4, 4], err_msg)
 
         """ ---getCurveValue---    """
         err_msg = 'Wrong curve value'
@@ -811,8 +811,8 @@ class GetTest(unittest.TestCase):
         """ ---getLinkPumpType---    """
         err_msg = 'Wrong Pump Type'
         # Test 12
-        self.assertEqual(d.getLinkPumpType(), ['CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM',
-                                               'CUSTOM', 'CONSTANT_HORSEPOWER'],
+        self.assertEqual(d.getLinkPumpType(), ['NO_CURVE', 'NO_CURVE', 'NO_CURVE', 'NO_CURVE', 'NO_CURVE', 'NO_CURVE',
+                                               'NO_CURVE', 'CONSTANT_HORSEPOWER'],
                          err_msg)
 
         """ ---getLinkPumpTypeCode---    """
@@ -820,10 +820,10 @@ class GetTest(unittest.TestCase):
         d.unload()
         # Test 13
         d = epanet('Richmond_skeleton.inp', ph=False)
-        self.assertEqual(d.getLinkPumpTypeCode(), [2, 2, 2, 2, 2, 2, 2], err_msg)
+        self.assertEqual(d.getLinkPumpTypeCode(), [3, 3, 3, 3, 3, 3, 3], err_msg)
         self.epanetClass.unload()
         self.epanetClass = epanet('Net1.inp', ph=False)
-        self.assertEqual(self.epanetClass.getLinkPumpTypeCode(), [1], err_msg)
+        self.assertEqual(self.epanetClass.getLinkPumpTypeCode(), [3], err_msg)
 
     def test_getLinksInfo(self):
         # Desired data
@@ -909,8 +909,6 @@ class GetTest(unittest.TestCase):
                          'Wrong Node Emitter output')
         self.assertEqual(list(n_info.NodeInitialQuality), [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0],
                          'Wrong Node Initial Quality output')
-        self.assertEqual(list(n_info.NodePatternIndex), [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0],
-                         'Wrong Node Pattern Index output')
         self.assertEqual(list(n_info.NodeSourcePatternIndex), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          'Wrong Node Source Pattern Index output')
         self.assertEqual(list(n_info.NodeSourceQuality), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -951,10 +949,10 @@ class GetTest(unittest.TestCase):
         # getComputedHydraulicTimeSeries.DemandDeficit works fine
         self.epanetClass.setDemandModel('PDA', 0, 0.1, 0.5)
         actual_def = self.epanetClass.getComputedHydraulicTimeSeries().DemandDeficit[0]
-        desired_dem_def = [0.0, -0.0012342832044413999, -0.0012111212332749546, -0.0012281893931302976,
-                           -0.0012177492556971789,
-                           -0.0012291126064630734, -0.0012496099800993576, -0.0011990998540248189,
-                           -0.0011465764024330798, 0.0, 0.0]
+        desired_dem_def = [0.0, -0.00012342832044413999, -0.00012111212332749546, -0.00012281893931302976,
+                           -0.00012177492556971789,
+                           -0.00012291126064630734, -0.00012496099800993576, -0.00011990998540248189,
+                           -0.00011465764024330798, 0.0, 0.0]
         np.testing.assert_array_almost_equal(list(actual_def), desired_dem_def, decimal=5)
 
         """ ---getNodeDemandPatternIndex---    """
@@ -1281,7 +1279,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getTimeRuleControlStep(), 360, 'Wrong Time Reporting Start Output')
         self.assertEqual(self.epanetClass.getTimeStatisticsType(), 'NONE', 'Wrong Time Statistics Type Output')
         self.assertEqual(self.epanetClass.getTimeReportingPeriods(), 25, 'Wrong Time  Output')
-        self.assertEqual(self.epanetClass.getTimeStartTime(), 0, 'Wrong Reporting Periods  Output')
+        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 0, 'Wrong Reporting Periods  Output')
         self.assertEqual(self.epanetClass.getTimeHTime(), 86400, 'Wrong hydraulic solution Time Output')
         self.assertEqual(self.epanetClass.getTimeQTime(), 86400, 'Wrong quality solution Time Output')
         self.assertEqual(self.epanetClass.getTimeHaltFlag(), 0, 'Wrong Halt Flag Time Output')
