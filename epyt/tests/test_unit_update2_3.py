@@ -1,10 +1,12 @@
-from epyt import epanet, networks
-import unittest
 import os
+import unittest
+
+from epyt import epanet, networks
 
 DIRNAME = os.path.dirname(networks.__file__)
 
-class update23(unittest.TestCase):
+
+class update2_3(unittest.TestCase):
 
     def setUp(self):
         """Call before every test case."""
@@ -12,16 +14,16 @@ class update23(unittest.TestCase):
         inpname = os.path.join(DIRNAME, 'asce-tf-wdst', 'Net1.inp')
         self.epanetClass = epanet(inpname)
 
-
     def tearDown(self):
         """Call after every test case."""
         self.epanetClass.unload()
 
     """ ------------------------------------------------------------------------- """
+
     def test_setCurveType(self):
-        #all 5 possible types
+        # all 5 possible types
         self.epanetClass.setCurveType(1, 0)
-        self.assertEqual( self.epanetClass.getCurveType(1),
+        self.assertEqual(self.epanetClass.getCurveType(1),
                          ('VOLUME'), 'Wrong Curve Type comment output')
         self.epanetClass.setCurveType(1, 1)
         self.assertEqual(self.epanetClass.getCurveType(1),
@@ -37,38 +39,36 @@ class update23(unittest.TestCase):
                          ('GENERAL'), 'Wrong Curve Type comment output')
 
     def test_setControlEnabledandDissabled(self):
-
-        self.assertEqual( self.epanetClass.getControlState(1),
+        self.assertEqual(self.epanetClass.getControlState(1),
                          (1), 'Wrong Control enabled comment output')
 
-        self.epanetClass.setControlEnabled(1,0)
+        self.epanetClass.setControlEnabled(1, 0)
 
         self.assertEqual(self.epanetClass.getControlState(1),
                          (0), 'Wrong Control enabled comment output')
 
-        self.epanetClass.setControlEnabled(1,1)
+        self.epanetClass.setControlEnabled(1, 1)
 
         self.assertEqual(self.epanetClass.getControlState(1),
                          (1), 'Wrong Control enabled comment output')
 
     def test_getLinkValuesFLOW(self):
-
         self.epanetClass.openHydraulicAnalysis()
         self.epanetClass.initializeHydraulicAnalysis()
 
         tstep = 1
-        T_H, Ft, Fb =  [], [], []
+        T_H, Ft, Fb = [], [], []
 
         while tstep > 0:
             t = self.epanetClass.runHydraulicAnalysis()
-            #flow test
+            # flow test
             Ft.append(self.epanetClass.getLinkValues(self.epanetClass.ToolkitConstants.EN_FLOW))
             Fb.append(self.epanetClass.getLinkFlows())
             T_H.append(t)
             tstep = self.epanetClass.nextHydraulicAnalysisStep()
 
         self.epanetClass.closeHydraulicAnalysis()
-        self.assertEqual(Fb[0].tolist(), Ft[0]) #Flow check
+        self.assertEqual(Fb[0].tolist(), Ft[0])  # Flow check
 
     def test_setVertex(self):
         linkID = '10'
@@ -81,33 +81,34 @@ class update23(unittest.TestCase):
         self.assertEqual(x['y'][1], [1, 68, 69], 'Wrong output for setVertex ')
 
     def test_getsetLinkValveCurvePCV(self):
-        linkid =  self.epanetClass.getLinkPipeNameID(1)
+        linkid = self.epanetClass.getLinkPipeNameID(1)
         condition = 1
-        index =  self.epanetClass.setLinkTypeValvePCV(linkid, condition)
+        index = self.epanetClass.setLinkTypeValvePCV(linkid, condition)
         self.epanetClass.setLinkValveCurvePCV(index, 1)
-        self.assertEqual(self.epanetClass.getLinkValveCurvePCV(index), 1,"Wrong output for set/get LinkValveCurvePCV")
+        self.assertEqual(self.epanetClass.getLinkValveCurvePCV(index), 1, "Wrong output for set/get LinkValveCurvePCV")
 
     def test_getsetLinkValveCurveGPV(self):
-        linkid =  self.epanetClass.getLinkPipeNameID(1)
+        linkid = self.epanetClass.getLinkPipeNameID(1)
         condition = 1
-        index =  self.epanetClass.setLinkTypeValveGPV(linkid, condition)
+        index = self.epanetClass.setLinkTypeValveGPV(linkid, condition)
         self.epanetClass.setLinkValveCurveGPV(index, 1)
-        self.assertEqual(self.epanetClass.getLinkValveCurveGPV(index), 1,"Wrong output for set/get LinkValveCurveGPV")
+        self.assertEqual(self.epanetClass.getLinkValveCurveGPV(index), 1, "Wrong output for set/get LinkValveCurveGPV")
 
     def test_getsetTimeClockStartTime(self):
-        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 0,"Wrong output for get getTimeClockStartTime")
+        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 0, "Wrong output for get getTimeClockStartTime")
         self.epanetClass.setTimeClockStartTime(3600)
-        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 3600,"Wrong output for get getTimeClockStartTime")
+        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 3600, "Wrong output for get getTimeClockStartTime")
 
     def test_getsetOptionsDemandPattern(self):
-        self.assertEqual(self.epanetClass.getOptionsDemandPattern(), 1,"Wrong output for get getOptionsDemandPattern")
+        self.assertEqual(self.epanetClass.getOptionsDemandPattern(), 1, "Wrong output for get getOptionsDemandPattern")
         self.epanetClass.setOptionsDemandPattern(0)
-        self.assertEqual(self.epanetClass.getOptionsDemandPattern(), 0,"Wrong output for get getsetOptionsDemandPattern")
+        self.assertEqual(self.epanetClass.getOptionsDemandPattern(), 0,
+                         "Wrong output for get getsetOptionsDemandPattern")
 
     def test_setLinkTypeValvePCV(self):
         linkid = self.epanetClass.getLinkPipeNameID(1)  # Retrieves the ID of the 1t pipe
         index = self.epanetClass.setLinkTypeValvePCV(linkid)  # Changes the 1st pipe to valve PCV given it's ID
-        self.assertEqual(self.epanetClass.getLinkType(index), "PCV","Wrong output for setLinkTypeValvePCV")
+        self.assertEqual(self.epanetClass.getLinkType(index), "PCV", "Wrong output for setLinkTypeValvePCV")
 
     def test_getsetEmiterBackFLow(self):
         self.assertEqual(self.epanetClass.getOptionsEmitterBackFlow(), 1, "Wrong output for getsetEmiterBackFLow")
@@ -135,4 +136,3 @@ class update23(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(),
-

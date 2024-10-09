@@ -639,6 +639,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | getMSXSpeciesUnits              | Retrieves the species mass units |
 | getMSXTimeStep                  | Retrieves the time step |
 | getMethods                      | Returns all methods of epanet |
+| loadMSXFile        			  | Loads an msx file |
 | initializeMSXQualityAnalysis    | Initializes the MSX system before solving for water quality results in step-wise fashion |
 | plotMSXSpeciesLinkConcentration | Plots concentration of species for links over time. |
 | plotMSXSpeciesNodeConcentration | Plots concentration of species for nodes over time. |
@@ -834,7 +835,6 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | MSXgetsource       | Retrieves information on any external source of a particular chemical species assigned to a specific node or link of the pipe network |
 | MSXgetspecies      | Retrieves the attributes of a chemical species given its internal index number |
 | MSXinit            | Initialize the MSX system before solving for water quality results in the step-wise fashion |
-| loadMSXFile        | Loads an msx file |
 | MSXopen            | Opens .MSX file |
 | MSXreport          | Writes water quality simulations results as instructed by MSX input file to a text file |
 | MSXsavemsxfile     | Saves the data associated with the current MSX project into a new MSX input file |
