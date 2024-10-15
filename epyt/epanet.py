@@ -565,7 +565,7 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
-    """def __getattribute__(self, function_id):
+    def __getattribute__(self, function_id):
         # Call the superclass's __getattribute__ to retrieve the attribute
         attr = super().__getattribute__(function_id)
 
@@ -595,7 +595,7 @@ class epanet:
 
             return _wrapper
 
-        return attr"""
+        return attr
 
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True,
                  display_warnings=True):
