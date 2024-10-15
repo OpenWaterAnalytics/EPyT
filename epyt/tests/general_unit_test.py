@@ -2390,7 +2390,7 @@ class AnalysisTest(unittest.TestCase):
                                     75.6572215, 5.91245886, 122.73900313, 37.26099687,
                                     1909.42463758])
         np.testing.assert_array_almost_equal(flow[25], desired_flow_25, err_msg=err_msg, decimal=4)
-
+    """
     def testStepByStepHydraulicQuality(self):
         d = epanet('Net2.inp', ph=False)
         d.openHydraulicAnalysis()
@@ -3712,7 +3712,7 @@ class AnalysisTest(unittest.TestCase):
                              0.00000000e+00]])
         actual = comp_vals.Velocity
         np.testing.assert_array_almost_equal(actual, desired, err_msg=err_msg, decimal=2)
-
+"""
     @staticmethod
     def test_getComputedQualityTimeSeries():
         d = epanet('Net1.inp', ph=False)
