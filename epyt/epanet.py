@@ -10246,6 +10246,7 @@ class epanet:
         See also getTimeSimulationDuration(), getTimeClockStartTime(), getTimeHaltFlag().
         """
         self.api.ENsettimeparam(self.ToolkitConstants.EN_DURATION, value)
+        return self.api.errcode
 
     def setTimeStatisticsType(self, value):
         """ Sets the statistic type.
@@ -17289,7 +17290,8 @@ class epanetapi:
                                                     c_float(value))
 
         self.ENgeterror()
-        return
+        return self.errcode
+
 
     def ENsetnodeid(self, index, newid):
         """ Changes the ID name of a node.
@@ -17670,6 +17672,7 @@ class epanetapi:
             self.errcode = self._lib.ENsettimeparam(c_int(paramcode), c_long(int(timevalue)))
 
         self.ENgeterror()
+        return self.errcode
 
     def ENsettitle(self, line1, line2, line3):
         """ Sets the title lines of the project.
@@ -17733,7 +17736,7 @@ class epanetapi:
             self.errcode = self._lib.ENsolveH()
 
         self.ENgeterror()
-        return
+        return self.errcode
 
     def ENsolveQ(self):
         """ Runs a complete water quality simulation with results at uniform reporting
