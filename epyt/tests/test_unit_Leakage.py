@@ -51,7 +51,7 @@ class TestLeakage(unittest.TestCase):
         self.assertEqual(d.api.errcode, 0)
         junc22Leak = d.api.ENgetnodevalue(Junc22, EN_LEAKAGEFLOW)
         self.assertEqual(d.api.errcode, 0)
-
+        d.solveCompleteHydraulics()
 
         #print(pipe21Leak)
         #print(junc21Leak)

@@ -565,10 +565,11 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
+    """
     def __getattribute__(self, function_id):
         # Call the superclass's __getattribute__ to retrieve the attribute
         attr = super().__getattribute__(function_id)
-
+        
         if callable(attr) and not function_id.startswith("__") and not function_id.startswith("_") and not function_id.startswith("EN")\
                 and not function_id.startswith("printv")and not function_id.startswith("MSX")and not function_id.startswith("test")and not function_id.startswith("load"):
             # Create a _wrapper function to include additional actions
@@ -596,6 +597,7 @@ class epanet:
             return _wrapper
 
         return attr
+    """
 
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True,
                  display_warnings=True):
@@ -728,8 +730,8 @@ class epanet:
             self.LibEPANET = self.api.LibEPANET
             if self.display_msg:
                 print(f'Input File {self.netName} loaded successfully.\n')
-            if not self._isConnected():
-                warnings.warn("The network is not fully connected, one or more link(s) are missing.",UserWarning)
+            #if not self._isConnected():
+            #    warnings.warn("The network is not fully connected, one or more link(s) are missing.",UserWarning)
 
     def addControls(self, control, *argv):
         """ Adds a new simple control.
@@ -14626,7 +14628,7 @@ class epanet:
             for neighbor in range(n):
                 if matrix[node][neighbor] == 1 and not visited[neighbor]:
                     _dfs(neighbor)
-        _dfs(0)
+        _dfs(1)
         if all(visited):
             return True
         else:
@@ -15876,8 +15878,8 @@ class epanetapi:
                 self.errcode = errcode
             errmssg = create_string_buffer(150)
             self._lib.ENgeterror(self.errcode, byref(errmssg), 150)
-            return errmssg.value.decode() # for smoother error messages
-            #warnings.warn(errmssg.value.decode())
+            #return errmssg.value.decode() # for smoother error messages
+            warnings.warn(errmssg.value.decode())
 
     def ENgetflowunits(self):
         """ Retrieves a project's flow units.
