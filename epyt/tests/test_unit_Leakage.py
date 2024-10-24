@@ -13,20 +13,17 @@ class TestLeakage(unittest.TestCase):
         # Create class and open network
         d = epanet("Net1.inp")
 
-
-
         # Single period analysis
-
+        EN_DURATION = 0
         EN_LEAK_AREA = 26
         EN_LEAK_EXPAN = 27
         EN_LINK_LEAKAGE = 28
         EN_LEAKAGEFLOW = 30
-        error = d.setTimeSimulationDuration(0)
+        error = d.api.ENsettimeparam(EN_DURATION, 0)
         self.assertEqual(error, 0)
 
         # Get index of Pipe 21
-        error = d.api.ENgetlinkindex("21")
-        Pipe21 = error
+        Pipe21 = d.api.ENgetlinkindex("21")
         self.assertIsNotNone(Pipe21)
 
         # Set Pipe21 leak area to 1.0 sq mm per 100 ft of pipe
@@ -41,7 +38,7 @@ class TestLeakage(unittest.TestCase):
         self.assertEqual(error, 0)
 
         # Compute Pipe 21 leakage flow using the FAVAD formula EN_LINK_LEAKAGE
-        pipe21Leak = d.getLinkLeakageRate(Pipe21)
+        pipe21Leak = d.api.ENgetlinkvalue(Pipe21, EN_LINK_LEAKAGE)
         self.assertEqual(d.api.errcode, 0)
 
         # Retrieve leakage flow at end nodes
@@ -63,7 +60,7 @@ class TestLeakage(unittest.TestCase):
         self.assertTrue(abs(pipe21Leak - (junc21Leak + junc22Leak)) < 0.01)
 
         # Clean up
-        error = d.unload()
+        error = d.api.ENclose()
         self.assertEqual(d.api.errcode, 0)
 
 if __name__ == '__main__':
