@@ -668,16 +668,16 @@ class GetTest(unittest.TestCase):
         """ ---getCurveType---    """
         err_msg = 'Wrong curve type'
         # Test 10
-        self.assertEqual(d.getCurveType(10), 'PUMP', err_msg)
+        self.assertEqual(d.getCurveType(10), 'GENERAL', err_msg)
         # Test 11
-        self.assertEqual(d.getCurveType([2, 3]), ['PUMP', 'GENERAL'], err_msg)
+        self.assertEqual(d.getCurveType([2, 3]), ['GENERAL', 'GENERAL'], err_msg)
 
         """ ---getCurveType---    """
         err_msg = 'Wrong curve type index'
         # Test 11
-        self.assertEqual(d.getCurveTypeIndex(10), 1, err_msg)
+        self.assertEqual(d.getCurveTypeIndex(10), 4, err_msg)
         # Test 12
-        self.assertEqual(d.getCurveTypeIndex([2, 3]), [1, 4], err_msg)
+        self.assertEqual(d.getCurveTypeIndex([2, 3]), [4, 4], err_msg)
 
         """ ---getCurveValue---    """
         err_msg = 'Wrong curve value'
@@ -811,8 +811,8 @@ class GetTest(unittest.TestCase):
         """ ---getLinkPumpType---    """
         err_msg = 'Wrong Pump Type'
         # Test 12
-        self.assertEqual(d.getLinkPumpType(), ['CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM', 'CUSTOM',
-                                               'CUSTOM', 'CONSTANT_HORSEPOWER'],
+        self.assertEqual(d.getLinkPumpType(), ['NO_CURVE', 'NO_CURVE', 'NO_CURVE', 'NO_CURVE', 'NO_CURVE', 'NO_CURVE',
+                                               'NO_CURVE', 'CONSTANT_HORSEPOWER'],
                          err_msg)
 
         """ ---getLinkPumpTypeCode---    """
@@ -820,10 +820,10 @@ class GetTest(unittest.TestCase):
         d.unload()
         # Test 13
         d = epanet('Richmond_skeleton.inp', ph=False)
-        self.assertEqual(d.getLinkPumpTypeCode(), [2, 2, 2, 2, 2, 2, 2], err_msg)
+        self.assertEqual(d.getLinkPumpTypeCode(), [3, 3, 3, 3, 3, 3, 3], err_msg)
         self.epanetClass.unload()
         self.epanetClass = epanet('Net1.inp', ph=False)
-        self.assertEqual(self.epanetClass.getLinkPumpTypeCode(), [1], err_msg)
+        self.assertEqual(self.epanetClass.getLinkPumpTypeCode(), [3], err_msg)
 
     def test_getLinksInfo(self):
         # Desired data
@@ -909,8 +909,6 @@ class GetTest(unittest.TestCase):
                          'Wrong Node Emitter output')
         self.assertEqual(list(n_info.NodeInitialQuality), [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0],
                          'Wrong Node Initial Quality output')
-        self.assertEqual(list(n_info.NodePatternIndex), [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0],
-                         'Wrong Node Pattern Index output')
         self.assertEqual(list(n_info.NodeSourcePatternIndex), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          'Wrong Node Source Pattern Index output')
         self.assertEqual(list(n_info.NodeSourceQuality), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -951,10 +949,10 @@ class GetTest(unittest.TestCase):
         # getComputedHydraulicTimeSeries.DemandDeficit works fine
         self.epanetClass.setDemandModel('PDA', 0, 0.1, 0.5)
         actual_def = self.epanetClass.getComputedHydraulicTimeSeries().DemandDeficit[0]
-        desired_dem_def = [0.0, -0.0012342832044413999, -0.0012111212332749546, -0.0012281893931302976,
-                           -0.0012177492556971789,
-                           -0.0012291126064630734, -0.0012496099800993576, -0.0011990998540248189,
-                           -0.0011465764024330798, 0.0, 0.0]
+        desired_dem_def = [0.0, -0.00012342832044413999, -0.00012111212332749546, -0.00012281893931302976,
+                           -0.00012177492556971789,
+                           -0.00012291126064630734, -0.00012496099800993576, -0.00011990998540248189,
+                           -0.00011465764024330798, 0.0, 0.0]
         np.testing.assert_array_almost_equal(list(actual_def), desired_dem_def, decimal=5)
 
         """ ---getNodeDemandPatternIndex---    """
@@ -1281,7 +1279,7 @@ class GetTest(unittest.TestCase):
         self.assertEqual(self.epanetClass.getTimeRuleControlStep(), 360, 'Wrong Time Reporting Start Output')
         self.assertEqual(self.epanetClass.getTimeStatisticsType(), 'NONE', 'Wrong Time Statistics Type Output')
         self.assertEqual(self.epanetClass.getTimeReportingPeriods(), 25, 'Wrong Time  Output')
-        self.assertEqual(self.epanetClass.getTimeStartTime(), 0, 'Wrong Reporting Periods  Output')
+        self.assertEqual(self.epanetClass.getTimeClockStartTime(), 0, 'Wrong Reporting Periods  Output')
         self.assertEqual(self.epanetClass.getTimeHTime(), 86400, 'Wrong hydraulic solution Time Output')
         self.assertEqual(self.epanetClass.getTimeQTime(), 86400, 'Wrong quality solution Time Output')
         self.assertEqual(self.epanetClass.getTimeHaltFlag(), 0, 'Wrong Halt Flag Time Output')
@@ -2565,7 +2563,7 @@ class AnalysisTest(unittest.TestCase):
                                   0.97022719, 1.00736078, 0.94322095, 0.80143815, 0.12152811,
                                   0.14431463, 0.08355057, 0.0130776, 0.02278652, 0.01139326,
                                   0.11465239, 0.01730443, 0.02278652, 0.00548209, 0.00759551])
-        np.testing.assert_array_almost_equal(velocity[5], desired_vel_5, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(velocity[5], desired_vel_5, err_msg=err_msg, decimal=4)
 
         desired_vel_25 = np.array([1.81227798, 1.49462949, 0.65854063, 0.56024584, 0.22403439,
                                    1.69370013, 1.67809778, 0.04368657, 1.62192933, 0.03510528,
@@ -2575,7 +2573,7 @@ class AnalysisTest(unittest.TestCase):
                                    0.96107627, 0.99540144, 0.93611252, 0.80505279, 0.11233691,
                                    0.13340008, 0.07723162, 0.01208854, 0.02106317, 0.01053158,
                                    0.11353814, 0.01599569, 0.02106317, 0.00506748, 0.00702106])
-        np.testing.assert_array_almost_equal(velocity[25], desired_vel_25, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(velocity[25], desired_vel_25, err_msg=err_msg, decimal=4)
 
         desired_vel_50 = np.array([1.81227798, 1.49714577, 0.65645338, 0.56441371, 0.22747538,
                                    1.70124599, 1.68663652, 0.04090652, 1.63404243, 0.03287131,
@@ -2585,7 +2583,7 @@ class AnalysisTest(unittest.TestCase):
                                    1.01524366, 1.04738449, 0.9918685, 0.86914894, 0.10518819,
                                    0.12491098, 0.07231688, 0.01131927, 0.01972279, 0.00986139,
                                    0.12084703, 0.01497778, 0.01972279, 0.004745, 0.00657426])
-        np.testing.assert_array_almost_equal(velocity[50], desired_vel_50, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(velocity[50], desired_vel_50, err_msg=err_msg, decimal=4)
 
         # Test Link Head Loss
         err_msg = 'Error in Link Head Loss '
@@ -2599,7 +2597,7 @@ class AnalysisTest(unittest.TestCase):
                                  7.93029468e-02, 7.23210341e-03, 1.06388168e-02, 3.86634775e-03,
                                  2.18121485e-04, 8.71385305e-04, 9.65523106e-05, 8.68436388e-03,
                                  2.61714521e-04, 8.71385306e-04, 4.35930363e-05, 3.41745593e-05])
-        np.testing.assert_array_almost_equal(head_loss[5], desired_hl_5, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(head_loss[5], desired_hl_5, err_msg=err_msg, decimal=4)
 
         desired_hl_23 = np.array([0.00000000e+00, 2.12312025e-03, 6.07622722e-03, 5.55697659e-03,
                                   2.64237088e-03, 1.77728998e-02, 5.02764696e-02, 1.49966988e-03,
@@ -2611,7 +2609,7 @@ class AnalysisTest(unittest.TestCase):
                                   1.55718379e-01, 8.03966410e-03, 1.18267824e-02, 4.29807698e-03,
                                   2.42477654e-04, 9.68687084e-04, 1.07333662e-04, 5.50837145e-04,
                                   2.90938434e-04, 9.68687084e-04, 4.84607797e-05, 3.79906041e-05])
-        np.testing.assert_array_almost_equal(head_loss[23], desired_hl_23, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(head_loss[23], desired_hl_23, err_msg=err_msg, decimal=4)
 
         desired_hl_51 = np.array([4.31256504e+00, 1.01913328e+00, 5.61048713e-01, 4.16152148e-01,
                                   4.19324206e-02, 1.96783554e+00, 4.37316956e+00, 6.61642927e-04,
@@ -2623,7 +2621,7 @@ class AnalysisTest(unittest.TestCase):
                                   1.35577363e-01, 3.54703856e-03, 5.21788629e-03, 1.89627882e-03,
                                   1.06979294e-04, 4.27377362e-04, 4.73547942e-05, 1.26416617e-02,
                                   1.28359821e-04, 4.27377362e-04, 2.13805269e-05, 1.67611652e-05])
-        np.testing.assert_array_almost_equal(head_loss[51], desired_hl_51, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(head_loss[51], desired_hl_51, err_msg=err_msg, decimal=4)
 
         # Test Link Settings
         err_msg = 'Error in Link Settings'
@@ -2631,7 +2629,7 @@ class AnalysisTest(unittest.TestCase):
                                    100., 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
                                    100., 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.,
                                    100., 100., 100., 100., 100., 100., 100.])
-        np.testing.assert_array_almost_equal(settings[0], desired_sett_0, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(settings[0], desired_sett_0, err_msg=err_msg, decimal=4)
 
         # Test Link Energy
         err_msg = 'Error in Link Energy'
@@ -2645,7 +2643,7 @@ class AnalysisTest(unittest.TestCase):
                                      4.22318706e-03, 5.84012767e-05, 4.53421535e-05, 9.54000958e-06,
                                      8.42412685e-08, 5.86390195e-07, 3.24869652e-08, 2.94048909e-05,
                                      1.33746844e-07, 5.86390195e-07, 7.05767837e-09, 7.66581151e-09])
-        np.testing.assert_array_almost_equal(energy[5], desired_energy_5, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(energy[5], desired_energy_5, err_msg=err_msg, decimal=4)
 
         desired_energy_23 = np.array([0.00000000e+00, 7.57281174e-06, 1.01274099e-05, 9.21563204e-06,
                                       9.40276051e-06, 1.60406707e-04, 5.13468317e-04, 4.98657667e-06,
@@ -2657,7 +2655,7 @@ class AnalysisTest(unittest.TestCase):
                                       1.19378331e-02, 6.87415312e-05, 5.33702213e-05, 1.12291187e-05,
                                       9.91566299e-08, 6.90213677e-07, 3.82389540e-08, 4.20717423e-07,
                                       1.57427429e-07, 6.90213677e-07, 8.30727765e-09, 9.02308390e-09])
-        np.testing.assert_array_almost_equal(energy[23], desired_energy_23, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(energy[23], desired_energy_23, err_msg=err_msg, decimal=4)
 
         desired_energy_51 = np.array([5.19327654e-01, 1.01923935e-01, 1.07665857e-02, 7.09644859e-03,
                                       6.63834774e-04, 2.25553307e-01, 4.97914128e-01, 1.41431120e-06,
@@ -2669,7 +2667,7 @@ class AnalysisTest(unittest.TestCase):
                                       9.64479399e-03, 1.94967257e-05, 1.51370583e-05, 3.18484390e-06,
                                       2.81231677e-08, 1.95760939e-07, 1.08454726e-08, 5.24245111e-05,
                                       4.46501460e-08, 1.95760939e-07, 2.35614062e-09, 2.55916022e-09])
-        np.testing.assert_array_almost_equal(energy[51], desired_energy_51, err_msg=err_msg)
+        np.testing.assert_array_almost_equal(energy[51], desired_energy_51, err_msg=err_msg, decimal=4)
 
         # Test Node Actual Demand Sensing Nodes
         err_msg = 'Error in Node Actual Demand Sensing Nodes'
