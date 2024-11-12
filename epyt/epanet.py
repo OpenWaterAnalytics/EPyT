@@ -439,24 +439,28 @@ class EpytValues:
         dict_values = vars(self)
         return dict_values
 
-    def to_excel(self, filename=None, attributes=None, allValues=False):
+    def to_excel(self, filename=None, attributes=None, allValues=False, Index=True, Id=False, epanet_instance=None):
         """ Save to an Excel file the values of EpytValues class
 
         :param self: Values to add to the Excel file
         :type self: EpytValues class
-        :param filename: excel filename, defaults to None
+        :param filename: Excel filename, defaults to None
         :type filename: str, optional
-        :param attributes: attributes to add to the file, defaults to None
+        :param attributes: Attributes to add to the file, defaults to None
         :type attributes: str or list of str, optional
-        :param allValues: 'True' if all the values will be included in a
-            separate sheet, defaults to False
+        :param allValues: 'True' if all the values will be included in a separate sheet, defaults to False
         :type allValues: bool, optional
+        :param Index: Include an 'Index' column, defaults to True
+        :type Index: bool, optional
+        :param Id: Include an 'Id' column from epanet instance, defaults to False
+        :type Id: bool, optional
+        :param epanet_instance: An instance of the epanet class to fetch IDs
+        :type epanet_instance: epanet class instance, optional
         :return: None
 
         """
         if filename is None:
-            rand_id = ''.join(random.choices(string.ascii_letters
-                                             + string.digits, k=5))
+            rand_id = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
             filename = 'ToExcelfile_' + rand_id + '.xlsx'
         if '.xlsx' not in filename:
             filename = filename + '.xlsx'
@@ -469,58 +473,177 @@ class EpytValues:
             else:
                 dictValss[i] = dictVals[i]
         dictVals = dictValss
+
+        # Define keywords for node and link data
+        node_keywords = ['nodequality', 'head', 'demand']
+        link_keywords = ['linkquality', 'pressure', 'flow', 'velocity', 'headloss', 'Status', 'Setting', 'ReactionRate'
+            ,'StatusStr','FrictionFactor']
+
+        # Helper function to match whole words
+        def is_keyword_in_key(key_lower, keyword):
+            pattern = r'\b' + re.escape(keyword.lower()) + r'\b'
+            return re.search(pattern, key_lower) is not None
+
         with pd.ExcelWriter(filename, mode="w") as writer:
             for key in dictVals:
                 if 'Time' not in key:
-                    if not attributes:
-                        df = pd.DataFrame(dictVals[key])
-                        df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
-                        df.set_index("Index", inplace=True)
-                        df.to_excel(writer, sheet_name=key,
-                                    header=dictVals['Time'])
-                    else:
-                        if not isList(attributes):
-                            attributes = [attributes]
-                        if key in attributes:
-                            df = pd.DataFrame(dictVals[key])
-                            df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
-                            df.set_index("Index", inplace=True)
-                            df.to_excel(writer,
-                                        sheet_name=key,
-                                        header=dictVals['Time'])
+                    if not attributes or key in attributes:
+                        #print(f"Processing key: {key}")
+                        #print(f"Type of dictVals[key]: {type(dictVals[key])}")
+                        #print(f"Content of dictVals[key]: {dictVals[key]}")
+
+                        data = dictVals[key]
+
+                        # Check if data is suitable for DataFrame creation
+                        if isinstance(data, (list, np.ndarray, pd.Series, pd.DataFrame)):
+                            df = pd.DataFrame(data)
+                        else:
+                            print(f"Skipping key '{key}' due to unsupported data type: {type(data)}")
+                            continue  # Skip processing this key
+
+                        header_labels = []
+
+                        # Insert 'Id' column if Id is True
+                        if Id:
+                            num_rows = len(df)
+                            id_values = []
+
+                            # Check if epanet_instance is provided
+                            if epanet_instance is not None:
+                                # Convert key to lowercase for case-insensitive comparison
+                                key_lower = key.lower()
+
+
+                                if any(is_keyword_in_key(key_lower, kw) for kw in node_keywords) or 'node' in key_lower:
+                                    # Fetch node IDs
+                                    for i in range(num_rows):
+                                        id_value = epanet_instance.getNodeNameID(i + 1)
+                                        id_values.append(id_value)
+                                elif any(is_keyword_in_key(key_lower, kw) for kw in
+                                         link_keywords) or 'link' in key_lower:
+                                    # Fetch link IDs
+                                    for i in range(num_rows):
+                                        id_value = epanet_instance.getLinkNameID(i + 1)
+                                        id_values.append(id_value)
+                                else:
+                                    warnings.warn(
+                                        f"Cannot determine if '{key}' is for nodes or links based on provided keywords. 'Id' column will be left blank.")
+
+                                    id_values = [''] * num_rows
+                            else:
+                                warnings.warn(
+                                    "epanet_instance must be provided when Id=True. 'Id' column will be left blank.")
+
+                                id_values = [''] * num_rows
+
+                            # Ensure the length of id_values matches the number of rows in df
+                            if len(id_values) != num_rows:
+                                warnings.warn(
+                                    "Length of Id values does not match number of rows in data. Adjusting id_values length.")
+                                id_values = id_values[:num_rows]
+
+                            df.insert(0, 'Id', id_values)
+                            header_labels.append('Id')
+
+                        # Insert 'Index' column if Index is True
+                        if Index:
+                            index_values = list(range(1, len(df) + 1))
+                            df.insert(0, "Index", index_values, True)
+                            header_labels.insert(0, 'Index')
+
+                        # Append time labels to header labels
+                        num_data_columns = df.shape[1] - len(header_labels)
+                        if 'Time' in dictVals and len(dictVals['Time']) == num_data_columns:
+                            header_labels.extend(dictVals['Time'])
+                        else:
+                            # Use default column names if Time labels are not available or mismatched
+                            data_column_names = [f"Column{i + 1}" for i in range(num_data_columns)]
+                            header_labels.extend(data_column_names)
+
+                        df.columns = header_labels
+
+                        df.to_excel(writer, sheet_name=key, index=False)
+
             if allValues:
                 first_iter = True
-                titleFormat = writer.book.add_format(
-                    {'bold': True, 'align': 'center',
-                     'valign': 'vcenter', 'font_size': 16})
                 for key in dictVals:
-                    if key != 'Time' and not attributes:
-                        df = pd.DataFrame(dictVals[key])
-                        df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
-                        df.set_index("Index", inplace=True)
+                    if key != 'Time' and (not attributes or key in attributes):
+                        data = dictVals[key]
+
+                        # Check if data is suitable for DataFrame creation
+                        if isinstance(data, (list, np.ndarray, pd.Series, pd.DataFrame)):
+                            df = pd.DataFrame(data)
+                        else:
+                            print(f"Skipping key '{key}' due to unsupported data type: {type(data)}")
+                            continue  # Skip processing this key
+
+                        header_labels = []
+
+
+                        if Id:
+                            num_rows = len(df)
+                            id_values = []
+
+                            if epanet_instance is not None:
+                                key_lower = key.lower()
+
+
+                                if any(is_keyword_in_key(key_lower, kw) for kw in node_keywords) or 'node' in key_lower:
+                                    # Fetch node IDs
+                                    for i in range(num_rows):
+                                        id_value = epanet_instance.getNodeNameID(i + 1)
+                                        id_values.append(id_value)
+                                elif any(is_keyword_in_key(key_lower, kw) for kw in
+                                         link_keywords) or 'link' in key_lower:
+                                    # Fetch link IDs
+                                    for i in range(num_rows):
+                                        id_value = epanet_instance.getLinkNameID(i + 1)
+                                        id_values.append(id_value)
+                                else:
+                                    warnings.warn(
+                                        f"Cannot determine if '{key}' is for nodes or links based on provided keywords. 'Id' column will be left blank.")
+                                    # Create empty 'Id' column
+                                    id_values = [''] * num_rows
+                            else:
+                                warnings.warn(
+                                    "epanet_instance must be provided when Id=True. 'Id' column will be left blank.")
+                                # Create empty 'Id' column
+                                id_values = [''] * num_rows
+
+                            if len(id_values) != num_rows:
+                                warnings.warn(
+                                    "Length of Id values does not match number of rows in data. Adjusting id_values length.")
+                                id_values = id_values[:num_rows]
+
+                            df.insert(0, 'Id', id_values)
+                            header_labels.append('Id')
+
+                        if Index:
+                            index_values = list(range(1, len(df) + 1))
+                            df.insert(0, "Index", index_values, True)
+                            header_labels.insert(0, 'Index')
+
+                        num_data_columns = df.shape[1] - len(header_labels)
+                        if 'Time' in dictVals and len(dictVals['Time']) == num_data_columns:
+                            header_labels.extend(dictVals['Time'])
+                        else:
+                            data_column_names = [f"Column{i + 1}" for i in range(num_data_columns)]
+                            header_labels.extend(data_column_names)
+
+                        df.columns = header_labels
+
                         if first_iter:
-                            df.to_excel(
-                                writer,
-                                sheet_name='All values',
-                                header=dictVals['Time'],
-                                startrow=1
-                            )
-                            writer.book.worksheets()[-1].write(0, 1, key,
-                                                               titleFormat)
+                            df.to_excel(writer, sheet_name='All values', index=False, startrow=1)
+                            worksheet = writer.sheets['All values']
+                            worksheet.write(0, 0, key)
                             first_iter = False
                         else:
-                            startrow = writer.book.worksheets()[-1].dim_rowmax \
-                                       + 3
-                            writer.book.worksheets()[-1].write(startrow - 1,
-                                                               1,
-                                                               key,
-                                                               titleFormat)
-                            df.to_excel(
-                                writer,
-                                sheet_name='All values',
-                                header=dictVals['Time'],
-                                startrow=startrow
-                            )
+                            worksheet = writer.sheets['All values']
+                            startrow = worksheet.dim_rowmax + 3
+                            worksheet.write(startrow - 1, 0, key)
+                            df.to_excel(writer, sheet_name='All values', index=False, startrow=startrow)
+
+        print(f"Data successfully exported to {filename}")
 
     def to_json(self, filename=None):
         """ Transforms val class values to json object and saves them
