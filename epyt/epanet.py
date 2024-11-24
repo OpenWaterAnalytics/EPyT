@@ -9878,7 +9878,7 @@ class epanet:
         self.setLinkPipeData(leftPipeIndex, linkLength, linkDia, linkRoughnessCoeff, linkMinorLossCoeff)
         if linkMinorLossCoeff != 0:
             self.setLinklinkMinorLossCoeff(leftPipeIndex, linkMinorLossCoeff)
-        self.setLinkInitialSetting(leftPipeIndex, linkInitialSetting)
+        self.setLinkInitialStatus(leftPipeIndex, linkInitialStatus)
         self.setLinkInitialSetting(leftPipeIndex, linkInitialSetting)
         self.setLinkBulkReactionCoeff(leftPipeIndex, linkBulkReactionCoeff)
         self.setLinkWallReactionCoeff(leftPipeIndex, linkWallReactionCoeff)
