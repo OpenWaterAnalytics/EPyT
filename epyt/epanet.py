@@ -384,24 +384,43 @@ class EpytValues:
         dict_values = vars(self)
         return dict_values
 
-    def to_excel(self, filename=None, attributes=None, allValues=False):
-        """ Save to an Excel file the values of EpytValues class
-
-        :param self: Values to add to the Excel file
-        :type self: EpytValues class
-        :param filename: excel filename, defaults to None
-        :type filename: str, optional
-        :param attributes: attributes to add to the file, defaults to None
-        :type attributes: str or list of str, optional
-        :param allValues: 'True' if all the values will be included in a
-            separate sheet, defaults to False
-        :type allValues: bool, optional
-        :return: None
-
+    def to_excel(self, filename=None, attributes=None, allValues=False,
+                 node_id_list=None, link_id_list=None, both=False):
         """
+        Save to an Excel file the values of EpytValues class.
+
+        :param filename: Excel filename, defaults to None
+        :type filename: str, optional
+        :param attributes: Attributes to add to the file, defaults to None
+        :type attributes: str or list of str, optional
+        :param allValues: If True, writes all the values into a separate "All values" sheet, defaults to False
+        :type allValues: bool, optional
+        :param node_id_list: Array of IDs for node-related attributes
+        :type node_id_list: list or np.ndarray, optional
+        :param link_id_list: Array of IDs for link-related attributes
+        :type link_id_list: list or np.ndarray, optional
+        :param both: If True, and ID array available, print both 'Index' and 'Id'. If no ID array, just Index.
+                     If False and ID array available, print only 'Id'; if no ID array, print only 'Index'.
+        :type both: bool, optional
+        :return: None
+        """
+        # Keywords
+        node_keywords = ['nodequality', 'head', 'demand', 'pressure']
+        link_keywords = ['linkquality', 'flow', 'velocity', 'headloss',
+                         'Status', 'Setting', 'ReactionRate', 'StatusStr', 'FrictionFactor']
+
+        def is_node_attribute(key):
+            key_lower = key.lower()
+            return (any(re.search(r'\b' + kw + r'\b', key_lower) for kw in node_keywords)
+                    or 'node' in key_lower)
+
+        def is_link_attribute(key):
+            key_lower = key.lower()
+            return (any(re.search(r'\b' + kw + r'\b', key_lower) for kw in link_keywords)
+                    or 'link' in key_lower)
+
         if filename is None:
-            rand_id = ''.join(random.choices(string.ascii_letters
-                                             + string.digits, k=5))
+            rand_id = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
             filename = 'ToExcelfile_' + rand_id + '.xlsx'
         if '.xlsx' not in filename:
             filename = filename + '.xlsx'
@@ -414,58 +433,101 @@ class EpytValues:
             else:
                 dictValss[i] = dictVals[i]
         dictVals = dictValss
+
+        def process_dataframe(key, df):
+
+            header_labels = []
+            num_rows = len(df)
+            chosen_id_array = None
+            if is_node_attribute(key) and node_id_list is not None:
+                chosen_id_array = node_id_list
+            elif is_link_attribute(key) and link_id_list is not None:
+                chosen_id_array = link_id_list
+
+            print_id_col = False
+            print_index_col = False
+
+            if both:
+                print_index_col = True
+                if chosen_id_array is not None:
+                    print_id_col = True
+            else:
+                if chosen_id_array is not None:
+                    print_id_col = True
+                else:
+                    print_index_col = True
+
+            if print_id_col and chosen_id_array is not None:
+                if len(chosen_id_array) != num_rows:
+                    warnings.warn(
+                        f"ID array length does not match rows for '{key}'. Truncating."
+                    )
+                adjusted_id_array = chosen_id_array[:num_rows]
+                df.insert(0, 'Id', adjusted_id_array)
+                header_labels.append('Id')
+
+            if print_index_col:
+                index_values = list(range(1, num_rows + 1))
+                insert_pos = 0
+                if print_id_col:
+                    id_col = df.pop('Id')
+                    df.insert(0, 'Index', index_values)
+                    df.insert(1, 'Id', id_col)
+                    header_labels.insert(0, 'Index')
+                else:
+                    df.insert(insert_pos, "Index", index_values)
+                    header_labels.insert(0, 'Index')
+
+            num_data_columns = df.shape[1] - len(header_labels)
+            if 'Time' in dictVals and len(dictVals['Time']) == num_data_columns:
+                header_labels.extend(dictVals['Time'])
+            else:
+                data_column_names = [f"Column{i + 1}" for i in range(num_data_columns)]
+                header_labels.extend(data_column_names)
+
+            df.columns = header_labels
+            return df
+
         with pd.ExcelWriter(filename, mode="w") as writer:
-            for key in dictVals:
-                if 'Time' not in key:
-                    if not attributes:
-                        df = pd.DataFrame(dictVals[key])
-                        df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
-                        df.set_index("Index", inplace=True)
-                        df.to_excel(writer, sheet_name=key,
-                                    header=dictVals['Time'])
-                    else:
-                        if not isList(attributes):
-                            attributes = [attributes]
-                        if key in attributes:
-                            df = pd.DataFrame(dictVals[key])
-                            df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
-                            df.set_index("Index", inplace=True)
-                            df.to_excel(writer,
-                                        sheet_name=key,
-                                        header=dictVals['Time'])
+            for key, data in dictVals.items():
+                if key == 'Time':
+                    continue
+                if attributes and key not in attributes:
+                    continue
+                if not isinstance(data, (list, np.ndarray, pd.Series, pd.DataFrame)):
+                    #print(f"Skipping key '{key}' due to unsupported data type: {type(data)}")
+                    continue
+
+                df = pd.DataFrame(data)
+                df = process_dataframe(key, df)
+                df.to_excel(writer, sheet_name=key, index=False)
+
             if allValues:
+                worksheet_name = 'All values'
                 first_iter = True
-                titleFormat = writer.book.add_format(
-                    {'bold': True, 'align': 'center',
-                     'valign': 'vcenter', 'font_size': 16})
-                for key in dictVals:
-                    if key != 'Time' and not attributes:
-                        df = pd.DataFrame(dictVals[key])
-                        df.insert(0, "Index", list(range(1, len(dictVals[key]) + 1)), True)
-                        df.set_index("Index", inplace=True)
-                        if first_iter:
-                            df.to_excel(
-                                writer,
-                                sheet_name='All values',
-                                header=dictVals['Time'],
-                                startrow=1
-                            )
-                            writer.book.worksheets()[-1].write(0, 1, key,
-                                                               titleFormat)
-                            first_iter = False
-                        else:
-                            startrow = writer.book.worksheets()[-1].dim_rowmax \
-                                       + 3
-                            writer.book.worksheets()[-1].write(startrow - 1,
-                                                               1,
-                                                               key,
-                                                               titleFormat)
-                            df.to_excel(
-                                writer,
-                                sheet_name='All values',
-                                header=dictVals['Time'],
-                                startrow=startrow
-                            )
+                for key, data in dictVals.items():
+                    if key == 'Time':
+                        continue
+                    if attributes and key not in attributes:
+                        continue
+                    if not isinstance(data, (list, np.ndarray, pd.Series, pd.DataFrame)):
+                        print(f"Skipping key '{key}' due to unsupported data type: {type(data)}")
+                        continue
+
+                    df = pd.DataFrame(data)
+                    df = process_dataframe(key, df)
+                    worksheet = writer.sheets.get(worksheet_name)
+                    if first_iter:
+                        df.to_excel(writer, sheet_name=worksheet_name, index=False, startrow=1)
+                        worksheet = writer.sheets[worksheet_name]
+                        worksheet.write(0, 0, key)
+                        first_iter = False
+                    else:
+                        startrow = worksheet.dim_rowmax + 3
+                        worksheet.write(startrow - 1, 0, key)
+                        df.to_excel(writer, sheet_name=worksheet_name, index=False, startrow=startrow)
+
+        print(f"Data successfully exported to {filename}")
 
     def to_json(self, filename=None):
         """ Transforms val class values to json object and saves them
