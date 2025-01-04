@@ -6078,7 +6078,7 @@ class epanet:
                     objectNameID = ' '
                     space = ''
                 if variable >= self.ToolkitConstants.EN_R_TIME:
-                    value_premise = datetime.utcfromtimestamp(value_premise).strftime("%I:%M %p UTC")
+                    value_premise = datetime.fromtimestamp(value_premise).strftime("%I:%M %p")
                 else:
                     value_premise = str(value_premise)
                 if status == 0:
