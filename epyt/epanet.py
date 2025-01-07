@@ -385,7 +385,7 @@ class EpytValues:
         return dict_values
 
     def to_excel(self, filename=None, attributes=None, allValues=False,
-                 node_id_list=None, link_id_list=None, both=False):
+                 node_id_list=None, link_id_list=None, both=False, header=True):
         """
         Save to an Excel file the values of EpytValues class.
 
@@ -402,12 +402,15 @@ class EpytValues:
         :param both: If True, and ID array available, print both 'Index' and 'Id'. If no ID array, just Index.
                      If False and ID array available, print only 'Id'; if no ID array, print only 'Index'.
         :type both: bool, optional
+        :param header: If False, remove the first row from all sheets and do not write column headers
+        :type header: bool, optional
         :return: None
         """
-        # Keywords
         node_keywords = ['nodequality', 'head', 'demand', 'pressure']
-        link_keywords = ['linkquality', 'flow', 'velocity', 'headloss',
-                         'Status', 'Setting', 'ReactionRate', 'StatusStr', 'FrictionFactor']
+        link_keywords = [
+            'linkquality', 'flow', 'velocity', 'headloss',
+            'Status', 'Setting', 'ReactionRate', 'StatusStr', 'FrictionFactor'
+        ]
 
         def is_node_attribute(key):
             key_lower = key.lower()
@@ -435,10 +438,10 @@ class EpytValues:
         dictVals = dictValss
 
         def process_dataframe(key, df):
-
             header_labels = []
             num_rows = len(df)
             chosen_id_array = None
+
             if is_node_attribute(key) and node_id_list is not None:
                 chosen_id_array = node_id_list
             elif is_link_attribute(key) and link_id_list is not None:
@@ -468,14 +471,13 @@ class EpytValues:
 
             if print_index_col:
                 index_values = list(range(1, num_rows + 1))
-                insert_pos = 0
                 if print_id_col:
                     id_col = df.pop('Id')
                     df.insert(0, 'Index', index_values)
                     df.insert(1, 'Id', id_col)
                     header_labels.insert(0, 'Index')
                 else:
-                    df.insert(insert_pos, "Index", index_values)
+                    df.insert(0, "Index", index_values)
                     header_labels.insert(0, 'Index')
 
             num_data_columns = df.shape[1] - len(header_labels)
@@ -489,18 +491,24 @@ class EpytValues:
             return df
 
         with pd.ExcelWriter(filename, mode="w") as writer:
+
             for key, data in dictVals.items():
                 if key == 'Time':
                     continue
                 if attributes and key not in attributes:
                     continue
                 if not isinstance(data, (list, np.ndarray, pd.Series, pd.DataFrame)):
-                    #print(f"Skipping key '{key}' due to unsupported data type: {type(data)}")
                     continue
 
                 df = pd.DataFrame(data)
                 df = process_dataframe(key, df)
-                df.to_excel(writer, sheet_name=key, index=False)
+
+                if not header:
+                    df.columns = df.iloc[0]
+                    df = df.iloc[1:]
+                    df.to_excel(writer, sheet_name=key, index=False, header=True)
+                else:
+                    df.to_excel(writer, sheet_name=key, index=False, header=True)
 
             if allValues:
                 worksheet_name = 'All values'
@@ -516,16 +524,18 @@ class EpytValues:
 
                     df = pd.DataFrame(data)
                     df = process_dataframe(key, df)
+
+
                     worksheet = writer.sheets.get(worksheet_name)
                     if first_iter:
-                        df.to_excel(writer, sheet_name=worksheet_name, index=False, startrow=1)
+                        df.to_excel(writer, sheet_name=worksheet_name, index=False, header=header, startrow=1)
                         worksheet = writer.sheets[worksheet_name]
                         worksheet.write(0, 0, key)
                         first_iter = False
                     else:
                         startrow = worksheet.dim_rowmax + 3
                         worksheet.write(startrow - 1, 0, key)
-                        df.to_excel(writer, sheet_name=worksheet_name, index=False, startrow=startrow)
+                        df.to_excel(writer, sheet_name=worksheet_name, index=False, header=header, startrow=startrow)
 
         print(f"Data successfully exported to {filename}")
 
