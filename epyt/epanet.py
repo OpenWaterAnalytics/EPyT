@@ -10625,7 +10625,7 @@ class epanet:
             else:
                 time_ = splitControl[5].split(':')
                 controlLevel = int(time_[0]) * 3600 + int(time_[1]) * 60
-                if "PM" == splitControl[6]:
+                if splitControl.__len__() > 6 and "PM" == splitControl[6]:
                     controlLevel += 43200
         return [controlTypeIndex, linkIndex, controlSettingValue, nodeIndex, controlLevel]
 
