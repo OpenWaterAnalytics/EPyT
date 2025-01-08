@@ -57,5 +57,24 @@ selected_attribute = "Pressure"
 comp_values.to_excel(f"to_excel_{selected_attribute}_example",
                      attributes=selected_attribute)
 
+# Retrieve node and link IDs from the network
+nodeid = d.getNodeNameID()
+linkid = d.getLinkNameID()
+
+# Below are four example scenarios demonstrating how to use comp_values.to_excel()
+# with different parameter configurations:
+
+# 1) Scenario 1: Include both index and node/link IDs in the output.
+comp_values.to_excel("case1", node_id_list=nodeid, link_id_list=linkid, both=True)
+
+# 2) Scenario 2: Include only node/link IDs (no index).
+comp_values.to_excel("case2", node_id_list=nodeid, link_id_list=linkid, both=False)
+
+# 3) Scenario 3: Use the default settings (only index is included).
+comp_values.to_excel("case3")
+
+# 4) Scenario 4: Use the default settings but suppress the column headers.
+comp_values.to_excel("case4", header=False)
+
 # Unload library
 d.unload()
