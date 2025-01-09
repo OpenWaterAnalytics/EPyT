@@ -64,7 +64,7 @@ from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void
     c_char_p
 from types import SimpleNamespace
 import matplotlib.pyplot as plt
-from datetime import datetime
+from datetime import datetime, timezone
 from epyt import __version__, __msxversion__, __lastupdate__
 from shutil import copyfile
 from matplotlib import cm
@@ -6078,7 +6078,7 @@ class epanet:
                     objectNameID = ' '
                     space = ''
                 if variable >= self.ToolkitConstants.EN_R_TIME:
-                    value_premise = datetime.utcfromtimestamp(value_premise).strftime("%I:%M %p UTC")
+                    value_premise = datetime.fromtimestamp(value_premise, tz=timezone.utc).strftime("%I:%M %p")
                 else:
                     value_premise = str(value_premise)
                 if status == 0:
@@ -10625,6 +10625,8 @@ class epanet:
             else:
                 time_ = splitControl[5].split(':')
                 controlLevel = int(time_[0]) * 3600 + int(time_[1]) * 60
+                if splitControl.__len__() > 6 and "PM" == splitControl[6]:
+                    controlLevel += 43200
         return [controlTypeIndex, linkIndex, controlSettingValue, nodeIndex, controlLevel]
 
     def __createTempfiles(self, BinTempfile):
