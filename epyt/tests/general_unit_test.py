@@ -2187,7 +2187,7 @@ class SetTest(unittest.TestCase):
         premise_index = 1
         premise = 'IF SYSTEM CLOCKTIME >= 08:00 PM'
         d.setRulePremise(rule_index, premise_index, premise)
-        self.assertEqual(d.getRules()[1]['Premises'][0], 'IF SYSTEM CLOCKTIME >= 08:00 PM UTC', err_msg)
+        self.assertEqual(d.getRules()[1]['Premises'][0], 'IF SYSTEM CLOCKTIME >= 08:00 PM', err_msg)
 
         # Test 2
         rule_index = 1
