@@ -6632,13 +6632,28 @@ class epanet:
         >>> d.openAnyInp('epyt/networks/Net2.inp')
         """
         arg = self.InputFile
+        plat = platform.system().lower()
         if len(argv) == 1:
             arg = argv[0]
-        try:
-            subprocess.call(['Spyder.exe', arg])
-        except:
-            subprocess.call(['notepad.exe', arg])
-
+        if plat in ['windows']:
+            try:
+                subprocess.call(['Spyder.exe', arg])
+            except:
+                subprocess.call(['notepad.exe', arg])
+        elif plat in ['darwin']:
+            try:
+                subprocess.call(['spyder', arg])
+            except:
+                subprocess.call(['open','-e', arg])
+        else:
+            try:
+                subprocess.call(['spyder', arg])
+            except:
+                try:
+                    subprocess.call(['spyder3', arg])
+                except: #i aint touching this one
+                    subprocess.call(['vi', arg])
+                    subprocess.call(['emacs', arg])
     def openCurrentInp(self, *argv):
         """ Opens EPANET input file who is loaded
 
@@ -6646,11 +6661,26 @@ class epanet:
 
         >>> d.openCurrentInp()
         """
-        try:
-            subprocess.call(['Spyder.exe', self.TempInpFile])
-        except:
-            subprocess.call(['notepad.exe', self.TempInpFile])
-
+        plat = platform.system().lower()
+        if plat in ['windows']:
+            try:
+                subprocess.call(['Spyder.exe', self.TempInpFile])
+            except:
+                subprocess.call(['notepad.exe', self.TempInpFile])
+        elif plat in ['darwin']:
+            try:
+                subprocess.call(['spyder', self.TempInpFile])
+            except:
+                subprocess.call(['open','-e',self.TempInpFile])
+        else:
+            try:
+                subprocess.call(['spyder', self.TempInpFile])
+            except:
+                try:
+                    subprocess.call(['spyder3', self.TempInpFile])
+                except:
+                    subprocess.call(['vi',self.TempInpFile])
+                    subprocess.call(['emacs',self.TempInpFile])
     def openQualityAnalysis(self):
         """ Opens the water quality analysis system.
 
