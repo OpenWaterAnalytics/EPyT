@@ -10999,6 +10999,9 @@ class epanet:
     def __getNodeTankMixiningModel(self, *argv):
         self.NodeTankMixingModelCode = self.__getTankNodeInfo(self.ToolkitConstants.EN_MIXMODEL, *argv)
         if isinstance(self.NodeTankMixingModelCode, (list, np.ndarray)):
+            if isinstance(self.NodeTankMixingModelCode, np.ndarray):
+                if self.NodeTankMixingModelCode.shape == ():    # Handle cases with strange shapes
+                    self.NodeTankMixingModelCode = [self.NodeTankMixingModelCode]
             self.NodeTankMixingModelType = [self.TYPEMIXMODEL[i.astype(int)] for i in self.NodeTankMixingModelCode]
         else:
             self.NodeTankMixingModelType = self.TYPEMIXMODEL[self.NodeTankMixingModelCode.astype(int)]
