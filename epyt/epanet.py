@@ -12865,11 +12865,23 @@ class epanet:
     def setMSXParametersTanksValue(self, NodeTankIndex, paramOrValues, value=None):
         """Assigns a value to one or multiple reaction parameters for a given tank within the pipe network.
 
-        Usage:
-            - Set multiple parameters:
-                d.setMSXParametersTanksValue(NodeTankIndex, [value1, value2, ...])
-            - Set one parameter:
-                d.setMSXParametersTanksValue(NodeTankIndex, paramIndex, value)
+        Example 1:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+            x=d.getMSXParametersTanksValue()
+            print(x[35])
+            d.setMSXParametersTanksValue(36,[5,6])
+            x=d.getMSXParametersTanksValue()
+            print(x[35])
+        Example 2:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+            x = d.getMSXParametersTanksValue()
+            print(x[35])
+            d.setMSXParametersTanksValue(36, 2,20)
+            x = d.getMSXParametersTanksValue()
+            print(x[35])
+
 
         See also getMSXParametersTanksValue, setMSXParametersPipesValue,
                  getMSXParametersPipesValue, getMSXParametersCount,
@@ -12886,12 +12898,22 @@ class epanet:
     def setMSXParametersPipesValue(self, pipeIndex, paramOrValues, value=None):
         """Assigns a value to one or multiple reaction parameters
         for a given pipe within the pipe network.
-
-        Usage:
-            - Set multiple parameters:
-                d.setMSXParametersPipesValue(pipeIndex, [value1, value2, ...])
-            - Set one parameter:
-                d.setMSXParametersPipesValue(pipeIndex, paramIndex, value)
+        Example 1:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               x = d.getMSXParametersPipesValue()
+               print(x[0])
+               d.setMSXParametersPipesValue(1, [1.5, 2])
+               x = d.getMSXParametersPipesValue()
+               print(x[0])
+        Example 2:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               x = d.getMSXParametersPipesValue()
+               print(x[0])
+               d.setMSXParametersPipesValue(1, 2,5)
+               x = d.getMSXParametersPipesValue()
+               print(x[0])
 
         See also getMSXParametersPipesValue, setMSXParametersTanksValue,
                  getMSXParametersTanksValue, getMSXParametersCount,
