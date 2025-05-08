@@ -12887,6 +12887,10 @@ class epanet:
                  getMSXParametersPipesValue, getMSXParametersCount,
                  getMSXParametersIndex.
         """
+        if not NodeTankIndex in self.NodeTankIndex:
+            warnings.warn("Invalid Tank Index")
+            return
+
         if value is None:
             values = paramOrValues
             for i, val in enumerate(values):
