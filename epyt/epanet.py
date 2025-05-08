@@ -12862,39 +12862,74 @@ class epanet:
         nfactors = len(patternVector)
         self.msx.MSXsetpattern(index, patternVector, nfactors)
 
-    def setMSXParametersTanksValue(self, NodeTankIndex, paramindex, value):
-        """Assigns a value to a particular reaction parameter for a given tank within the pipe network.
+    def setMSXParametersTanksValue(self, NodeTankIndex, paramOrValues, value=None):
+        """Assigns a value to one or multiple reaction parameters for a given tank within the pipe network.
 
-             Example:
+        Example 1:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+            x=d.getMSXParametersTanksValue()
+            print(x[35])
+            d.setMSXParametersTanksValue(36,[5,6])
+            x=d.getMSXParametersTanksValue()
+            print(x[35])
+        Example 2:
+            d = epanet('net2-cl2.inp')
+            d.loadMSXFile('net2-cl2.msx')
+            x = d.getMSXParametersTanksValue()
+            print(x[35])
+            d.setMSXParametersTanksValue(36, 2,20)
+            x = d.getMSXParametersTanksValue()
+            print(x[35])
+
+
+        See also getMSXParametersTanksValue, setMSXParametersPipesValue,
+                 getMSXParametersPipesValue, getMSXParametersCount,
+                 getMSXParametersIndex.
+        """
+        if not NodeTankIndex in self.NodeTankIndex:
+            warnings.warn("Invalid Tank Index")
+            return
+
+        if value is None:
+            values = paramOrValues
+            for i, val in enumerate(values):
+                self.msx.MSXsetparameter(0, NodeTankIndex, i + 1, val)
+        else:
+            paramIndex = paramOrValues
+            self.msx.MSXsetparameter(0, NodeTankIndex, paramIndex, value)
+
+    def setMSXParametersPipesValue(self, pipeIndex, paramOrValues, value=None):
+        """Assigns a value to one or multiple reaction parameters
+        for a given pipe within the pipe network.
+        Example 1:
                d = epanet('net2-cl2.inp');
                d.loadMSXFile('net2-cl2.msx');
-               x=d.getMSXParametersTanksValue()
-               print(x[96])
-               d.setMSXParametersTanksValue(97,1,5)
-               x=d.getMSXParametersTanksValue()
-               print(x[96])
-             See also getMSXParametersTanksValue, setMSXParametersPipesValue,
-                      getMSXParametersPipesValue, getMSXParametersCount,
-                      getMSXParametersIndex."""
-        self.msx.MSXsetparameter(0, NodeTankIndex, paramindex, value)
-
-    def setMSXParametersPipesValue(self, pipeIndex, value):
-        """Assigns a value to a particular reaction parameter
-         for a given pipe within the pipe network.
-
-             Example:
-               d = epanet('net2-cl2.inp');
-               d.loadMSXFile('net2-cl2.msx');
-               x=d.getMSXParametersPipesValue()
-               print(x[1])
-               d.setMSXParametersPipesValue(1,[1.5 , 2])
-               x=d.getMSXParametersPipesValue()
+               x = d.getMSXParametersPipesValue()
                print(x[0])
-                See also getMSXParametersPipesValue, setMSXParametersTanksValue,
-                      getMSXParametersTanksValue, getMSXParametersCount,
-                      getMSXParametersIndex."""
-        for i in range(len(value)):
-            self.msx.MSXsetparameter(1, pipeIndex, i + 1, value[i])
+               d.setMSXParametersPipesValue(1, [1.5, 2])
+               x = d.getMSXParametersPipesValue()
+               print(x[0])
+        Example 2:
+               d = epanet('net2-cl2.inp');
+               d.loadMSXFile('net2-cl2.msx');
+               x = d.getMSXParametersPipesValue()
+               print(x[0])
+               d.setMSXParametersPipesValue(1, 2,5)
+               x = d.getMSXParametersPipesValue()
+               print(x[0])
+
+        See also getMSXParametersPipesValue, setMSXParametersTanksValue,
+                 getMSXParametersTanksValue, getMSXParametersCount,
+                 getMSXParametersIndex.
+        """
+        if value is None:
+            values = paramOrValues
+            for i, val in enumerate(values):
+                self.msx.MSXsetparameter(1, pipeIndex, i + 1, val)
+        else:
+            paramIndex = paramOrValues
+            self.msx.MSXsetparameter(1, pipeIndex, paramIndex, value)
 
     def setMSXConstantsValue(self, value):
         """ Sets the values of constants.
