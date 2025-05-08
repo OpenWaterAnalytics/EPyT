@@ -58,31 +58,39 @@
    implied. See the Licence for the specific language governing
    permissions and limitations under the Licence.
 """
-from pkg_resources import resource_filename
-from inspect import getmembers, isfunction, currentframe, getframeinfo
-from ctypes import cdll, byref, create_string_buffer, c_uint64, c_uint32, c_void_p, c_int, c_double, c_float, c_long, \
-    c_char_p
-from types import SimpleNamespace
-import matplotlib.pyplot as plt
-from datetime import datetime, timezone
-from epyt import __version__, __msxversion__, __lastupdate__
-from shutil import copyfile
-from matplotlib import cm
-import matplotlib as mpl
-from pathlib import Path
-import pandas as pd
-import numpy as np
-import subprocess
+import json
+import math
+import os
 import platform
-import warnings
 import random
+import re
 import string
 import struct
-import math
-import json
+import subprocess
 import sys
-import os
-import re
+import traceback
+import warnings
+from ctypes import cdll, byref, create_string_buffer, c_uint64, c_void_p, c_int, c_double, c_float, c_long, \
+    c_char_p
+from datetime import datetime, timezone
+from importlib.resources import files
+from inspect import getmembers, isfunction, currentframe, getframeinfo
+from pathlib import Path
+from shutil import copyfile
+from types import SimpleNamespace
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from matplotlib import cm
+
+epyt_root = str(files("epyt"))
+
+from epyt import __version__, __msxversion__, __lastupdate__
+
+red = "\033[91m"
+reset = "\033[0m"
 
 
 class ToolkitConstants:
@@ -525,7 +533,6 @@ class EpytValues:
                     df = pd.DataFrame(data)
                     df = process_dataframe(key, df)
 
-
                     worksheet = writer.sheets.get(worksheet_name)
                     if first_iter:
                         df.to_excel(writer, sheet_name=worksheet_name, index=False, header=header, startrow=1)
@@ -582,12 +589,57 @@ class epanet:
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
 
+    _psi_units = {"MDG", "IMGD", "CFS", "GPM"}
+    _kpa_units = {"CMH", "CMS", "MLD", "CMD", "LPS", "LPM"}
+
+    def _logFunctionError(self, function_name):
+        """Log and display a detailed error with traceback."""
+        # Print visible error for developer
+        print(f"{red}UserWarning: {function_name}{reset}")
+
+        # Show where in user code it occurred
+        tb = traceback.extract_stack()
+        for frame in reversed(tb):
+            # Skip internal files like epanet.py
+            if "epanet.py" not in frame.filename:  # Adjust if needed
+                print(f"{red}{frame.filename}, line {frame.lineno}: {frame.line.strip()}{reset}")
+                break  # Show only the first external call
+
+    def _flowUnitsCheck(self):
+        """Return metric type based on unit."""
+        flow_unit = self.getFlowUnits()
+        if flow_unit in self._psi_units:
+            return "PSI"
+        if flow_unit in self._kpa_units:
+            return "KPA AND METERS"
+        return "UNKNOWN"
+
+    def __getattribute__(self, function_id):
+        attr = super().__getattribute__(function_id)
+
+        if (
+                callable(attr)
+                and not function_id.startswith(("__", "_", "EN", "printv", "MSX", "test", "load"))
+        ):
+            def _wrapper(*args, **kwargs):
+                result = attr(*args, **kwargs)
+
+                if hasattr(self, 'api') and getattr(self.api, 'errcode', 0) != 0:
+                    # EPANET error occurred
+                    self._logFunctionError(function_id)
+
+                return result
+
+            return _wrapper
+
+        return attr
+
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True,
                  display_warnings=True):
         # Constants
         self.msx = None
         if display_warnings:
-            warnings.simplefilter('always') # 'action', "error", "ignore", "always", "default", "module", "once"
+            warnings.simplefilter('always')  # 'action', "error", "ignore", "always", "default", "module", "once"
         # Demand model types. DDA #0 Demand driven analysis,
         # PDA #1 Pressure driven analysis.
         self.customlib = customlib
@@ -665,7 +717,7 @@ class epanet:
             self.__exist_inp_file = False
             if len(argv) == 1:
                 if not os.path.exists(self.InputFile):
-                    for root, dirs, files in os.walk(resource_filename("epyt", "")):
+                    for root, dirs, files in os.walk(epyt_root):
                         for name in files:
                             if name.lower().endswith(".inp"):
                                 if name == self.InputFile:
@@ -2477,7 +2529,7 @@ class epanet:
             self.api.ENepanet(tempfile, rptfile, binfile)
         else:
             self.api.ENepanet(self.TempInpFile, rptfile, binfile)
-        
+
         fid = open(binfile, "rb")
         value = self.__readEpanetBin(fid, binfile, 0)
         value.WarnFlag = False
@@ -4112,7 +4164,7 @@ class epanet:
     def getNetworksDatabase(self):
         """Return all EPANET Input Files from EPyT database."""
         networksdb = []
-        for root, dirs, files in os.walk(resource_filename("epyt", "")):
+        for root, dirs, files in os.walk(epyt_root):
             for name in files:
                 if name.lower().endswith(".inp") and '_temp' not in name:
                     networksdb.append(name)
@@ -4861,7 +4913,7 @@ class epanet:
         value = []
         for i in indices:
             e = self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCEPAT)
-            if e != 240:
+            if e is not None:
                 value.append(e)
             else:
                 value.append(0)
@@ -4886,12 +4938,12 @@ class epanet:
         for i in indices:
             try:
                 e = self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCEQUAL)
-                if e != 240:
+                if e is not None:
                     value.append(e)
                 else:
                     value.append(0)
             except Exception as Errcode:
-                if Errcode.args[0][13:16] == '203':
+                if self.api.errcode == 203:
                     return self.getError(Errcode)
             j = j + 1
         return np.array(value)
@@ -4913,12 +4965,12 @@ class epanet:
         for i in indices:
             try:
                 e = int(self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCETYPE))
-                if e != 240:
+                if e is not None:
                     value.append(self.TYPESOURCE[e])
                 else:
                     value.append(0)
             except Exception as Errcode:
-                if Errcode.args[0][13:16] == '203':
+                if self.api.errcode == 203:
                     return self.getError(Errcode)
             j = j + 1
         return value
@@ -4939,14 +4991,15 @@ class epanet:
         for i in indices:
             try:
                 e = self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_SOURCETYPE)
-                if e != 240:
+                if e is not None:
                     value.append(e)
                 else:
                     value.append(0)
             except Exception as Errcode:
-                if Errcode.args[0][13:16] == '203':
+                if self.api.errcode == 203:
                     return self.getError(Errcode)
             j = j + 1
+
         if len(argv) == 0:
             return np.array(value)
         else:
@@ -6644,16 +6697,17 @@ class epanet:
             try:
                 subprocess.call(['spyder', arg])
             except:
-                subprocess.call(['open','-e', arg])
+                subprocess.call(['open', '-e', arg])
         else:
             try:
                 subprocess.call(['spyder', arg])
             except:
                 try:
                     subprocess.call(['spyder3', arg])
-                except: #i aint touching this one
+                except:  # i aint touching this one
                     subprocess.call(['vi', arg])
                     subprocess.call(['emacs', arg])
+
     def openCurrentInp(self, *argv):
         """ Opens EPANET input file who is loaded
 
@@ -6671,7 +6725,7 @@ class epanet:
             try:
                 subprocess.call(['spyder', self.TempInpFile])
             except:
-                subprocess.call(['open','-e',self.TempInpFile])
+                subprocess.call(['open', '-e', self.TempInpFile])
         else:
             try:
                 subprocess.call(['spyder', self.TempInpFile])
@@ -6679,8 +6733,9 @@ class epanet:
                 try:
                     subprocess.call(['spyder3', self.TempInpFile])
                 except:
-                    subprocess.call(['vi',self.TempInpFile])
-                    subprocess.call(['emacs',self.TempInpFile])
+                    subprocess.call(['vi', self.TempInpFile])
+                    subprocess.call(['emacs', self.TempInpFile])
+
     def openQualityAnalysis(self):
         """ Opens the water quality analysis system.
 
@@ -11000,7 +11055,7 @@ class epanet:
         self.NodeTankMixingModelCode = self.__getTankNodeInfo(self.ToolkitConstants.EN_MIXMODEL, *argv)
         if isinstance(self.NodeTankMixingModelCode, (list, np.ndarray)):
             if isinstance(self.NodeTankMixingModelCode, np.ndarray):
-                if self.NodeTankMixingModelCode.shape == ():    # Handle cases with strange shapes
+                if self.NodeTankMixingModelCode.shape == ():  # Handle cases with strange shapes
                     self.NodeTankMixingModelCode = [self.NodeTankMixingModelCode]
             self.NodeTankMixingModelType = [self.TYPEMIXMODEL[i.astype(int)] for i in self.NodeTankMixingModelCode]
         else:
@@ -11342,7 +11397,7 @@ class epanet:
                 elif categ == 1 or len(indices) == 1:
                     eval('self.api.' + fun + '(i, categ, param[j])')
                 else:
-                    if  c + 1 > self.getNodeDemandCategoriesNumber(i):
+                    if c + 1 > self.getNodeDemandCategoriesNumber(i):
                         self.addNodeJunctionDemand(i, param[j])
                     else:
                         eval('self.api.' + fun + '(i, c, param[j])')
@@ -11362,7 +11417,7 @@ class epanet:
         d.loadMSXFile(msxname, customMSXlib=msxlib)"""
 
         if not os.path.exists(msxname):
-            for root, dirs, files in os.walk(resource_filename("epyt", "")):
+            for root, dirs, files in os.walk(epyt_root):
                 for name in files:
                     if name.lower().endswith(".msx"):
                         if name == msxname:
@@ -13560,7 +13615,7 @@ class epanet:
             plt.ylabel('Quantity')
             plt.legend()
             plt.show()
-            
+
 
 class epanetapi:
     """
@@ -13597,11 +13652,11 @@ class epanetapi:
             libname = f"epanet2"
             ops = platform.system().lower()
             if ops in ["windows"]:
-                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", "win", f"{libname}.dll"))
+                self.LibEPANET = os.path.join(epyt_root, os.path.join("libraries", "win", f"{libname}.dll"))
             elif ops in ["darwin"]:
-                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"mac/lib{libname}.dylib"))
+                self.LibEPANET = os.path.join(epyt_root, os.path.join("libraries", f"mac/lib{libname}.dylib"))
             else:
-                self.LibEPANET = resource_filename("epyt", os.path.join("libraries", f"glnx/lib{libname}.so"))
+                self.LibEPANET = os.path.join(epyt_root, os.path.join("libraries", f"glnx/lib{libname}.so"))
 
             self._lib = cdll.LoadLibrary(self.LibEPANET)
             self.LibEPANETpath = os.path.dirname(self.LibEPANET)
@@ -14475,7 +14530,8 @@ class epanetapi:
                 self.errcode = errcode
             errmssg = create_string_buffer(150)
             self._lib.ENgeterror(self.errcode, byref(errmssg), 150)
-            warnings.warn(errmssg.value.decode())
+            # warnings.warn(errmssg.value.decode())
+            print(f"{red}EPANET Error: {errmssg.value.decode()}{reset}")
 
     def ENgetflowunits(self):
         """ Retrieves a project's flow units.
@@ -14717,11 +14773,12 @@ class epanetapi:
             fValue = c_float()
             self.errcode = self._lib.ENgetnodevalue(int(index), code_p, byref(fValue))
 
-        if self.errcode != 240:
+        if self.errcode == 240:
+            self.errcode = 0
+            return None
+        else:
             self.ENgeterror()
             return fValue.value
-        else:
-            return 240
 
     def ENgetnumdemands(self, index):
         """ Retrieves the number of demand categories for a junction node.
@@ -16429,11 +16486,11 @@ class epanetmsxapi:
         if loadlib:
             ops = platform.system().lower()
             if ops in ["windows"]:
-                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "win", "epanetmsx.dll"))
+                self.MSXLibEPANET = os.path.join(epyt_root, os.path.join("libraries", "win", "epanetmsx.dll"))
             elif ops in ["darwin"]:
-                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "mac", "epanetmsx.dylib"))
+                self.MSXLibEPANET = os.path.join(epyt_root, os.path.join("libraries", "mac", "epanetmsx.dylib"))
             else:
-                self.MSXLibEPANET = resource_filename("epyt", os.path.join("libraries", "glnx", "epanetmsx.so"))
+                self.MSXLibEPANET = os.path.join(epyt_root, os.path.join("libraries", "glnx", "epanetmsx.so"))
 
             self.msx_lib = cdll.LoadLibrary(self.MSXLibEPANET)
             self.MSXLibEPANETPath = os.path.dirname(self.MSXLibEPANET)
