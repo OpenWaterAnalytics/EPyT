@@ -73,7 +73,10 @@ import warnings
 from ctypes import cdll, byref, create_string_buffer, c_uint64, c_void_p, c_int, c_double, c_float, c_long, \
     c_char_p
 from datetime import datetime, timezone
-from importlib.resources import files
+try:
+    from importlib.resources import files  # Python 3.9+
+except ImportError:
+    from importlib_resources import files  # Backport for < 3.9
 from inspect import getmembers, isfunction, currentframe, getframeinfo
 from pathlib import Path
 from shutil import copyfile
