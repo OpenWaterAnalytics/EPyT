@@ -112,15 +112,15 @@ class error_handler:
             if "epanet.py" not in frame.filename:
                 print(f"{red}{frame.filename}, line {frame.lineno}: {frame.line.strip()}{reset}")
                 break
-
-    def _flowUnitsCheck(self):
-        """Return metric type based on unit."""
-        flow_unit = self.getFlowUnits()
-        if flow_unit in self._psi_units:
-            return "PSI"
-        if flow_unit in self._kpa_units:
-            return "KPA AND METERS"
-        return "UNKNOWN"
+    # dev 2.3
+    # def _flowUnitsCheck(self):
+    #     """Return metric type based on unit."""
+    #     flow_unit = self.getFlowUnits()
+    #     if flow_unit in self._psi_units:
+    #         return "PSI"
+    #     if flow_unit in self._kpa_units:
+    #         return "KPA AND METERS"
+    #     return "UNKNOWN"
 
     def __getattribute__(self, function_id):
         attr = super().__getattribute__(function_id)
