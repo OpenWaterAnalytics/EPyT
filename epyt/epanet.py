@@ -11947,7 +11947,7 @@ class epanet(error_handler):
         output = list(value.values())
         return output
 
-    def getMSXSpeciesNameID(self, varagin=None):
+    def getMSXSpeciesNameID(self, *argv):
         """Retrieves the species' ID.
 
              Example:
@@ -11955,24 +11955,26 @@ class epanet(error_handler):
                d.loadMSXFile('Net3-NH2CL.msx')
                d.getMSXSpeciesNameID()        Retrieves the IDs of all the species.
                d.getMSXSpeciesNameID(1)      Retrieves the IDs of the first specie.
-               d.getMSXSpeciesNameID([1:3])  Retrieves the IDs of the first three species.
 
              See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
                       getMSXSpeciesType, getMSXSpeciesUnits, getMSXSpeciesATOL,
                       getMSXSpeciesRTOL."""
-        x = self.getMSXSpeciesCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            for i in range(1, x + 1):
-                varagin[i] = i + 1
-        MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
-        if x > 0:
-            for i in varagin:
-                len = self.msx.MSXgetIDlen(MSX_SPECIES, i)
-                value[i] = self.msx.MSXgetID(MSX_SPECIES, i, len)
-        output = list(value.values())
-        return output
+        values = []
+        msx_species = self.ToolkitConstants.MSX_SPECIES
+        if len(argv) > 0:
+            index = argv[0]
+            if isinstance(index, list):
+                for i in index:
+                    len_id = self.msx.MSXgetIDlen(msx_species, i+1)
+                    values.append(self.msx.MSXgetID(msx_species, i+1, len_id))
+            else:
+                len_id = self.msx.MSXgetIDlen(self.ToolkitConstants.MSX_SPECIES, index)
+                values = self.msx.MSXgetID(msx_species, index, len_id)
+        else:
+            for i in range(self.getMSXSpeciesCount()):
+                len_id = self.msx.MSXgetIDlen(msx_species, i+1)
+                values.append(self.msx.MSXgetID(msx_species, i+1, len_id))
+        return values
 
     def getMSXParametersIndex(self, varagin=None):
         """ Retrieves the parameter's indices.
