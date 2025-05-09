@@ -73,6 +73,7 @@ import warnings
 from ctypes import cdll, byref, create_string_buffer, c_uint64, c_void_p, c_int, c_double, c_float, c_long, \
     c_char_p
 from datetime import datetime, timezone
+
 try:
     from importlib.resources import files  # Python 3.9+
 except ImportError:
@@ -94,6 +95,46 @@ from epyt import __version__, __msxversion__, __lastupdate__
 
 red = "\033[91m"
 reset = "\033[0m"
+
+
+class error_handler:
+    _psi_units = {"MDG", "IMGD", "CFS", "GPM"}
+    _kpa_units = {"CMH", "CMS", "MLD", "CMD", "LPS", "LPM"}
+
+    def _logFunctionError(self, function_name):
+        """Log and display a detailed error with traceback."""
+        # Print visible error
+        print(f"{red}UserWarning: {function_name}{reset}")
+
+        # Show where in user code it occurred
+        tb = traceback.extract_stack()
+        for frame in reversed(tb):
+            if "epanet.py" not in frame.filename:
+                print(f"{red}{frame.filename}, line {frame.lineno}: {frame.line.strip()}{reset}")
+                break
+
+    def _flowUnitsCheck(self):
+        """Return metric type based on unit."""
+        flow_unit = self.getFlowUnits()
+        if flow_unit in self._psi_units:
+            return "PSI"
+        if flow_unit in self._kpa_units:
+            return "KPA AND METERS"
+        return "UNKNOWN"
+
+    def __getattribute__(self, function_id):
+        attr = super().__getattribute__(function_id)
+
+        if (callable(attr) and not function_id.startswith(("__", "_", "EN", "printv", "MSX", "test", "load"))):
+            def _wrapper(*args, **kwargs):
+                result = attr(*args, **kwargs)
+
+                if hasattr(self, 'api') and getattr(self.api, 'errcode', 0) != 0:
+                    self._logFunctionError(function_id)
+                return result
+
+            return _wrapper
+        return attr
 
 
 class ToolkitConstants:
@@ -584,58 +625,13 @@ def isList(var):
         return False
 
 
-class epanet:
+class epanet(error_handler):
     """ EPyt main functions class
 
     Example with custom library
             epanetlib=os.path.join(os.getcwd(), 'epyt','libraries','win','epanet2.dll')
             d = epanet(inpname, msx=True,customlib=epanetlib)
      """
-
-    _psi_units = {"MDG", "IMGD", "CFS", "GPM"}
-    _kpa_units = {"CMH", "CMS", "MLD", "CMD", "LPS", "LPM"}
-
-    def _logFunctionError(self, function_name):
-        """Log and display a detailed error with traceback."""
-        # Print visible error for developer
-        print(f"{red}UserWarning: {function_name}{reset}")
-
-        # Show where in user code it occurred
-        tb = traceback.extract_stack()
-        for frame in reversed(tb):
-            # Skip internal files like epanet.py
-            if "epanet.py" not in frame.filename:  # Adjust if needed
-                print(f"{red}{frame.filename}, line {frame.lineno}: {frame.line.strip()}{reset}")
-                break  # Show only the first external call
-
-    def _flowUnitsCheck(self):
-        """Return metric type based on unit."""
-        flow_unit = self.getFlowUnits()
-        if flow_unit in self._psi_units:
-            return "PSI"
-        if flow_unit in self._kpa_units:
-            return "KPA AND METERS"
-        return "UNKNOWN"
-
-    def __getattribute__(self, function_id):
-        attr = super().__getattribute__(function_id)
-
-        if (
-                callable(attr)
-                and not function_id.startswith(("__", "_", "EN", "printv", "MSX", "test", "load"))
-        ):
-            def _wrapper(*args, **kwargs):
-                result = attr(*args, **kwargs)
-
-                if hasattr(self, 'api') and getattr(self.api, 'errcode', 0) != 0:
-                    # EPANET error occurred
-                    self._logFunctionError(function_id)
-
-                return result
-
-            return _wrapper
-
-        return attr
 
     def __init__(self, *argv, version=2.2, ph=False, loadfile=False, customlib=None, display_msg=True,
                  display_warnings=True):
@@ -16472,7 +16468,7 @@ class epanetapi:
         self.ENgeterror()
 
 
-class epanetmsxapi:
+class epanetmsxapi(error_handler):
     """example msx = epanetmsxapi()"""
 
     def __init__(self, msxfile='', loadlib=True, ignore_msxfile=False, customMSXlib=None, display_msg=True,
@@ -17099,6 +17095,7 @@ class epanetmsxapi:
         e = self.msx_lib.MSXgeterror(err, errmsg, 80)
 
         if e:
-            Warning(errmsg.value.decode())
+            # Warning(errmsg.value.decode())
+            print(f"{red}EPANET Error: {errmsg.value.decode()}{reset}")
 
         return errmsg.value.decode()
