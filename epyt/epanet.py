@@ -1585,6 +1585,7 @@ class epanet(error_handler):
         >>> patternID = 'new_pattern'
         # Adds a new time pattern given it's ID
         >>> patternIndex = d.addPattern(patternID)
+        >>> patternIndex = d.addPattern(patternID+'2', 1)
         >>> d.getPatternNameID()
 
         Example 2:
@@ -9403,7 +9404,11 @@ class epanet(error_handler):
 
         See also getPattern, setPatternValue, setPatternMatrix, setPatternNameID, addPattern, deletePattern.
         """
-        nfactors = len(patternVector)
+        if isinstance(patternVector, int):
+            nfactors = 1
+            patternVector = [patternVector]
+        else:
+            nfactors = len(patternVector)
         self.api.ENsetpattern(index, patternVector, nfactors)
 
     def setPatternComment(self, value, *argv):
