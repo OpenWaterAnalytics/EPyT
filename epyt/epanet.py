@@ -100,12 +100,21 @@ reset = "\033[0m"
 class error_handler:
     _psi_units = {"MDG", "IMGD", "CFS", "GPM"}
     _kpa_units = {"CMH", "CMS", "MLD", "CMD", "LPS", "LPM"}
+    last_error = None
 
     def _logFunctionError(self, function_name):
         """Log and display a detailed error with traceback."""
         # Print visible error
         print(f"{red}UserWarning: {function_name}{reset}")
+        if hasattr(self, 'msx') and 'MSX' in function_name:
+            message = self.msx.MSXgeterror(self.msx.errcode)
 
+            print(f"{red}MSX Error: {message}{reset}")
+        elif hasattr(self, 'api'):
+            message = self.api.ENgeterror(self.api.errcode)
+            print(f"{red}EPANET Error: {message}{reset}")
+
+        self.last_error = [function_name, message]
         # Show where in user code it occurred
         tb = traceback.extract_stack()
         for frame in reversed(tb):
@@ -128,8 +137,12 @@ class error_handler:
         if (callable(attr) and not function_id.startswith(("__", "_", "EN", "printv", "MSX", "test", "load"))):
             def _wrapper(*args, **kwargs):
                 result = attr(*args, **kwargs)
-
-                if hasattr(self, 'api') and getattr(self.api, 'errcode', 0) != 0:
+                api = None
+                if hasattr(self, 'msx') and 'MSX' in function_id.upper():
+                    api = self.msx
+                elif hasattr(self, 'api'):
+                    api = self.api
+                if api is not None and api.errcode != 0:
                     self._logFunctionError(function_id)
                 return result
 
@@ -6665,8 +6678,8 @@ class epanet(error_handler):
 
         >>> d.loadMSXEPANETFile(d.MSXTempFile)
         """
-        err = self.msx.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
-        return err
+        self.errcode = self.msx.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
+        return self.errcode
 
     def max(self, value):
         """ Retrieves the smax value of numpy.array or numpy.mat """
@@ -14568,8 +14581,7 @@ class epanetapi:
                 self.errcode = errcode
             errmssg = create_string_buffer(150)
             self._lib.ENgeterror(self.errcode, byref(errmssg), 150)
-            # warnings.warn(errmssg.value.decode())
-            print(f"{red}EPANET Error: {errmssg.value.decode()}{reset}")
+            return errmssg.value.decode()
 
     def ENgetflowunits(self):
         """ Retrieves a project's flow units.
@@ -16556,12 +16568,15 @@ class epanetmsxapi(error_handler):
             if self.customMSXlib is None:
                 print(f"EPANET-MSX version {__msxversion__} loaded.")
 
-        msxbasename = os.path.basename(msxfile)
-        err = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
-        if err != 0:
-            self.MSXerror(err)
-            if err == 503:
-                print("Error 503 may indicate a problem with the MSX file or the MSX library.")
+        self.errcode = self.msx_lib.MSXopen(c_char_p(msxfile.encode('utf-8')))
+        if self.errcode != 0:
+            self.MSXerror(self.errcode)
+            # if self.errcode == 520:
+            #     if self.display_msg:
+            #         print(f"MSX file {msxname}.msx loaded successfully.")
+            if self.errcode == 503:
+                if self.display_msg:
+                    print("Error 503 may indicate a problem with the MSX file or the MSX library.")
         else:
             if self.display_msg:
                 print(f"MSX file {msxname}.msx loaded successfully.")
@@ -16569,10 +16584,10 @@ class epanetmsxapi(error_handler):
     def MSXclose(self):
         """  Close .msx file
             example : msx.MSXclose()"""
-        err = self.msx_lib.MSXclose()
-        if err != 0:
-            self.MSXerror(err)
-        return err
+        self.errcode = self.msx_lib.MSXclose()
+        if self.errcode != 0:
+            self.MSXerror(self.errcode)
+        return self.errcode
 
     def MSXerror(self, err_code):
         """ Function that every other function uses in case of an error """
@@ -16598,9 +16613,9 @@ class epanetmsxapi(error_handler):
         obj_type = c_int(obj_type)
         # obj_id=c_char_p(obj_id)
         index = c_int()
-        err = self.msx_lib.MSXgetindex(obj_type, obj_id.encode("utf-8"), byref(index))
-        if err != 0:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetindex(obj_type, obj_id.encode("utf-8"), byref(index))
+        if self.errcode != 0:
+            Warning(self.MSXerror(self.errcode))
         return index.value
 
     def MSXgetID(self, obj_type, index, id_len=80):
@@ -16626,9 +16641,9 @@ class epanetmsxapi(error_handler):
                     id object's ID name"""
 
         obj_id = create_string_buffer(id_len + 1)
-        err = self.msx_lib.MSXgetID(obj_type, index, obj_id, id_len)
-        if err != 0:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetID(obj_type, index, obj_id, id_len)
+        if self.errcode != 0:
+            Warning(self.MSXerror(self.errcode))
         return obj_id.value.decode()
 
     def MSXgetIDlen(self, obj_type, index):
@@ -16651,9 +16666,9 @@ class epanetmsxapi(error_handler):
 
             """
         len = c_int()
-        err = self.msx_lib.MSXgetIDlen(obj_type, index, byref(len))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetIDlen(obj_type, index, byref(len))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return len.value
 
     def MSXgetspecies(self, index):
@@ -16676,7 +16691,7 @@ class epanetmsxapi(error_handler):
         atol = c_double()
         rtol = c_double()
 
-        err = self.msx_lib.MSXgetspecies(
+        self.errcode = self.msx_lib.MSXgetspecies(
             index, byref(type), units, byref(atol), byref(rtol))
 
         if type.value == 0:
@@ -16684,8 +16699,8 @@ class epanetmsxapi(error_handler):
         elif type.value == 1:
             type = 'WALL'
 
-        if err:
-            Warning(self.MSXerror(err))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return type, units.value.decode("utf-8"), atol.value, rtol.value
 
     def MSXgetcount(self, code):
@@ -16703,9 +16718,9 @@ class epanetmsxapi(error_handler):
                 The count number of object of that type.
          """
         count = c_int()
-        err = self.msx_lib.MSXgetcount(code, byref(count))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetcount(code, byref(count))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return count.value
 
     def MSXgetconstant(self, index):
@@ -16719,9 +16734,9 @@ class epanetmsxapi(error_handler):
 
         Returns: value -> the value assigned to the constant.    """
         value = c_double()
-        err = self.msx_lib.MSXgetconstant(index, byref(value))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetconstant(index, byref(value))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return value.value
 
     def MSXgetparameter(self, obj_type, index, param):
@@ -16744,9 +16759,9 @@ class epanetmsxapi(error_handler):
                    value : the value assigned to the parameter for the node or link
                            of interest.        """
         value = c_double()
-        err = self.msx_lib.MSXgetparameter(obj_type, index, param, byref(value))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetparameter(obj_type, index, param, byref(value))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return value.value
 
     def MSXgetpatternlen(self, pattern_index):
@@ -16762,9 +16777,9 @@ class epanetmsxapi(error_handler):
              len:   the number of time periods (and therefore number of multipliers)
                    that appear in the pattern."""
         len = c_int()
-        err = self.msx_lib.MSXgetpatternlen(pattern_index, byref(len))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetpatternlen(pattern_index, byref(len))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return len.value
 
     def MSXgetpatternvalue(self, pattern_index, period):
@@ -16779,9 +16794,9 @@ class epanetmsxapi(error_handler):
                  period: the index of the time period (starting from 1) whose
                  multiplier is being sought """
         value = c_double()
-        err = self.msx_lib.MSXgetpatternvalue(pattern_index, period, byref(value))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetpatternvalue(pattern_index, period, byref(value))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return value.value
 
     def MSXgetinitqual(self, obj_type, index, species):
@@ -16807,9 +16822,9 @@ class epanetmsxapi(error_handler):
         obj_type = c_int(obj_type)
         species = c_int(species)
         index = c_int(index)
-        err = self.msx_lib.MSXgetinitqual(obj_type, index, species, byref(value))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetinitqual(obj_type, index, species, byref(value))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return value.value
 
     def MSXgetsource(self, node_index, species_index):
@@ -16845,7 +16860,7 @@ class epanetmsxapi(error_handler):
         level = c_double()
         pattern = c_int()
         node_index = c_int(node_index)
-        err = self.msx_lib.MSXgetsource(node_index, species_index,
+        self.errcode = self.msx_lib.MSXgetsource(node_index, species_index,
                                         byref(type), byref(level), byref(pattern))
 
         if type.value == -1:
@@ -16859,8 +16874,8 @@ class epanetmsxapi(error_handler):
         elif type.value == 3:
             type = 'FLOWPACED'
 
-        if err:
-            Warning(self.MSXerror(err))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
         return type, level.value, pattern.value
 
@@ -16872,9 +16887,9 @@ class epanetmsxapi(error_handler):
 
             Parameters:
                 filename: name of the permanent output results file"""
-        err = self.msx_lib.MSXsaveoutfile(filename.encode())
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsaveoutfile(filename.encode())
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsavemsxfile(self, filename):
         """ Saves the data associated with the current MSX project into a new
@@ -16884,9 +16899,9 @@ class epanetmsxapi(error_handler):
 
             Parameters:
                 filename: name of the file to which data are saved"""
-        err = self.msx_lib.MSXsavemsxfile(filename.encode())
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsavemsxfile(filename.encode())
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsetconstant(self, index, value):
         """ Assigns a new value to a specific reaction constant
@@ -16900,9 +16915,9 @@ class epanetmsxapi(error_handler):
              Value: float -> the new value to be assigned to the constant."""
 
         value = c_double(value)
-        err = self.msx_lib.MSXsetconstant(index, value)
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsetconstant(index, value)
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsetparameter(self, obj_type, index, param, value):
         """ Assigns a value to a particular reaction parameter for a given pipe
@@ -16923,9 +16938,9 @@ class epanetmsxapi(error_handler):
                value: the value to be assigned to the parameter for the node or
                       link of interest.                 """
         value = c_double(value)
-        err = self.msx_lib.MSXsetparameter(obj_type, index, param, value)
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsetparameter(obj_type, index, param, value)
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsetinitqual(self, obj_type, index, species, value):
         """  Assigns an initial concetration of a particular chemical species
@@ -16947,9 +16962,9 @@ class epanetmsxapi(error_handler):
                  """
 
         value = c_double(value)
-        err = self.msx_lib.MSXsetinitqual(obj_type, index, species, value)
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsetinitqual(obj_type, index, species, value)
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsetpattern(self, index, factors, nfactors):
         """Assigns a new set of multipliers to a given MSX source time pattern
@@ -16966,9 +16981,9 @@ class epanetmsxapi(error_handler):
         nfactors = c_int(nfactors)
         DoubleArray = c_double * len(factors)
         mult_array = DoubleArray(*factors)
-        err = self.msx_lib.MSXsetpattern(index, mult_array, nfactors)
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsetpattern(index, mult_array, nfactors)
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsetpatternvalue(self, pattern, period, value):
         """Assigns a new value to the multiplier for a specific time period
@@ -16982,40 +16997,40 @@ class epanetmsxapi(error_handler):
                period: the time period (starting from 1) in the pattern to be replaced
                value:  the new multiplier value to use for that time period."""
         value = c_double(value)
-        err = self.msx_lib.MSXsetpatternvalue(pattern, period, value)
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsetpatternvalue(pattern, period, value)
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsolveQ(self):
         """ Solves for water quality over the entire simulation period
             and saves the results to an internal scratch file
             msx.MSXsolveQ()"""
-        err = self.msx_lib.MSXsolveQ()
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsolveQ()
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXsolveH(self):
         """ Solves for system hydraulics over the entire simulation period
             saving results to an internal scratch file
             msx.MSXsolveH() """
-        err = self.msx_lib.MSXsolveH()
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsolveH()
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXaddpattern(self, pattern_id):
         """Adds a newm empty MSX source time pattern to an MSX project
                 MSXaddpattern(pattern_id)
             Parameters:
                 pattern_id: the name of the new pattern """
-        err = self.msx_lib.MSXaddpattern(pattern_id.encode("utf-8"))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXaddpattern(pattern_id.encode("utf-8"))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXusehydfile(self, filename):
         """             """
-        err = self.msx_lib.MSXusehydfile(filename.encode())
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXusehydfile(filename.encode())
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXstep(self):
         """Advances the water quality solution through a single water quality time
@@ -17032,10 +17047,10 @@ class epanetmsxapi(error_handler):
         else:
             t = c_double()
             tleft = c_long()
-        err = self.msx_lib.MSXstep(byref(t), byref(tleft))
+        self.errcode = self.msx_lib.MSXstep(byref(t), byref(tleft))
 
-        if err:
-            Warning(self.MSXerror(err))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
         return t.value, tleft.value
 
@@ -17049,17 +17064,17 @@ class epanetmsxapi(error_handler):
                flag:  Set the flag to 1 if the water quality results should be saved
                       to a scratch binary file, or 0 if not
            """
-        err = self.msx_lib.MSXinit(flag)
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXinit(flag)
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXreport(self):
         """ Writes water quality simulations results as instructed by
             MSX input file to a text file.
             msx.MSXreport()"""
-        err = self.msx_lib.MSXreport()
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXreport()
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXgetqual(self, type, index, species):
         """Retrieves a chemical species concentration at a given node
@@ -17084,9 +17099,9 @@ class epanetmsxapi(error_handler):
 
         value = 0
         value = c_double(value)
-        err = self.msx_lib.MSXgetqual(type, index, species, byref(value))
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXgetqual(type, index, species, byref(value))
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
         return value.value
 
     def MSXsetsource(self, node, species, type, level, pat):
@@ -17117,9 +17132,9 @@ class epanetmsxapi(error_handler):
 
         pat = c_int(pat)
         type = c_int(type)
-        err = self.msx_lib.MSXsetsource(node, species, type, level, pat)
-        if err:
-            Warning(self.MSXerror(err))
+        self.errcode = self.msx_lib.MSXsetsource(node, species, type, level, pat)
+        if self.errcode:
+            Warning(self.MSXerror(self.errcode))
 
     def MSXgeterror(self, err):
         """Returns the text for an error message given its error code.
@@ -17133,8 +17148,7 @@ class epanetmsxapi(error_handler):
         errmsg = create_string_buffer(80)
         e = self.msx_lib.MSXgeterror(err, errmsg, 80)
 
-        if e:
-            # Warning(errmsg.value.decode())
-            print(f"{red}EPANET Error: {errmsg.value.decode()}{reset}")
-
+        # if e:
+        #     # Warning(errmsg.value.decode())
+        #     print(f"{red}EPANET Error: {errmsg.value.decode()}{reset}")
         return errmsg.value.decode()
