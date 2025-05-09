@@ -15,7 +15,7 @@ The `EPANET-Python Toolkit` is an open-source software, originally developed by 
 
 The `EPANET-Python Toolkit` features easy to use commands/wrappers for viewing, modifying, simulating and plotting results produced by the EPANET libraries.  
 
-For support, please use the OWA community forum : http://community.wateranalytics.org/
+For support, please use the OWA community forum: https://github.com/orgs/OpenWaterAnalytics/discussions
 
 ## Table of Contents
 
