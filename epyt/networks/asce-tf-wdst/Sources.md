@@ -192,3 +192,7 @@ Source or Contributor: Mair and Sitzenfrei (michael.mair@uibk.ac.at )
 ##### 48. System Name: E-Town
 
 Source or Contributor: WDSA 2016 Battle of the Networks
+
+##### 49. System Name: EXNET
+
+Source or Contributor: https://www.exeter.ac.uk/
