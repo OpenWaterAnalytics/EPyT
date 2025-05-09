@@ -4380,6 +4380,24 @@ class epanet(error_handler):
             value[i + 1] = list(val[i])
         return value
 
+    def getNodeReservoirHeadPatternIndex(self):
+        """ Retrieves the value of all reservoir head pattern index.
+
+        Example:
+            d = epanet('net2-cl2.inp')
+            res_index = d.addNodeReservoir("res-1")
+            pidx = d.addPattern("pat-1", [1, 3])
+            d.setNodeReservoirHeadPatternIndex(res_index, pidx)
+            print(d.getNodeDemandPatternIndex())
+            print(d.getNodeReservoirHeadPatternIndex())
+
+        """
+        value = []
+        for i in self.getNodeReservoirIndex():
+            pattern_index = self.api.ENgetnodevalue(i, self.ToolkitConstants.EN_PATTERN)
+            value.append(pattern_index)
+        return value
+
     def getNodeDemandPatternNameID(self):
         """ Retrieves the value of all node base demands pattern name ID.
 
@@ -8280,6 +8298,22 @@ class epanet(error_handler):
         See also getNodeDemandPatternIndex, getNodeDemandCategoriesNumber, setNodeBaseDemands, addPattern, deletePattern.
         """
         self.__setNodeDemandPattern('ENsetdemandpattern', self.ToolkitConstants.EN_PATTERN, value, *argv)
+
+    def setNodeReservoirHeadPatternIndex(self, value, *argv):
+        """ Sets the pattern index for a reservoir node head
+        This is a duplicate function—identical in behavior to setNodeDemandPatternIndex
+
+        Example 1:
+            d = epanet('net2-cl2.inp')
+            res_index = d.addNodeReservoir("res-1")
+            pidx = d.addPattern("pat-1")
+            d.setNodeReservoirHeadPatternIndex(res_index, pidx)
+            d.setPattern(pidx, 1)
+         """
+        if value in self.getNodeReservoirIndex():
+            self.__setNodeDemandPattern('ENsetdemandpattern', self.ToolkitConstants.EN_PATTERN, value, *argv)
+        else:
+            warnings.warn("Invalid reservoir index. For non-reservoir nodes, please use the setNodeDemandPatternIndex function.")
 
     def setNodeElevations(self, value, *argv):
         """ Sets the values of elevation for nodes.

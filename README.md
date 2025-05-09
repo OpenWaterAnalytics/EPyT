@@ -283,6 +283,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | getNodeReservoirCount             |Retrieves the number of Reservoirs
 | getNodeReservoirIndex             |Retrieves the indices of reservoirs
 | getNodeReservoirNameID            |Retrieves the reservoir ID label
+| getNodeReservoirHeadPatternIndex  |Retrieves the indices of all reservoir head patterns
 | getNodeResultIndex                |Retrieves the order in which a node's results were saved to an output file
 | getNodeSourcePatternIndex         |Retrieves the value of all node source pattern index
 | getNodeSourceQuality              |Retrieves the value of all node source quality
@@ -448,6 +449,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | setNodeComment                    |Sets the comment string assigned to the node object
 | setNodeCoordinates                |Sets node coordinates
 | setNodeDemandPatternIndex         |Sets the values of demand time pattern indices
+| setNodeReservoirHeadPatternIndex  |Sets the pattern index for a reservoir node head
 | setNodeElevations                 |Sets the values of elevation for nodes
 | setNodeEmitterCoeff               |Sets the values of emitter coefficient for nodes
 | setNodeInitialQuality             |Sets the values of initial quality for nodes
