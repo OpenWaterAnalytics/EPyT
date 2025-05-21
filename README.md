@@ -30,6 +30,7 @@ For support, please use the OWA community forum: https://github.com/orgs/OpenWat
 - [Contributing](#contributing)
 - [Recommendation](#recommendation)
 - [List of Python Class Functions](#list-of-python-class-functions)
+- [List of MSX Functions](#list-of-msx-functions)
 - [List of EPANET 2.2 Functions](#list-of-epanet-22-functions)
 - [List of EPANET MSX Functions API](#list-of-epanet-msx-functions-api)
 ## How to cite 
@@ -531,7 +532,10 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | useHydraulicFile                  |Uses the contents of the specified file as the current binary hydraulics file
 | writeLineInReportFile             |Writes a line of text to the EPANET report file
 | writeReport                       |Writes a formatted text report on simulation results to the Report file
-## <b> MSX Functions </b>            
+
+## List of MSX Functions 
+|Function|Description|
+|---------|----------|            
 | addMSXPattern                   | Adds a new, empty MSX source time pattern to the project |
 | getMSXAreaUnits                 | Retrieves the area units (FT2/M2/CM2) |
 | getMSXAtol                      | Retrieves the absolute concentration tolerance |
