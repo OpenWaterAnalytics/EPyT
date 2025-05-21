@@ -31,7 +31,7 @@ For support, please use the OWA community forum: https://github.com/orgs/OpenWat
 - [Recommendation](#recommendation)
 - [List of Python Class Functions](#list-of-python-class-functions)
 - [List of EPANET 2.2 Functions](#list-of-epanet-22-functions)
-  
+- [List of EPANET MSX Functions API (.msx)](#list-of-epanet-msx-function-api-(msx)
 ## How to cite 
 
 Kyriakou, M. S., Demetriades, M., Vrachimis, S. G., Eliades, D. G., & Polycarpou, M. M. (2023). EPyT: An EPANET-Python Toolkit for Smart Water Network Simulations. Journal of Open Source Software, 8(92), 5947. https://doi.org/10.21105/joss.05947
