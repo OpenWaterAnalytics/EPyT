@@ -12324,32 +12324,52 @@ class epanet(error_handler):
 
         return value
 
-    def getMSXPatternsLengths(self, varagin=None):
-        """ Retrieves the pattern lengths.
+    def getMSXPatternsLengths(self, *indices):
+        """
+        Return the length (number of factors) of one or more MSX patterns.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.addMSXPattern('P1', [1.0, 0.0 1.0])
-               d.addMSXPattern('P2', 1.0)
-               d.addMSXPattern('P3', [0.0, 1.0 2.0])
-               d.addMSXPattern('P4', [1.0, 2.0])
-               d.getMSXPatternsLengths()         Retrieves the lengths of all the patterns.
-               d.getMSXPatternsLengths([]1)      Retrieves the length of the first pattern.
-               x=d.getMSXPatternsLengths([1,2])  Retrieves the lengths of the first two patterns.
-             See also getMSXPattern, getMSXPatternsIndex, getMSXPatternsNameID,
-                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
-        x = self.getMSXPatternsCount()
-        value = {}
-        if varagin is None:
-            for i in range(1, x + 1):
-                value[i] = self.msx.MSXgetpatternlen(i)
+        Parameters
+        ----------
+        *indices : int | iterable[int], optional
+            1-based pattern indices.
+            • **No arguments**  → return the length of *all* patterns.
+            • **One iterable**  → its items are treated as the index list.
+            • **Several ints**  → those exact pattern indices.
+
+        Returns
+        -------
+        list[int]
+            Pattern lengths in the same order requested.
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+            d.addMSXPattern('P1', [1.0, 0.0, 1.0])
+            d.addMSXPattern('P2', [0.0, 0.0, 2.0])
+            d.addMSXPattern('P3', [0.0, 1.0, 2.0])
+            d.addMSXPattern('P4', [1.0, 1.0, 2.0])
+        Examples:
+        --------
+        >>> d.getMSXPatternsLengths()           # all patterns
+        >>> d.getMSXPatternsLengths(1)          # pattern 1
+        >>> d.getMSXPatternsLengths(1, 2)       # patterns 1 and 2
+        >>> d.getMSXPatternsLengths([2, 4])     # iterable form
+        """
+        total = self.getMSXPatternsCount()
+
+        if not indices:  # no args → all
+            idx_list = range(1, total + 1)
+        elif len(indices) == 1 and isinstance(indices[0], (list, tuple, set)):
+            idx_list = indices[0]  # iterable passed
         else:
-            if x > 0:
-                for i in varagin:
-                    value[i] = self.msx.MSXgetpatternlen(i)
-        output = list(value.values())
-        return output
+            idx_list = indices  # regular *args
+
+        lengths = []
+        for i in idx_list:
+            if not 1 <= i <= total:
+                raise IndexError(f"Pattern index {i} is out of range 1…{total}")
+            lengths.append(self.msx.MSXgetpatternlen(i))
+
+        return lengths
 
     def getMSXPattern(self):
         """ Retrieves the time patterns.
