@@ -12754,37 +12754,67 @@ class epanet(error_handler):
 
         return levels
 
-    def getMSXSourcePatternIndex(self, varagin=None):
-        """ Retrieves the sources pattern index.
+    def getMSXSourcePatternIndex(self, *nodes):
+        """
+        Return the *pattern index* associated with the source at one or more nodes.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.getMSXSourcePatternIndex()          Retrieves all the source pattern index.
-               d.getMSXSourcePatternIndex({1} )      Retrieves the first node source pattern index.
-               d.getMSXSourcePatternIndex([1,5])     Retrieves the source pattern index of nodes 1 and 5
+        For every (node, species) pair the EPANET-MSX call
 
-             See also getMSXSources, getMSXSourceNodeNameID
-                      getMSXSourceType, getMSXSourceLevel."""
-        value = []
-        if varagin == None:
-            for i in range(1, self.getNodeCount() + 1):
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetsource(i, j)
-                    value_row.append(y)
-                value.append(value_row)
+            MSXgetsource(node, species)
+
+        returns a 4-tuple **(type, level, patternIndex, _reserved)**.
+        This helper extracts only **patternIndex** (element 2).
+
+        Parameters
+        ----------
+        *nodes : int | iterable[int], optional
+            1-based node indices.
+            • **No arguments**  → pattern indices for *all* nodes.
+            • **One iterable**  → its elements are the node list.
+            • **Several ints**  → those exact nodes.
+
+        Returns
+        -------
+        list[list[int]]
+            Outer list follows the order requested; each inner list contains the
+            pattern index for every species at that node
+            (length = ``getMSXSpeciesCount()``).
+
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+        Examples:
+        --------
+        >>> d.getMSXSourcePatternIndex()              # every node
+        >>> d.getMSXSourcePatternIndex(1)             # node 1
+        >>> d.getMSXSourcePatternIndex(1, 5)          # nodes 1 and 5
+        >>> d.getMSXSourcePatternIndex([2, 4, 7])     # iterable form
+        
+        See also getMSXSources, getMSXSourceNodeNameID
+                      getMSXSourceType, getMSXSourceLevel.
+        """
+        total_nodes = self.getNodeCount()
+        total_species = self.getMSXSpeciesCount()
+
+        if not nodes:  # no args  → all
+            node_list = range(1, total_nodes + 1)
+        elif len(nodes) == 1 and isinstance(nodes[0], (list, tuple, set)):
+            node_list = nodes[0]  # iterable passed
         else:
-            for i in varagin:
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetsource(i, j)
-                    value_row.append(y)
-                value.append(value_row)
-        sourcepatternindex = []
-        for i in value:
-            sourcepatternindex.append([item[2] for item in i])
-        return sourcepatternindex
+            node_list = nodes  # regular *args
+
+        pattern_indices = []
+        for n in node_list:
+            if not 1 <= n <= total_nodes:
+                raise IndexError(f"Node index {n} is out of range 1…{total_nodes}")
+
+            row = [
+                self.msx.MSXgetsource(n, s)[2]  # take only patternIndex
+                for s in range(1, total_species + 1)
+            ]
+            pattern_indices.append(row)
+
+        return pattern_indices
 
     def getMSXLinkInitqualValue(self, varagin=None):
         """ Retrieves the links initial quality value.
