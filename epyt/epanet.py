@@ -12452,33 +12452,52 @@ class epanet(error_handler):
 
         return types
 
-    def getMSXSpeciesUnits(self, varagin=None):
-        """ Retrieves the species' units.
+    def getMSXSpeciesUnits(self, *indices):
+        """
+        Return the units string for one or more MSX species.
 
-             Example:
-               d = epanet('net3-bio.inp')
-               d.loadMSXFile('net3-bio.msx')
-               d.getMSXSpeciesUnits           Retrieves the units of all the species.
-               d.getMSXSpeciesUnits{1}        Retrieves the units of the first specie.
-               d.getMSXSpeciesUnits{[1,16]}   Retrieves the units of the species with
-                                               indices 1 and 16.
+        Parameters
+        ----------
+        *indices : int | iterable[int], optional
+            1-based species indices.
+            • **No arguments**  – return units for *all* species.
+            • **One iterable**  – its elements are treated as the index list.
+            • **Several ints**  – those exact species indices.
 
-             See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
-                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesATOL,
-                      getMSXSpeciesRTOL."""
-        x = self.getMSXSpeciesCount()
-        value = []
+        Returns
+        -------
+        list[str]
+            Units strings in the same order requested.
 
-        if varagin is None:
-            varagin = {}
-            for i in range(1, x + 1):
-                varagin[i] = i + 1
-        if x > 0:
-            for i in varagin:
-                y = {}
-                y = self.msx.MSXgetspecies(i)
-                value.append(y[1])
-        return value
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+
+        Examples:
+        --------
+        >>> d.getMSXSpeciesUnits()             # all species
+        >>> d.getMSXSpeciesUnits(1)            # species 1
+        >>> d.getMSXSpeciesUnits(1, 16)        # species 1 and 16
+        >>> d.getMSXSpeciesUnits([2, 4, 5])    # iterable form
+        """
+        total = self.getMSXSpeciesCount()
+
+        if not indices:  # no args → all
+            idx_list = range(1, total + 1)
+        elif len(indices) == 1 and isinstance(indices[0], (list, tuple, set)):
+            idx_list = indices[0]  # iterable passed
+        else:
+            idx_list = indices  # regular *args
+
+        units = []
+        for i in idx_list:
+            if not 1 <= i <= total:
+                raise IndexError(f"Species index {i} is out of range 1…{total}")
+            # MSXgetspecies returns (type, units, atol, rtol)
+            species_info = self.msx.MSXgetspecies(i)
+            units.append(species_info[1])
+
+        return units
 
     def getEquations(self):
         msxname = self.MSXTempFile
