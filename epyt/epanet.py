@@ -11890,6 +11890,9 @@ class epanet(error_handler):
         >>> d.getMSXConstantsNameID(1)        # first constant
         >>> d.getMSXConstantsNameID(1, 2)     # constants 1, 2
         >>> d.getMSXConstantsNameID([1, 2])   # constants 1, 2
+
+        See also getMSXConstantsCount, getMSXConstantsValue,
+                      getMSXConstantsNameID.
         """
         total = self.getMSXConstantsCount()
 
@@ -11941,6 +11944,9 @@ class epanet(error_handler):
         >>> d.getMSXParametersNameID(1)         # first parameter
         >>> d.getMSXParametersNameID(1, 3)      # parameters 1 and 3
         >>> d.getMSXParametersNameID([2, 4, 5]) # parameters 2, 4, 5
+
+        See also getMSXParametersCount, getMSXParametersIndex,
+                      getMSXParametersTanksValue, getMSXParametersPipesValue.
         """
 
         total = self.getMSXParametersCount()
@@ -11994,6 +12000,9 @@ class epanet(error_handler):
         >>> d.getMSXPatternsNameID(1)           # first pattern
         >>> d.getMSXPatternsNameID(1, 3)        # patterns 1 and 3
         >>> d.getMSXPatternsNameID([2, 4, 5])   # patterns 2, 4, 5
+
+        See also getMSXPattern, getMSXPatternsIndex, getMSXPatternsLengths,
+                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue.
         """
         total = self.getMSXPatternsCount()
 
@@ -12071,6 +12080,9 @@ class epanet(error_handler):
         >>> d.getMSXParametersIndex('k1')                   # index of 'k1'
         >>> d.getMSXParametersIndex('k1', 'k3', 'kDOC1')    # specific set
         >>> d.getMSXParametersIndex(['k1', 'k3'])           # list/iterable
+
+        See also getMSXParametersCount, getMSXParametersIndex,
+                      getMSXParametersTanksValue, getMSXParametersPipesValue.
         """
 
         if not names:  # no args → all names
@@ -12118,6 +12130,10 @@ class epanet(error_handler):
         >>> d.getMSXSpeciesIndex('NH3')                 # index of Na
         >>> d.getMSXSpeciesIndex('NH2CL', 'NH3', 'H')    # CL2, Nb, Na
         >>> d.getMSXSpeciesIndex(['NH3', 'TOC'])        # iterable form
+
+        See also getMSXSpeciesUnits, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesRTOL,
+                      getMSXSpeciesATOL.
         """
         total_species = self.getMSXSpeciesCount()
 
@@ -12170,6 +12186,9 @@ class epanet(error_handler):
         >>> d.getMSXPatternsIndex('P1')                 # index of 'P1'
         >>> d.getMSXPatternsIndex('P1', 'P2', 'P3')     # specific set
         >>> d.getMSXPatternsIndex(['P1', 'P3'])         # iterable form
+
+        See also getMSXPattern, getMSXPatternsNameID, getMSXPatternsLengths,
+                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue.
         """
         total_patterns = self.getMSXPatternsCount()
 
@@ -12217,6 +12236,9 @@ class epanet(error_handler):
         >>> d.getMSXConstantsIndex('S1')         # index of 'S1'
         >>> d.getMSXConstantsIndex('S1', 'S2')   # specific set
         >>> d.getMSXConstantsIndex(['S2', 'S1']) # iterable form
+
+          See also getMSXConstantsCount, getMSXConstantsValue,
+                      getMSXConstantsNameID.
         """
 
         if not names:  # no args → all
@@ -12263,6 +12285,9 @@ class epanet(error_handler):
         >>> d.getMSXConstantsValue(1)           # constant 1
         >>> d.getMSXConstantsValue(1, 2)        # constants 1 and 2
         >>> d.getMSXConstantsValue([2, 1])   # iterable form
+
+        See also setMSXConstantsValue, getMSXConstantsCount,
+                      getMSXConstantsIndex, getMSXConstantsNameID
         """
         total = self.getMSXConstantsCount()
 
@@ -12432,6 +12457,10 @@ class epanet(error_handler):
         >>> d.getMSXSpeciesType(1)          # species 1
         >>> d.getMSXSpeciesType(5, 7)       # species 5 and 7
         >>> d.getMSXSpeciesType([2, 4, 6])  # iterable form
+
+         See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesnameID, getMSXSpeciesUnits, getMSXSpeciesATOL,
+                      getMSXSpeciesRTOL.
         """
         total = self.getMSXSpeciesCount()
 
@@ -12479,6 +12508,9 @@ class epanet(error_handler):
         >>> d.getMSXSpeciesUnits(1)            # species 1
         >>> d.getMSXSpeciesUnits(1, 16)        # species 1 and 16
         >>> d.getMSXSpeciesUnits([2, 4, 5])    # iterable form
+        See also getMSXSpeciesIndex, getMSXSpeciesCount, getMSXSpeciesConcentration,
+                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesATOL,
+                      getMSXSpeciesRTOL.
         """
         total = self.getMSXSpeciesCount()
 
@@ -12635,6 +12667,9 @@ class epanet(error_handler):
         >>> d.getMSXSourceType(1)           # node 1
         >>> d.getMSXSourceType(1, 2)        # nodes 1 and 2
         >>> d.getMSXSourceType([3, 5, 7])   # iterable form
+
+        See also getMSXSources, getMSXSourceNodeNameID
+                      getMSXSourceLevel, getMSXSourcePatternIndex.
         """
         total_nodes = self.getNodeCount()
         total_species = self.getMSXSpeciesCount()
@@ -12659,38 +12694,65 @@ class epanet(error_handler):
 
         return source_types
 
-    def getMSXSourceLevel(self, varagin=None):
-        """  Retrieves the sources level.
+    def getMSXSourceLevel(self, *nodes):
+        """
+        Return the *level* value of one or more MSX sources.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.getMSXSourceLevel()           Retrieves all the source level.
-               d.getMSXSourceLevel({1})        Retrieves the first node source level.
-               d.getMSXSourceLevel([1,5])      Retrieves the source level
-               of nodes 1 and 5.
+        For every (node, species) pair the EPANET-MSX toolkit call
+        ``MSXgetsource(node, species)`` returns a 4-tuple
+        ``(type, level, pattern, _reserved)``.
+        This helper extracts only **level** (index 1).
 
-             See also getMSXSources, getMSXSourceNodeNameID
-                      getMSXSourceType, getMSXSourcePatternIndex."""
-        value = []
-        if varagin == None:
-            for i in range(1, self.getNodeCount() + 1):
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetsource(i, j)
-                    value_row.append(y)
-                value.append(value_row)
+        Parameters
+        ----------
+        *nodes : int | iterable[int], optional
+            1-based node indices.
+            • **No arguments**  – all nodes.
+            • **One iterable**  – its items are treated as the node list.
+            • **Several ints**  – those exact node indices.
+
+        Returns
+        -------
+        list[list[float]]
+            Outer list follows the order requested; each inner list contains the
+            *level* for every species at that node
+            (length = `getMSXSpeciesCount()`).
+
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+        Examples:
+        --------
+        >>> d.getMSXSourceLevel()               # levels for all nodes
+        >>> d.getMSXSourceLevel(1)              # node 1
+        >>> d.getMSXSourceLevel(1, 5)           # nodes 1 and 5
+        >>> d.getMSXSourceLevel([2, 4, 7])      # iterable form
+
+        See also getMSXSources, getMSXSourceNodeNameID
+                      getMSXSourceType, getMSXSourcePatternIndex.
+        """
+        total_nodes = self.getNodeCount()
+        total_species = self.getMSXSpeciesCount()
+
+        if not nodes:  # no args → all
+            node_list = range(1, total_nodes + 1)
+        elif len(nodes) == 1 and isinstance(nodes[0], (list, tuple, set)):
+            node_list = nodes[0]  # single iterable
         else:
-            for i in varagin:
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetsource(i, j)
-                    value_row.append(y)
-                value.append(value_row)
-        sourcelevel = []
-        for i in value:
-            sourcelevel.append([item[1] for item in i])
-        return sourcelevel
+            node_list = nodes  # regular *args
+
+        levels = []
+        for n in node_list:
+            if not 1 <= n <= total_nodes:
+                raise IndexError(f"Node index {n} is out of range 1…{total_nodes}")
+
+            row = [
+                self.msx.MSXgetsource(n, s)[1]  # take only *level*
+                for s in range(1, total_species + 1)
+            ]
+            levels.append(row)
+
+        return levels
 
     def getMSXSourcePatternIndex(self, varagin=None):
         """ Retrieves the sources pattern index.
@@ -12779,6 +12841,8 @@ class epanet(error_handler):
         >>> d.getMSXNodeInitqualValue(1)         # node 1
         >>> d.getMSXNodeInitqualValue(1, 3, 7)   # nodes 1, 3, 7
         >>> d.getMSXNodeInitqualValue([2, 5])    # nodes 2 and 5
+
+        See also setMSXNodeInitqualValue.
         """
         total_nodes = self.getNodeCount()
         total_species = self.getMSXSpeciesCount()
