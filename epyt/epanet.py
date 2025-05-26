@@ -12237,29 +12237,49 @@ class epanet(error_handler):
 
         return indices
 
-    def getMSXConstantsValue(self, varagin=None):
-        """ Retrieves the constant's value.
+    def getMSXConstantsValue(self, *indices):
+        """
+        Return the value of one or more MSX constants, addressed by index.
 
-             Example:
-               d = epanet('net3-bio.inp')
-               d.loadMSXFile('net3-bio.msx')
-               d.getMSXConstantsValue()         Retrieves the values of all the constants.
-               d.getMSXConstantsValue{1}      Retrieves the value of the first constant.
-               d.getMSXConstantsValue{[1,2]}  Retrieves the values of the first two constants.
+        Parameters
+        ----------
+        *indices : int | iterable[int], optional
+            1-based constant indices.
+            • **No arguments**  → values for *all* constants.
+            • **One iterable**  → its items are the index list.
+            • **Several ints**  → those exact indices.
 
-             See also setMSXConstantsValue, getMSXConstantsCount,
-                      getMSXConstantsIndex, getMSXConstantsNameID"""
-        x = self.getMSXConstantsCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            for i in range(1, x + 1):
-                varagin[i] = i + 1
-        if x > 0:
-            for i in varagin:
-                value[i] = self.msx.MSXgetconstant(i)
-        output = list(value.values())
-        return output
+        Returns
+        -------
+        list[float]
+            Constant values, in the same order requested.
+
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+        Examples:
+        --------
+        >>> d.getMSXConstantsValue()            # all constants
+        >>> d.getMSXConstantsValue(1)           # constant 1
+        >>> d.getMSXConstantsValue(1, 2)        # constants 1 and 2
+        >>> d.getMSXConstantsValue([2, 1])   # iterable form
+        """
+        total = self.getMSXConstantsCount()
+
+        if not indices:  # no args → all
+            idx_list = range(1, total + 1)
+        elif len(indices) == 1 and isinstance(indices[0], (list, tuple, set)):
+            idx_list = indices[0]  # iterable passed
+        else:
+            idx_list = indices  # regular *args
+
+        values = []
+        for i in idx_list:
+            if not 1 <= i <= total:
+                raise IndexError(f"Constant index {i} is out of range 1…{total}")
+            values.append(self.msx.MSXgetconstant(i))
+
+        return values
 
     def getMSXParametersPipesValue(self):
         """ Retrieves the parameters pipes value.
