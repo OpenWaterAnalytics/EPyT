@@ -11865,31 +11865,55 @@ class epanet(error_handler):
              See also getMSXAtol."""
         return self.getMSXOptions().RTOL
 
-    def getMSXConstantsNameID(self, varagin=None):
-        """  Retrieves the constant's ID.
+    def getMSXConstantsNameID(self, *ids):
+        """Return one or more MSX constant names by index.
 
-             Example:
+        Parameters
+        ----------
+        *ids : int or iterable of int, optional
+            Indices (1-based) of the constants to retrieve.
+            • If no ids are given, all constants are returned.
+            • If the first and only positional argument is an iterable
+              (list/tuple/set), its contents are used as the index list.
+
+        Returns
+        -------
+        list[str]
+            Constant names in the order requested.
+
+        Setup:
                d = epanet('Net3-NH2CL.inp')
                d.loadMSXFile('Net3-NH2CL.msx')
-               d.getMSXConstantsNameID()        Retrieves the IDs of all the constants.
-               d.getMSXConstantsNameID({1})      Retrieves the ID of the first constant.
-               d.getMSXConstantsNameID{[1,2]}  Retrieves the IDs of the first two constants.
+        Examples:
+        --------
+        >>> d.getMSXConstantsNameID()         # all constants
+        >>> d.getMSXConstantsNameID(1)        # first constant
+        >>> d.getMSXConstantsNameID(1, 2)     # constants 1, 2
+        >>> d.getMSXConstantsNameID([1, 2])   # constants 1, 2
+        """
+        total = self.getMSXConstantsCount()
 
-             See also getMSXConstantsCount, getMSXConstantsValue,
-                      getMSXConstantsNameID."""
-        x = self.getMSXConstantsCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            for i in range(1, x + 1):
-                varagin[i] = i + 1
+
+        if not ids:
+            indices = range(1, total + 1)
+
+        elif len(ids) == 1 and isinstance(ids[0], (list, tuple, set)):
+            indices = ids[0]
+
+        else:
+            indices = ids
+
+
         MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
-        if x > 0:
-            for i in varagin:
-                len = self.msx.MSXgetIDlen(MSX_CONSTANT, i)
-                value[i] = self.msx.MSXgetID(MSX_CONSTANT, i, len)
-        output = list(value.values())
-        return output
+        names = []
+        for i in indices:
+            if not 1 <= i <= total:
+                raise IndexError(f"Constant index {i} is out of range 1…{total}")
+
+            id_len = self.msx.MSXgetIDlen(MSX_CONSTANT, i)
+            names.append(self.msx.MSXgetID(MSX_CONSTANT, i, id_len))
+
+        return names
 
     def getMSXParametersNameID(self, varagin=None):
         """  Retrieves the parameter's ID.
