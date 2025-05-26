@@ -11965,35 +11965,57 @@ class epanet(error_handler):
 
         return names
 
-    def getMSXPatternsNameID(self, varagin=None):
-        """ Retrieves the patterns ID.
+    def getMSXPatternsNameID(self, *ids):
+        """
+        Return one or more MSX pattern names (IDs) by index.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.addMSXPattern('P1', [1.0, 0.0 1.0])
-               d.addMSXPattern('P2', [0.0, 0.0 2.0])
-               d.addMSXPattern('P3', [0.0, 1.0 2.0])
-               d.addMSXPattern('P4', [1.0, 1.0 2.0])
-               d.getMSXPatternsNameID()         Retrieves the IDs of all the patterns.
-               d.getMSXPatternsNameID(1)      Retrieves the ID of the first pattern.
-               d.getMSXPatternsNameID([1,3])    Retrieves the IDs of the first and third patterns.
+        Parameters
+        ----------
+        *ids : int or iterable of int, optional
+            1-based indices of the patterns to retrieve.
+            • Call with no arguments  → all patterns are returned.
+            • Pass a single iterable  → its contents are treated as the index list.
+            • Pass several ints       → those specific indices are returned.
 
-             See also getMSXPattern, getMSXPatternsIndex, getMSXPatternsLengths,
-                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
-        x = self.getMSXPatternsCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            for i in range(1, x + 1):
-                varagin[i] = i + 1
+        Returns
+        -------
+        list[str]
+            Pattern names in the order requested.
+        Setup:
+               d = epanet('Net3-NH2CL.inp')
+               d.loadMSXFile('Net3-NH2CL.msx')
+               d.addMSXPattern('P1', [1.0, 0.0, 1.0])
+               d.addMSXPattern('P2', [0.0, 0.0, 2.0])
+               d.addMSXPattern('P3', [0.0, 1.0, 2.0])
+               d.addMSXPattern('P4', [1.0, 1.0, 2.0])
+        Examples
+        --------
+        >>> d.getMSXPatternsNameID()            # all patterns
+        >>> d.getMSXPatternsNameID(1)           # first pattern
+        >>> d.getMSXPatternsNameID(1, 3)        # patterns 1 and 3
+        >>> d.getMSXPatternsNameID([2, 4, 5])   # patterns 2, 4, 5
+        """
+        total = self.getMSXPatternsCount()
+
+        # -------- figure out which indices the caller wants --------------------
+        if not ids:  # no args → all patterns
+            indices = range(1, total + 1)
+        elif len(ids) == 1 and isinstance(ids[0], (list, tuple, set)):
+            indices = ids[0]  # a single iterable given
+        else:
+            indices = ids  # regular *args
+
+        # -------- fetch the IDs from the toolkit --------------------------------
         MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
-        if x > 0:
-            for i in varagin:
-                len = self.msx.MSXgetIDlen(MSX_PATTERN, i)
-                value[i] = self.msx.MSXgetID(MSX_PATTERN, i, len)
-        output = list(value.values())
-        return output
+        names = []
+        for i in indices:
+            if not 1 <= i <= total:
+                raise IndexError(f"Pattern index {i} is out of range 1…{total}")
+
+            id_len = self.msx.MSXgetIDlen(MSX_PATTERN, i)
+            names.append(self.msx.MSXgetID(MSX_PATTERN, i, id_len))
+
+        return names
 
     def getMSXSpeciesNameID(self, *argv):
         """Retrieves the species' ID.
