@@ -12578,35 +12578,56 @@ class epanet(error_handler):
                 value.append(value_row)
         return value
 
-    def getMSXNodeInitqualValue(self, varagin=None):
-        """ Retrieves the nodes initial quality value.
+    def getMSXNodeInitqualValue(self, *nodes):
+        """
+        Return the initial-quality values for one or more nodes.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.getMSXNodeInitqualValue()       Retrieves the initial quality of all nodes.
-               d.getMSXNodeInitqualValue({1})    Retrieves the initial quality of the first node.
-               d.getMSXNodeInitqualValue([1,3])  Retrieves the initial quality  of one and three.
+        Parameters
+        ----------
+        *nodes : int or iterable of int, optional
+            1-based node indices.
+            • No arguments  → all nodes.
+            • One iterable  → the iterable’s contents are the node list.
+            • Several ints  → those specific nodes.
 
-             See also setMSXNodeInitqualValue."""
-        value = []
-        if varagin == None:
-            for i in range(1, self.getNodeCount() + 1):
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetinitqual(0, i, j)
-                    value_row.append(y)
-                value.append(value_row)
+        Returns
+        -------
+        list[list[float]]
+            Outer list is in the same order requested; each inner list
+            contains the species-quality values for that node.
+
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+        Examples:
+        --------
+        >>> d.getMSXNodeInitqualValue()          # all nodes
+        >>> d.getMSXNodeInitqualValue(1)         # node 1
+        >>> d.getMSXNodeInitqualValue(1, 3, 7)   # nodes 1, 3, 7
+        >>> d.getMSXNodeInitqualValue([2, 5])    # nodes 2 and 5
+        """
+        total_nodes = self.getNodeCount()
+        total_species = self.getMSXSpeciesCount()
+
+        if not nodes:  # no args  → all nodes
+            indices = range(1, total_nodes + 1)
+        elif len(nodes) == 1 and isinstance(nodes[0], (list, tuple, set)):
+            indices = nodes[0]  # single iterable given
         else:
-            if isinstance(varagin, int):
-                varagin = [varagin]  # Transform single integer input into a list
-            for i in varagin:
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetinitqual(0, i, j)
-                    value_row.append(y)
-                value.append(value_row)
-        return value
+            indices = nodes  # regular *args
+
+        values = []
+        for n in indices:
+            if not 1 <= n <= total_nodes:
+                raise IndexError(f"Node index {n} is out of range 1…{total_nodes}")
+
+            row = [
+                self.msx.MSXgetinitqual(0, n, s)
+                for s in range(1, total_species + 1)
+            ]
+            values.append(row)
+
+        return values
 
     def getMSXSpeciesATOL(self):
         """ Retrieves the species' absolute tolerance.
