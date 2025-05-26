@@ -12816,33 +12816,60 @@ class epanet(error_handler):
 
         return pattern_indices
 
-    def getMSXLinkInitqualValue(self, varagin=None):
-        """ Retrieves the links initial quality value.
+    def getMSXLinkInitqualValue(self, *links):
+        """
+        Return the initial-quality value for one or more links.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.getMSXLinkInitqualValue()       Retrieves the initial quality of all links.
-               d.getMSXLinkInitqualValue({1})    Retrieves the initial quality of the first link.
-               d.getMSXLinkInitqualValue([1,3])  Retrieves the initial quality  of 1 and 3.
+        Parameters
+        ----------
+        *links : int | iterable[int], optional
+            1-based link indices.
+            • **No arguments**  → values for *all* links.
+            • **One iterable**  → its items are treated as the index list.
+            • **Several ints**  → those exact link indices.
 
-             See also setMSXLinkInitqualValue."""
-        value = []
-        if varagin == None:
-            for i in range(1, self.getLinkCount() + 1):
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetinitqual(1, i, j)
-                    value_row.append(y)
-                value.append(value_row)
+        Returns
+        -------
+        list[list[float]]
+            Outer list follows the order requested; each inner list contains the
+            initial-quality value for every species at that link
+            (length = ``getMSXSpeciesCount()``).
+
+        Setup:
+             d = epanet('Net3-NH2CL.inp')
+             d.loadMSXFile('Net3-NH2CL.msx')
+
+        Examples:
+        --------
+        >>> d.getMSXLinkInitqualValue()             # every link
+        >>> d.getMSXLinkInitqualValue(1)            # link 1
+        >>> d.getMSXLinkInitqualValue(1, 3)         # links 1 and 3
+        >>> d.getMSXLinkInitqualValue([2, 5, 7])    # iterable form
+
+        See also setMSXLinkInitqualValue
+        """
+        total_links = self.getLinkCount()
+        total_species = self.getMSXSpeciesCount()
+
+        if not links:  # no args → all links
+            link_list = range(1, total_links + 1)
+        elif len(links) == 1 and isinstance(links[0], (list, tuple, set)):
+            link_list = links[0]  # iterable passed
         else:
-            for i in varagin:
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetinitqual(1, i, j)
-                    value_row.append(y)
-                value.append(value_row)
-        return value
+            link_list = links  # regular *args
+
+        values = []
+        for l in link_list:
+            if not 1 <= l <= total_links:
+                raise IndexError(f"Link index {l} is out of range 1…{total_links}")
+
+            row = [
+                self.msx.MSXgetinitqual(1, l, s)  # 1 = link flag
+                for s in range(1, total_species + 1)
+            ]
+            values.append(row)
+
+        return values
 
     def getMSXNodeInitqualValue(self, *nodes):
         """
