@@ -12191,31 +12191,51 @@ class epanet(error_handler):
 
         return indices
 
-    def getMSXConstantsIndex(self, varagin=None):
-        """ Retrieves the constant's index.
+    def getMSXConstantsIndex(self, *names):
+        """
+        Return the MSX indices (1-based) of one or more constants.
 
-             Example:
-               d = epanet('Net3-NH2CL.inp')
-               d.loadMSXFile('Net3-NH2CL.msx')
-               d.getMSXConstantsIndex()         Retrieves the index of all the species.
-               d.getMSXConstantsIndex(['S1'])   Retrieves the index of S1.
+        Parameters
+        ----------
+        *names : str | iterable[str], optional
+            Constant IDs to look up.
+            • **No arguments** – return indices for *all* constants.
+            • **One iterable** – its elements form the lookup list.
+            • **Several strings** – those exact constant names.
 
-             See also getMSXConstantsCount, getMSXConstantsValue,
-                      getMSXConstantsNameID."""
-        x = self.getMSXConstantsCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            varagin = self.getMSXConstantsNameID()
-            y = varagin
+        Returns
+        -------
+        list[int]
+            Indices in the same order the names were requested.
+
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+        Examples:
+        --------
+        >>> d.getMSXConstantsIndex()             # all constants
+        >>> d.getMSXConstantsIndex('S1')         # index of 'S1'
+        >>> d.getMSXConstantsIndex('S1', 'S2')   # specific set
+        >>> d.getMSXConstantsIndex(['S2', 'S1']) # iterable form
+        """
+
+        if not names:  # no args → all
+            names_to_lookup = self.getMSXConstantsNameID()
+        elif len(names) == 1 and isinstance(names[0], (list, tuple, set)):
+            names_to_lookup = names[0]  # iterable passed
         else:
-            y = varagin
+            names_to_lookup = names  # regular *args
+
         MSX_CONSTANT = self.ToolkitConstants.MSX_CONSTANT
-        if x > 0:
-            for i in y:
-                value[i] = self.msx.MSXgetindex(MSX_CONSTANT, i)
-        output = list(value.values())
-        return output
+        indices = []
+        for name in names_to_lookup:
+            try:
+                idx = self.msx.MSXgetindex(MSX_CONSTANT, name)
+            except Exception as err:
+                raise ValueError(f"Unknown constant name '{name}'") from err
+            indices.append(idx)
+
+        return indices
 
     def getMSXConstantsValue(self, varagin=None):
         """ Retrieves the constant's value.
