@@ -12603,37 +12603,61 @@ class epanet(error_handler):
             value.append(value_row)
         return value
 
-    def getMSXSourceType(self, varagin=None):
-        """ Retrieves the sources type.
+    def getMSXSourceType(self, *nodes):
+        """
+        Return the source-type code(s) for one or more nodes.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.getMSXSourceType()           Retrieves all the source types.
-               d.getMSXSourceType{1}        Retrieves the first node source type.
-               d.getMSXSourceType{[1,2]}      Retrieves the source type of nodes 1 and 2
+        Each MSX source is defined per (*node*, *species*).  The toolkit call
+        ``MSXgetsource(node, species)`` returns a 4-tuple
+        ``(type, level, pattern, _reserved)``; we keep only the first element
+        (the *type* code).
 
-             See also getMSXSources, getMSXSourceNodeNameID
-                      getMSXSourceLevel, getMSXSourcePatternIndex."""
-        value = []
-        if varagin == None:
-            for i in range(1, self.getNodeCount() + 1):
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetsource(i, j)
-                    value_row.append(y)
-                value.append(value_row)
+        Parameters
+        ----------
+        *nodes : int | iterable[int], optional
+            1-based node indices.
+            • **No arguments**  → all nodes.
+            • **One iterable**  → its items are treated as the node list.
+            • **Several ints**  → those exact nodes.
+
+        Returns
+        -------
+        list[list[int]]
+            Outer list follows the order requested; inner list contains the source-
+            type code for every species at that node (length = `getMSXSpeciesCount()`).
+
+        Setup:
+                d = epanet('Net3-NH2CL.inp')
+                d.loadMSXFile('Net3-NH2CL.msx')
+        Examples:
+        --------
+        >>> d.getMSXSourceType()            # all nodes
+        >>> d.getMSXSourceType(1)           # node 1
+        >>> d.getMSXSourceType(1, 2)        # nodes 1 and 2
+        >>> d.getMSXSourceType([3, 5, 7])   # iterable form
+        """
+        total_nodes = self.getNodeCount()
+        total_species = self.getMSXSpeciesCount()
+
+        if not nodes:  # no args → all nodes
+            node_list = range(1, total_nodes + 1)
+        elif len(nodes) == 1 and isinstance(nodes[0], (list, tuple, set)):
+            node_list = nodes[0]  # single iterable
         else:
-            for i in varagin:
-                value_row = []
-                for j in range(1, self.getMSXSpeciesCount() + 1):
-                    y = self.msx.MSXgetsource(i, j)
-                    value_row.append(y)
-                value.append(value_row)
-        source = []
-        for i in value:
-            source.append([item[0] for item in i])
-        return source
+            node_list = nodes  # regular *args
+
+        source_types = []
+        for n in node_list:
+            if not 1 <= n <= total_nodes:
+                raise IndexError(f"Node index {n} is out of range 1…{total_nodes}")
+
+            row = [
+                self.msx.MSXgetsource(n, s)[0]  # take only the *type* field
+                for s in range(1, total_species + 1)
+            ]
+            source_types.append(row)
+
+        return source_types
 
     def getMSXSourceLevel(self, varagin=None):
         """  Retrieves the sources level.
