@@ -12139,42 +12139,57 @@ class epanet(error_handler):
 
         return indices
 
-    def getMSXPatternsIndex(self, varagin=None):
-        """ Retrieves the patterns index.
+    def getMSXPatternsIndex(self, *names):
+        """
+        Return the MSX index (1-based) of one or more patterns.
 
-             Example:
-               d = epanet('net2-cl2.inp')
-               d.loadMSXFile('net2-cl2.msx')
-               d.addMSXPattern('P1', [1.0, 0.0 1.0])
-               d.addMSXPattern('P2', [0.0, 0.0 2.0])
-               d.addMSXPattern('P3', [0.0, 1.0 2.0])
-               d.addMSXPattern('P4', [1.0, 1.0 2.0])
-               d.getMSXPatternsIndex()           Retrieves the indices of all the patterns.
-               d.getMSXPatternsIndex(['P1'])     Retrieves the index of the first pattern.
-               d.getMSXPatternsIndex(['P1', 'P2', 'P3'])  Retrieves the indices of the first three patterns.
+        Parameters
+        ----------
+        *names : str | iterable[str], optional
+            Pattern names (IDs) to look up.
+            • **No arguments** – indices of *all* patterns are returned.
+            • **One iterable** – its elements are treated as the name list.
+            • **Several strings** – those exact pattern names.
 
-             See also getMSXPattern, getMSXPatternsNameID, getMSXPatternsLengths,
-                      setMSXPattern, setMSXPatternMatrix, setMSXPatternValue."""
-        x = self.getMSXSpeciesCount()
-        value = {}
-        flag = 0
-        if varagin is None:
-            varagin = {}
-            varagin = self.getMSXPatternsNameID()
-            y = varagin
+        Returns
+        -------
+        list[int]
+            Pattern indices in the same order requested.
+
+        Setup:
+                d = epanet('Net3-NH2CL.inp')
+                d.loadMSXFile('Net3-NH2CL.msx')
+                d.addMSXPattern('P1', [1.0, 0.0, 1.0])
+                d.addMSXPattern('P2', [0.0, 0.0, 2.0])
+                d.addMSXPattern('P3', [0.0, 1.0, 2.0])
+                d.addMSXPattern('P4', [1.0, 1.0, 2.0])
+
+        Examples:
+        --------
+        >>> d.getMSXPatternsIndex()                     # all patterns
+        >>> d.getMSXPatternsIndex('P1')                 # index of 'P1'
+        >>> d.getMSXPatternsIndex('P1', 'P2', 'P3')     # specific set
+        >>> d.getMSXPatternsIndex(['P1', 'P3'])         # iterable form
+        """
+        total_patterns = self.getMSXPatternsCount()
+
+        if not names:  # no args → all
+            names_to_lookup = self.getMSXPatternsNameID()
+        elif len(names) == 1 and isinstance(names[0], (list, tuple, set)):
+            names_to_lookup = names[0]  # iterable passed
         else:
-            if isinstance(varagin, str):
-                flag = 1
-            y = varagin
+            names_to_lookup = names  # regular *args
+
         MSX_PATTERN = self.ToolkitConstants.MSX_PATTERN
-        if x > 0:
-            if flag == 1:
-                value[0] = self.msx.MSXgetindex(MSX_PATTERN, y)
-            else:
-                for i in y:
-                    value[i] = self.msx.MSXgetindex(MSX_PATTERN, i)
-        output = list(value.values())
-        return output
+        indices = []
+        for name in names_to_lookup:
+            try:
+                idx = self.msx.MSXgetindex(MSX_PATTERN, name)
+            except Exception as err:
+                raise ValueError(f"Unknown pattern name '{name}'") from err
+            indices.append(idx)
+
+        return indices
 
     def getMSXConstantsIndex(self, varagin=None):
         """ Retrieves the constant's index.
