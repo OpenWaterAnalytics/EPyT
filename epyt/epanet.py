@@ -11915,31 +11915,55 @@ class epanet(error_handler):
 
         return names
 
-    def getMSXParametersNameID(self, varagin=None):
-        """  Retrieves the parameter's ID.
+    def getMSXParametersNameID(self, *ids):
+        """
+        Return one or more MSX parameter names (IDs) by index.
 
-             Example:
+        Parameters
+        ----------
+        *ids : int or iterable of int, optional
+            1-based indices of the parameters to retrieve.
+            • No arguments  -> all parameters are returned.
+            • One iterable  -> its contents are treated as the index list.
+            • Several ints  -> those specific indices are returned.
+
+        Returns
+        -------
+        list[str]
+            Parameter names in the order requested.
+
+        Setup:
                d = epanet('Net3-NH2CL.inp')
                d.loadMSXFile('Net3-NH2CL.msx')
-               d.getMSXParametersNameID()        % Retrieves the IDs of all the parameters.
-               d.getMSXParametersNameID(1)     % Retrieves the ID of the first parameter.
-               d.getMSXParametersNameID([1,3]) % Retrieves the IDs of the first and third parrameters.
+        Examples:
+        --------
+        >>> d.getMSXParametersNameID()          # all parameters
+        >>> d.getMSXParametersNameID(1)         # first parameter
+        >>> d.getMSXParametersNameID(1, 3)      # parameters 1 and 3
+        >>> d.getMSXParametersNameID([2, 4, 5]) # parameters 2, 4, 5
+        """
 
-             See also getMSXParametersCount, getMSXParametersIndex,
-                      getMSXParametersTanksValue, getMSXParametersPipesValue."""
-        x = self.getMSXParametersCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            for i in range(1, x + 1):
-                varagin[i] = i + 1
+        total = self.getMSXParametersCount()
+
+        # --- decide which indices to fetch -------------------------------------
+        if not ids:  # nothing passed -> all
+            indices = range(1, total + 1)
+        elif len(ids) == 1 and isinstance(ids[0], (list, tuple, set)):
+            indices = ids[0]  # a single iterable arg
+        else:
+            indices = ids  # regular star-args
+
+        # --- fetch the IDs from the toolkit ------------------------------------
         MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
-        if x > 0:
-            for i in varagin:
-                len = self.msx.MSXgetIDlen(MSX_PARAMETER, i)
-                value[i] = self.msx.MSXgetID(MSX_PARAMETER, i, len)
-        output = list(value.values())
-        return output
+        names = []
+        for i in indices:
+            if not 1 <= i <= total:
+                raise IndexError(f"Parameter index {i} is out of range 1…{total}")
+
+            id_len = self.msx.MSXgetIDlen(MSX_PARAMETER, i)
+            names.append(self.msx.MSXgetID(MSX_PARAMETER, i, id_len))
+
+        return names
 
     def getMSXPatternsNameID(self, varagin=None):
         """ Retrieves the patterns ID.
