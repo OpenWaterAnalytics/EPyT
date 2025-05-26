@@ -12091,33 +12091,53 @@ class epanet(error_handler):
 
         return indices
 
-    def getMSXSpeciesIndex(self, varagin=None):
-        """ Retrieves the species' index.
+    def getMSXSpeciesIndex(self, *names):
+        """
+        Return the MSX index (1-based) of one or more species.
 
-             Example:
+        Parameters
+        ----------
+        *names : str | iterable[str], optional
+            Species IDs (names) to look up.
+
+            • **No arguments** – return indices for *all* species.
+            • **One iterable** – its elements are treated as the list of names.
+            • **Several strings** – those specific species names.
+
+        Returns
+        -------
+        list[int]
+            Indices in the same order the names were requested.
+
+        Setup:
                d = epanet('Net3-NH2CL.inp')
                d.loadMSXFile('Net3-NH2CL.msx')
-               d.getMSXSpeciesIndex()           Retrieves the index of all the species.
-               d.getMSXSpeciesIndex(['Na'])     Retrieves the index of the Na.
-               d.getMSXSpeciesIndex(['CL2', 'Nb', 'Na'])  Retrieves the indices of CL2, Nb and Na.
+        Examples:
+        --------
+        >>> d.getMSXSpeciesIndex()                     # all species
+        >>> d.getMSXSpeciesIndex('NH3')                 # index of Na
+        >>> d.getMSXSpeciesIndex('NH2CL', 'NH3', 'H')    # CL2, Nb, Na
+        >>> d.getMSXSpeciesIndex(['NH3', 'TOC'])        # iterable form
+        """
+        total_species = self.getMSXSpeciesCount()
 
-             See also getMSXSpeciesUnits, getMSXSpeciesCount, getMSXSpeciesConcentration,
-                      getMSXSpeciesType, getMSXSpeciesNameID, getMSXSpeciesRTOL,
-                      getMSXSpeciesATOL."""
-        x = self.getMSXSpeciesCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            varagin = self.getMSXSpeciesNameID()
-            y = varagin
+        if not names:  # no args → all species
+            names_to_lookup = self.getMSXSpeciesNameID()
+        elif len(names) == 1 and isinstance(names[0], (list, tuple, set)):
+            names_to_lookup = names[0]  # an iterable was passed
         else:
-            y = varagin
+            names_to_lookup = names  # regular *args
+
         MSX_SPECIES = self.ToolkitConstants.MSX_SPECIES
-        if x > 0:
-            for i in y:
-                value[i] = self.msx.MSXgetindex(MSX_SPECIES, i)
-        output = list(value.values())
-        return output
+        indices = []
+        for name in names_to_lookup:
+            try:
+                idx = self.msx.MSXgetindex(MSX_SPECIES, name)
+            except Exception as err:
+                raise ValueError(f"Unknown species name '{name}'") from err
+            indices.append(idx)
+
+        return indices
 
     def getMSXPatternsIndex(self, varagin=None):
         """ Retrieves the patterns index.
