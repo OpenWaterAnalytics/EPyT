@@ -12046,33 +12046,50 @@ class epanet(error_handler):
                 values.append(self.msx.MSXgetID(msx_species, i+1, len_id))
         return values
 
-    def getMSXParametersIndex(self, varagin=None):
-        """ Retrieves the parameter's indices.
+    def getMSXParametersIndex(self, *names):
+        """
+        Return the MSX index of one or more parameters, looked up by name.
 
-             Example:
-               d = epanet('Net3-NH2CL.inp')
-               d.loadMSXFile('Net3-NH2CL.msx')
-               d.getMSXParametersIndex()           Retrieves the indices of all the parameters.
-               d.getMSXParametersIndex(['k1'])     Retrieves the index of the first parameter.
-               d.getMSXParametersIndex(['k1', 'k3', 'kDOC1'])  Retrieves the indices of the
-                                                                parameters 'k1', 'k3' and 'kDOC1'.
+        Parameters
+        ----------
+        *names : str or iterable of str, optional
+            Parameter IDs (names) to look up.
+            • Call with no arguments  → all parameters are returned.
+            • A single iterable       → its contents are used as the name list.
+            • Several strings         → those exact names are looked up.
 
-             See also getMSXParametersCount, getMSXParametersIndex,
-                      getMSXParametersTanksValue, getMSXParametersPipesValue."""
-        x = self.getMSXParametersCount()
-        value = {}
-        if varagin is None:
-            varagin = {}
-            varagin = self.getMSXParametersNameID()
-            y = varagin
+        Returns
+        -------
+        list[int]
+            Parameter indices, in the same order the names were requested.
+        Setup:
+            d = epanet('Net3-NH2CL.inp')
+            d.loadMSXFile('Net3-NH2CL.msx')
+        Examples:
+        --------
+        >>> d.getMSXParametersIndex()                       # all parameters
+        >>> d.getMSXParametersIndex('k1')                   # index of 'k1'
+        >>> d.getMSXParametersIndex('k1', 'k3', 'kDOC1')    # specific set
+        >>> d.getMSXParametersIndex(['k1', 'k3'])           # list/iterable
+        """
+
+        if not names:  # no args → all names
+            names_to_lookup = self.getMSXParametersNameID()
+        elif len(names) == 1 and isinstance(names[0], (list, tuple, set)):
+            names_to_lookup = names[0]  # iterable passed
         else:
-            y = varagin
+            names_to_lookup = names  # regular *args
+
         MSX_PARAMETER = self.ToolkitConstants.MSX_PARAMETER
-        if x > 0:
-            for i in y:
-                value[i] = self.msx.MSXgetindex(MSX_PARAMETER, i)
-        output = list(value.values())
-        return output
+        indices = []
+        for name in names_to_lookup:
+            try:
+                idx = self.msx.MSXgetindex(MSX_PARAMETER, name)
+            except Exception as err:
+                raise ValueError(f"Unknown parameter name '{name}'") from err
+            indices.append(idx)
+
+        return indices
 
     def getMSXSpeciesIndex(self, varagin=None):
         """ Retrieves the species' index.
