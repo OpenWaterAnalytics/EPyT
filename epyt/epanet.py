@@ -14055,6 +14055,245 @@ class epanet(error_handler):
             plt.legend()
             plt.show()
 
+    def exportMSXts(self, results, output_file='computedtoexcel.xlsx', selected_nodes=None,
+                        selected_species=None,
+                        header=True):
+        """
+        Exports multi-species water-quality time-series results (from an EPANET-MSX
+    simulation) to an Excel workbook—one sheet per species.
+
+    Parameters:
+    ----------
+        results : obj
+            A results object returned by `getMSXComputedQualityNode`.
+            It must expose ``Time`` (1-D array-like) and ``Quality``
+        output_file : str, default ``"computedtoexcel.xlsx"``
+            Name (or path) for the Excel file to create. “.xlsx” is appended
+            automatically when omitted.
+        selected_nodes : list[str | int] | None, default ``None``
+            Node IDs or zero-based node indices to include.
+            • ``None``  → export **all** nodes.
+            • Strings   → treated as node IDs.
+            • Integers  → treated as node indices.
+        selected_species : list[str | int] | None, default ``None``
+            Species names or zero-based species indices to include.
+            Same ID / index rules as *selected_nodes*.
+        header : bool, default ``True``
+            Write column headers (“NODE INDEX”, “NODE ID”, time steps …).
+            If ``False``, headers are suppressed and the first data row is
+            removed—useful for appending to an existing sheet.
+
+        Simple Example with all nodes and species:
+            G = epanet("net2-cl2.inp")
+            G.loadMSXFile("net2-cl2.msx")
+            MSX_comp = G.getMSXComputedQualityNode()
+            G.exportMSXts(MSX_comp, "net2")
+            G.exportMSXstatistics("net2","summarynet2")
+
+        Advanced Examples:
+            G = epanet("net2-cl2.inp")
+            G.loadMSXFile("net2-cl2.msx")
+
+            # Run MSX simulation and grab node-quality results
+            msx_results = G.getMSXComputedQualityNode()
+
+            # 1) Export every species for every node (default behaviour)
+            G.exportMSXts(msx_results, "net2_full.xlsx")
+
+            # 2) Export only chlorine for two specific nodes, keep headers
+            G.exportMSXts(
+                    MSX_comp,
+                    output_file="chlorine_subset.xlsx",
+                    selected_nodes=["10", "15"], #select nodes by their id
+                    selected_species=["CL2"]
+                )
+
+
+            G.exportMSXts(
+                            MSX_comp,
+                            output_file="chlorine_subset1.xlsx",
+                            selected_nodes=[9, 14], #select node by their index
+                            selected_species=["CL2"]
+                        )
+
+            # 3) Export species index 0 for nodes 0-4, omit headers
+            G.exportMSXts(
+                msx_results,
+                "first_species_nodes0to4.xlsx",
+                selected_nodes=list(range(5)),
+                selected_species=[0],  #select specie by its index
+                header=False
+
+        """
+        if not output_file.endswith('.xlsx'):
+            output_file += '.xlsx'
+
+        if not hasattr(results, 'Time') or not hasattr(results, 'Quality'):
+            raise ValueError("Simulation results are not properly initialized or run.")
+
+        time_data = results.Time
+        species_list = self.getMSXSpeciesNameID()
+
+        node_ids = self.getNodeNameID()
+        node_indices = list(range(len(node_ids)))
+
+        if selected_nodes:
+            selected_node_indices = []
+            for node in selected_nodes:
+                if isinstance(node, str):  # Node ID
+                    if node in node_ids:
+                        selected_node_indices.append(node_ids.index(node))
+                    else:
+                        raise ValueError(f"Node ID '{node}' not found.")
+                elif isinstance(node, int):  # Node index
+                    if 0 <= node < len(node_ids):
+                        selected_node_indices.append(node)
+                    else:
+                        raise ValueError(f"Node index '{node}' is out of range.")
+                else:
+                    raise ValueError(f"Invalid node identifier: {node}")
+        else:
+            selected_node_indices = node_indices
+
+        if selected_species:
+            selected_species_indices = []
+            for species in selected_species:
+                if isinstance(species, str):  # Species name
+                    if species in species_list:
+                        selected_species_indices.append(species_list.index(species))
+                    else:
+                        raise ValueError(f"Species name '{species}' not found.")
+                elif isinstance(species, int):  # Species index
+                    if 0 <= species < len(species_list):
+                        selected_species_indices.append(species)
+                    else:
+                        raise ValueError(f"Species index '{species}' is out of range.")
+                else:
+                    raise ValueError(f"Invalid species identifier: {species}")
+        else:
+            selected_species_indices = list(range(len(species_list)))
+
+        with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+            node_keys = list(results.Quality.keys())
+
+            for species_index in selected_species_indices:
+                species_name = species_list[species_index]
+                species_data = []
+
+                for node_index in selected_node_indices:
+                    node_key = node_keys[node_index]
+                    quality_data = np.array(results.Quality[node_key])
+
+                    # If quality_data has an extra leading dimension
+                    if quality_data.ndim == 3 and quality_data.shape[0] == 1:
+                        quality_data = quality_data[0]
+
+                    num_timesteps = len(time_data)
+                    num_species = len(species_list)
+                    expected_shape = (num_timesteps, num_species)
+
+                    if quality_data.shape != expected_shape:
+                        raise ValueError(
+                            f"Node {node_key}: quality_data does not match expected shape {expected_shape}. "
+                            f"Actual shape: {quality_data.shape}"
+                        )
+                    species_data.append(quality_data[:, species_index])
+
+                species_data_array = np.array(species_data)
+
+                df = pd.DataFrame(species_data_array, columns=time_data,
+                                  index=[node_ids[i] for i in selected_node_indices])
+                df.insert(0, 'NODE INDEX', [node_indices[i] for i in selected_node_indices])
+                df.insert(1, 'NODE ID', [node_ids[i] for i in selected_node_indices])
+
+                # If header is False, remove the first data row from df
+                if not header and len(df) > 0:
+                    df = df.iloc[1:].copy()
+
+                sheet_name = f"{species_name}"
+                # If header=False, no column headers will be written to the Excel sheet.
+                df.to_excel(writer, index=False, sheet_name=sheet_name, header=header)
+
+                worksheet = writer.sheets[sheet_name]
+                worksheet.set_column('A:A', 13.0)
+
+        print(f"Data successfully written to {output_file}")
+
+    def exportMSXstatistics(self,input_path, output_path="summary_output.xlsx", nodeids=True, nodeindex=True):
+        """
+        Summarizes min, max, and average values for each node in an Excel file with a specific structure.
+
+        Parameters:
+            input_path (str): Path to the input Excel file.
+            output_path (str): Path to save the output summary Excel file.
+            nodeids (bool): Include node IDs (from column 1) in the summary.
+            nodeindex (bool): Include node index (from column 0) in the summary.
+
+        Simple Example with all nodes and species:
+            G = epanet("net2-cl2.inp")
+            G.loadMSXFile("net2-cl2.msx")
+            MSX_comp = G.getMSXComputedQualityNode()
+            G.exportMSXts(MSX_comp, "net2")
+            G.exportMSXstatistics("net2","summarynet2")
+
+        # Example usage:
+        exportMSXstatistics("outexcel3.xlsx","summary_output1.xlsx", nodeids=True, nodeindex=False)  # Only node IDs
+        exportMSXstatistics("outexcel3.xlsx", "summary_output2.xlsx",nodeids=False, nodeindex=True)  # Only node indices
+        exportMSXstatistics("outexcel3.xlsx","summary_output3.xlsx", nodeids=True, nodeindex=True)   # Both
+        """
+        if not input_path.endswith('.xlsx'):
+            input_path += '.xlsx'
+
+        if not output_path.endswith('.xlsx'):
+            output_path += '.xlsx'
+        xls = pd.ExcelFile(input_path)
+        output_data = {}
+
+        for sheet in xls.sheet_names:
+            df = xls.parse(sheet, header=None)
+
+            data = df.iloc[1:].reset_index(drop=True)
+
+            summary_rows = []
+
+            for _, row in data.iterrows():
+                index = int(row[0])
+                node_id = str(row[1])
+                values = pd.to_numeric(row[2:], errors='coerce').dropna()
+
+                if values.empty:
+                    continue
+
+                summary = {
+                    'Min': values.min(),
+                    'Max': values.max(),
+                    'Mean': values.mean()
+                }
+
+                if nodeids:
+                    summary['NodeID'] = node_id
+                if nodeindex:
+                    summary['NodeIndex'] = index
+
+                ordered_summary = {}
+                if nodeids:
+                    ordered_summary['NodeID'] = summary['NodeID']
+                if nodeindex:
+                    ordered_summary['NodeIndex'] = summary['NodeIndex']
+                ordered_summary['Min'] = summary['Min']
+                ordered_summary['Max'] = summary['Max']
+                ordered_summary['Mean'] = summary['Mean']
+
+                summary_rows.append(ordered_summary)
+
+            output_data[sheet] = pd.DataFrame(summary_rows)
+
+        with pd.ExcelWriter(output_path) as writer:
+            for sheet_name, df in output_data.items():
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+        print(f"Summary saved to: {output_path}")
+
 
 class epanetapi:
     """
