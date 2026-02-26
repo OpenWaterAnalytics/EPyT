@@ -1,7 +1,7 @@
-EPyT
-====
+src
+===
 
 .. toctree::
    :maxdepth: 4
 
-   epyt
+   src
