@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; epyt 1.0.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=46dfa7f5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            epyt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simple-example">Simple example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-example">Advanced example</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">epyt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<p>In the following examples, we introduce a selection of the capabilities of the tool and an illustrative smart water research example.</p>
+<section id="simple-example">
+<h2>Simple example<a class="headerlink" href="#simple-example" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">EPyT</span></code> python class, epanet, includes properties of the input network model, static properties, public functions, and local functions that directly call the <code class="docutils literal notranslate"><span class="pre">EPANET</span></code> shared object library or the executable. The full API with detailed examples is provided in the link. In the following paragraphs, we introduce a selection of the capabilities of the tool and an illustrative smart water research example.</p>
+<p>Through <code class="docutils literal notranslate"><span class="pre">EPyT</span></code>, users can easily load <code class="docutils literal notranslate"><span class="pre">EPANET</span></code> network models, as demonstrated by importing the module and loading the <code class="docutils literal notranslate"><span class="pre">Net1.inp</span></code> network in a provided example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">epyt</span><span class="w"> </span><span class="kn">import</span> <span class="n">epanet</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load EPANET Input File</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">epanet</span><span class="p">(</span><span class="s1">&#39;Net1.inp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EPANET</span> <span class="n">version</span> <span class="mi">20200</span> <span class="n">loaded</span> <span class="p">(</span><span class="n">EPyT</span> <span class="n">version</span> <span class="mf">1.0.5</span><span class="p">)</span><span class="o">.</span>
+<span class="n">Input</span> <span class="n">File</span> <span class="n">Net1</span><span class="o">.</span><span class="n">inp</span> <span class="n">loaded</span> <span class="n">successfully</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>In this example, <code class="docutils literal notranslate"><span class="pre">G</span></code> is an epanet object which can be defined mathematically as the set comprised of the network graph topology (such as nodes and links), structural parameters (such as pipe lengths, diameters, etc.), and functions (such as hydraulic solvers, etc.). <code class="docutils literal notranslate"><span class="pre">G</span></code> can also be shared between different functions as an argument.</p>
+<p>When the object is constructed, the module reads the <code class="docutils literal notranslate"><span class="pre">EPANET</span></code> input network file and populates more than 500 object parameters. To view some of the parameters and receive assistance with respect to the methods, the user can use the following commands:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lists all available functions and properties</span>
+<span class="nb">dir</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;BinTempfile&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CMDCODE&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ControlLevelValues&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ControlLinkIndex&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ControlNodeIndex&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ControlRulesCount&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ControlSettings&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ControlTypes&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ControlTypesIndex&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Controls&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CurveCount&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CurveIndex&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CurvesInfo&#39;</span><span class="p">,</span>
+ <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve some examples for the function</span>
+<span class="n">help</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">getNodeElevations</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Help</span> <span class="n">on</span> <span class="n">method</span> <span class="n">getNodeElevations</span> <span class="ow">in</span> <span class="n">module</span> <span class="n">epyt</span><span class="o">.</span><span class="n">epanet</span><span class="p">:</span>
+
+<span class="n">getNodeElevations</span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span> <span class="n">method</span> <span class="n">of</span> <span class="n">epyt</span><span class="o">.</span><span class="n">epanet</span><span class="o">.</span><span class="n">epanet</span> <span class="n">instance</span>
+    <span class="n">Retrieves</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="nb">all</span> <span class="n">node</span> <span class="n">elevations</span><span class="o">.</span>
+    <span class="n">Example</span><span class="p">:</span>
+
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">getNodeElevations</span><span class="p">()</span>             <span class="c1"># Retrieves the value of all node elevations</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">getNodeElevations</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>            <span class="c1"># Retrieves the value of the first node elevation</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">getNodeElevations</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>    <span class="c1"># Retrieves the value of the 5th to 7th node elevations</span>
+
+    <span class="n">See</span> <span class="n">also</span> <span class="n">setNodeElevations</span><span class="p">,</span> <span class="n">getNodesInfo</span><span class="p">,</span> <span class="n">getNodeNameID</span><span class="p">,</span>
+    <span class="n">getNodeType</span><span class="p">,</span> <span class="n">getNodeEmitterCoeff</span><span class="p">,</span> <span class="n">getNodeInitialQuality</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Using object <code class="docutils literal notranslate"><span class="pre">G</span></code>, the user can call all the public toolkit functions. The toolkit contains a large set of functions that allow the user to retrieve or update the network data and simulate hydraulic and quality analysis for different scenarios using the <code class="docutils literal notranslate"><span class="pre">EPANET</span></code> libraries. Examples of how to retrieve some common network parameter values are provided below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve Link diameters</span>
+<span class="n">diameters</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getLinkDiameter</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">diameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">18.</span> <span class="mf">14.</span> <span class="mf">10.</span> <span class="mf">10.</span> <span class="mf">12.</span>  <span class="mf">6.</span> <span class="mf">18.</span> <span class="mf">10.</span> <span class="mf">12.</span>  <span class="mf">8.</span>  <span class="mf">8.</span>  <span class="mf">6.</span>  <span class="mf">0.</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve Node elevations</span>
+<span class="n">elevations</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getNodeElevations</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">elevations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Variables diameters and elevations are two arrays, corresponding to the number of links, and the number of nodes in the <code class="docutils literal notranslate"><span class="pre">Net1</span></code> network, respectively. Note that, in case the network model changes, these parameters will be updated. This is demonstrated in the following example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">710.</span> <span class="mf">710.</span> <span class="mf">700.</span> <span class="mf">695.</span> <span class="mf">700.</span> <span class="mf">695.</span> <span class="mf">690.</span> <span class="mf">700.</span> <span class="mf">710.</span> <span class="mf">800.</span> <span class="mf">850.</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>To modify some parameters, we can use the <code class="docutils literal notranslate"><span class="pre">set</span></code> commands.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Link diameter for links 2 &amp; 10</span>
+<span class="n">diameters</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getLinkDiameter</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">diameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">14.</span>  <span class="mf">8.</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Update the link 10 diameter from 100 to 90</span>
+<span class="n">G</span><span class="o">.</span><span class="n">setLinkDiameter</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="c1"># Retrieve the diameter of link 10</span>
+<span class="n">n_diameter</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getLinkDiameter</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">n_diameter</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">90.0</span>
+</pre></div>
+</div>
+<p>Next, we show how to simulate the water distribution network, such as flows/pressures and water quality. Various functions have been included in the toolkit to simplify the workflows of solving and retrieving the data from the library memory. One way is to solve the hydraulics and quality equations using the <code class="docutils literal notranslate"><span class="pre">EPANET</span></code> library and store the results in data structures.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solve hydraulics in library</span>
+<span class="c1"># H = G.getComputedHydraulicTimeSeries()</span>
+<span class="c1"># Solve quality dynamics in library</span>
+<span class="c1"># Q = G.getComputedQualityTimeSeries()</span>
+<span class="c1"># Solve all dynamics in library, create a binary file to store the computed values</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getComputedTimeSeries</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To access the different values, the user can use the dot notation, such as <code class="docutils literal notranslate"><span class="pre">R.Flow</span></code> to create an array with the flows and <code class="docutils literal notranslate"><span class="pre">R.NodeQuality</span></code> for the water quality at the nodes. It is important to note that the time intervals may be different for the hydraulic and quality time series, due to the simulation settings; the user can call <code class="docutils literal notranslate"><span class="pre">R.Time</span></code>, to retrieve the time in seconds.</p>
+<p>Executing the functions <code class="docutils literal notranslate"><span class="pre">G.plot()</span></code> or <code class="docutils literal notranslate"><span class="pre">G.plot_ts()</span></code>, a figure of the network along with its components is displayed. The nodes i.e., junctions, reservoirs, tanks, and the links, i.e., pipes, valves, and pumps, are depicted using different colors and shapes. An example is provided below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot link flows and quality</span>
+<span class="n">hrs_time</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">Time</span> <span class="o">/</span> <span class="mi">3600</span>
+<span class="n">link_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">link_names</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getLinkNameID</span><span class="p">(</span><span class="n">link_indices</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">plot_ts</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">hrs_time</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">Flow</span><span class="p">[:,</span> <span class="n">link_indices</span><span class="p">],</span>
+          <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Flow, Link IDs: </span><span class="si">{</span><span class="n">link_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">figure_size</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">legend_location</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (hrs)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Flow (</span><span class="si">{</span><span class="n">G</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">LinkFlowUnits</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+          <span class="n">marker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">link_names</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;figures/paper_flows&#39;</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">plot_ts</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">hrs_time</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">LinkQuality</span><span class="p">[:,</span> <span class="n">link_indices</span><span class="p">],</span>
+          <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Quality, Link IDs: </span><span class="si">{</span><span class="n">link_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">legend_location</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (hrs)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Quality&#39;</span><span class="p">,</span> <span class="n">figure_size</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+          <span class="n">marker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">link_names</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;figures/paper_link_quality&#39;</span><span class="p">)</span>
+
+<span class="c1"># Plot node pressures and quality</span>
+<span class="n">node_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">node_names</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getNodeNameID</span><span class="p">(</span><span class="n">node_indices</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">plot_ts</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">hrs_time</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">Pressure</span><span class="p">[:,</span> <span class="n">node_indices</span><span class="p">],</span> <span class="n">legend_location</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span>
+          <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Pressure, Node IDs: </span><span class="si">{</span><span class="n">node_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">figure_size</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (hrs)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Pressure (</span><span class="si">{</span><span class="n">G</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">NodePressureUnits</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+          <span class="n">marker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">node_names</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;figures/paper_pressures&#39;</span><span class="p">)</span>
+
+<span class="n">G</span><span class="o">.</span><span class="n">plot_ts</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">hrs_time</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">NodeQuality</span><span class="p">[:,</span> <span class="n">node_indices</span><span class="p">],</span>
+          <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Quality, Node IDs: </span><span class="si">{</span><span class="n">node_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">legend_location</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (hrs)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Quality&#39;</span><span class="p">,</span> <span class="n">figure_size</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+          <span class="n">marker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">node_names</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;figures/paper_node_quality&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="joss_simple_example_9_0" class="align-center" src="_images/joss_simple_example_9_0.png" />
+<img alt="joss_simple_example_9_1" class="align-center" src="_images/joss_simple_example_9_1.png" />
+<img alt="joss_simple_example_9_2" class="align-center" src="_images/joss_simple_example_9_2.png" />
+<img alt="joss_simple_example_9_3" class="align-center" src="_images/joss_simple_example_9_3.png" />
+</section>
+<section id="advanced-example">
+<h2>Advanced example<a class="headerlink" href="#advanced-example" title="Link to this heading"></a></h2>
+<p>A more advanced example is provided below, for designing a simple leakage detection algorithm for the Net2 benchmark network. The goal is to generate pressure bounds (i.e., the adaptive upper and lower levels of pressure expected at a node, given the uncertainty in model parameters) which can be used to detect events in the system, e.g., by comparing them with available pressure sensor measurements.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">epyt</span><span class="w"> </span><span class="kn">import</span> <span class="n">epanet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a function to run the simulation and return the pressure results</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_bounds</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">nsim</span><span class="p">,</span> <span class="n">base_demands</span><span class="p">,</span> <span class="n">eta_bar</span><span class="p">,</span> <span class="n">node_index</span><span class="p">):</span>
+    <span class="c1"># Seed number to always get the same random results</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Initialize matrix to save MCS pressures</span>
+    <span class="n">pmcs</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsim</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsim</span><span class="p">):</span>
+        <span class="c1"># Compute new base demands</span>
+        <span class="n">delta_bd</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">base_demands</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">eta_bar</span> <span class="o">*</span> <span class="n">base_demands</span>
+        <span class="n">new_base_demands</span> <span class="o">=</span> <span class="n">base_demands</span> <span class="o">+</span> <span class="n">delta_bd</span>
+        <span class="c1"># Set base demands</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">setNodeBaseDemands</span><span class="p">(</span><span class="n">new_base_demands</span><span class="p">)</span>
+        <span class="c1"># Compute pressures at each node</span>
+        <span class="n">pmcs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getComputedHydraulicTimeSeries</span><span class="p">()</span><span class="o">.</span><span class="n">Pressure</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Compute upper and lower bounds</span>
+    <span class="n">pmulti</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsim</span><span class="p">):</span>
+        <span class="n">pmulti</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pmcs</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span> <span class="n">node_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">pmulti</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">pmulti</span><span class="p">)</span>
+    <span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pmulti</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pmulti</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">meanb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pmulti</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pmulti</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">meanb</span>
+</pre></div>
+</div>
+<p>For generating leakage events, it’s useful to activate the Pressure-Driven Analysis (PDA), instead of using the default Demand-Driven Analysis (DDA), as the effect on demands due to pressure drops during leakages is not negligible. Moreover, PDA avoids simulation errors due to negative pressures.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">activate_PDA</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;PDA&#39;</span>
+    <span class="n">pmin</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">preq</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">pexp</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">setDemandModel</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">pmin</span><span class="p">,</span> <span class="n">preq</span><span class="p">,</span> <span class="n">pexp</span><span class="p">)</span>  <span class="c1"># Sets the demand model</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># Prepare network for Monte Carlo Simulations</span>
+    <span class="c1"># Load network</span>
+    <span class="n">inp_name</span> <span class="o">=</span> <span class="s1">&#39;Net2.inp&#39;</span>  <span class="c1"># &#39;L-TOWN.inp&#39;</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">epanet</span><span class="p">(</span><span class="n">inp_name</span><span class="p">)</span>
+    <span class="c1"># Pressure driven analysis</span>
+    <span class="n">activate_PDA</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EPANET</span> <span class="n">version</span> <span class="mi">20200</span> <span class="n">loaded</span> <span class="p">(</span><span class="n">EPyT</span> <span class="n">version</span> <span class="mf">1.0.5</span><span class="p">)</span><span class="o">.</span>
+<span class="n">Input</span> <span class="n">File</span> <span class="n">Net2</span><span class="o">.</span><span class="n">inp</span> <span class="n">loaded</span> <span class="n">successfully</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get nominal base demands</span>
+<span class="n">base_demands</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getNodeBaseDemands</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">base_demands</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">-</span><span class="mf">694.4</span>     <span class="mf">8.</span>     <span class="mf">14.</span>      <span class="mf">8.</span>      <span class="mf">8.</span>      <span class="mf">5.</span>      <span class="mf">4.</span>      <span class="mf">9.</span>     <span class="mf">14.</span>
+    <span class="mf">5.</span>     <span class="mf">34.78</span>   <span class="mf">16.</span>      <span class="mf">2.</span>      <span class="mf">2.</span>      <span class="mf">2.</span>     <span class="mf">20.</span>     <span class="mf">20.</span>     <span class="mf">20.</span>
+    <span class="mf">5.</span>     <span class="mf">19.</span>     <span class="mf">16.</span>     <span class="mf">10.</span>      <span class="mf">8.</span>     <span class="mf">11.</span>      <span class="mf">6.</span>      <span class="mf">8.</span>      <span class="mf">0.</span>
+    <span class="mf">7.</span>      <span class="mf">3.</span>     <span class="mf">17.</span>     <span class="mf">17.</span>      <span class="mf">1.5</span>     <span class="mf">1.5</span>     <span class="mf">0.</span>      <span class="mf">1.</span>      <span class="mf">0.</span>  <span class="p">]</span>
+</pre></div>
+</div>
+<p>We assume we have a pressure sensor at the node with ID “11”. We will now create the pressure bounds at that node, using Monte Carlo Simulations (MCS). We assume that there is 2% uncertainty in the nominal base demands compared to the actual demand, which is evenly distributed with the nominal value as the mean. We consider a suitable number of
+MCS (we use 100 epochs for computational convenience, however, more simulations would provide a more accurate estimation of the bounds). Starting from the current time, we run the simulations for 56 hours for each randomized scenario, the computed pressure measurements are recorded.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Number of simulations</span>
+<span class="n">nsim</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="c1"># Pressure Simulations at Node 5</span>
+<span class="n">node_id</span> <span class="o">=</span> <span class="s1">&#39;11&#39;</span>
+<span class="n">node_index</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getNodeIndex</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+<span class="c1"># 5% max uncertainty in base demands</span>
+<span class="n">eta_bar</span> <span class="o">=</span> <span class="mf">0.02</span>
+<span class="n">pmulti</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">meanb</span> <span class="o">=</span> <span class="n">compute_bounds</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">nsim</span><span class="p">,</span> <span class="n">base_demands</span><span class="p">,</span> <span class="n">eta_bar</span><span class="p">,</span> <span class="n">node_index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pmulti</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">meanb</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Epoch</span> <span class="mi">0</span>
+<span class="n">Epoch</span> <span class="mi">1</span>
+<span class="n">Epoch</span> <span class="mi">2</span>
+<span class="n">Epoch</span> <span class="mi">3</span>
+<span class="n">Epoch</span> <span class="mi">4</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>The upper and lower bounds can be computed by processing all the simulated pressure measurements using numpy methods. The results are depicted in Figure 3. Given a sufficient number of simulations, we expect that under normal conditions, pressure at node “11” will reside between those bounds. In blue, the average pressure computed by the MCS is depicted.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plots</span>
+<span class="n">pressure_units</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">NodePressureUnits</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ub</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">meanb</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Upper bound&#39;</span><span class="p">,</span> <span class="s1">&#39;Lower bound&#39;</span><span class="p">,</span> <span class="s1">&#39;Average&#39;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Pressure bounds, Node ID: </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (hours)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Pressure (</span><span class="si">{</span><span class="n">pressure_units</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;figures/paper_pressure_bounds.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="joss_advance_example_6_0" class="align-center" src="_images/joss_advance_example_6_0.png" />
+<p>To demonstrate the detection ability of the proposed approach, we simulate a leakage with 50 gallons per minute (GPM) outflow at the node with ID “7”, starting 20 hours after the current time. During a leakage event, we expect that the pressure will drop, and for a sufficiently large leak, the measured pressure can fall below the estimated lower bound, thus triggering a leakage warning.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add leakage at Node ID 7 after 20 hours</span>
+<span class="n">leak_scenario</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">leak_start</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">leak_value</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># GPM unit</span>
+<span class="n">leak_node_id</span> <span class="o">=</span> <span class="s1">&#39;7&#39;</span>
+<span class="n">leak_node_index</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getNodeIndex</span><span class="p">(</span><span class="n">leak_node_id</span><span class="p">)</span>
+<span class="n">leak_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">getPatternLengths</span><span class="p">()))</span>
+<span class="n">leak_pattern</span><span class="p">[</span><span class="n">leak_start</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">pattern_index</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">addPattern</span><span class="p">(</span><span class="s1">&#39;leak&#39;</span><span class="p">,</span> <span class="n">leak_pattern</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">setNodeDemandPatternIndex</span><span class="p">(</span><span class="n">leak_node_index</span><span class="p">,</span> <span class="n">pattern_index</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">setNodeBaseDemands</span><span class="p">(</span><span class="n">leak_node_index</span><span class="p">,</span> <span class="n">leak_value</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute pressures</span>
+<span class="n">scada_pressures</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">getComputedHydraulicTimeSeries</span><span class="p">()</span><span class="o">.</span><span class="n">Pressure</span>
+</pre></div>
+</div>
+<p>The detection algorithm compares the lower pressure bound of node ‘7’ with the actual pressure as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p7</span> <span class="o">=</span> <span class="n">scada_pressures</span><span class="p">[:,</span> <span class="n">node_index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">p7</span> <span class="o">-</span> <span class="n">lb</span>
+<span class="n">alert</span> <span class="o">=</span> <span class="n">e</span> <span class="o">&lt;</span> <span class="mi">0</span>
+<span class="n">detectionTime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">alert</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bounds with Leakage</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ub</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p7</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Upper bound&#39;</span><span class="p">,</span> <span class="s1">&#39;Lower bound&#39;</span><span class="p">,</span> <span class="s1">&#39;Sensor&#39;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Pressure bounds, Leak Node ID: </span><span class="si">{</span><span class="n">leak_node_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (hours)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Pressure (</span><span class="si">{</span><span class="n">pressure_units</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;figures/paper_pressure_bounds_leak.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="joss_advance_example_10_0" class="align-center" src="_images/joss_advance_example_10_0.png" />
+<p>We observe that in this use case, until time 27 hours, the sensor measurement was within the upper and lower bounds computed in the previous step, therefore there was a 7 hour delay in detecting the leakage.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Leakage alert</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">alert</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Leakage alert&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (hours)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;figures/paper_leakage_alert.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="joss_advance_example_11_0" class="align-center" src="_images/joss_advance_example_11_0.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, KIOS Research and Innovation Center of Excellence.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

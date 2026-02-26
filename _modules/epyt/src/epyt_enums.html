@@ -1,0 +1,151 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epyt.src.epyt_enums &mdash; epyt 1.0.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=46dfa7f5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            epyt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">epyt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">epyt.src.epyt_enums</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for epyt.src.epyt_enums</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="EpytEnums">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epyt_enums.EpytEnums">[docs]</a>
+<span></span><span class="k">class</span><span class="w"> </span><span class="nc">EpytEnums</span><span class="p">:</span>
+<div class="viewcode-block" id="EpytEnums.__init__">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epyt_enums.EpytEnums.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DEMANDMODEL</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DDA&#39;</span><span class="p">,</span> <span class="s1">&#39;PDA&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPELINK</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CVPIPE&#39;</span><span class="p">,</span> <span class="s1">&#39;PIPE&#39;</span><span class="p">,</span> <span class="s1">&#39;PUMP&#39;</span><span class="p">,</span> <span class="s1">&#39;PRV&#39;</span><span class="p">,</span> <span class="s1">&#39;PSV&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;PBV&#39;</span><span class="p">,</span> <span class="s1">&#39;FCV&#39;</span><span class="p">,</span> <span class="s1">&#39;TCV&#39;</span><span class="p">,</span> <span class="s1">&#39;GPV&#39;</span><span class="p">,</span> <span class="s1">&#39;PCV&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEMIXMODEL</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MIX1&#39;</span><span class="p">,</span> <span class="s1">&#39;MIX2&#39;</span><span class="p">,</span> <span class="s1">&#39;FIFO&#39;</span><span class="p">,</span> <span class="s1">&#39;LIFO&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPENODE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;JUNCTION&#39;</span><span class="p">,</span> <span class="s1">&#39;RESERVOIR&#39;</span><span class="p">,</span> <span class="s1">&#39;TANK&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEPUMP</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CONSTANT_HORSEPOWER&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_FUNCTION&#39;</span><span class="p">,</span> <span class="s1">&#39;CUSTOM&#39;</span><span class="p">,</span> <span class="s1">&#39;NO_CURVE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEPUMPSTATE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;XHEAD&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;CLOSED&#39;</span><span class="p">,</span> <span class="s1">&#39;OPEN&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;XFLOW&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEQUALITY</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHEM&#39;</span><span class="p">,</span> <span class="s1">&#39;AGE&#39;</span><span class="p">,</span> <span class="s1">&#39;TRACE&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTIS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPESOURCE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CONCEN&#39;</span><span class="p">,</span> <span class="s1">&#39;MASS&#39;</span><span class="p">,</span> <span class="s1">&#39;SETPOINT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOWPACED&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPESTATS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="s1">&#39;AVERAGE&#39;</span><span class="p">,</span> <span class="s1">&#39;MINIMUM&#39;</span><span class="p">,</span> <span class="s1">&#39;MAXIMUM&#39;</span><span class="p">,</span> <span class="s1">&#39;RANGE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPECONTROL</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LOWLEVEL&#39;</span><span class="p">,</span> <span class="s1">&#39;HIGHLEVEL&#39;</span><span class="p">,</span> <span class="s1">&#39;TIMER&#39;</span><span class="p">,</span> <span class="s1">&#39;TIMEOFDAY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEREPORT</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;YES&#39;</span><span class="p">,</span> <span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;FULL&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPESTATUS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CLOSED&#39;</span><span class="p">,</span> <span class="s1">&#39;OPEN&#39;</span><span class="p">,</span> <span class="s1">&#39;ACTIVE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPECURVE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;VOLUME&#39;</span><span class="p">,</span> <span class="s1">&#39;PUMP&#39;</span><span class="p">,</span> <span class="s1">&#39;EFFICIENCY&#39;</span><span class="p">,</span> <span class="s1">&#39;HEADLOSS&#39;</span><span class="p">,</span> <span class="s1">&#39;GENERAL&#39;</span><span class="p">,</span> <span class="s1">&#39;VALVE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEHEADLOSS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;HW&#39;</span><span class="p">,</span> <span class="s1">&#39;DW&#39;</span><span class="p">,</span> <span class="s1">&#39;CM&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEUNITS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CFS&#39;</span><span class="p">,</span> <span class="s1">&#39;GPM&#39;</span><span class="p">,</span> <span class="s1">&#39;MGD&#39;</span><span class="p">,</span> <span class="s1">&#39;IMGD&#39;</span><span class="p">,</span> <span class="s1">&#39;AFD&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;LPS&#39;</span><span class="p">,</span> <span class="s1">&#39;LPM&#39;</span><span class="p">,</span> <span class="s1">&#39;MLD&#39;</span><span class="p">,</span> <span class="s1">&#39;CMH&#39;</span><span class="p">,</span> <span class="s1">&#39;CMD&#39;</span><span class="p">,</span> <span class="s1">&#39;CMS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TYPEBINSTATUS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CLOSED (MAX. HEAD EXCEEDED)&#39;</span><span class="p">,</span> <span class="s1">&#39;TEMPORARILY CLOSED&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;CLOSED&#39;</span><span class="p">,</span> <span class="s1">&#39;OPEN&#39;</span><span class="p">,</span> <span class="s1">&#39;ACTIVE(PARTIALLY OPEN)&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;OPEN (MAX. FLOW EXCEEDED&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;OPEN (PRESSURE SETTING NOT MET)&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RULESTATUS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;OPEN&#39;</span><span class="p">,</span> <span class="s1">&#39;CLOSED&#39;</span><span class="p">,</span> <span class="s1">&#39;ACTIVE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LOGOP</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IF&#39;</span><span class="p">,</span> <span class="s1">&#39;AND&#39;</span><span class="p">,</span> <span class="s1">&#39;OR&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RULEOBJECT</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NODE&#39;</span><span class="p">,</span> <span class="s1">&#39;LINK&#39;</span><span class="p">,</span> <span class="s1">&#39;SYSTEM&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RULEVARIABLE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DEMAND&#39;</span><span class="p">,</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">,</span> <span class="s1">&#39;GRADE&#39;</span><span class="p">,</span> <span class="s1">&#39;LEVEL&#39;</span><span class="p">,</span> <span class="s1">&#39;PRESSURE&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOW&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;STATUS&#39;</span><span class="p">,</span> <span class="s1">&#39;SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER&#39;</span><span class="p">,</span> <span class="s1">&#39;TIME&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;CLOCKTIME&#39;</span><span class="p">,</span> <span class="s1">&#39;FILLTIME&#39;</span><span class="p">,</span> <span class="s1">&#39;DRAINTIME&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RULEOPERATOR</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;~=&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;IS&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;NOT&#39;</span><span class="p">,</span> <span class="s1">&#39;BELOW&#39;</span><span class="p">,</span> <span class="s1">&#39;ABOVE&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="EpytEnums.as_dict">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epyt_enums.EpytEnums.as_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Return a dict of all list attributes.</span>
+        <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, KIOS Research and Innovation Center of Excellence.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

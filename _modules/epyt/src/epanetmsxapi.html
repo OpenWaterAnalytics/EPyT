@@ -1,0 +1,980 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epyt.src.epanetmsxapi &mdash; epyt 1.0.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=46dfa7f5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            epyt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">epyt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">epyt.src.epanetmsxapi</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for epyt.src.epanetmsxapi</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">suppress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleNamespace</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">epyt</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">__msxversion__</span><span class="p">,</span> <span class="n">__lastupdate__</span><span class="p">,</span> <span class="n">epyt_root</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.epanet_cffi_compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">ffi</span><span class="p">,</span> <span class="n">cdll</span><span class="p">,</span> <span class="n">byref</span><span class="p">,</span> <span class="n">create_string_buffer</span><span class="p">,</span> <span class="n">c_uint64</span><span class="p">,</span> <span class="n">c_void_p</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">c_float</span><span class="p">,</span> \
+    <span class="n">c_long</span><span class="p">,</span> \
+    <span class="n">c_char_p</span><span class="p">,</span> <span class="n">funcptr_null</span>
+
+
+<div class="viewcode-block" id="epanetmsxapi">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">epanetmsxapi</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;example msx = epanetmsxapi()&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="epanetmsxapi.__init__">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msxfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">loadlib</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_msxfile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">customMSXlib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">display_msg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">msxrealfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_msg</span> <span class="o">=</span> <span class="n">display_msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customMSXlib</span> <span class="o">=</span> <span class="n">customMSXlib</span>
+        <span class="k">if</span> <span class="n">customMSXlib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span> <span class="o">=</span> <span class="n">customMSXlib</span>
+            <span class="n">loadlib</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANETPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msx_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgeterror</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msx_error</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_int</span><span class="p">,</span> <span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_int</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">loadlib</span><span class="p">:</span>
+            <span class="n">ops</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ops</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;windows&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">epyt_root</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;libraries&quot;</span><span class="p">,</span> <span class="s2">&quot;win&quot;</span><span class="p">,</span> <span class="s2">&quot;epanetmsx.dll&quot;</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">ops</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;darwin&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">epyt_root</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;libraries&quot;</span><span class="p">,</span> <span class="s2">&quot;mac&quot;</span><span class="p">,</span> <span class="s2">&quot;epanetmsx.dylib&quot;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">epyt_root</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;libraries&quot;</span><span class="p">,</span> <span class="s2">&quot;glnx&quot;</span><span class="p">,</span> <span class="s2">&quot;epanetmsx.so&quot;</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANETPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXLibEPANET</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">msx_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgeterror</span>
+            <span class="c1"># self.msx_error.argtypes = [c_int, c_char_p, c_int]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_msxfile</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">msxrealfile</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span> <span class="o">=</span> <span class="n">msxfile</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_temp.msx&#39;</span>
+                <span class="n">copy2</span><span class="p">(</span><span class="n">msxfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXopen</span><span class="p">(</span><span class="n">msxfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span> <span class="o">=</span> <span class="n">msxfile</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span><span class="p">,</span> <span class="n">msxrealfile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXopen">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXopen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXopen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msxfile</span><span class="p">,</span> <span class="n">msxrealfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open MSX file</span>
+<span class="sd">        filename - Arsenite.msx or use full path</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            msx.MSXopen(filename)</span>
+<span class="sd">            msx.MSXopen(Arsenite.msx)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">msxfile</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: &quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">msxrealfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msxrealfile</span> <span class="o">=</span> <span class="n">msxfile</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_msg</span><span class="p">:</span>
+            <span class="n">msxname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">msxrealfile</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">customMSXlib</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;EPANET-MSX version </span><span class="si">{</span><span class="n">__msxversion__</span><span class="si">}</span><span class="s2"> loaded.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXopen</span><span class="p">(</span><span class="n">c_char_p</span><span class="p">(</span><span class="n">msxfile</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ignore_error</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">==</span> <span class="mi">503</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_msg</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error 503 may indicate a problem with the MSX file or the MSX library.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_msg</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSX file </span><span class="si">{</span><span class="n">msxname</span><span class="si">}</span><span class="s2">.msx loaded successfully.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXclose">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXclose">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXclose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;  Close .msx file</span>
+<span class="sd">            example : msx.MSXclose()&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXclose</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXerror">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXerror">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err_code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Function that every other function uses in case of an error &quot;&quot;&quot;</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msx_error</span><span class="p">(</span><span class="n">err_code</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">errmsg</span><span class="p">),</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetindex">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetindex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetindex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves the number of objects of a specific type</span>
+<span class="sd">          MSXgetcount(obj_type, obj_id)</span>
+
+<span class="sd">          Parameters:</span>
+<span class="sd">               obj_type: code type of object being sought and must be one of the following</span>
+<span class="sd">               pre-defined constants:</span>
+<span class="sd">               MSX_SPECIES (for a chemical species) the number 3</span>
+<span class="sd">               MSX_CONSTANT (for a reaction constant) the number 6</span>
+<span class="sd">               MSX_PARAMETER (for a reaction parameter) the number 5</span>
+<span class="sd">               MSX_PATTERN (for a time pattern) the number 7</span>
+
+<span class="sd">               obj_id: string containing the object&#39;s ID name</span>
+<span class="sd">          Returns:</span>
+<span class="sd">              The index number (starting from 1) of object of that type with that specific name.&quot;&quot;&quot;</span>
+        <span class="n">obj_type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">obj_type</span><span class="p">)</span>
+        <span class="c1"># obj_id=c_char_p(obj_id)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetindex</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">obj_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetID">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetID">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">id_len</span><span class="o">=</span><span class="mi">80</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves the ID name of an object given its internal</span>
+<span class="sd">            index number</span>
+<span class="sd">            msx.MSXgetID(obj_type, index, id_len)</span>
+<span class="sd">            print(msx.MSXgetID(3,1,8))</span>
+
+<span class="sd">            Parameters:</span>
+<span class="sd">                obj_type: type of object being sought and must be on of the</span>
+<span class="sd">                following pre-defined constants:</span>
+<span class="sd">                MSX_SPECIES (for chemical species)</span>
+<span class="sd">                MSX_CONSTANT(for reaction constant)</span>
+<span class="sd">                MSX_PARAMETER(for a reaction parameter)</span>
+<span class="sd">                MSX_PATTERN (for a time pattern)</span>
+
+<span class="sd">                index: the sequence number of the object (starting from 1</span>
+<span class="sd">                as listed in the MSX input file)</span>
+
+<span class="sd">                id_len: the maximum number of characters that id can hold</span>
+
+<span class="sd">                Returns:</span>
+<span class="sd">                    id object&#39;s ID name&quot;&quot;&quot;</span>
+
+        <span class="n">obj_id</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="n">id_len</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetID</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">obj_id</span><span class="p">),</span> <span class="n">id_len</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">obj_id</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetIDlen">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetIDlen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetIDlen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the number of characters in the ID name of an MSX</span>
+<span class="sd">           object given its internal index number</span>
+<span class="sd">           msx.MSXgetIDlen(obj_type, index)</span>
+<span class="sd">           print(msx.MSXgetIDlen(3,3))</span>
+<span class="sd">           Parameters:</span>
+<span class="sd">            obj_type: type of object being sought and must be on of the</span>
+<span class="sd">                  following pre-defined constants:</span>
+<span class="sd">                  MSX_SPECIES (for chemical species)</span>
+<span class="sd">                  MSX_CONSTANT(for reaction constant)</span>
+<span class="sd">                  MSX_PARAMETER(for a reaction parameter)</span>
+<span class="sd">                  MSX_PATTERN (for a time pattern)</span>
+
+<span class="sd">            index: the sequence number of the object (starting from 1</span>
+<span class="sd">                   as listed in the MSX input file)</span>
+
+<span class="sd">            Returns : the number of characters in the ID name of MSX object</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+        <span class="nb">len</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetIDlen</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="nb">len</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetspecies">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetspecies">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetspecies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves the attributes of a chemical species given its</span>
+<span class="sd">            internal index number</span>
+<span class="sd">            msx.MSXgetspecies(index)</span>
+<span class="sd">            msx.MSXgetspecies(1)</span>
+<span class="sd">            Parameters:</span>
+<span class="sd">             index : integer -&gt; sequence number of the species</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                type : is returned with one of the following pre-defined constants:</span>
+<span class="sd">                       MSX_BULK (defined as 0) for a bulk water species , or</span>
+<span class="sd">                       MSX_WALL (defined as 1) for a pipe wall surface species</span>
+<span class="sd">                units: mass units that were defined for the species in question</span>
+<span class="sd">                atol : the absolute concentration tolerance defined for the species.</span>
+<span class="sd">                rtol : the relative concentration tolerance defined for the species.  &quot;&quot;&quot;</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">atol</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="n">rtol</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetspecies</span><span class="p">(</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="nb">type</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">atol</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">rtol</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;BULK&#39;</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;WALL&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">,</span> <span class="n">units</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="n">atol</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">rtol</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetcount">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetcount">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetcount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves the number of objects of a specific type</span>
+<span class="sd">            MSXgetcount(code)</span>
+
+<span class="sd">            Parameters:</span>
+<span class="sd">                 code type of object being sought and must be one of the following</span>
+<span class="sd">                 pre-defined constants:</span>
+<span class="sd">                 MSX_SPECIES (for a chemical species) the number 3</span>
+<span class="sd">                 MSX_CONSTANT (for a reaction constant) the number 6</span>
+<span class="sd">                 MSX_PARAMETER (for a reaction parameter) the number 5</span>
+<span class="sd">                 MSX_PATTERN (for a time pattern) the number 7</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                The count number of object of that type.</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetcount</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">count</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetconstant">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetconstant">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetconstant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves the value of a particular rection constant  &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;msx.MSXgetconstant(index)</span>
+<span class="sd">        msx.MSXgetconstant(1)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot; Parameters:</span>
+<span class="sd">        index : integer is the sequence number of the reaction</span>
+<span class="sd">                constant ( starting from 1 ) as it </span>
+<span class="sd">                appeared in the MSX input file</span>
+
+<span class="sd">        Returns: value -&gt; the value assigned to the constant.    &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetconstant</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetparameter">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetparameter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetparameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the value of a particular reaction parameter for a given</span>
+<span class="sd">           pipe</span>
+<span class="sd">           msx.MSXgetparameter(obj_type, index, param)</span>
+<span class="sd">           msx.MSXgetparameter(1,1,1)</span>
+<span class="sd">           Parameters:</span>
+<span class="sd">               obj_type: is type of object being queried and must be either:</span>
+<span class="sd">                    MSX_NODE (defined as 0) for a node or</span>
+<span class="sd">                    MSX_LINK(defined as 1) for alink</span>
+
+<span class="sd">               index: is the internal sequence number (starting from 1)</span>
+<span class="sd">                      assigned to the node or link</span>
+
+<span class="sd">               param: the sequence number of the parameter (starting from 1</span>
+<span class="sd">                      as listed in the MSX input file)</span>
+
+<span class="sd">               Returns:</span>
+<span class="sd">                   value : the value assigned to the parameter for the node or link</span>
+<span class="sd">                           of interest.        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetparameter</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetpatternlen">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetpatternlen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetpatternlen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the number of time periods within a source time pattern</span>
+
+<span class="sd">         MSXgetpatternlen(pattern_index)</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">             pattern_index:  the internal sequence number (starting from 1)</span>
+<span class="sd">                             of the pattern as it appears in the MSX input file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             len:   the number of time periods (and therefore number of multipliers)</span>
+<span class="sd">                   that appear in the pattern.&quot;&quot;&quot;</span>
+        <span class="nb">len</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetpatternlen</span><span class="p">(</span><span class="n">pattern_index</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="nb">len</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetpatternvalue">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetpatternvalue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetpatternvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern_index</span><span class="p">,</span> <span class="n">period</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;  Retrieves the multiplier at a specific time period for a</span>
+<span class="sd">             given source time pattern</span>
+<span class="sd">            msx.MSXgetpatternvalue(pattern_index, period)</span>
+<span class="sd">            msx.MSXgetpatternvalue(1,1)</span>
+<span class="sd">             Parameters:</span>
+<span class="sd">                 pattern_index: the internal sequence number(starting from 1)</span>
+<span class="sd">                 of the pattern as it appears in the MSX input file</span>
+
+<span class="sd">                 period: the index of the time period (starting from 1) whose</span>
+<span class="sd">                 multiplier is being sought &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetpatternvalue</span><span class="p">(</span><span class="n">pattern_index</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetinitqual">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetinitqual">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetinitqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">species</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;  Retrieves the intial concetration of a particular chemical species</span>
+<span class="sd">             assigned to a specific node or link of the pipe network</span>
+<span class="sd">            msx.MSXgetinitqual(obj_type, index)</span>
+<span class="sd">            msx.MSXgetinitqual(1,1,1)</span>
+<span class="sd">             Parameters:</span>
+
+<span class="sd">                 type : type of object being queeried and must be either:</span>
+<span class="sd">                        MSX_NODE (defined as 0) for a node or ,</span>
+<span class="sd">                        MSX_LINK (defined as 1) for a link</span>
+
+<span class="sd">                 index : the internal sequence number (starting from 1) assigned</span>
+<span class="sd">                         to the node or link</span>
+
+<span class="sd">                 species: the sequence number of the species (starting from 1)</span>
+
+<span class="sd">                 Returns:</span>
+<span class="sd">                        value: the initial concetration of the species at the node or</span>
+<span class="sd">                               link of interest.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="n">obj_type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">obj_type</span><span class="p">)</span>
+        <span class="n">species</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">species</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetinitqual</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetsource">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetsource">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetsource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">species_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves information on any external source of a particular</span>
+<span class="sd">            chemical species assigned to a specific node or link of the pipe</span>
+<span class="sd">            network.</span>
+<span class="sd">            msx.MSXgetsource(node_index, species_index)</span>
+<span class="sd">            msx.MSXgetsource(1,1)</span>
+
+<span class="sd">            Parameters:</span>
+<span class="sd">                node_index: the internal sequence number (starting from 1)</span>
+<span class="sd">                assigned to the node of interest.</span>
+
+<span class="sd">                species_index: the sequence number of the species of interest</span>
+<span class="sd">                (starting from 1 as listed in MSX input file)</span>
+<span class="sd">            Returns:</span>
+
+<span class="sd">                type: the type of external source to be utilized and will be one of</span>
+<span class="sd">                     the following predefined constants:</span>
+<span class="sd">                    MSX_NOSOURCE (defined as -1) for no source</span>
+<span class="sd">                    MSX_CONCEN (defined as 0) for a concetration sourc</span>
+<span class="sd">                    MSX_MASS (defined as 1) for a mass booster source</span>
+<span class="sd">                    MSX_SETPOINT (defined as 2) for a setpoint source</span>
+<span class="sd">                    MSX_FLOWPACE (defined as 3) for a flow paced source</span>
+
+<span class="sd">                level: the baseline concentration ( or mass flow rate) of the source)</span>
+
+<span class="sd">                pat : the index of the time pattern used to add variability to the</span>
+<span class="sd">                      the source&#39;s baseline level (and will be 0 if no pattern</span>
+<span class="sd">                      was defined for the source)</span>
+<span class="sd">              &quot;&quot;&quot;</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+        <span class="n">node_index</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">node_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetsource</span><span class="p">(</span><span class="n">node_index</span><span class="p">,</span> <span class="n">species_index</span><span class="p">,</span>
+                                                 <span class="n">byref</span><span class="p">(</span><span class="nb">type</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">level</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;NOSOURCE&#39;</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;CONCEN&#39;</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;MASS&#39;</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;SETPOINT&#39;</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;FLOWPACED&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">,</span> <span class="n">level</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">pattern</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsaveoutfile">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsaveoutfile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsaveoutfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Saves water quality results computed for each node, link</span>
+<span class="sd">            and reporting time period to a named binary file.</span>
+<span class="sd">            msx.MSXsaveoutfile(filename)</span>
+<span class="sd">            msx.MSXsaveoufile(Arsenite.msx)</span>
+
+<span class="sd">            Parameters:</span>
+<span class="sd">                filename: name of the permanent output results file&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsaveoutfile</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsavemsxfile">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsavemsxfile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsavemsxfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Saves the data associated with the current MSX project into a new</span>
+<span class="sd">            MSX input file</span>
+<span class="sd">            msx.MSXsavemsxfile(filename)</span>
+<span class="sd">            msx.MSXsavemsxfile(Arsenite.msx)</span>
+
+<span class="sd">            Parameters:</span>
+<span class="sd">                filename: name of the file to which data are saved&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsavemsxfile</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsetconstant">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsetconstant">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsetconstant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Assigns a new value to a specific reaction constant</span>
+<span class="sd">            msx.MSXsetconstant(index, value)</span>
+<span class="sd">            msx.MSXsetconstant(1,10)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot; Parameters</span>
+<span class="sd">             index : integer -&gt; is the sequence number of the reaction</span>
+<span class="sd">             constant ( starting from 1 ) as it appeared in the MSX</span>
+<span class="sd">             input file</span>
+
+<span class="sd">             Value: float -&gt; the new value to be assigned to the constant.&quot;&quot;&quot;</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsetconstant</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsetparameter">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsetparameter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsetparameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Assigns a value to a particular reaction parameter for a given pipe</span>
+<span class="sd">            or tank within the pipe network</span>
+<span class="sd">            msx.MSXsetparameter(obj_type, index, param, value)</span>
+<span class="sd">            msx.MSXsetparameter(1,1,1,15)</span>
+<span class="sd">            Parameters:</span>
+<span class="sd">                 obj_type: is type of object being queried and must be either:</span>
+<span class="sd">                    MSX_NODE (defined as 0) for a node or</span>
+<span class="sd">                    MSX_LINK (defined as 1) for a link</span>
+
+<span class="sd">               index: is the internal sequence number (starting from 1)</span>
+<span class="sd">                      assigned to the node or link</span>
+
+<span class="sd">               param: the sequence number of the parameter (starting from 1</span>
+<span class="sd">                      as listed in the MSX input file)</span>
+
+<span class="sd">               value: the value to be assigned to the parameter for the node or</span>
+<span class="sd">                      link of interest.                 &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsetparameter</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsetinitqual">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsetinitqual">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsetinitqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;  Assigns an initial concetration of a particular chemical species</span>
+<span class="sd">             node or link of the pipe network</span>
+<span class="sd">             msx.MSXsetinitqual(obj_type, index, species, value)</span>
+<span class="sd">             msx.MSXsetinitqual(1,1,1,15)</span>
+<span class="sd">             Parameters:</span>
+<span class="sd">                 type: type of object being queried and must be either :</span>
+<span class="sd">                       MSX_NODE(defined as 0) for a node or</span>
+<span class="sd">                       MSX_LINK(defined as 1) for a link</span>
+<span class="sd">                 index: integer -&gt; the internal sequence number (starting from 1)</span>
+<span class="sd">                        assigned to the node or link</span>
+
+<span class="sd">                 species: the sequence number of the species (starting from 1 as listed in</span>
+<span class="sd">                 MASx input file)</span>
+
+<span class="sd">                 value: float -&gt; the initial concetration of the species to be applied at the node or link</span>
+<span class="sd">                        of interest.</span>
+<span class="sd">                 &quot;&quot;&quot;</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsetinitqual</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsetpattern">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsetpattern">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsetpattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">factors</span><span class="p">,</span> <span class="n">nfactors</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assigns a new set of multipliers to a given MSX source time pattern</span>
+<span class="sd">            MSXsetpattern(index,factors,nfactors)</span>
+
+<span class="sd">            Parameters:</span>
+<span class="sd">                index: the internal sequence number (starting from 1)</span>
+<span class="sd">                       of the pattern as it appers in the MSX input file</span>
+<span class="sd">                factors: an array of multiplier values to replace those previously used by</span>
+<span class="sd">                         the pattern</span>
+<span class="sd">                nfactors: the number of entries in the multiplier array/ vector factors&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">nfactors</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">nfactors</span><span class="p">)</span>
+        <span class="n">DoubleArray</span> <span class="o">=</span> <span class="n">c_double</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">factors</span><span class="p">)</span>
+        <span class="n">mult_array</span> <span class="o">=</span> <span class="n">DoubleArray</span><span class="p">(</span><span class="o">*</span><span class="n">factors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsetpattern</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">mult_array</span><span class="p">,</span> <span class="n">nfactors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsetpatternvalue">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsetpatternvalue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsetpatternvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assigns a new value to the multiplier for a specific time period</span>
+<span class="sd">                      in a given MSX source time pattern.</span>
+<span class="sd">            msx.MSXsetpatternvalue(pattern, period, value)</span>
+<span class="sd">            msx.MSXsetpatternvalue(1,1,10)</span>
+<span class="sd">           Parameters:</span>
+<span class="sd">               pattern: the internal sequence number (starting from 1) of the</span>
+<span class="sd">               pattern as it appears in the MSX input file.</span>
+
+<span class="sd">               period: the time period (starting from 1) in the pattern to be replaced</span>
+<span class="sd">               value:  the new multiplier value to use for that time period.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsetpatternvalue</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsolveQ">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsolveQ">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsolveQ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Solves for water quality over the entire simulation period</span>
+<span class="sd">            and saves the results to an internal scratch file</span>
+<span class="sd">            msx.MSXsolveQ()&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsolveQ</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsolveH">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsolveH">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsolveH</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Solves for system hydraulics over the entire simulation period</span>
+<span class="sd">            saving results to an internal scratch file</span>
+<span class="sd">            msx.MSXsolveH() &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsolveH</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXaddpattern">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXaddpattern">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXaddpattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a newm empty MSX source time pattern to an MSX project</span>
+<span class="sd">                MSXaddpattern(pattern_id)</span>
+<span class="sd">            Parameters:</span>
+<span class="sd">                pattern_id: the name of the new pattern &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXaddpattern</span><span class="p">(</span><span class="n">pattern_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXusehydfile">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXusehydfile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXusehydfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Uses hyd file            &quot;&quot;&quot;</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXusehydfile</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="n">err</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXstep">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXstep">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXstep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Advances the water quality solution through a single water quality time</span>
+<span class="sd">           step when performing a step-wise simulation</span>
+
+<span class="sd">           t, tleft = MSXstep()</span>
+<span class="sd">           Returns:</span>
+<span class="sd">               t : current simulation time at the end of the step(in secconds)</span>
+<span class="sd">               tleft: time left in the simulation (in secconds)</span>
+<span class="sd">           &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;windows&quot;</span><span class="p">]:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+            <span class="n">tleft</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+            <span class="n">tleft</span> <span class="o">=</span> <span class="n">c_long</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXstep</span><span class="p">(</span><span class="n">byref</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">tleft</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">tleft</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXinit">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXinit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXinit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the MSX system before solving for water quality results</span>
+<span class="sd">           in the step-wise fashion</span>
+
+<span class="sd">           MSXinit(flag)</span>
+
+<span class="sd">           Parameters:</span>
+<span class="sd">               flag:  Set the flag to 1 if the water quality results should be saved</span>
+<span class="sd">                      to a scratch binary file, or 0 if not</span>
+<span class="sd">           &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXinit</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXreport">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXreport">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXreport</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes water quality simulations results as instructed by</span>
+<span class="sd">            MSX input file to a text file.</span>
+<span class="sd">            msx.MSXreport()&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXreport</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetqual">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetqual">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">species</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves a chemical species concentration at a given node</span>
+<span class="sd">           or the average concentration along a link at the current sumulation</span>
+<span class="sd">           time step.</span>
+
+<span class="sd">           MSXgetqual(type, index, species)</span>
+
+<span class="sd">           Parameters:</span>
+<span class="sd">               type: type of object being queried and must be either:</span>
+<span class="sd">                    MSX_NODE ( defined as 0) for a node,</span>
+<span class="sd">                    MSX_LINK (defined as 1) for a link</span>
+<span class="sd">               index: then internal sequence number (starting from 1)</span>
+<span class="sd">                      assigned to the node or link.</span>
+<span class="sd">               species is the sequence number of the species (starting from 1</span>
+<span class="sd">               as listed in the MSX input file)</span>
+
+<span class="sd">           Returns:</span>
+<span class="sd">               The value of the computed concentration of the species at the current</span>
+<span class="sd">               time period.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgetqual</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsetsource">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsetsource">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsetsource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">pat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;Sets the attributes of an external source of particular chemical</span>
+<span class="sd">            species to specific node of the pipe network</span>
+<span class="sd">            msx.setsource(node, species, type, level, pat)</span>
+<span class="sd">            msx.MSXsetsource(1,1,3,10.565,1)</span>
+<span class="sd">            Parameters:</span>
+<span class="sd">                node: the internal sequence number (starting from1) assigned</span>
+<span class="sd">                      to the node of interest.</span>
+
+<span class="sd">                species: the sequence number of the species of interest (starting</span>
+<span class="sd">                         from 1 as listed in the MSX input file)</span>
+
+<span class="sd">                type: the type of external source to be utilized and will be one of</span>
+<span class="sd">                      the following predefined constants:</span>
+<span class="sd">                      MSX_NOSOURCE (defined as -1) for no source</span>
+<span class="sd">                      MSX_CONCEN (defined as 0) for a concetration source</span>
+<span class="sd">                      MSX_MASS (defined as 1) for a mass booster source</span>
+<span class="sd">                      MSX_SETPOINT (defined as 2) for a setpoint source</span>
+<span class="sd">                      MSX_FLOWPACE (defined as 3) for a flow paced source</span>
+
+<span class="sd">                level: the baseline concetration (or mass flow rate) of the source</span>
+
+<span class="sd">                pat: the index of the time pattern used to add variability to the</span>
+<span class="sd">                     source&#39;s baseline level ( use 0 if the source has a constant strength)     &quot;&quot;&quot;</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">c_double</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="n">pat</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXsetsource</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">pat</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXerror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errcode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgeterror">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgeterror">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgeterror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the text for an error message given its error code.</span>
+<span class="sd">        msx.MSXgeterror(err)</span>
+<span class="sd">        msx.MSXgeterror(516)</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            err: the code number of an error condition generated by EPANET-MSX</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            errmsg: the text of the error message corresponding to the error code&quot;&quot;&quot;</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msx_lib</span><span class="o">.</span><span class="n">MSXgeterror</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">errmsg</span><span class="p">),</span> <span class="mi">80</span><span class="p">)</span>
+
+        <span class="c1"># if e:</span>
+        <span class="c1">#     # Warning(errmsg.value.decode())</span>
+        <span class="c1">#     print(f&quot;{red}EPANET Error: {errmsg.value.decode()}{reset}&quot;)</span>
+        <span class="k">return</span> <span class="n">errmsg</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="epanetmsxapi.MSXgetoptions">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXgetoptions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXgetoptions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves all the options.</span>
+<span class="sd">        # AREA_UNITS FT2/M2/CM2</span>
+<span class="sd">        # RATE_UNITS SEC/MIN/HR/DAY</span>
+<span class="sd">        # SOLVER EUL/RK5/ROS2</span>
+<span class="sd">        # COUPLING FULL/NONE</span>
+<span class="sd">        # TIMESTEP seconds</span>
+<span class="sd">        # ATOL value</span>
+<span class="sd">        # RTOL value</span>
+<span class="sd">        # COMPILER NONE/VC/GC</span>
+<span class="sd">        # SEGMENTS value</span>
+<span class="sd">        # PECLET value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Key-value pairs to search for</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AREA_UNITS&quot;</span><span class="p">,</span> <span class="s2">&quot;RATE_UNITS&quot;</span><span class="p">,</span> <span class="s2">&quot;SOLVER&quot;</span><span class="p">,</span> <span class="s2">&quot;COUPLING&quot;</span><span class="p">,</span> <span class="s2">&quot;TIMESTEP&quot;</span><span class="p">,</span> <span class="s2">&quot;ATOL&quot;</span><span class="p">,</span> <span class="s2">&quot;RTOL&quot;</span><span class="p">,</span> <span class="s2">&quot;COMPILER&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;SEGMENTS&quot;</span><span class="p">,</span> \
+                    <span class="s2">&quot;PECLET&quot;</span><span class="p">]</span>
+            <span class="n">float_values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TIMESTEP&quot;</span><span class="p">,</span> <span class="s2">&quot;ATOL&quot;</span><span class="p">,</span> <span class="s2">&quot;RTOL&quot;</span><span class="p">,</span> <span class="s2">&quot;SEGMENTS&quot;</span><span class="p">,</span> <span class="s2">&quot;PECLET&quot;</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+
+            <span class="c1"># Flag to determine if we&#39;re in the [OPTIONS] section</span>
+            <span class="n">in_options</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1"># Open and read the file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="c1"># Check for [OPTIONS] section</span>
+                    <span class="k">if</span> <span class="s2">&quot;[OPTIONS]&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="n">in_options</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">elif</span> <span class="s2">&quot;[&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;]&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="n">in_options</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># We&#39;ve reached a new section</span>
+
+                    <span class="k">if</span> <span class="n">in_options</span><span class="p">:</span>
+                        <span class="c1"># Pattern to match the keys and extract values, ignoring comments and whitespace</span>
+                        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)\s+(.*?)\s*(?:;.*)?$&#39;</span><span class="p">)</span>
+                        <span class="n">match</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">float_values</span><span class="p">:</span>
+                                <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="k">return</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Please load MSX File.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{}</span></div>
+
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">shutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy2</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">suppress</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">shutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy2</span>
+
+<div class="viewcode-block" id="epanetmsxapi.MSXsetoptions">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetmsxapi.epanetmsxapi.MSXsetoptions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">MSXsetoptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;AREA_UNITS&quot;</span><span class="p">,</span> <span class="s2">&quot;RATE_UNITS&quot;</span><span class="p">,</span> <span class="s2">&quot;SOLVER&quot;</span><span class="p">,</span> <span class="s2">&quot;COUPLING&quot;</span><span class="p">,</span> <span class="s2">&quot;TIMESTEP&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ATOL&quot;</span><span class="p">,</span> <span class="s2">&quot;RTOL&quot;</span><span class="p">,</span> <span class="s2">&quot;COMPILER&quot;</span><span class="p">,</span> <span class="s2">&quot;SEGMENTS&quot;</span><span class="p">,</span> <span class="s2">&quot;PECLET&quot;</span>
+        <span class="p">}</span>
+
+        <span class="n">updates</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">updates</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="p">)]</span> <span class="o">=</span> <span class="n">change</span>
+        <span class="n">updates</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">updates</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">updates</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">src</span> <span class="o">=</span> <span class="s2">&quot;options_section.msx&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="s2">&quot;options_section_tmp.msx&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSXsavemsxfile</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Please load MSX File.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">opt_i</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;[OPTIONS]&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;[OPTIONS]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">opt_i</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">set_or_insert</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                <span class="k">nonlocal</span> <span class="n">opt_i</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">lines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">opt_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="n">opt_i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">set_or_insert</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+            <span class="n">copy2</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSXopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSXTempFile</span><span class="p">,</span> <span class="n">ignore_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmp</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, KIOS Research and Innovation Center of Excellence.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

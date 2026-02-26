@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epyt.src.epanet_cffi_compat &mdash; epyt 1.0.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=46dfa7f5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            epyt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">epyt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">epyt.src.epanet_cffi_compat</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for epyt.src.epanet_cffi_compat</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">RLock</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cffi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FFI</span>
+
+<span class="n">ffi</span> <span class="o">=</span> <span class="n">FFI</span><span class="p">()</span>
+
+<span class="n">_THIS_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
+<span class="n">_HEADER_BASE_DIRS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">_THIS_DIR</span> <span class="o">/</span> <span class="s2">&quot;libraries&quot;</span><span class="p">,</span>
+    <span class="n">_THIS_DIR</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;libraries&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_C_VOIDP_NULL</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;void *&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">_C_CHARP_NULL</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;char *&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">_CDEF_LOCK</span> <span class="o">=</span> <span class="n">RLock</span><span class="p">()</span>
+<span class="n">_CDEF_DONE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># ---------------------------------------------</span>
+<span class="c1"># Dynamic extraction of function prototypes from headers</span>
+<span class="c1"># ---------------------------------------------</span>
+<span class="n">_HEADER_DEFAULTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">base</span> <span class="o">/</span> <span class="n">header</span>
+    <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">_HEADER_BASE_DIRS</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;epanet2.h&quot;</span><span class="p">,</span> <span class="s2">&quot;epanet2_2.h&quot;</span><span class="p">,</span> <span class="s2">&quot;epanetmsx.h&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># Preserve stdcall exports on Windows even after stripping DLL decoration macros.</span>
+<span class="n">_CALL_CONV_MACROS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\bEPANET2_API\b&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;\bDLLEXPORT\b&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;\bWINAPI\b&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;\bAPIENTRY\b&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_MACRO_TOKENS_TO_STRIP</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\b__cdecl\b&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;\bDECLSPEC\b&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;\bEXPORT\b&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_CALL_CONV_KEYWORD</span> <span class="o">=</span> <span class="s2">&quot;__stdcall&quot;</span> <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;win&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+<span class="c1"># Replace typedef-like API tokens with plain C types so cffi.cdef() can parse them.</span>
+<span class="n">_TYPE_ALIASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;EN_API_FLOAT_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">_MANUAL_CDEF_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;typedef void *EN_Project;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+<span class="c1"># Remove &#39;extern &quot;C&quot;&#39; blocks safely (brace-only lines too).</span>
+<span class="n">_EXTERN_C_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;extern\s+&quot;C&quot;\s*\{?|^\s*\}\s*$&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+
+<span class="c1"># Simple comment removers (/* ... */ and // ...)</span>
+<span class="n">_BLOCK_COMMENT_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;/\*.*?\*/&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+<span class="n">_LINE_COMMENT_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;//.*?$&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+
+<span class="c1"># Preprocessor lines (#define/#include/#if ...)</span>
+<span class="n">_PREPROC_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\s*#.*?$&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+
+<span class="c1"># Function prototype matcher: now supports EN* and MSX* symbols</span>
+<span class="n">_FUNC_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (?P&lt;proto&gt;</span>
+<span class="sd">        (?:[a-zA-Z_][\w\s\*\(\),\[\]]*?\s+)?         # return type + qualifiers/pointers</span>
+<span class="sd">        (?:EN_[A-Za-z0-9_]+|EN[A-Za-z0-9_]+</span>
+<span class="sd">        |MSX_[A-Za-z0-9_]+|MSX[A-Za-z0-9_]+)         # function name</span>
+<span class="sd">        \s*\(                                        # (</span>
+<span class="sd">            [^;]*?                                   # args</span>
+<span class="sd">        \)                                           # )</span>
+<span class="sd">        \s*;                                         # ;</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_type_aliases</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">ctype</span> <span class="ow">in</span> <span class="n">_TYPE_ALIASES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;\b</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">token</span><span class="p">)</span><span class="si">}</span><span class="s2">\b&quot;</span><span class="p">,</span> <span class="n">ctype</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_decls_from_header</span><span class="p">(</span><span class="n">header_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># Accept a single header path or use both defaults</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">header_path</span><span class="p">)]</span> <span class="k">if</span> <span class="n">header_path</span> <span class="k">else</span> <span class="n">_HEADER_DEFAULTS</span>
+
+    <span class="n">protos_all</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_BLOCK_COMMENT_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_LINE_COMMENT_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_PREPROC_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_EXTERN_C_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">_CALL_CONV_MACROS</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="n">_CALL_CONV_KEYWORD</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">_MACRO_TOKENS_TO_STRIP</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_apply_type_aliases</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[ \t]+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+\n&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_FUNC_RE</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="n">proto</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;proto&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="c1"># Ensure a concrete return type (headers often omit &#39;int&#39; in typedefs/macros)</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(EN_|EN|MSX_|MSX)[A-Za-z0-9_]*\s*\(&quot;</span><span class="p">,</span> <span class="n">proto</span><span class="p">):</span>
+                <span class="n">proto</span> <span class="o">=</span> <span class="s2">&quot;int &quot;</span> <span class="o">+</span> <span class="n">proto</span>
+            <span class="n">protos_all</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proto</span><span class="p">)</span>
+
+    <span class="c1"># Deduplicate while preserving order</span>
+    <span class="n">seen</span><span class="p">,</span> <span class="n">uniq</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">protos_all</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">uniq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">uniq</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">uniq</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="n">_CDEF_DECLS</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ensure_cdef</span><span class="p">(</span><span class="n">header_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">_CDEF_DONE</span><span class="p">,</span> <span class="n">_CDEF_DECLS</span>
+    <span class="k">if</span> <span class="n">_CDEF_DONE</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">with</span> <span class="n">_CDEF_LOCK</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_CDEF_DONE</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">decls</span> <span class="o">=</span> <span class="n">_load_decls_from_header</span><span class="p">(</span><span class="n">header_path</span><span class="p">)</span>
+
+        <span class="c1"># Remove any auto-extracted MSXstep prototype (it is wrong for your DLL).</span>
+        <span class="n">decls</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">decls</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;MSXstep&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">decls</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add the correct prototype (matches your working ctypes behavior).</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;win&quot;</span><span class="p">):</span>
+            <span class="n">msxstep_proto</span> <span class="o">=</span> <span class="s2">&quot;int MSXstep(double *t, double *tleft);</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msxstep_proto</span> <span class="o">=</span> <span class="s2">&quot;int MSXstep(double *t, long *tleft);</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">_CDEF_DECLS</span> <span class="o">=</span> <span class="n">_MANUAL_CDEF_PREFIX</span> <span class="o">+</span> <span class="n">msxstep_proto</span> <span class="o">+</span> <span class="n">decls</span>
+        <span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="n">_CDEF_DECLS</span><span class="p">)</span>
+        <span class="n">_CDEF_DONE</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="c1"># ---------------------------------------------</span>
+<span class="c1"># Helpers (unchanged)</span>
+<span class="c1"># ---------------------------------------------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Ptr</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;c_type&quot;</span><span class="p">,</span> <span class="s2">&quot;ptr&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c_type</span><span class="si">}</span><span class="s2"> *&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@value</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Handle</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ptr&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;void *[1]&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">ffi</span><span class="o">.</span><span class="n">NULL</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@value</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;void *&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_voidp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CVoidP</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ptr&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">NULL</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;void *&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;void *[1]&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">value</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@value</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;void *&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CVoidPType</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_CVoidP</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="c1"># Factory to create a mutable void* holder</span>
+<span class="n">c_void_p</span> <span class="o">=</span> <span class="n">_CVoidPType</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Buffer</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ptr&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;char[</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
+
+    <span class="nd">@value</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;buffer too small&quot;</span><span class="p">)</span>
+        <span class="n">ffi</span><span class="o">.</span><span class="n">memmove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_ENProjectPtr</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ptr&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># EN_Project is typedef void *EN_Project;</span>
+        <span class="c1"># EN_Project *ph -&gt; pointer to that handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;EN_Project *&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@value</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;EN_Project&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_ENProjectPtrType</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_ENProjectPtr</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_ArrayFactory</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ctype&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctype</span> <span class="o">=</span> <span class="n">ctype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">vals</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">vals</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ctype</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ctype</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">vals</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ctype</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CScalarType</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ctype&quot;</span><span class="p">,</span> <span class="s2">&quot;pycast&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pycast</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctype</span> <span class="o">=</span> <span class="n">ctype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pycast</span> <span class="o">=</span> <span class="n">pycast</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_Ptr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pycast</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_ArrayFactory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctype</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+
+<span class="n">EN_Project_p</span> <span class="o">=</span> <span class="n">_ENProjectPtrType</span><span class="p">()</span>
+<span class="n">c_int</span> <span class="o">=</span> <span class="n">_CScalarType</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="n">c_long</span> <span class="o">=</span> <span class="n">_CScalarType</span><span class="p">(</span><span class="s2">&quot;long&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="n">c_float</span> <span class="o">=</span> <span class="n">_CScalarType</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+<span class="n">c_double</span> <span class="o">=</span> <span class="n">_CScalarType</span><span class="p">(</span><span class="s2">&quot;double&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CUInt64Type</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_Handle</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="n">c_uint64</span> <span class="o">=</span> <span class="n">_CUInt64Type</span><span class="p">()</span>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cstr_cached</span><span class="p">(</span><span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;char[]&quot;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="c_char_p">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.c_char_p">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">c_char_p</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">intern</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_C_CHARP_NULL</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">intern</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_cstr_cached</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;char[]&quot;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="void_p_null">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.void_p_null">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">void_p_null</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_C_VOIDP_NULL</span></div>
+
+
+
+<span class="c1"># ---------------------- function-pointer helpers ------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_funcptr_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">signature</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">&quot;(&quot;</span> <span class="ow">in</span> <span class="n">s</span> <span class="ow">and</span> <span class="s2">&quot;)&quot;</span> <span class="ow">in</span> <span class="n">s</span> <span class="ow">and</span> <span class="s2">&quot;(*&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2"> (* )</span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<div class="viewcode-block" id="funcptr_null">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.funcptr_null">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">funcptr_null</span><span class="p">(</span><span class="n">signature</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">_normalize_funcptr_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="make_callback">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.make_callback">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_callback</span><span class="p">(</span><span class="n">signature</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pyfunc</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">signature</span><span class="p">)(</span><span class="n">pyfunc</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_string_buffer">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.create_string_buffer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_string_buffer</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_Buffer</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="byref">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.byref">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">byref</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">_Ptr</span><span class="p">,</span> <span class="n">_Buffer</span><span class="p">,</span> <span class="n">_Handle</span><span class="p">,</span> <span class="n">_CVoidP</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">ptr</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;ptr&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">ptr</span>
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_LibProxy</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_lib&quot;</span><span class="p">,</span> <span class="s2">&quot;_cache&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">libpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">header_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">_ensure_cdef</span><span class="p">(</span><span class="n">header_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lib</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">dlopen</span><span class="p">(</span><span class="n">libpath</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ffi</span><span class="p">,</span> <span class="s2">&quot;RTLD_NOW&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fn</span>
+
+        <span class="c1"># Try exact symbol first</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cfunc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lib</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfunc</span>
+            <span class="k">return</span> <span class="n">cfunc</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Bridging EN_* &lt;-&gt; EN* and MSX_* &lt;-&gt; MSX*</span>
+        <span class="n">alt_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;EN_&quot;</span><span class="p">):</span>
+            <span class="n">alt_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;EN&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;EN&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span><span class="p">):</span>
+            <span class="n">alt_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;EN_&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;MSX_&quot;</span><span class="p">):</span>
+            <span class="n">alt_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;MSX&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;MSX&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span><span class="p">):</span>
+            <span class="n">alt_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;MSX_&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="k">for</span> <span class="n">alt</span> <span class="ow">in</span> <span class="n">alt_names</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cfunc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lib</span><span class="p">,</span> <span class="n">alt</span><span class="p">)</span>
+                <span class="n">cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfunc</span>  <span class="c1"># cache under the originally requested name</span>
+                <span class="k">return</span> <span class="n">cfunc</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="cdll">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.cdll">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">cdll</span><span class="p">:</span>
+<div class="viewcode-block" id="cdll.LoadLibrary">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.cdll.LoadLibrary">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">LoadLibrary</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">header_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_LibProxy</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">header_path</span><span class="o">=</span><span class="n">header_path</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ffi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;c_int&quot;</span><span class="p">,</span> <span class="s2">&quot;c_long&quot;</span><span class="p">,</span> <span class="s2">&quot;c_float&quot;</span><span class="p">,</span> <span class="s2">&quot;c_double&quot;</span><span class="p">,</span> <span class="s2">&quot;c_uint64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;c_char_p&quot;</span><span class="p">,</span> <span class="s2">&quot;void_p_null&quot;</span><span class="p">,</span> <span class="s2">&quot;funcptr_null&quot;</span><span class="p">,</span> <span class="s2">&quot;make_callback&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;create_string_buffer&quot;</span><span class="p">,</span> <span class="s2">&quot;byref&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdll&quot;</span><span class="p">,</span> <span class="s2">&quot;_load_decls_from_header&quot;</span><span class="p">,</span> <span class="s2">&quot;get_cdef_decls&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;c_void_p&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_cdef_decls">
+<a class="viewcode-back" href="../../../api.html#epyt.src.epanet_cffi_compat.get_cdef_decls">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_cdef_decls</span><span class="p">():</span>
+    <span class="n">_ensure_cdef</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">_CDEF_DECLS</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, KIOS Research and Innovation Center of Excellence.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

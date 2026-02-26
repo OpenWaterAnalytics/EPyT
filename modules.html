@@ -1,0 +1,698 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPyT &mdash; epyt 1.0.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=46dfa7f5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            epyt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">epyt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">EPyT</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="epyt">
+<h1>EPyT<a class="headerlink" href="#epyt" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="epyt.html">epyt package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="epyt.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="epyt.src.html">epyt.src package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="epyt.src.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.src.html#module-epyt.src.epanetapi">epyt.src.epanetapi module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.src.html#module-epyt.src.epanetconstants">epyt.src.epanetconstants module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.src.html#module-epyt.src.epanetmsxapi">epyt.src.epanetmsxapi module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.src.html#module-epyt.src.epyt_enums">epyt.src.epyt_enums module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.src.html#module-epyt.src">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="epyt.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="epyt.html#module-epyt.epanet">epyt.epanet module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="epyt.html#epyt.epanet.error_handler"><code class="docutils literal notranslate"><span class="pre">error_handler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.error_handler.last_error"><code class="docutils literal notranslate"><span class="pre">error_handler.last_error</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="epyt.html#epyt.epanet.EpytValues"><code class="docutils literal notranslate"><span class="pre">EpytValues</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.EpytValues.__init__"><code class="docutils literal notranslate"><span class="pre">EpytValues.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.EpytValues.disp"><code class="docutils literal notranslate"><span class="pre">EpytValues.disp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.EpytValues.to_dict"><code class="docutils literal notranslate"><span class="pre">EpytValues.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.EpytValues.to_excel"><code class="docutils literal notranslate"><span class="pre">EpytValues.to_excel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.EpytValues.to_json"><code class="docutils literal notranslate"><span class="pre">EpytValues.to_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="epyt.html#epyt.epanet.isList"><code class="docutils literal notranslate"><span class="pre">isList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="epyt.html#epyt.epanet.epanet"><code class="docutils literal notranslate"><span class="pre">epanet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.__init__"><code class="docutils literal notranslate"><span class="pre">epanet.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addControls"><code class="docutils literal notranslate"><span class="pre">epanet.addControls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addCurve"><code class="docutils literal notranslate"><span class="pre">epanet.addCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkPipe"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkPipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkPipeCV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkPipeCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkPump"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkPump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkValveFCV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkValveFCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkValveGPV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkValveGPV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkValvePCV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkValvePCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkValvePBV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkValvePBV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkValvePRV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkValvePRV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkValvePSV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkValvePSV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addLinkValveTCV"><code class="docutils literal notranslate"><span class="pre">epanet.addLinkValveTCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addNodeJunction"><code class="docutils literal notranslate"><span class="pre">epanet.addNodeJunction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addNodeJunctionDemand"><code class="docutils literal notranslate"><span class="pre">epanet.addNodeJunctionDemand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addNodeReservoir"><code class="docutils literal notranslate"><span class="pre">epanet.addNodeReservoir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addNodeTank"><code class="docutils literal notranslate"><span class="pre">epanet.addNodeTank()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addPattern"><code class="docutils literal notranslate"><span class="pre">epanet.addPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addRules"><code class="docutils literal notranslate"><span class="pre">epanet.addRules()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.appRotateNetwork"><code class="docutils literal notranslate"><span class="pre">epanet.appRotateNetwork()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.appShiftNetwork"><code class="docutils literal notranslate"><span class="pre">epanet.appShiftNetwork()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.arange"><code class="docutils literal notranslate"><span class="pre">epanet.arange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.clearReport"><code class="docutils literal notranslate"><span class="pre">epanet.clearReport()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.closeHydraulicAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.closeHydraulicAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.closeNetwork"><code class="docutils literal notranslate"><span class="pre">epanet.closeNetwork()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.closeQualityAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.closeQualityAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.copyReport"><code class="docutils literal notranslate"><span class="pre">epanet.copyReport()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.createProject"><code class="docutils literal notranslate"><span class="pre">epanet.createProject()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteAllTemps"><code class="docutils literal notranslate"><span class="pre">epanet.deleteAllTemps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteControls"><code class="docutils literal notranslate"><span class="pre">epanet.deleteControls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteCurve"><code class="docutils literal notranslate"><span class="pre">epanet.deleteCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteLink"><code class="docutils literal notranslate"><span class="pre">epanet.deleteLink()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteNode"><code class="docutils literal notranslate"><span class="pre">epanet.deleteNode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteNodeJunctionDemand"><code class="docutils literal notranslate"><span class="pre">epanet.deleteNodeJunctionDemand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deletePattern"><code class="docutils literal notranslate"><span class="pre">epanet.deletePattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deletePatternsAll"><code class="docutils literal notranslate"><span class="pre">epanet.deletePatternsAll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteProject"><code class="docutils literal notranslate"><span class="pre">epanet.deleteProject()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.deleteRules"><code class="docutils literal notranslate"><span class="pre">epanet.deleteRules()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getENfunctionsImpemented"><code class="docutils literal notranslate"><span class="pre">epanet.getENfunctionsImpemented()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeActualQualitySensingNodes"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeActualQualitySensingNodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCMDCODE"><code class="docutils literal notranslate"><span class="pre">epanet.getCMDCODE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getComputedHydraulicTimeSeries"><code class="docutils literal notranslate"><span class="pre">epanet.getComputedHydraulicTimeSeries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getComputedQualityTimeSeries"><code class="docutils literal notranslate"><span class="pre">epanet.getComputedQualityTimeSeries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getComputedTimeSeries"><code class="docutils literal notranslate"><span class="pre">epanet.getComputedTimeSeries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getComputedTimeSeries_ENepanet"><code class="docutils literal notranslate"><span class="pre">epanet.getComputedTimeSeries_ENepanet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getAdjacencyMatrix"><code class="docutils literal notranslate"><span class="pre">epanet.getAdjacencyMatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getConnectivityMatrix"><code class="docutils literal notranslate"><span class="pre">epanet.getConnectivityMatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getControls"><code class="docutils literal notranslate"><span class="pre">epanet.getControls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getControlRulesCount"><code class="docutils literal notranslate"><span class="pre">epanet.getControlRulesCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getControlCount"><code class="docutils literal notranslate"><span class="pre">epanet.getControlCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveComment"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCounts"><code class="docutils literal notranslate"><span class="pre">epanet.getCounts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveCount"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveLengths"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveLengths()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurvesInfo"><code class="docutils literal notranslate"><span class="pre">epanet.getCurvesInfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveType"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveTypeIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveTypeIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getCurveValue"><code class="docutils literal notranslate"><span class="pre">epanet.getCurveValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getDemandModel"><code class="docutils literal notranslate"><span class="pre">epanet.getDemandModel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getError"><code class="docutils literal notranslate"><span class="pre">epanet.getError()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getFlowUnits"><code class="docutils literal notranslate"><span class="pre">epanet.getFlowUnits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLibFunctions"><code class="docutils literal notranslate"><span class="pre">epanet.getLibFunctions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkComment"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkCount"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkQuality"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkType"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkTypeIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkTypeIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkDiameter"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkDiameter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkLength"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkLength()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkRoughnessCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkRoughnessCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkMinorLossCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkMinorLossCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkInitialStatus"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkInitialStatus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkInitialSetting"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkInitialSetting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkBulkReactionCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkBulkReactionCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkWallReactionCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkWallReactionCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPipeCount"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPipeCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpEfficiency"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpEfficiency()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpCount"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpECost"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpECost()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpECurve"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpECurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpEPat"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpEPat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpHCurve"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpHCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpHeadCurveIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpHeadCurveIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpPatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpPatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpPatternNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpPatternNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpPower"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpPower()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpState"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpState()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpSwitches"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpSwitches()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpType"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpTypeCode"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpTypeCode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinksInfo"><code class="docutils literal notranslate"><span class="pre">epanet.getLinksInfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkValveCount"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkValveCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkFlows"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkFlows()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkVelocity"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkVelocity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkVertices"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkVertices()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkVerticesCount"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkVerticesCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkHeadloss"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkHeadloss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkStatus"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkStatus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkSettings"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkSettings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkEnergy"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkEnergy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkActualQuality"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkActualQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkNodesIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkNodesIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPipeIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPipeIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPipeNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPipeNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkPumpNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkPumpNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkValveIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkValveIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkValveNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkValveNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNetworksDatabase"><code class="docutils literal notranslate"><span class="pre">epanet.getNetworksDatabase()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeActualDemandSensingNodes"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeActualDemandSensingNodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeCount"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeActualDemand"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeActualDemand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeActualQuality"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeActualQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeBaseDemands"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeBaseDemands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeComment"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeCoordinates"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeCoordinates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeDemandCategoriesNumber"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeDemandCategoriesNumber()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeDemandDeficit"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeDemandDeficit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeDemandPatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeDemandPatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeReservoirHeadPatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeReservoirHeadPatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeDemandPatternNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeDemandPatternNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeElevations"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeElevations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeEmitterCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeEmitterCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeEmitterFlow"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeEmitterFlow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeHydraulicHead"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeHydraulicHead()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeInitialQuality"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeInitialQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeJunctionCount"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeJunctionCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeJunctionDemandIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeJunctionDemandIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeJunctionDemandName"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeJunctionDemandName()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeJunctionIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeJunctionIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeJunctionNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeJunctionNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeMassFlowRate"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeMassFlowRate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodePatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodePatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodePressure"><code class="docutils literal notranslate"><span class="pre">epanet.getNodePressure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeReservoirIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeReservoirIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeReservoirNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeReservoirNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodesConnectingLinksID"><code class="docutils literal notranslate"><span class="pre">epanet.getNodesConnectingLinksID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodesConnectingLinksIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodesConnectingLinksIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodesInfo"><code class="docutils literal notranslate"><span class="pre">epanet.getNodesInfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeReservoirCount"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeReservoirCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeResultIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeResultIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeSourcePatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeSourcePatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeSourceQuality"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeSourceQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeSourceType"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeSourceType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeSourceTypeIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeSourceTypeIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankBulkReactionCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankBulkReactionCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankCanOverFlow"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankCanOverFlow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankCount"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankData"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankDiameter"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankDiameter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankInitialLevel"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankInitialLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankInitialWaterVolume"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankInitialWaterVolume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMaximumWaterLevel"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMaximumWaterLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMaximumWaterVolume"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMaximumWaterVolume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMinimumWaterLevel"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMinimumWaterLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMinimumWaterVolume"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMinimumWaterVolume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMixingFraction"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMixingFraction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMixingModelCode"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMixingModelCode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMixingModelType"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMixingModelType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankMixZoneVolume"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankMixZoneVolume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankReservoirCount"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankReservoirCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankVolume"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankVolume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTankVolumeCurveIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTankVolumeCurveIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeType"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeTypeIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeTypeIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsAccuracyValue"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsAccuracyValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsCheckFrequency"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsCheckFrequency()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsDampLimit"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsDampLimit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsDemandCharge"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsDemandCharge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsEmitterExponent"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsEmitterExponent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsExtraTrials"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsExtraTrials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsFlowChange"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsFlowChange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsGlobalEffic"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsGlobalEffic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsGlobalPrice"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsGlobalPrice()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsGlobalPattern"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsGlobalPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsHeadError"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsHeadError()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsHeadLossFormula"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsHeadLossFormula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsLimitingConcentration"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsLimitingConcentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsMaximumCheck"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsMaximumCheck()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsMaxTrials"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsMaxTrials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsPatternDemandMultiplier"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsPatternDemandMultiplier()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsPipeBulkReactionOrder"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsPipeBulkReactionOrder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsPipeWallReactionOrder"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsPipeWallReactionOrder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsQualityTolerance"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsQualityTolerance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsSpecificDiffusivity"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsSpecificDiffusivity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsSpecificGravity"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsSpecificGravity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsSpecificViscosity"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsSpecificViscosity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsTankBulkReactionOrder"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsTankBulkReactionOrder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsPressureUnits"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsPressureUnits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsStatusReport"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsStatusReport()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPattern"><code class="docutils literal notranslate"><span class="pre">epanet.getPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternAverageValue"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternAverageValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternAverageDefaultValue"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternAverageDefaultValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternComment"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternCount"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternLengths"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternLengths()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getPatternValue"><code class="docutils literal notranslate"><span class="pre">epanet.getPatternValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getQualityCode"><code class="docutils literal notranslate"><span class="pre">epanet.getQualityCode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getQualityInfo"><code class="docutils literal notranslate"><span class="pre">epanet.getQualityInfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getQualityTraceNodeIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getQualityTraceNodeIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getQualityType"><code class="docutils literal notranslate"><span class="pre">epanet.getQualityType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkResultIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkResultIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getRuleCount"><code class="docutils literal notranslate"><span class="pre">epanet.getRuleCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getRuleID"><code class="docutils literal notranslate"><span class="pre">epanet.getRuleID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getRuleInfo"><code class="docutils literal notranslate"><span class="pre">epanet.getRuleInfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getRules"><code class="docutils literal notranslate"><span class="pre">epanet.getRules()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getStatistic"><code class="docutils literal notranslate"><span class="pre">epanet.getStatistic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getStatisticTotalLeakageLoss"><code class="docutils literal notranslate"><span class="pre">epanet.getStatisticTotalLeakageLoss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getStatisticIterations"><code class="docutils literal notranslate"><span class="pre">epanet.getStatisticIterations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getStatisticRelativeError"><code class="docutils literal notranslate"><span class="pre">epanet.getStatisticRelativeError()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getStatisticDeficientNodes"><code class="docutils literal notranslate"><span class="pre">epanet.getStatisticDeficientNodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getStatisticDemandReduction"><code class="docutils literal notranslate"><span class="pre">epanet.getStatisticDemandReduction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeSimulationDuration"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeSimulationDuration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeHydraulicStep"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeHydraulicStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeQualityStep"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeQualityStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimePatternStep"><code class="docutils literal notranslate"><span class="pre">epanet.getTimePatternStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimePatternStart"><code class="docutils literal notranslate"><span class="pre">epanet.getTimePatternStart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeReportingStep"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeReportingStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeReportingStart"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeReportingStart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeRuleControlStep"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeRuleControlStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeStatisticsType"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeStatisticsType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeStatisticsIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeStatisticsIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeReportingPeriods"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeReportingPeriods()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeClockStartTime"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeClockStartTime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeStartTime"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeStartTime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeHTime"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeHTime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeQTime"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeQTime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeHaltFlag"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeHaltFlag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeNextEvent"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeNextEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimeNextEventTank"><code class="docutils literal notranslate"><span class="pre">epanet.getTimeNextEventTank()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTitle"><code class="docutils literal notranslate"><span class="pre">epanet.getTitle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getUnits"><code class="docutils literal notranslate"><span class="pre">epanet.getUnits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getVersion"><code class="docutils literal notranslate"><span class="pre">epanet.getVersion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.initializeEPANET"><code class="docutils literal notranslate"><span class="pre">epanet.initializeEPANET()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.initializeQualityAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.initializeQualityAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.loadlibrary"><code class="docutils literal notranslate"><span class="pre">epanet.loadlibrary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.loadEPANETFile"><code class="docutils literal notranslate"><span class="pre">epanet.loadEPANETFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.loadMSXEPANETFile"><code class="docutils literal notranslate"><span class="pre">epanet.loadMSXEPANETFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.max"><code class="docutils literal notranslate"><span class="pre">epanet.max()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.multiply_elements"><code class="docutils literal notranslate"><span class="pre">epanet.multiply_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.min"><code class="docutils literal notranslate"><span class="pre">epanet.min()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.nextQualityAnalysisStep"><code class="docutils literal notranslate"><span class="pre">epanet.nextQualityAnalysisStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.openAnyInp"><code class="docutils literal notranslate"><span class="pre">epanet.openAnyInp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.openCurrentInp"><code class="docutils literal notranslate"><span class="pre">epanet.openCurrentInp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.openQualityAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.openQualityAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.reloadNetwork"><code class="docutils literal notranslate"><span class="pre">epanet.reloadNetwork()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.runEPANETexe"><code class="docutils literal notranslate"><span class="pre">epanet.runEPANETexe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.runQualityAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.runQualityAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.runsCompleteSimulation"><code class="docutils literal notranslate"><span class="pre">epanet.runsCompleteSimulation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.saveHydraulicFile"><code class="docutils literal notranslate"><span class="pre">epanet.saveHydraulicFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.saveHydraulicsOutputReportingFile"><code class="docutils literal notranslate"><span class="pre">epanet.saveHydraulicsOutputReportingFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.saveInputFile"><code class="docutils literal notranslate"><span class="pre">epanet.saveInputFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCMDCODE"><code class="docutils literal notranslate"><span class="pre">epanet.setCMDCODE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setControls"><code class="docutils literal notranslate"><span class="pre">epanet.setControls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurve"><code class="docutils literal notranslate"><span class="pre">epanet.setCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveComment"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveNameID"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveValue"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setDemandModel"><code class="docutils literal notranslate"><span class="pre">epanet.setDemandModel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsAFD"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsAFD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsCFS"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsCFS()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsCMD"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsCMD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsCMH"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsCMH()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsCMS"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsCMS()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsGPM"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsGPM()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsIMGD"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsIMGD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsLPM"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsLPM()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsLPS"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsLPS()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsMGD"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsMGD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setFlowUnitsMLD"><code class="docutils literal notranslate"><span class="pre">epanet.setFlowUnitsMLD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkBulkReactionCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkBulkReactionCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkComment"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkDiameter"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkDiameter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkInitialSetting"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkInitialSetting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkInitialStatus"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkInitialStatus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkLength"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkLength()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkMinorLossCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkMinorLossCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkNameID"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkNodesIndex"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkNodesIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPipeData"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPipeData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPumpECost"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPumpECost()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPumpECurve"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPumpECurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPumpEPat"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPumpEPat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPumpHCurve"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPumpHCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPumpHeadCurveIndex"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPumpHeadCurveIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPumpPatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPumpPatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkPumpPower"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkPumpPower()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkRoughnessCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkRoughnessCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkSettings"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkSettings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkStatus"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkStatus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypePipe"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypePipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypePipeCV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypePipeCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypePump"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypePump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypeValveFCV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypeValveFCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypeValveGPV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypeValveGPV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypeValvePCV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypeValvePCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypeValvePBV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypeValvePBV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypeValvePRV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypeValvePRV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypeValvePSV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypeValvePSV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkTypeValveTCV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkTypeValveTCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkVertices"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkVertices()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkWallReactionCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkWallReactionCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeBaseDemands"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeBaseDemands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeComment"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeCoordinates"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeCoordinates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeDemandPatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeDemandPatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeReservoirHeadPatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeReservoirHeadPatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeElevations"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeElevations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeEmitterCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeEmitterCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeInitialQuality"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeInitialQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeJunctionData"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeJunctionData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeJunctionDemandName"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeJunctionDemandName()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeNameID"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodesConnectingLinksID"><code class="docutils literal notranslate"><span class="pre">epanet.setNodesConnectingLinksID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeSourcePatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeSourcePatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeSourceQuality"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeSourceQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeSourceType"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeSourceType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankBulkReactionCoeff"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankBulkReactionCoeff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankCanOverFlow"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankCanOverFlow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankData"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankDiameter"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankDiameter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankInitialLevel"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankInitialLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankMaximumWaterLevel"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankMaximumWaterLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankMinimumWaterLevel"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankMinimumWaterLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankMinimumWaterVolume"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankMinimumWaterVolume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankMixingFraction"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankMixingFraction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTankMixingModelType"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTankMixingModelType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTypeJunction"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTypeJunction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTypeReservoir"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTypeReservoir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setNodeTypeTank"><code class="docutils literal notranslate"><span class="pre">epanet.setNodeTypeTank()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsAccuracyValue"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsAccuracyValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsCheckFrequency"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsCheckFrequency()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsDampLimit"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsDampLimit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsDemandCharge"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsDemandCharge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsEmitterExponent"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsEmitterExponent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsExtraTrials"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsExtraTrials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsFlowChange"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsFlowChange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsGlobalEffic"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsGlobalEffic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsGlobalPrice"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsGlobalPrice()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsGlobalPattern"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsGlobalPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsHeadError"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsHeadError()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsHeadLossFormula"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsHeadLossFormula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsLimitingConcentration"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsLimitingConcentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsMaximumCheck"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsMaximumCheck()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsMaxTrials"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsMaxTrials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsPatternDemandMultiplier"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsPatternDemandMultiplier()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsPipeBulkReactionOrder"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsPipeBulkReactionOrder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsPipeWallReactionOrder"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsPipeWallReactionOrder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsQualityTolerance"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsQualityTolerance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsSpecificDiffusivity"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsSpecificDiffusivity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsSpecificGravity"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsSpecificGravity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsSpecificViscosity"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsSpecificViscosity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsTankBulkReactionOrder"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsTankBulkReactionOrder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsPressureUnits"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsPressureUnits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsPressureUnitsMeters"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsPressureUnitsMeters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsPressureUnitsPSI"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsPressureUnitsPSI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsPressureUnitsKPA"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsPressureUnitsKPA()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsStatusReport"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsStatusReport()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsStatusReportNo"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsStatusReportNo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsStatusReportFull"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsStatusReportFull()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsStatusReportNormal"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsStatusReportNormal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setQualityType"><code class="docutils literal notranslate"><span class="pre">epanet.setQualityType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setPattern"><code class="docutils literal notranslate"><span class="pre">epanet.setPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setPatternComment"><code class="docutils literal notranslate"><span class="pre">epanet.setPatternComment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setPatternMatrix"><code class="docutils literal notranslate"><span class="pre">epanet.setPatternMatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setPatternNameID"><code class="docutils literal notranslate"><span class="pre">epanet.setPatternNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setPatternValue"><code class="docutils literal notranslate"><span class="pre">epanet.setPatternValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setReport"><code class="docutils literal notranslate"><span class="pre">epanet.setReport()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setReportFormatReset"><code class="docutils literal notranslate"><span class="pre">epanet.setReportFormatReset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setReportStatus"><code class="docutils literal notranslate"><span class="pre">epanet.setReportStatus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRulePremise"><code class="docutils literal notranslate"><span class="pre">epanet.setRulePremise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRulePremiseObjectNameID"><code class="docutils literal notranslate"><span class="pre">epanet.setRulePremiseObjectNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRulePremiseValue"><code class="docutils literal notranslate"><span class="pre">epanet.setRulePremiseValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRules"><code class="docutils literal notranslate"><span class="pre">epanet.setRules()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRuleElseAction"><code class="docutils literal notranslate"><span class="pre">epanet.setRuleElseAction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRulePremiseStatus"><code class="docutils literal notranslate"><span class="pre">epanet.setRulePremiseStatus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRulePriority"><code class="docutils literal notranslate"><span class="pre">epanet.setRulePriority()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRuleThenAction"><code class="docutils literal notranslate"><span class="pre">epanet.setRuleThenAction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeHydraulicStep"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeHydraulicStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimePatternStart"><code class="docutils literal notranslate"><span class="pre">epanet.setTimePatternStart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeClockStartTime"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeClockStartTime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimePatternStep"><code class="docutils literal notranslate"><span class="pre">epanet.setTimePatternStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeQualityStep"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeQualityStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeReportingStart"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeReportingStart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeReportingStep"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeReportingStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeRuleControlStep"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeRuleControlStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeSimulationDuration"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeSimulationDuration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTimeStatisticsType"><code class="docutils literal notranslate"><span class="pre">epanet.setTimeStatisticsType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setTitle"><code class="docutils literal notranslate"><span class="pre">epanet.setTitle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.solveCompleteHydraulics"><code class="docutils literal notranslate"><span class="pre">epanet.solveCompleteHydraulics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.solveCompleteQuality"><code class="docutils literal notranslate"><span class="pre">epanet.solveCompleteQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.splitPipe"><code class="docutils literal notranslate"><span class="pre">epanet.splitPipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.stepQualityAnalysisTimeLeft"><code class="docutils literal notranslate"><span class="pre">epanet.stepQualityAnalysisTimeLeft()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.to_array"><code class="docutils literal notranslate"><span class="pre">epanet.to_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.to_mat"><code class="docutils literal notranslate"><span class="pre">epanet.to_mat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.initializeHydraulicAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.initializeHydraulicAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.nextHydraulicAnalysisStep"><code class="docutils literal notranslate"><span class="pre">epanet.nextHydraulicAnalysisStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.openHydraulicAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.openHydraulicAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.plot"><code class="docutils literal notranslate"><span class="pre">epanet.plot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.plot_save"><code class="docutils literal notranslate"><span class="pre">epanet.plot_save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.plot_close"><code class="docutils literal notranslate"><span class="pre">epanet.plot_close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.plot_show"><code class="docutils literal notranslate"><span class="pre">epanet.plot_show()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.plot_ts"><code class="docutils literal notranslate"><span class="pre">epanet.plot_ts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.printv"><code class="docutils literal notranslate"><span class="pre">epanet.printv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.runHydraulicAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.runHydraulicAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.unload"><code class="docutils literal notranslate"><span class="pre">epanet.unload()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.useHydraulicFile"><code class="docutils literal notranslate"><span class="pre">epanet.useHydraulicFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.writeLineInReportFile"><code class="docutils literal notranslate"><span class="pre">epanet.writeLineInReportFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.writeReport"><code class="docutils literal notranslate"><span class="pre">epanet.writeReport()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.loadMSXFile"><code class="docutils literal notranslate"><span class="pre">epanet.loadMSXFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.unloadMSX"><code class="docutils literal notranslate"><span class="pre">epanet.unloadMSX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesCount"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXConstantsCount"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXConstantsCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXParametersCount"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXParametersCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXPatternsCount"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXPatternsCount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.saveMSXFile"><code class="docutils literal notranslate"><span class="pre">epanet.saveMSXFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.saveMSXQualityFile"><code class="docutils literal notranslate"><span class="pre">epanet.saveMSXQualityFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.solveMSXCompleteHydraulics"><code class="docutils literal notranslate"><span class="pre">epanet.solveMSXCompleteHydraulics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.solveMSXCompleteQuality"><code class="docutils literal notranslate"><span class="pre">epanet.solveMSXCompleteQuality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.writeMSXReport"><code class="docutils literal notranslate"><span class="pre">epanet.writeMSXReport()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.useMSXHydraulicFile"><code class="docutils literal notranslate"><span class="pre">epanet.useMSXHydraulicFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXPatternValue"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXPatternValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.initializeMSXQualityAnalysis"><code class="docutils literal notranslate"><span class="pre">epanet.initializeMSXQualityAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.stepMSXQualityAnalysisTimeLeft"><code class="docutils literal notranslate"><span class="pre">epanet.stepMSXQualityAnalysisTimeLeft()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXError"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXError()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXOptions"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXOptions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXTimeStep"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXTimeStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXRateUnits"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXRateUnits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXAreaUnits"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXAreaUnits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXCompiler"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXCompiler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXCoupling"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXCoupling()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSolver"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXAtol"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXAtol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXRtol"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXRtol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXConstantsNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXConstantsNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXParametersNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXParametersNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXPatternsNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXPatternsNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXParametersIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXParametersIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXPatternsIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXPatternsIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXConstantsIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXConstantsIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXConstantsValue"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXConstantsValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXParametersPipesValue"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXParametersPipesValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXParametersTanksValue"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXParametersTanksValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXPatternsLengths"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXPatternsLengths()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXPattern"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesType"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesUnits"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesUnits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXEquationsTerms"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXEquationsTerms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXEquationsPipes"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXEquationsPipes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXEquationsTanks"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXEquationsTanks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSources"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSourceType"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSourceType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSourceLevel"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSourceLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSourcePatternIndex"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSourcePatternIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXLinkInitqualValue"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXLinkInitqualValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXNodeInitqualValue"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXNodeInitqualValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesATOL"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesATOL()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesRTOL"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesRTOL()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSpeciesConcentration"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSpeciesConcentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXSourceNodeNameID"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXSourceNodeNameID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXAreaUnitsCM2"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXAreaUnitsCM2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXAreaUnitsFT2"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXAreaUnitsFT2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXAreaUnitsM2"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXAreaUnitsM2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXAtol"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXAtol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXRtol"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXRtol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXCompilerGC"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXCompilerGC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXCompilerVC"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXCompilerVC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXCompilerNONE"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXCompilerNONE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXCouplingFULL"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXCouplingFULL()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXCouplingNONE"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXCouplingNONE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXRateUnitsDAY"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXRateUnitsDAY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXRateUnitsHR"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXRateUnitsHR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXRateUnitsMIN"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXRateUnitsMIN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXRateUnitsSEC"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXRateUnitsSEC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXSolverEUL"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXSolverEUL()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXSolverRK5"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXSolverRK5()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXSolverROS2"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXSolverROS2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXTimeStep"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXTimeStep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXPatternValue"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXPatternValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXPattern"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXParametersTanksValue"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXParametersTanksValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXParametersPipesValue"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXParametersPipesValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXConstantsValue"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXConstantsValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.addMSXPattern"><code class="docutils literal notranslate"><span class="pre">epanet.addMSXPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXComputedQualitySpecie"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXComputedQualitySpecie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXComputedNodeQualitySpecie"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXComputedNodeQualitySpecie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXComputedLinkQualitySpecie"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXComputedLinkQualitySpecie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXComputedQualityNode"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXComputedQualityNode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMSXComputedQualityLink"><code class="docutils literal notranslate"><span class="pre">epanet.getMSXComputedQualityLink()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXLinkInitqualValue"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXLinkInitqualValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXSources"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXSources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXNodeInitqualValue"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXNodeInitqualValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.initializeMSXWrite"><code class="docutils literal notranslate"><span class="pre">epanet.initializeMSXWrite()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.writeMSXFile"><code class="docutils literal notranslate"><span class="pre">epanet.writeMSXFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setMSXPatternMatrix"><code class="docutils literal notranslate"><span class="pre">epanet.setMSXPatternMatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getAllAttributes"><code class="docutils literal notranslate"><span class="pre">epanet.getAllAttributes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getMethods"><code class="docutils literal notranslate"><span class="pre">epanet.getMethods()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.plotMSXSpeciesNodeConcentration"><code class="docutils literal notranslate"><span class="pre">epanet.plotMSXSpeciesNodeConcentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.plotMSXSpeciesLinkConcentration"><code class="docutils literal notranslate"><span class="pre">epanet.plotMSXSpeciesLinkConcentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveType"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveTypeVolume"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveTypeVolume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveTypePump"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveTypePump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveTypeEfficiency"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveTypeEfficiency()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveTypeHeadloss"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveTypeHeadloss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveTypeGeneral"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveTypeGeneral()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setCurveTypeValveCurve"><code class="docutils literal notranslate"><span class="pre">epanet.setCurveTypeValveCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setVertex"><code class="docutils literal notranslate"><span class="pre">epanet.setVertex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getControlState"><code class="docutils literal notranslate"><span class="pre">epanet.getControlState()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setControlEnabled"><code class="docutils literal notranslate"><span class="pre">epanet.setControlEnabled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getRuleEnabled"><code class="docutils literal notranslate"><span class="pre">epanet.getRuleEnabled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setRuleEnabled"><code class="docutils literal notranslate"><span class="pre">epanet.setRuleEnabled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.openX"><code class="docutils literal notranslate"><span class="pre">epanet.openX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.loadPatternFile"><code class="docutils literal notranslate"><span class="pre">epanet.loadPatternFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkValues"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkValues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkValveCurveGPV"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkValveCurveGPV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkValveCurvePCV"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkValveCurvePCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkValveCurveGPV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkValveCurveGPV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkValveCurvePCV"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkValveCurvePCV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsDemandPattern"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsDemandPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsDemandPattern"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsDemandPattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getOptionsEmitterBackFlow"><code class="docutils literal notranslate"><span class="pre">epanet.getOptionsEmitterBackFlow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsEmitterBackFlowAllowed"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsEmitterBackFlowAllowed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setOptionsEmitterBackFlowDisallowed"><code class="docutils literal notranslate"><span class="pre">epanet.setOptionsEmitterBackFlowDisallowed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkLeakArea"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkLeakArea()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkExpansionProperties"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkExpansionProperties()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkLeakArea"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkLeakArea()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.setLinkExpansionProperties"><code class="docutils literal notranslate"><span class="pre">epanet.setLinkExpansionProperties()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkLeakageRate"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkLeakageRate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getConsumerDemandRequested"><code class="docutils literal notranslate"><span class="pre">epanet.getConsumerDemandRequested()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getConsumerDemandDelivered"><code class="docutils literal notranslate"><span class="pre">epanet.getConsumerDemandDelivered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeLeakageFlow"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeLeakageFlow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getTimetoNextEvent"><code class="docutils literal notranslate"><span class="pre">epanet.getTimetoNextEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getLinkInControl"><code class="docutils literal notranslate"><span class="pre">epanet.getLinkInControl()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.getNodeInControl"><code class="docutils literal notranslate"><span class="pre">epanet.getNodeInControl()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.exportMSXts"><code class="docutils literal notranslate"><span class="pre">epanet.exportMSXts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="epyt.html#epyt.epanet.epanet.exportMSXstatistics"><code class="docutils literal notranslate"><span class="pre">epanet.exportMSXstatistics()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="epyt.html#module-epyt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, KIOS Research and Innovation Center of Excellence.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

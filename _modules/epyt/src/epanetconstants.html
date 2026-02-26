@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epyt.src.epanetconstants &mdash; epyt 1.0.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=46dfa7f5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            epyt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">epyt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">epyt.src.epanetconstants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for epyt.src.epanetconstants</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="EpanetConstants">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetconstants.EpanetConstants">[docs]</a>
+<span></span><span class="k">class</span><span class="w"> </span><span class="nc">EpanetConstants</span><span class="p">:</span>
+    <span class="c1"># Limits on the size of character arrays used to store ID names</span>
+    <span class="c1"># and text messages.</span>
+<div class="viewcode-block" id="EpanetConstants.__init__">
+<a class="viewcode-back" href="../../../epyt.src.html#epyt.src.epanetconstants.EpanetConstants.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="n">EN_MAXID</span> <span class="o">=</span> <span class="mi">31</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># characters in ID name</span>
+    <span class="n">EN_MAXMSG</span> <span class="o">=</span> <span class="mi">255</span>  <span class="c1"># characters in message text</span>
+
+    <span class="c1"># Node parameters</span>
+    <span class="n">EN_ELEVATION</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_BASEDEMAND</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_PATTERN</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_EMITTER</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_INITQUAL</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_SOURCEQUAL</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_SOURCEPAT</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_SOURCETYPE</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_TANKLEVEL</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">EN_DEMAND</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">EN_HEAD</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">EN_PRESSURE</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">EN_QUALITY</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">EN_SOURCEMASS</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">EN_INITVOLUME</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">EN_MIXMODEL</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">EN_MIXZONEVOL</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">EN_TANKDIAM</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">EN_MINVOLUME</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">EN_VOLCURVE</span> <span class="o">=</span> <span class="mi">19</span>
+    <span class="n">EN_MINLEVEL</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">EN_MAXLEVEL</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">EN_MIXFRACTION</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">EN_TANK_KBULK</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">EN_TANKVOLUME</span> <span class="o">=</span> <span class="mi">24</span>
+    <span class="n">EN_MAXVOLUME</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">EN_CANOVERFLOW</span> <span class="o">=</span> <span class="mi">26</span>
+    <span class="n">EN_DEMANDDEFICIT</span> <span class="o">=</span> <span class="mi">27</span>
+    <span class="n">EN_NODE_INCONTROL</span> <span class="o">=</span> <span class="mi">28</span>
+    <span class="n">EN_EMITTERFLOW</span> <span class="o">=</span> <span class="mi">29</span>
+    <span class="n">EN_LEAKAGEFLOW</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">EN_DEMANDFLOW</span> <span class="o">=</span> <span class="mi">31</span>
+    <span class="n">EN_FULLDEMAND</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="c1"># Link parameters</span>
+    <span class="n">EN_DIAMETER</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_LENGTH</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_ROUGHNESS</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_MINORLOSS</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_INITSTATUS</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_INITSETTING</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_KBULK</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_KWALL</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_FLOW</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">EN_VELOCITY</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">EN_HEADLOSS</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">EN_STATUS</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">EN_SETTING</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">EN_ENERGY</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">EN_LINKQUAL</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">EN_LINKPATTERN</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">EN_PUMP_STATE</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">EN_PUMP_EFFIC</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">EN_PUMP_POWER</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">EN_PUMP_HCURVE</span> <span class="o">=</span> <span class="mi">19</span>
+    <span class="n">EN_PUMP_ECURVE</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">EN_PUMP_ECOST</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">EN_PUMP_EPAT</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">EN_LINK_INCONTROL</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">EN_GPV_CURVE</span> <span class="o">=</span> <span class="mi">24</span>
+    <span class="n">EN_PCV_CURVE</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">EN_LEAK_AREA</span> <span class="o">=</span> <span class="mi">26</span>
+    <span class="n">EN_LEAK_EXPAN</span> <span class="o">=</span> <span class="mi">27</span>
+    <span class="n">EN_LINK_LEAKAGE</span> <span class="o">=</span> <span class="mi">28</span>
+    <span class="c1"># Time parameters</span>
+    <span class="n">EN_DURATION</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_HYDSTEP</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_QUALSTEP</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_PATTERNSTEP</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_PATTERNSTART</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_REPORTSTEP</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_REPORTSTART</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_RULESTEP</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_STATISTIC</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">EN_PERIODS</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">EN_STARTTIME</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">EN_HTIME</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">EN_QTIME</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">EN_HALTFLAG</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">EN_NEXTEVENT</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">EN_NEXTEVENTTANK</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="c1"># Component counts</span>
+    <span class="n">EN_NODECOUNT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_TANKCOUNT</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_LINKCOUNT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_PATCOUNT</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_CURVECOUNT</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_CONTROLCOUNT</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_RULECOUNT</span> <span class="o">=</span> <span class="mi">6</span>
+
+    <span class="c1"># Node types</span>
+    <span class="n">EN_JUNCTION</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_RESERVOIR</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_TANK</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="c1"># Link types</span>
+    <span class="n">EN_CVPIPE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_PIPE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_PUMP</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_PRV</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_PSV</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_PBV</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_FCV</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_TCV</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_GPV</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">EN_PCV</span> <span class="o">=</span> <span class="mi">9</span>
+
+    <span class="c1"># Quality analysis types</span>
+    <span class="n">EN_NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_CHEM</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_AGE</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_TRACE</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="c1"># Source quality types</span>
+    <span class="n">EN_CONCEN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_MASS</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_SETPOINT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_FLOWPACED</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="c1"># Flow units types</span>
+    <span class="n">EN_CFS</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_GPM</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_MGD</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_IMGD</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_AFD</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_LPS</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_LPM</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_MLD</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_CMH</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">EN_CMD</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">EN_CMS</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># Pressure units type</span>
+    <span class="n">EN_PSI</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_KPA</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_METERS</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="n">EN_DDA</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Demand driven analysis</span>
+    <span class="n">EN_PDA</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Pressure driven analysis</span>
+
+    <span class="c1"># Option types</span>
+    <span class="n">EN_TRIALS</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_ACCURACY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_TOLERANCE</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_EMITEXPON</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_DEMANDMULT</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_HEADERROR</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_FLOWCHANGE</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_HEADLOSSFORM</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_GLOBALEFFIC</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">EN_GLOBALPRICE</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">EN_GLOBALPATTERN</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">EN_DEMANDCHARGE</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">EN_SP_GRAVITY</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">EN_SP_VISCOS</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">EN_UNBALANCED</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">EN_CHECKFREQ</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">EN_MAXCHECK</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">EN_DAMPLIMIT</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">EN_SP_DIFFUS</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">EN_BULKORDER</span> <span class="o">=</span> <span class="mi">19</span>
+    <span class="n">EN_WALLORDER</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">EN_TANKORDER</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">EN_CONCENLIMIT</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">EN_DEMANDPATTERN</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">EN_EMITBACKFLOW</span> <span class="o">=</span> <span class="mi">24</span>
+    <span class="n">EN_PRESS_UNITS</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">EN_STATUS_REPORT</span> <span class="o">=</span> <span class="mi">26</span>
+
+    <span class="c1"># Control types</span>
+    <span class="n">EN_LOWLEVEL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_HILEVEL</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_TIMER</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_TIMEOFDAY</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="c1"># Time statistic types</span>
+    <span class="n">EN_AVERAGE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_MINIMUM</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_MAXIMUM</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_RANGE</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="c1"># Tank mixing models</span>
+    <span class="n">EN_MIX1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_MIX2</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_FIFO</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_LIFO</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="c1"># Save-results-to-file flag</span>
+    <span class="n">EN_NOSAVE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_SAVE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_INITFLOW</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">EN_SAVE_AND_INIT</span> <span class="o">=</span> <span class="mi">11</span>
+
+    <span class="n">EN_CONST_HP</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Constant horsepower pump curve</span>
+    <span class="n">EN_POWER_FUNC</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Power function pump curve</span>
+    <span class="n">EN_CUSTOM</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># User-defined custom pump curve</span>
+    <span class="n">EN_NOCURVE</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># No pump curve</span>
+
+    <span class="n">EN_VOLUME_CURVE</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Volume curve</span>
+    <span class="n">EN_PUMP_CURVE</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Pump curve</span>
+    <span class="n">EN_EFFIC_CURVE</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Efficiency curve</span>
+    <span class="n">EN_HLOSS_CURVE</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Head loss curve</span>
+    <span class="n">EN_GENERIC_CURVE</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Generic curve</span>
+    <span class="n">EN_VALVE_CURVE</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># Valve position curve</span>
+
+    <span class="n">EN_UNCONDITIONAL</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Unconditional object deletion</span>
+    <span class="n">EN_CONDITIONAL</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">EN_NO_REPORT</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># No status report</span>
+    <span class="n">EN_NORMAL_REPORT</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Normal status report</span>
+    <span class="n">EN_FULL_REPORT</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Full status report</span>
+
+    <span class="c1"># ObjectType</span>
+    <span class="n">EN_NODE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_LINK</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_TIMEPAT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_CURVE</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_CONTROL</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_RULE</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="c1"># Head Loss Type</span>
+    <span class="n">EN_HW</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_DW</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_CM</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="c1"># Network objects used in rule-based controls</span>
+    <span class="n">EN_R_NODE</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_R_LINK</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_R_SYSTEM</span> <span class="o">=</span> <span class="mi">8</span>
+
+    <span class="c1"># Object variables used in rule-based controls.</span>
+    <span class="n">EN_R_DEMAND</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_R_HEAD</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_R_GRADE</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_R_LEVEL</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_R_PRESSURE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_R_FLOW</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_R_STATUS</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_R_SETTING</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">EN_R_POWER</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">EN_R_TIME</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">EN_R_CLOCKTIME</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">EN_R_FILLTIME</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">EN_R_DRAINTIME</span> <span class="o">=</span> <span class="mi">12</span>
+
+    <span class="c1"># Analysis convergence statistics.</span>
+    <span class="n">EN_ITERATIONS</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">EN_RELATIVEERROR</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_MAXHEADERROR</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_MAXFLOWCHANGE</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_MASSBALANCE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EN_DEFICIENTNODES</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EN_DEMANDREDUCTION</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">EN_LEAKAGELOSS</span> <span class="o">=</span> <span class="mi">7</span>
+
+    <span class="c1"># Link status codes used in rule-based controls</span>
+    <span class="n">EN_R_IS_OPEN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_R_IS_CLOSED</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_R_IS_ACTIVE</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="n">EN_STEP_REPORT</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Types of events that cause a timestep to end</span>
+    <span class="n">EN_STEP_HYD</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EN_STEP_WQ</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">EN_STEP_TANKEVENT</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">EN_STEP_CONTROLEVENT</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="n">EN_MISSING</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0E10</span>
+    <span class="n">EN_SET_CLOSED</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0E10</span>
+    <span class="n">EN_SET_OPEN</span> <span class="o">=</span> <span class="mf">1.0E10</span>
+
+    <span class="c1"># MSX Constants</span>
+    <span class="n">MSX_NODE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MSX_LINK</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">MSX_TANK</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MSX_SPECIES</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">MSX_TERM</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">MSX_PARAMETER</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">MSX_CONSTANT</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">MSX_PATTERN</span> <span class="o">=</span> <span class="mi">7</span>
+
+    <span class="n">MSX_BULK</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MSX_WALL</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">MSX_NOSOURCE</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">MSX_CONCEN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MSX_MASS</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">MSX_SETPOINT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MSX_FLOWPACED</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, KIOS Research and Innovation Center of Excellence.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
