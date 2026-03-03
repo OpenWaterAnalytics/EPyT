@@ -5,7 +5,7 @@
 [![Downloads](https://static.pepy.tech/badge/epyt)](https://pepy.tech/project/epyt)
 [![Downloads](https://static.pepy.tech/badge/epyt/month)](https://pepy.tech/project/epyt)
 [![build](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml/badge.svg)](https://github.com/OpenWaterAnalytics/EPyT/actions/workflows/build_tests.yml)
-[![Documentation Status](https://readthedocs.org/projects/epanet-python-toolkit-epyt/badge/?version=latest)](https://epanet-python-toolkit-epyt.readthedocs.io/en/latest/?badge=latest)
+[![Docs](https://img.shields.io/badge/docs-latest-blue)](http://wateranalytics.org/EPyT/)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.05947/status.svg)](https://doi.org/10.21105/joss.05947)
 
 
