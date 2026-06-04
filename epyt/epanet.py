@@ -2269,6 +2269,19 @@ class epanet:
 
         return value_final
 
+    def getBinComputedAllParameters(self):
+        """ Run analysis using .exe file """
+        self.api.ENsaveinpfile(self.TempInpFile)
+        [fid, binfile, _] = self.runEPANETexe()
+        value = self.__readEpanetBin(fid, binfile)
+        value.WarnFlag = False
+        if self.errcode:
+            value.WarnFlag = True
+            value.ErrCode = self.errcode
+            self.api.ENgeterror(self.errcode)
+
+        return value
+
     def getComputedTimeSeries(self):
         """ Run analysis using .exe file """
         self.api.ENsaveinpfile(self.TempInpFile)

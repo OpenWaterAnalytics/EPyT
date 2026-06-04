@@ -190,6 +190,7 @@ If you want to contribute, please check out our [Code of Conduct](https://github
 | getComputedHydraulicTimeSeries      | Computes hydraulic simulation and retrieves all time-series |
 | getComputedQualityTimeSeries        | Computes Quality simulation and retrieves all or some time-series |
 | getComputedTimeSeries               | Run analysis with binary fil |
+| getBinComputedAllParameters         | Computes hydraulic and quality time series |
 | getConnectivityMatrix               | Retrieve the Connectivity Matrix of the networ |
 | getConsumerDemandDelivered          | Retrieves the delivered consumer demand for a specific node |
 | getConsumerDemandRequested          | Retrieves the requested consumer demand for a specific node |
