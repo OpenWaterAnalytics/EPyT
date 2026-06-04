@@ -2128,10 +2128,7 @@ class epanet:
                 value.Energy[k] = self.api.ENgetlinkvalues(self.ToolkitConstants.EN_ENERGY)
             if 'efficiency' in attrs:
                 # Optimize: create array once with all parts
-                pipe_zeros = np.zeros(pipecount)
-                pump_eff = self.api.ENgetlinkvalues(self.ToolkitConstants.EN_PUMP_EFFIC)
-                valve_zeros = np.zeros(valvecount)
-                value.Efficiency[k] = np.concatenate((pipe_zeros, pump_eff, valve_zeros))
+                value.Efficiency[k] = self.api.ENgetlinkvalues(self.ToolkitConstants.EN_PUMP_EFFIC)
             if 'state' in attrs:
                 value.State[k] = self.api.ENgetlinkvalues(self.ToolkitConstants.EN_PUMP_STATE)
                 ps = np.asarray(value.State[k]).astype(int) + 1
@@ -12959,7 +12956,7 @@ class epanet:
         >>> d.getMSXSourcePatternIndex(1)             # node 1
         >>> d.getMSXSourcePatternIndex(1, 5)          # nodes 1 and 5
         >>> d.getMSXSourcePatternIndex([2, 4, 7])     # iterable form
-        
+
         See also getMSXSources, getMSXSourceNodeNameID
                       getMSXSourceType, getMSXSourceLevel.
         """
