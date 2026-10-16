@@ -5,6 +5,7 @@ include epyt/libraries/*
 include epyt/libraries/glnx/*
 include epyt/libraries/mac/*
 include epyt/libraries/win/*
+include epyt/libraries/emscripten/*
 include epyt/libraries/win/epanet2_2/*
 include epyt/libraries/win/epanet2_2/32bit/*
 include epyt/libraries/win/epanet2_2/64bit/*

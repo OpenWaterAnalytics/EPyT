@@ -33,6 +33,10 @@ class epanetmsxapi:
                 self.MSXLibEPANET = os.path.join(epyt_root, os.path.join("libraries", "win", "epanetmsx.dll"))
             elif ops in ["darwin"]:
                 self.MSXLibEPANET = os.path.join(epyt_root, os.path.join("libraries", "mac", "epanetmsx.dylib"))
+            elif ops in ["emscripten"]:
+                # Pyodide: EPANET-MSX is in the EPANET library, so that it
+                # works on the network EPANET has open
+                self.MSXLibEPANET = os.path.join(epyt_root, os.path.join("libraries", "emscripten", "libepanet2.so"))
             else:
                 self.MSXLibEPANET = os.path.join(epyt_root, os.path.join("libraries", "glnx", "epanetmsx.so"))
 
@@ -543,7 +547,9 @@ class epanetmsxapi:
                t : current simulation time at the end of the step(in secconds)
                tleft: time left in the simulation (in secconds)
            """
-        if platform.system().lower() in ["windows"]:
+        # EPANET-MSX 2.0 returns both as doubles (the Pyodide library is
+        # built from it: a 4-byte long would take only half of tleft there)
+        if platform.system().lower() in ["windows", "emscripten"]:
             t = c_double()
             tleft = c_double()
         else:

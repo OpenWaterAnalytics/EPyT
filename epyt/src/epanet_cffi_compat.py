@@ -149,7 +149,8 @@ def _ensure_cdef(header_path: str = None):
         ) + ("\n" if decls else "")
 
         # Add the correct prototype (matches your working ctypes behavior).
-        if sys.platform.startswith("win"):
+        # (Pyodide's library is built from EPANET-MSX 2.0, as the Windows DLL)
+        if sys.platform.startswith("win") or sys.platform == "emscripten":
             msxstep_proto = "int MSXstep(double *t, double *tleft);\n"
         else:
             msxstep_proto = "int MSXstep(double *t, long *tleft);\n"

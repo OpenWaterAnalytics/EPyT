@@ -16,6 +16,10 @@ def _default_lib_path():
         return base / "win" / "epanet2.dll"
     elif sys.platform == "darwin":
         return base / "mac" / "libepanet2.dylib"
+    elif sys.platform == "emscripten":
+        # Pyodide (Python in the browser): EPANET and EPANET-MSX in one
+        # WebAssembly library (built by pyodide/build_libs.sh)
+        return base / "emscripten" / "libepanet2.so"
     else:
         return base / "glnx" / "libepanet2.so"
 
